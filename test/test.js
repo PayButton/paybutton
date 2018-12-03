@@ -8,7 +8,7 @@ function getBCHPrice () {
         var buttonAmount = 2
         var addDecimal = result.price / 100;
         var pricePersatoshi = addDecimal / 100000000;
-        var satoshiAmount = buttomAmount / pricePersatoshi
+        var satoshiAmount = buttonAmount / pricePersatoshi
         resolve(satoshiAmount);
       } else {
         reject(new Error(result.error));
