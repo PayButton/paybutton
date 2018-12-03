@@ -21,9 +21,6 @@ function getBCHPrice () {
 }
 jQuery(window).on("load", function(){
   getBCHPrice().then(function(res) {
-    var badgerButtons = document.body.getElementsByClassName("badger-button");
-    for (var i = 0; i < badgerButtons.length; i++) {
-      var badgerButton = badgerButtons[i];
       badgerButton.addEventListener("click", function(event) {
         if (typeof web4bch !== "undefined") {
           web4bch = new Web4Bch(web4bch.currentProvider);
