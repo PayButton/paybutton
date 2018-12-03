@@ -9,7 +9,11 @@
 <body>
 
   
-<button class="pay-button" amount="5" amount-type="usd" address="bitcoincash:testaddress"><span>Simple Test USD</span></button>
+<button class="pay-button" amount="5" amount-type="usd" address="bitcoincash:testaddress" onclick="window.getBCHPrice(this)"><span>5 USD</span></button>
+
+<button class="pay-button" amount="50" amount-type="aud" address="bitcoincash:testaddress" onclick="window.getBCHPrice(this)"><span>50 AUD</span></button>
+
+<button class="pay-button" amount="500" amount-type="jpy" address="bitcoincash:testaddress" onclick="window.getBCHPrice(this)"><span>500 JPY</span></button>
 
 </body>
 </html>
