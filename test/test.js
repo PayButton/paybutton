@@ -4,8 +4,7 @@ $(document).ready(function() {
         var buttonAmount = btn.getAttribute('amount')
         var amountType = btn.getAttribute("amount-type")
         var toAddress = btn.getAttribute("address")
-        jQuery("#result").html("Converting " + buttonAmount + " " + amountType + " to satoshi")
-
+				jQuery("#result").html("Converting " + buttonAmount + " " + amountType + " to satoshi")
 
 
 
@@ -15,8 +14,10 @@ $(document).ready(function() {
                 var addDecimal = response.price / 100
                 var pricePersatoshi = addDecimal / 100000000
                 var satoshiAmount = buttonAmount / pricePersatoshi
+                var showSatoshi = satoshiAmount /100000000
+                var showSatoshi = showSatoshi.toPrecision(7);
 
-                jQuery("#result").html("Sending: " + satoshiAmount + " satoshi")
+                jQuery("#result").html("Sending: " + showSatoshi + " satoshi")
 
 
                 if (typeof web4bch !== "undefined") {
@@ -25,6 +26,7 @@ $(document).ready(function() {
                         to: toAddress,
                         from: web4bch.bch.defaultAccount,
                         value: satoshiAmount
+
                     };
                     web4bch.bch.sendTransaction(txParams, (err, res) => {
                         if (err) return;
