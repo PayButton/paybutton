@@ -56,7 +56,7 @@ $(document).ready(function() {
 
     }
 
-
+    window.getBCHPrice = getBCHPrice
 
 
 })
