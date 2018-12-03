@@ -5,9 +5,10 @@ function getBCHPrice () {
   return new Promise((resolve, reject) => {
     jQuery.getJSON("https://index-api.bitcoin.com/api/v0/cash/price/jpy", function (result) {
       if (result.price != "") {
-        var singleDollarValue = result.price / 100;
-        var singleDollarSatoshis = 10000000000 / singleDollarValue;
-        resolve(singleDollarSatoshis);
+        var addDecimal = result.price / 100;
+        var singleUSDSatoshis = 100000000 / addDecimal;
+        var singleJPYSatoshis = 10000000000 / addDecimal;
+        resolve(singleJPYSatoshis);
       } else {
         reject(new Error(result.error));
       }
