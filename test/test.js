@@ -1,3 +1,5 @@
+$(document).ready(function() {
+alert("document is ready");
 var badgerButtons = document.body.getElementsByClassName("badger-button");
   for (var i = 0; i < badgerButtons.length; i++) {
     var badgerButton = badgerButtons[i];
@@ -56,5 +58,7 @@ var badgerButtons = document.body.getElementsByClassName("badger-button");
           window.open('https://badgerwallet.cash');
         }
       });
+
+    });
 
     });
