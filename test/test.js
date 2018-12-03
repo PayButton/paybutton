@@ -4,8 +4,8 @@ $(document).ready(function() {
         var badgerButton = badgerButtons[i];
         var buttonAmount = badgerButton.getAttribute("amount");
         var amountType = badgerButton.getAttribute("amount-type");
-        var amountType = badgerButton.getAttribute("amount-type");
-        alert(buttonAmount + ' ' + amountType);
+        var toAddress = badgerButton.getAttribute("address");
+      alert(buttonAmount + ' ' + amountType + ' ' + toAddress);
     }
 
     function getBCHPrice() {
@@ -29,7 +29,7 @@ $(document).ready(function() {
             if (typeof web4bch !== "undefined") {
                 web4bch = new Web4Bch(web4bch.currentProvider);
                 var txParams = {
-                    to: badgerButton.getAttribute("data-to"),
+                    to: toAddress,
                     from: web4bch.bch.defaultAccount,
                     value: res
                 };
