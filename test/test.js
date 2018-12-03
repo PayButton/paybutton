@@ -4,7 +4,7 @@ $(document).ready(function() {
         var buttonAmount = btn.getAttribute('amount')
         var amountType = btn.getAttribute("amount-type")
         var toAddress = btn.getAttribute("address")
-				jQuery("#result").html("Converting " + buttonAmount + " " + amountType + " to satoshi")
+        jQuery("#result").html("Converting " + buttonAmount + " " + amountType + " to satoshi")
 
 
 
@@ -14,10 +14,10 @@ $(document).ready(function() {
                 var addDecimal = response.price / 100
                 var pricePersatoshi = addDecimal / 100000000
                 var satoshiAmount = buttonAmount / pricePersatoshi
-                var showSatoshi = satoshiAmount /100000000
+                var showSatoshi = satoshiAmount / 100000000
                 var showSatoshi = showSatoshi.toPrecision(7);
 
-                jQuery("#result").html(buttonAmount + " " + amountType + " = "  + showSatoshi + " satoshi")
+                jQuery("#result").html(buttonAmount + " " + amountType + " = " + showSatoshi + " satoshi")
 
 
                 if (typeof web4bch !== "undefined") {
@@ -41,7 +41,7 @@ $(document).ready(function() {
                         }
                     });
                 } else {
-                
+
                     alert('Please install Badger Wallet from https://badgerwallet.cash to test');
                 }
 
