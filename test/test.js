@@ -1,11 +1,9 @@
-window.addEventListener('load', function () {
 var badgerButtons = document.body.getElementsByClassName("badger-button");
   for (var i = 0; i < badgerButtons.length; i++) {
     var badgerButton = badgerButtons[i];
     var buttonAmount = badgerButton.getAttribute("amount");
     var amountType = badgerButton.getAttribute("amount-type");
   }
-});
 
   function getBCHPrice() {
     return new Promise((resolve, reject) => {
@@ -23,7 +21,7 @@ var badgerButtons = document.body.getElementsByClassName("badger-button");
   }
 
 
-  jQuery(window).on("load", function() {
+
     getBCHPrice().then(function(res) {
 
 
@@ -60,4 +58,3 @@ var badgerButtons = document.body.getElementsByClassName("badger-button");
       });
 
     });
-  });
