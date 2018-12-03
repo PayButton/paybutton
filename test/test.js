@@ -1,10 +1,10 @@
 $(document).ready(function() {
 
     function getBCHPrice(btn) {
-        jQuery("#result").html('Fetching the BTC price...')
         var buttonAmount = btn.getAttribute('amount')
         var amountType = btn.getAttribute("amount-type")
         var toAddress = btn.getAttribute("address")
+        jQuery("#result").html("Converting " + amountType + " to satoshi")
 
 
 
