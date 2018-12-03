@@ -13,10 +13,10 @@ function getBCHPrice () {
   return new Promise((resolve, reject) => {
     jQuery.getJSON("https://index-api.bitcoin.com/api/v0/cash/price/usd", function (result) {
       if (result.price != "") {
-        var buttonAmount = badgerButton.getAttribute("amount")
+        var buttonAmount = badgerButton.getAttribute("amount");
         var addDecimal = result.price / 100;
         var pricePersatoshi = addDecimal / 100000000;
-        var satoshiAmount = buttonAmount / pricePersatoshi
+        var satoshiAmount = buttonAmount / pricePersatoshi;
         resolve(satoshiAmount);
       } else {
         reject(new Error(result.error));
@@ -28,10 +28,12 @@ function getBCHPrice () {
 
 jQuery(window).on("load", function(){
   getBCHPrice().then(function(res) {
+  
       badgerButton.addEventListener("click", function(event) {
         if (typeof web4bch !== "undefined") {
           web4bch = new Web4Bch(web4bch.currentProvider);
-          var txParams = {
+          
+		  var txParams = {
             to: badgerButton.getAttribute("data-to"),
             from: web4bch.bch.defaultAccount,
             value: res
@@ -56,6 +58,7 @@ jQuery(window).on("load", function(){
           window.open('https://badgerwallet.cash');
         }
       });
+	  
   });
 });
 
