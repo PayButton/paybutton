@@ -17,7 +17,7 @@ $(document).ready(function() {
                 var showSatoshi = satoshiAmount /100000000
                 var showSatoshi = showSatoshi.toPrecision(7);
 
-                jQuery("#result").html("Sending: " + showSatoshi + " satoshi")
+                jQuery("#result").html(buttonAmount + " " + amountType + " = "  + showSatoshi + " satoshi")
 
 
                 if (typeof web4bch !== "undefined") {
