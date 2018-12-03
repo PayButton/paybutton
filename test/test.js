@@ -3,12 +3,13 @@
 
 function getBCHPrice () {
   return new Promise((resolve, reject) => {
-    jQuery.getJSON("https://index-api.bitcoin.com/api/v0/cash/price/jpy", function (result) {
+    jQuery.getJSON("https://index-api.bitcoin.com/api/v0/cash/price/usd", function (result) {
       if (result.price != "") {
+        var buttonAmount = 2
         var addDecimal = result.price / 100;
-        var singleUSDSatoshis = 100000000 / addDecimal;
-        var singleJPYSatoshis = 10000000000 / addDecimal;
-        resolve(singleJPYSatoshis);
+        var pricePersatoshi = addDecimal / 100000000;
+        var satoshiAmount = buttomAmount / pricePersatoshi
+        resolve(satoshiAmount);
       } else {
         reject(new Error(result.error));
       }
