@@ -39,7 +39,8 @@ $(document).ready(function() {
                         }
                     });
                 } else {
-                    window.open('https://badgerwallet.cash');
+                
+                    alert('Please install Badger Wallet from https://badgerwallet.cash to test');
                 }
 
 
