@@ -4,7 +4,7 @@ $(document).ready(function() {
         var buttonAmount = btn.getAttribute('amount')
         var amountType = btn.getAttribute("amount-type")
         var toAddress = btn.getAttribute("address")
-        jQuery("#result").html("Converting " + amountType + " to satoshi")
+        jQuery("#result").html("Converting " + buttonAmount + " "+ amountType + " to satoshi")
 
 
 
