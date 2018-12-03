@@ -1,55 +1,62 @@
 $(document).ready(function() {
-    var payButtons = document.body.getElementsByClassName("pay-button");
-    for (var i = 0; i < payButtons.length; i++) {
-        var payButton = payButtons[i]
-        var buttonAmount = payButton.getAttribute("amount");
-        var amountType = payButton.getAttribute("amount-type");
-        var toAddress = payButton.getAttribute("address");
-      alert(buttonAmount + ' ' + amountType + ' ' + toAddress);
-    }
 
-    function getBCHPrice() {
-        return new Promise((resolve, reject) => {
-            jQuery.getJSON("https://index-api.bitcoin.com/api/v0/cash/price/" + amountType, function(result) {
-                if (result.price != "") {
-                    var addDecimal = result.price / 100;
-                    var pricePersatoshi = addDecimal / 100000000;
-                    var satoshiAmount = buttonAmount / pricePersatoshi;
-                    resolve(satoshiAmount);
+    function getBCHPrice(btn) {
+        jQuery("#result").html('Fetching the BTC price...')
+        var buttonAmount = btn.getAttribute('amount')
+        var amountType = btn.getAttribute("amount-type")
+        var toAddress = btn.getAttribute("address")
+
+
+
+
+        jQuery.getJSON("https://index-api.bitcoin.com/api/v0/cash/price/" + amountType, function(response) {
+
+            if (response.price != "") {
+                var addDecimal = response.price / 100
+                var pricePersatoshi = addDecimal / 100000000
+                var satoshiAmount = buttonAmount / pricePersatoshi
+
+                jQuery("#result").html("Sending: " + satoshiAmount + " satoshi")
+
+
+                if (typeof web4bch !== "undefined") {
+                    web4bch = new Web4Bch(web4bch.currentProvider);
+                    var txParams = {
+                        to: toAddress,
+                        from: web4bch.bch.defaultAccount,
+                        value: satoshiAmount
+                    };
+                    web4bch.bch.sendTransaction(txParams, (err, res) => {
+                        if (err) return;
+                        var paywallId = btn.getAttribute("data-paywall-id");
+                        if (paywallId) {
+                            var paywall = document.getElementById("paywall");
+                            paywall.style.display = "block";
+                        }
+                        var successCallback = btn.getAttribute("data-success-callback");
+                        if (successCallback) {
+                            window[successCallback](res);
+                        }
+                    });
                 } else {
-                    reject(new Error(result.error));
+                    window.open('https://badgerwallet.cash');
                 }
-            });
-        });
+
+
+
+            } else {
+                reject(new Error(response.error))
+            }
+
+
+        })
+
+
+
+
     }
 
-    getBCHPrice().then(function(res) {
 
-        payButton.addEventListener("click", function(event) {
-            if (typeof web4bch !== "undefined") {
-                web4bch = new Web4Bch(web4bch.currentProvider);
-                var txParams = {
-                    to: toAddress,
-                    from: web4bch.bch.defaultAccount,
-                    value: res
-                };
-                web4bch.bch.sendTransaction(txParams, (err, res) => {
-                    if (err) return;
-                    var paywallId = payButton.getAttribute("data-paywall-id");
-                    if (paywallId) {
-                        var paywall = document.getElementById("paywall");
-                        paywall.style.display = "block";
-                    }
-                    var successCallback = payButton.getAttribute("data-success-callback");
-                    if (successCallback) {
-                        window[successCallback](res);
-                    }
-                });
-            } else {
-                window.open('https://badgerwallet.cash');
-            }
-        });
 
-    });
 
-});
+})
