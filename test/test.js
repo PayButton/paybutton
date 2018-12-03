@@ -3,7 +3,7 @@
 
 function getBCHPrice () {
   return new Promise((resolve, reject) => {
-    jQuery.getJSON("https://index-api.bitcoin.com/api/v0/cash/price/usd", function (result) {
+    jQuery.getJSON("https://index-api.bitcoin.com/api/v0/cash/price/jpy", function (result) {
       if (result.price != "") {
         var buttonAmount = 2
         var addDecimal = result.price / 100;
