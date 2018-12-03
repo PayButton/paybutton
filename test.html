@@ -2,51 +2,50 @@
 <html lang = "en">
 <head>
   <!-- basic.html -->
-  <script src="https://www.moneybutton.com/moneybutton.js"></script>
   <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <script>
 function getBCHPrice () {
   return new Promise((resolve, reject) => {
-    jQuery.getJSON('https://index-api.bitcoin.com/api/v0/cash/price/usd', function (result) {
-      if (result.price != '') {
-        var singleDollarValue = result.price / 100
-        var singleDollarSatoshis = 100000000 / singleDollarValue
+    jQuery.getJSON("https://index-api.bitcoin.com/api/v0/cash/price/usd", function (result) {
+      if (result.price != "") {
+        var singleDollarValue = result.price / 100;
+        var singleDollarSatoshis = 100000000 / singleDollarValue;
         resolve(singleDollarSatoshis);
       } else {
         reject(new Error(result.error));
       }
     });
   });
-};
-jQuery(window).on('load', function(){ 
+}
+jQuery(window).on("load", function(){
   getBCHPrice().then(function(res) {
-    var badgerButtons = document.body.getElementsByClassName("badger-button")
+    var badgerButtons = document.body.getElementsByClassName("badger-button");
     for (var i = 0; i < badgerButtons.length; i++) {
-      var badgerButton = badgerButtons[i]
-      badgerButton.addEventListener('click', function(event) {
-        if (typeof web4bch !== 'undefined') {
-          web4bch = new Web4Bch(web4bch.currentProvider)
+      var badgerButton = badgerButtons[i];
+      badgerButton.addEventListener("click", function(event) {
+        if (typeof web4bch !== "undefined") {
+          web4bch = new Web4Bch(web4bch.currentProvider);
           var txParams = {
             to: badgerButton.getAttribute("data-to"),
             from: web4bch.bch.defaultAccount,
             value: res
-          }
+          };
           web4bch.bch.sendTransaction(txParams, (err, res) => {
-            if (err) return
-            var paywallId = badgerButton.getAttribute("data-paywall-id")
+            if (err) return;
+            var paywallId = badgerButton.getAttribute("data-paywall-id");
             if (paywallId) {
-              var paywall = document.getElementById("paywall")
-              paywall.style.display = "block"
+              var paywall = document.getElementById("paywall");
+              paywall.style.display = "block";
             }
-            var successCallback = badgerButton.getAttribute("data-success-callback")
+            var successCallback = badgerButton.getAttribute("data-success-callback");
             if (successCallback) {
-              window[successCallback](res)
+              window[successCallback](res);
             }
-          })
+          });
         } else {
-          window.open('https://badgerwallet.cash')
+          window.open('https://badgerwallet.cash');
         }
-      })
+      });
     }
   });
 });
@@ -173,10 +172,16 @@ jQuery(window).on('load', function(){
 <body>
 
   
-  <p>
-<button class="badger-button button button--rayen button--border-thick button--text-thick button--size-m" data-text="Donate $1" data-to="bitcoincash:qq6e3seenwkhjqv88vavrlpfy7wc6mrzt5xqu0w5ch" data-satoshis="600000"><span>Support the Spice</span></button>
+<div>
+<button
+class="badger-button button button--rayen button--border-thick button--text-thick button--size-m"
+data-text="Donate $1"
+data-to="bitcoincash:qq6e3seenwkhjqv88vavrlpfy7wc6mrzt5xqu0w5ch"
+data-satoshis="600000">
+<span>jquery Test</span>
+</button>
+</div>
 
-  </p>
 
 </body>
 </html>
