@@ -17,7 +17,7 @@ button > span {
   -webkit-text-fill-color: transparent;
 }
 button:after {
-  content: "";
+  content: "Donate $1";
   position: absolute;
   top: 0;
   bottom: 0;
