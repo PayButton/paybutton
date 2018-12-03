@@ -10,7 +10,7 @@ function getBCHPrice () {
   return new Promise((resolve, reject) => {
     jQuery.getJSON("https://index-api.bitcoin.com/api/v0/cash/price/usd", function (result) {
       if (result.price != "") {
-        var buttonAmount = badgerButton.getAttribute("amount");
+        var buttonAmount = 2;
         var addDecimal = result.price / 100;
         var pricePersatoshi = addDecimal / 100000000;
         var satoshiAmount = buttonAmount / pricePersatoshi;
