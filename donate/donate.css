@@ -1,64 +1,57 @@
 button {
-  border-radius: 4px;
-  cursor: pointer;
-  border: 2px solid orangeRed;
-  background: transparent;
-  position: relative;
-  padding: 0;
-
-  color: #fff;
-  /*For IE*/
+	border-radius: 4px;
+	cursor: pointer;
+	border: 2px solid orangeRed;
+	background: transparent;
+	position: relative;
+	padding: 0;
+	color: #fff;
+	/*For IE*/
 }
 button > span {
-  display: inline-block;
-  padding: 8px 16px;
-  background: linear-gradient(45deg, #fff 50%, orangeRed 50%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+	display: inline-block;
+	padding: 8px 16px;
+	background: linear-gradient(45deg, #fff 50%, orangeRed 50%);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
 }
 button:after {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: linear-gradient(45deg, orangeRed 50%, transparent 50%);
-  z-index: -1;
+	content: "";
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background: linear-gradient(45deg, orangeRed 50%, transparent 50%);
+	z-index: -1;
 }
-
-button > span,
-button:after {
-  background-size: 300%;
-  background-position: 100%;
-  transition: 1s, font-size 0.2s;
+button > span,button:after {
+	background-size: 300%;
+	background-position: 100%;
+	transition: 1s, font-size 0.2s;
 }
-
-button:hover > span,
-button:hover:after {
-  background-position: 0;
-  font-size: 1.1em;
-
-  color: orangeRed;
-  /*For IE*/
+button:hover > span,button:hover:after {
+	background-position: 0;
+	font-size: 1.1em;
+	color: orangeRed;
+	/*For IE*/
 }
 donate {
-		border:1px;
-    border-color:#000000;
-
-    width:500px;
-    height:400px;
-    background-color:#f2f2f2;
-    position:fixed;
-    margin-left:-250px; /* half of width */
-    margin-top:-200px;  /* half of height */
-    top:50%;
-    left:50%;
-
-    
-	}
+	border:1px;
+	border-color:#000000;
+	width:500px;
+	height:400px;
+	background-color:#f2f2f2;
+	position:fixed;
+	margin-left:-250px;
+	/* half of width */
+	margin-top:-200px;
+	/* half of height */
+	top:50%;
+	left:50%;
+}
 donate td {
-		border:0px;
-		text-align:center;
-    padding:10px;
-	}
+	border:0px;
+	text-align:center;
+	padding:10px;
+}
