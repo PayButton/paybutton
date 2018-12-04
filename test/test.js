@@ -1,23 +1,23 @@
 $(document).ready(function() {
 
     function getBCHPrice(btn) {
-        var buttonAmount = btn.getAttribute('amount')
-        var amountType = btn.getAttribute("amount-type")
-        var toAddress = btn.getAttribute("address")
-        jQuery("#result").html("Converting " + buttonAmount + " " + amountType + " to satoshi")
+        var buttonAmount = btn.getAttribute('amount');
+        var amountType = btn.getAttribute("amount-type");
+        var toAddress = btn.getAttribute("address");
+        jQuery("#result").html("Converting " + buttonAmount + " " + amountType + " to satoshi");
 
 
 
         jQuery.getJSON("https://index-api.bitcoin.com/api/v0/cash/price/" + amountType, function(response) {
 
             if (response.price != "") {
-                var addDecimal = response.price / 100
-                var pricePersatoshi = addDecimal / 100000000
-                var satoshiAmount = buttonAmount / pricePersatoshi
-                var showSatoshi = satoshiAmount / 100000000
+                var addDecimal = response.price / 100;
+                var pricePersatoshi = addDecimal / 100000000;
+                var satoshiAmount = buttonAmount / pricePersatoshi;
+                var showSatoshi = satoshiAmount / 100000000;
                 showSatoshi = showSatoshi.toPrecision(7);
 
-                jQuery("#result").html(buttonAmount + " " + amountType + " = " + showSatoshi + " BCH")
+                jQuery("#result").html(buttonAmount + " " + amountType + " = " + showSatoshi + " BCH");
 
 
                 if (typeof web4bch !== "undefined") {
@@ -48,18 +48,18 @@ $(document).ready(function() {
 
 
             } else {
-                reject(new Error(response.error))
+                reject(new Error(response.error));
             }
 
 
-        })
+        });
 
 
 
 
     }
 
-    window.getBCHPrice = getBCHPrice
+    window.getBCHPrice = getBCHPrice;
 
 
-})
+});
