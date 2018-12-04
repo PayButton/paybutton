@@ -36,7 +36,7 @@ button:hover > span,button:hover:after {
 	color: orangeRed;
 	/*For IE*/
 }
-donate {
+.donate {
 	border:1px;
 	border-color:#000000;
 	width:500px;
@@ -50,7 +50,7 @@ donate {
 	top:50%;
 	left:50%;
 }
-donate td {
+.donate td {
 	border:0px;
 	text-align:center;
 	padding:10px;
