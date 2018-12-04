@@ -33,11 +33,18 @@ $(document).ready(function() {
                         value: satoshiAmount
 
                     };
+                    
+                        var paywallId = btn.getAttribute("thankyou-id");
+                        if (paywallId) {
+                            var paywall = document.getElementById(paywallId);
+                            paywall.style.display = "block";
+                        }
+                    
                     web4bch.bch.sendTransaction(txParams, (err, res) => {
                         if (err) return;
-                        var paywallId = btn.getAttribute("data-paywall-id");
+                        var paywallId = btn.getAttribute("thankyou-id");
                         if (paywallId) {
-                            var paywall = document.getElementById("paywall");
+                            var paywall = document.getElementById(paywallId);
                             paywall.style.display = "block";
                         }
                         var successCallback = btn.getAttribute("data-success-callback");
