@@ -6,10 +6,10 @@ $(document).ready(function() {
         var toAddress = btn.getAttribute("address");
         jQuery("#result").html("Converting " + buttonAmount + " " + amountType + " to satoshi");
 
-
-
+        
         jQuery.getJSON("https://index-api.bitcoin.com/api/v0/cash/price/" + amountType, function(response) {
 
+            
             if (response.price != "") {
                 var addDecimal = response.price / 100;
                 var pricePersatoshi = addDecimal / 100000000;
@@ -17,6 +17,7 @@ $(document).ready(function() {
                 var showSatoshi = satoshiAmount / 100000000;
                 showSatoshi = showSatoshi.toPrecision(7);
 
+                
                 jQuery("#result").html(buttonAmount + " " + amountType + " = " + showSatoshi + " BCH");
 
 
@@ -46,15 +47,12 @@ $(document).ready(function() {
                 }
 
 
-
             } else {
                 reject(new Error(response.error));
             }
 
 
         });
-
-
 
 
     }
