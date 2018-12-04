@@ -3,10 +3,6 @@
 
 
 $(document).ready(function() {
-    
-    function badgerCallback(txid) {
-      alert(txid)
-    }
 
     function getBCHPrice(btn) {
         var buttonAmount = btn.getAttribute('amount');
