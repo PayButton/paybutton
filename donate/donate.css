@@ -1,4 +1,4 @@
-button {
+.pay-button {
 	border-radius: 4px;
 	cursor: pointer;
 	border: 2px solid orangeRed;
@@ -8,14 +8,14 @@ button {
 	color: #fff;
 	/*For IE*/
 }
-button > span {
+.pay-button > span {
 	display: inline-block;
 	padding: 8px 16px;
 	background: linear-gradient(45deg, #fff 50%, orangeRed 50%);
 	-webkit-background-clip: text;
 	-webkit-text-fill-color: transparent;
 }
-button:after {
+.pay-button:after {
 	content: "";
 	position: absolute;
 	top: 0;
@@ -25,12 +25,12 @@ button:after {
 	background: linear-gradient(45deg, orangeRed 50%, transparent 50%);
 	z-index: -1;
 }
-button > span,button:after {
+.pay-button > span,.pay-button:after {
 	background-size: 300%;
 	background-position: 100%;
 	transition: 1s, font-size 0.2s;
 }
-button:hover > span,button:hover:after {
+.pay-button:hover > span,.pay-button:hover:after {
 	background-position: 0;
 	font-size: 1.1em;
 	color: orangeRed;
