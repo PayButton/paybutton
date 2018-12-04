@@ -48,7 +48,7 @@ $(document).ready(function() {
                     });
                 } else {
 
-                    alert('Please install BadgerWallet from https://badgerwallet.cash to donate.\n\nPayButton devs are working hard to support more BitcoinCash wallets in the very near future.');                }
+                    alert('Please install BadgerWallet from https://badgerwallet.cash to donate.\n\nW devs are working hard to support more BitcoinCash wallets in the very near future.');                }
 
 
             } else {
