@@ -3,6 +3,10 @@
 
 
 $(document).ready(function() {
+    
+    function badgerCallback(txid) {
+      alert(txid)
+    }
 
     function getBCHPrice(btn) {
         var buttonAmount = btn.getAttribute('amount');
@@ -67,7 +71,7 @@ $(document).ready(function() {
 });
 
 
-var cssId = 'paybuttonCss';  // you could encode the css path itself to generate id..
+var cssId = 'pbCSS';  // you could encode the css path itself to generate id..
 if (!document.getElementById(cssId))
 {
     var head  = document.getElementsByTagName('head')[0];
