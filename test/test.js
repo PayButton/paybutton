@@ -15,7 +15,7 @@ $(document).ready(function() {
                 var pricePersatoshi = addDecimal / 100000000
                 var satoshiAmount = buttonAmount / pricePersatoshi
                 var showSatoshi = satoshiAmount / 100000000
-                var showSatoshi = showSatoshi.toPrecision(7);
+                showSatoshi = showSatoshi.toPrecision(7);
 
                 jQuery("#result").html(buttonAmount + " " + amountType + " = " + showSatoshi + " BCH")
 
