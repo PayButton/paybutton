@@ -34,12 +34,6 @@ $(document).ready(function() {
 
                     };
                     
-                        var paywallId = btn.getAttribute("thankyou-id");
-                        if (paywallId) {
-                            var paywall = document.getElementById(paywallId);
-                            paywall.style.display = "block";
-                        }
-                    
                     web4bch.bch.sendTransaction(txParams, (err, res) => {
                         if (err) return;
                         var paywallId = btn.getAttribute("thankyou-id");
