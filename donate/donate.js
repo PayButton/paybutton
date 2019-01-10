@@ -11,16 +11,16 @@ for (var i = 0; i < payButton.length; i++)
 		var buttonAmount = this.getAttribute('amount');
 		var amountType = this.getAttribute("amount-type");
 		var toAddress = this.getAttribute("address");
-		var bchAmount;
+		//var bchAmount;
 		if (amountType == "BCH" || amountType == "Satoshi")
 		{
 			if (amountType == "BCH")
 			{
-				bchAmount = 100000000 * buttonAmount;
+				buttonAmount = 100000000 * buttonAmount;
 			}
 			else if (amountType == "Satoshi")
 			{
-				bchAmount = buttonAmount;
+				buttonAmount = buttonAmount;
 			}
 			if (typeof web4bch !== 'undefined')
 			{
@@ -28,7 +28,7 @@ for (var i = 0; i < payButton.length; i++)
 				var txParams = {
 					to: toAddress,
 					from: web4bch.bch.defaultAccount,
-					value: bchAmount
+					value: buttonAmount
 				};
 				web4bch.bch.sendTransaction(txParams, (err, res) =>
 				{
