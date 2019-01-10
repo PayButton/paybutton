@@ -15,9 +15,13 @@ $(document).ready(function() {
 
             
             if (response.price != "") {
+                //determine amount of satoshi based on button value
                 var addDecimal = response.price / 100;
-                var pricePersatoshi = addDecimal / 100000000;
-                var satoshiAmount = buttonAmount / pricePersatoshi;
+                var satoshiAmount = (100000000 / addDecimal) * buttonAmount;
+                //var pricePersatoshi = addDecimal / 100000000;
+                //var satoshiAmount = buttonAmount / pricePersatoshi;
+                
+                //format for site dialogue satoshi in 0.00000000 format
                 var showSatoshi = satoshiAmount / 100000000;
                 showSatoshi = showSatoshi.toPrecision(7);
 
