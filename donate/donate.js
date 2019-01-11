@@ -31,26 +31,17 @@ for (var i = 0; i < payButton.length; i++)
 					from: web4bch.bch.defaultAccount,
 					value: bchAmount
 				};
-				web4bch.bch.sendTransaction(txParams, (err, res) =>
-				{
-					if (err)
-					{
-						console.log('send err', err);
-					}
-					else
-					{
-						console.log('send success:', res);
-						var paywallId = this.getAttribute("data-paywall-id");
-						if (paywallId)
-						{
-							var paywall = document.getElementById("paywall");
-							paywall.style.display = "block";
-						}
-						var successCallback = this.getAttribute("data-success-callback");
-						if (successCallback)
-						{
-							window[successCallback](res);
-						}
+                    web4bch.bch.sendTransaction(txParams, (err, res) => {
+                        if (err) return;
+                        var paywallId = this.getAttribute("thankyou-id");
+                        if (paywallId) {
+                            var paywall = document.getElementById(paywallId);
+                            paywall.style.display = "block";
+                        }
+                        var successCallback = this.getAttribute("data-success-callback");
+                        if (successCallback) {
+                            window[successCallback](res);
+                        }
 					}
 				});
 			}
