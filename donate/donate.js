@@ -40,7 +40,7 @@ for (var i = 0; i < payButton.length; i++)
 					else
 					{
 						console.log('send success:', res);
-						var paywallId = this.getAttribute("data-paywall-id");
+						var paywallId = this.getAttribute("thankyou-id");
 						if (paywallId)
 						{
 							var paywall = document.getElementById("paywall");
