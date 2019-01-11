@@ -11,6 +11,7 @@ body {
 	background: transparent;
 	position: relative;
 	padding: 0;
+	width: 150px;
 	color: #fff;
 	/*For IE*/
 }
