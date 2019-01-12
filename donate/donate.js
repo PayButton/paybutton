@@ -81,10 +81,17 @@ function sendToBadger () {
 
 if (typeof web4bch !== "undefined") {
 web4bch = new Web4Bch(web4bch.currentProvider);
+
+// detect if wallet is locked
+if (!web4bch.bch.defaultAccount){
+alert("Please unlock BadgerWallet before continuing.");
+} else {
+
 var txParams = {
 to: toAddress,
 from: web4bch.bch.defaultAccount,
 value: bchAmount
+
 };
 
 // check for errors else proceed with success messages
@@ -108,6 +115,8 @@ window[successCallback](res);
 }
 
 });
+
+}
 
 } else {
 
