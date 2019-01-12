@@ -3,83 +3,83 @@
 
 <head>
 
-    <meta charset="UTF-8" />
-    <title>PayButton - Coming Soon to BCH</title>
+<meta charset="UTF-8" />
+<title>PayButton - Coming Soon to BCH</title>
 
-    <script type="text/javascript" src="https://paybutton.cash/donate/donate.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 
 </head>
 
 <body>
 
-    <table class="donate">
+<table class="donate">
 
-        <tr>
-            <td colspan="3">With live FIAT to BCH conversions of <b>161 currencies</b>, multiple clients and ALL code (including this website) hosted on github!
-                <br />
-                <br />Official Launch of paybutton is coming soon!
-                <br />
-                <br />PayButton currently supports <b><a href="https://badger.bitcoin.com">Badger</a></b>, a bitcoin.com wallet
-                <br />
-                <br /><b><a href="https://jsfiddle.net/8xze0rnp/">Donation Page Sandbox (beta)</a></b>
-            </td>
+<tr>
+<td colspan="3">With live FIAT to BCH conversions of <b>161 currencies</b>, multiple clients and ALL code (including this website) hosted on github!
+<br />
+<br />Official Launch of paybutton is coming soon!
+<br />
+<br />PayButton currently supports <b><a href="https://badger.bitcoin.com">Badger</a></b>, a bitcoin.com wallet
+<br />
+<br /><b><a href="https://jsfiddle.net/8xze0rnp/">Donation Page Sandbox (beta)</a></b>
+</td>
 
-        </tr>
-        <tr>
-            <td colspan="3">
-                <div id="thankyou" style="display:none"><b>Thank you for Donating!</b></div>
-            </td>
-        </tr>
+</tr>
+<tr>
+<td colspan="3">
+<div id="success"></div>
+</td>
+</tr>
 
-        <tr>
-            <td>
-                <button class="pay-button" amount="1" amount-type="USD" address="bitcoincash:qpajl5cvn0fjsqs30xppuxs3uuhzfdj4ncrcfdukt3" thankyou-id="thankyou"><span>1 USD</span></button>
-            </td>
-            <td>
-                <button class="pay-button" amount="5" amount-type="USD" address="bitcoincash:qpajl5cvn0fjsqs30xppuxs3uuhzfdj4ncrcfdukt3" thankyou-id="thankyou"><span>5 USD</span></button>
-            </td>
-            <td>
-                <button class="pay-button" amount="10" amount-type="USD" address="bitcoincash:qpajl5cvn0fjsqs30xppuxs3uuhzfdj4ncrcfdukt3" thankyou-id="thankyou"><span>10 USD</span></button>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <button class="pay-button" amount="1" amount-type="AUD" address="bitcoincash:qpajl5cvn0fjsqs30xppuxs3uuhzfdj4ncrcfdukt3" thankyou-id="thankyou"><span>1 AUD</span></button>
-            </td>
-            <td>
-                <button class="pay-button" amount="5" amount-type="AUD" address="bitcoincash:qpajl5cvn0fjsqs30xppuxs3uuhzfdj4ncrcfdukt3" thankyou-id="thankyou"><span>5 AUD</span></button>
-            </td>
-            <td>
-                <button class="pay-button" amount="10" amount-type="AUD" address="bitcoincash:qpajl5cvn0fjsqs30xppuxs3uuhzfdj4ncrcfdukt3" thankyou-id="thankyou"><span>10 AUD</span></button>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <button class="pay-button" amount="100" amount-type="JPY" address="bitcoincash:qpajl5cvn0fjsqs30xppuxs3uuhzfdj4ncrcfdukt3" thankyou-id="thankyou"><span>100 JPY</span></button>
-            </td>
-            <td>
-                <button class="pay-button" amount="500" amount-type="JPY" address="bitcoincash:qpajl5cvn0fjsqs30xppuxs3uuhzfdj4ncrcfdukt3" thankyou-id="thankyou"><span>500 JPY</span></button>
-            </td>
-            <td>
-                <button class="pay-button" amount="1000" amount-type="JPY" address="bitcoincash:qpajl5cvn0fjsqs30xppuxs3uuhzfdj4ncrcfdukt3" thankyou-id="thankyou"><span>1000 JPY</span></button>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <button class="pay-button" amount="0.4" amount-type="BCH" address="bitcoincash:qpajl5cvn0fjsqs30xppuxs3uuhzfdj4ncrcfdukt3" thankyou-id="thankyou"><span>0.4 BCH</span></button>
-            </td>
-            <td>
-                <button class="pay-button" amount="10000" amount-type="Satoshi" address="bitcoincash:qpajl5cvn0fjsqs30xppuxs3uuhzfdj4ncrcfdukt3" thankyou-id="thankyou"><span>10,000 Satoshi</span></button>
-            </td>
-            <td>
-                <button class="pay-button" amount="100000" amount-type="Satoshi" address="bitcoincash:qpajl5cvn0fjsqs30xppuxs3uuhzfdj4ncrcfdukt3" thankyou-id="thankyou"><span>100,000 Satoshi</span></button>
-            </td>
-        </tr>
-        <tr>
-            <td id="result" class="content" colspan="3"></td>
-        </tr>
+<tr>
+<td>
+<button class="pay-button" amount="0.01" amount-type="USD" address="bitcoincash:qpajl5cvn0fjsqs30xppuxs3uuhzfdj4ncrcfdukt3" success-field="success" success-msg="Thank you for donating!"><span>1 Penny</span></button>
+</td>
+<td>
+<button class="pay-button" amount="1" amount-type="USD" address="bitcoincash:qpajl5cvn0fjsqs30xppuxs3uuhzfdj4ncrcfdukt3" success-field="success" success-msg="Thank you for donating!"><span>1 USD</span></button>
+</td>
+<td>
+<button class="pay-button" amount="5" amount-type="USD" address="bitcoincash:qpajl5cvn0fjsqs30xppuxs3uuhzfdj4ncrcfdukt3" success-field="success" success-msg="Thank you for donating!"><span>5 USD</span></button>
+</td>
+</tr>
+<tr>
+<td>
+<button class="pay-button" amount="1" amount-type="AUD" address="bitcoincash:qpajl5cvn0fjsqs30xppuxs3uuhzfdj4ncrcfdukt3" success-field="success" success-msg="Thank you for donating!"><span>1 AUD</span></button>
+</td>
+<td>
+<button class="pay-button" amount="5" amount-type="AUD" address="bitcoincash:qpajl5cvn0fjsqs30xppuxs3uuhzfdj4ncrcfdukt3" success-field="success" success-msg="Thank you for donating!"><span>5 AUD</span></button>
+</td>
+<td>
+<button class="pay-button" amount="10" amount-type="AUD" address="bitcoincash:qpajl5cvn0fjsqs30xppuxs3uuhzfdj4ncrcfdukt3" success-field="success" success-msg="Thank you for donating!"><span>10 AUD</span></button>
+</td>
+</tr>
+<tr>
+<td>
+<button class="pay-button" amount="100" amount-type="JPY" address="bitcoincash:qpajl5cvn0fjsqs30xppuxs3uuhzfdj4ncrcfdukt3" success-field="success" success-msg="Thank you for donating!"><span>100 JPY</span></button>
+</td>
+<td>
+<button class="pay-button" amount="500" amount-type="JPY" address="bitcoincash:qpajl5cvn0fjsqs30xppuxs3uuhzfdj4ncrcfdukt3" success-field="success" success-msg="Thank you for donating!"><span>500 JPY</span></button>
+</td>
+<td>
+<button class="pay-button" amount="1000" amount-type="JPY" address="bitcoincash:qpajl5cvn0fjsqs30xppuxs3uuhzfdj4ncrcfdukt3" success-field="success" success-msg="Thank you for donating!"><span>1000 JPY</span></button>
+</td>
+</tr>
+<tr>
+<td>
+<button class="pay-button" amount="0.4" amount-type="BCH" address="bitcoincash:qpajl5cvn0fjsqs30xppuxs3uuhzfdj4ncrcfdukt3" success-field="success" success-msg="Thank you for donating!"><span>0.4 BCH</span></button>
+</td>
+<td>
+<button class="pay-button" amount="10000" amount-type="Satoshi" address="bitcoincash:qpajl5cvn0fjsqs30xppuxs3uuhzfdj4ncrcfdukt3" success-field="success" success-msg="Thank you for donating!"><span>10,000 Satoshi</span></button>
+</td>
+<td>
+<button class="pay-button" amount="100000" amount-type="Satoshi" address="bitcoincash:qpajl5cvn0fjsqs30xppuxs3uuhzfdj4ncrcfdukt3" success-field="success" success-msg="Thank you for donating!"><span>100,000 Satoshi</span></button>
+</td>
+</tr>
+<tr>
+<td id="result" class="content" colspan="3"></td>
+</tr>
 
-    </table>
+</table>
 
 </body>
 
