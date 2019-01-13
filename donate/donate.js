@@ -145,6 +145,7 @@ getBCHPrice (buttonAmount, amountType, toAddress, successField, successMsg, succ
 
 });
 }
+
 });
 
 var cssId = 'pbCSS';  // you could encode the css path itself to generate id..
