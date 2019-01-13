@@ -66,7 +66,6 @@ var fiatData = JSON.parse(fiatRequest.responseText);
 
 if (fiatData.price != "")
 {
-console.log(fiatData.price);
 
 // determine amount of satoshi based on button value
 var addDecimal = fiatData.price / 100;
