@@ -100,6 +100,9 @@ fiatRequest.send();
 // * end function query to obtain bch price
 
 
+document.addEventListener("DOMContentLoaded", function(){
+
+
 // pull in buttons found
 var payButton = document.body.getElementsByClassName("pay-button");
 for (var i = 0; i < payButton.length; i++)
@@ -142,6 +145,7 @@ getBCHPrice (buttonAmount, amountType, toAddress, successField, successMsg, succ
 
 });
 }
+});
 
 var cssId = 'pbCSS';  // you could encode the css path itself to generate id..
 if (!document.getElementById(cssId))
