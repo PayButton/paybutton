@@ -100,9 +100,6 @@ fiatRequest.send();
 // * end function query to obtain bch price
 
 
-
-
-
 // pull in buttons found
 var payButton = document.body.getElementsByClassName("pay-button");
 for (var i = 0; i < payButton.length; i++)
