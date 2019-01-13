@@ -52,7 +52,6 @@ alert("Please install BadgerWallet from https://badger.bitcoin.com to donate.\n\
 
 // * begin function query to obtain bch price
 function getBCHPrice (buttonAmount, amountType, toAddress, successField, successMsg, successCallback, bchAmount) {
-return new Promise((resolve, reject) => {
 
 document.getElementById("result").innerHTML = ("Converting " + buttonAmount + " " + amountType + " to satoshi");
 
@@ -71,6 +70,7 @@ if (fiatData.price != "")
 var addDecimal = fiatData.price / 100;
 bchAmount = (100000000 / addDecimal) * buttonAmount;
 
+// send bch tx data to badger
 sendToBadger(toAddress, successField, successMsg, successCallback, bchAmount);
 
 // format for site dialogue satoshi in 0.00000000 format
@@ -94,7 +94,6 @@ console.log("Could Not Connect To Server");
 
 fiatRequest.send();
 
-});
 }
 // * end function query to obtain bch price
 
@@ -132,8 +131,8 @@ bchAmount = buttonAmount;
 document.getElementById("result").innerHTML = (buttonAmount + " " + amountType + " = " + bchAmount/100000000 + " BCH");
 }
 
-// send bch tx data directly to badger
-sendToBadger (toAddress, successField, successMsg, successCallback, bchAmount);
+// send bch tx data to badger
+sendToBadger(toAddress, successField, successMsg, successCallback, bchAmount);
 
 } else {
 
