@@ -53,8 +53,6 @@ alert("Please install BadgerWallet from https://badger.bitcoin.com to donate.\n\
 // * begin function query to obtain bch price
 function getBCHPrice (buttonAmount, amountType, toAddress, successField, successMsg, successCallback, bchAmount) {
 
-document.getElementById("result").innerHTML = ("Converting " + buttonAmount + " " + amountType + " to satoshi");
-
 var fiatRequest = new XMLHttpRequest();
 fiatRequest.open('GET', 'https://index-api.bitcoin.com/api/v0/cash/price/' + amountType, true);
 
@@ -123,7 +121,6 @@ if (amountType == "BCH" || amountType == "Satoshi") {
 
 if (amountType == "BCH") {
 bchAmount = 100000000 * buttonAmount;
-document.getElementById("result").innerHTML = ("Converting " + buttonAmount + " " + amountType + " to Satoshi");
 }
 
 else if (amountType == "Satoshi") {
