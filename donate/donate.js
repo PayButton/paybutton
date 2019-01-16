@@ -73,7 +73,7 @@ sendToBadger(toAddress, successField, successMsg, successCallback, bchAmount);
 
 // format for site dialogue satoshi in 0.00000000 format
 var showSatoshi = bchAmount / 100000000;
-showSatoshi = showSatoshi.toPrecision(7);
+showSatoshi = showSatoshi.toFixed(8);
 
 document.getElementById("result").innerHTML = (buttonAmount + " " + amountType + " = " + showSatoshi + " BCH");
 
