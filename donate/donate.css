@@ -35,7 +35,7 @@ body {
 .pay-button > span,.pay-button:after {
 	background-size: 300%;
 	background-position: 100%;
-	transition: 1s, font-size 0.2s;
+	transition: .6s, font-size 0.2s;
 }
 .pay-button:hover > span,.pay-button:hover:after {
 	background-position: 0;
