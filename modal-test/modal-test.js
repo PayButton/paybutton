@@ -27,9 +27,10 @@ Based on jsqrencode | (C) 2010 tz@execpc.com | GPL v3 License
     var defaults = {
       autoOpen: false,
       className: 'fade-and-drop',
+      closeButton: true,
       content: "",
-      maxWidth: 270,
-      minWidth: 250,
+      maxWidth: 600,
+      minWidth: 280,
       overlay: true
     }
 
