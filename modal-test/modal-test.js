@@ -12,154 +12,161 @@ Based on jsqrencode | (C) 2010 tz@execpc.com | GPL v3 License
 // Create an immediately invoked functional expression to wrap our code
 (function() {
 
-  // Define our constructor 
-  this.Modal = function() {
+// Define our constructor 
+this.Modal = function() {
 
-    // Create global element references
-    this.closeButton = null;
-    this.modal = null;
-    this.overlay = null;
+// Create global element references
+this.closeButton = null;
+this.modal = null;
+this.overlay = null;
 
-    // Determine proper prefix
-    this.transitionEnd = transitionSelect();
+// Determine proper prefix
+this.transitionEnd = transitionSelect();
 
-    // Define option defaults 
-    var defaults = {
-      autoOpen: false,
-      className: 'fade-and-drop',
-      closeButton: true,
-      content: "",
-      maxWidth: 600,
-      minWidth: 280,
-      overlay: true
-    }
+// Define option defaults 
+var defaults = {
+autoOpen: false,
+className: 'fade-and-drop',
+content: "",
+maxWidth: 410,
+minWidth: 250,
+overlay: true
+}
 
-    // Create options by extending defaults with the passed in arugments
-    if (arguments[0] && typeof arguments[0] === "object") {
-      this.options = extendDefaults(defaults, arguments[0]);
-    }
+// Create options by extending defaults with the passed in arugments
+if (arguments[0] && typeof arguments[0] === "object") {
+this.options = extendDefaults(defaults, arguments[0]);
+}
 
-    if(this.options.autoOpen === true) this.open();
+if(this.options.autoOpen === true) this.open();
 
-  }
+}
 
-  // Public Methods
+// Public Methods
 
-  Modal.prototype.close = function() {
-    var _ = this;
-    this.modal.className = this.modal.className.replace(" paybutton-open", "");
-    this.overlay.className = this.overlay.className.replace(" paybutton-open",
-      "");
-    this.modal.addEventListener(this.transitionEnd, function() {
-      _.modal.parentNode.removeChild(_.modal);
-    });
-    this.overlay.addEventListener(this.transitionEnd, function() {
-      if(_.overlay.parentNode) _.overlay.parentNode.removeChild(_.overlay);
-    });
-  }
+Modal.prototype.close = function() {
+var _ = this;
+this.modal.className = this.modal.className.replace(" paybutton-open", "");
+this.overlay.className = this.overlay.className.replace(" paybutton-open",
+"");
+this.modal.addEventListener(this.transitionEnd, function() {
+_.modal.parentNode.removeChild(_.modal);
+});
+this.overlay.addEventListener(this.transitionEnd, function() {
+if(_.overlay.parentNode) _.overlay.parentNode.removeChild(_.overlay);
+});
+}
 
-  Modal.prototype.open = function() {
-    buildOut.call(this);
-    initializeEvents.call(this);
-    window.getComputedStyle(this.modal).height;
-    this.modal.className = this.modal.className +
-      (this.modal.offsetHeight > window.innerHeight ?
-        " paybutton-open paybutton-anchored" : " paybutton-open");
-    this.overlay.className = this.overlay.className + " paybutton-open";
-  }
+Modal.prototype.open = function() {
+buildOut.call(this);
+initializeEvents.call(this);
+window.getComputedStyle(this.modal).height;
+this.modal.className = this.modal.className +
+(this.modal.offsetHeight > window.innerHeight ?
+" paybutton-open paybutton-anchored" : " paybutton-open");
+this.overlay.className = this.overlay.className + " paybutton-open";
+}
 
-  // Private Methods
+// Private Methods
 
-  function buildOut() {
+function buildOut() {
 
-    var content, contentHolder, docFrag, resultHolder;
+var content, contentHolder, docFrag, resultHolder;
 
-    /*
-     * If content is an HTML string, append the HTML string.
-     * If content is a domNode, append its content.
-     */
+/*
+ * If content is an HTML string, append the HTML string.
+ * If content is a domNode, append its content.
+ */
 
-    if (typeof this.options.content === "string") {
-      content = this.options.content;
-    } else {
-      content = this.options.content.innerHTML;
-    }
+if (typeof this.options.content === "string") {
+content = this.options.content;
+} else {
+content = this.options.content.innerHTML;
+}
 
-    // Create a DocumentFragment to build with
-    docFrag = document.createDocumentFragment();
+// Create a DocumentFragment to build with
+docFrag = document.createDocumentFragment();
 
-    // Create modal element
-    this.modal = document.createElement("div");
-    this.modal.className = "paybutton-modal " + this.options.className;
-    this.modal.style.minWidth = this.options.minWidth + "px";
-    this.modal.style.maxWidth = this.options.maxWidth + "px";
-
-
-    // If overlay is true, add one
-    if (this.options.overlay === true) {
-      this.overlay = document.createElement("div");
-      this.overlay.className = "paybutton-overlay " + this.options.className;
-      docFrag.appendChild(this.overlay);
-    }
-
-    // Create content area and append to modal
-    contentHolder = document.createElement("div");
-    contentHolder.className = "paybutton-content";
-    contentHolder.innerHTML = content;
-    this.modal.appendChild(contentHolder);
-    
-    resultHolder = document.createElement("div");
-    resultHolder.className = "paybutton-content";
-    resultHolder.innerHTML = this.options.amountMessage;
-    this.modal.appendChild(resultHolder);
-   
-
-//    // Create content area and append to modal
-//    resultHolder = document.createElement("div");
-//    resultHolder.className = "paybutton-content";
-//    resultHolder.id = "result";
-//    resultHolder.innerHTML = this.options.amountMessage;
-//    this.modal.appendChild(resultHolder);
+// Create modal element
+this.modal = document.createElement("div");
+this.modal.className = "paybutton-modal " + this.options.className;
+this.modal.style.minWidth = this.options.minWidth + "px";
+this.modal.style.maxWidth = this.options.maxWidth + "px";
 
 
-    // Append modal to DocumentFragment
-    docFrag.appendChild(this.modal);
+// If overlay is true, add one
+if (this.options.overlay === true) {
+this.overlay = document.createElement("div");
+this.overlay.className = "paybutton-overlay " + this.options.className;
+docFrag.appendChild(this.overlay);
+}
 
-    // Append DocumentFragment to body
-    document.body.appendChild(docFrag);
+// Create content area and append to modal
+contentHolder = document.createElement("div");
+contentHolder.className = "paybutton-content";
+contentHolder.innerHTML = content;
+this.modal.appendChild(contentHolder);
 
-  }
+//resultHolder = document.createElement("div");
+//resultHolder.className = "paybutton-content";
+//resultHolder.innerHTML = this.options.amountMessage;
+//this.modal.appendChild(resultHolder);
+ 
 
-  function extendDefaults(source, properties) {
-    var property;
-    for (property in properties) {
-      if (properties.hasOwnProperty(property)) {
-        source[property] = properties[property];
-      }
-    }
-    return source;
-  }
+//// Create content area and append to modal
+//resultHolder = document.createElement("div");
+//resultHolder.className = "paybutton-content";
+//resultHolder.id = "result";
+//resultHolder.innerHTML = this.options.amountMessage;
+//this.modal.appendChild(resultHolder);
 
-  function initializeEvents() {
 
-    if (this.closeButton) {
-      this.closeButton.addEventListener('click', this.close.bind(this));
-    }
+// Append modal to DocumentFragment
+docFrag.appendChild(this.modal);
 
-    if (this.overlay) {
-      this.overlay.addEventListener('click', this.close.bind(this));
-    }
+// Append DocumentFragment to body
+document.body.appendChild(docFrag);
 
-  }
+}
+
+function extendDefaults(source, properties) {
+var property;
+for (property in properties) {
+if (properties.hasOwnProperty(property)) {
+source[property] = properties[property];
+}
+}
+return source;
+}
+
+function initializeEvents() {
+
+if (this.closeButton) {
+this.closeButton.addEventListener('click', this.close.bind(this));
+}
+
+if (this.overlay) {
+this.overlay.addEventListener('click', this.close.bind(this));
+}
+
+}
 
  function transitionSelect() {
-    var el = document.createElement("div");
-    if (el.style.WebkitTransition) return "webkitTransitionEnd";
-    if (el.style.OTransition) return "oTransitionEnd";
-    return 'transitionend';
-  }
+var el = document.createElement("div");
+if (el.style.WebkitTransition) return "webkitTransitionEnd";
+if (el.style.OTransition) return "oTransitionEnd";
+return 'transitionend';
+}
 
 }());
+
+
+
+
+
+
+
+
 
 
 
@@ -231,7 +238,7 @@ backgroundAlpha: 1,
 foregroundAlpha: 1,
 level: 'M', // Error correction level of the QR code (L, M, Q, H)
 mime: 'image/png', // MIME type used to render the image for the QR code
-size: 250, // Size of the QR code in pixels.
+size: 800, // Size of the QR code in pixels.
 padding: null // padding in pixels
 })
 
@@ -246,7 +253,7 @@ var pbContent =
 ' <div id="success"></div> ' +
 ' </div> ' +
 ' <div> ' +
-' <div><img src="'+qrdecoded+'"></div>' +
+' <div><img src="'+qrdecoded+'" height="400" width="400"></div>' +
 ' </div> ' +
 ' <div> ' +
 ' <div class="amountdiv"><span>'+amountMessage+'</span></div> ' +
@@ -338,8 +345,12 @@ this.innerHTML = ("<span>" + buttonText + "</span>");
 this.removeEventListener("mouseout", mouseout);
 }
 
+
+
 document.addEventListener("DOMContentLoaded", function(){
 
+
+// pull in buttons found
 var payButton = document.getElementsByClassName("pay-button");
 for (var i = 0; i < payButton.length; i++)
 {
@@ -402,7 +413,7 @@ getBCHPrice (buttonAmount, amountType, toAddress, successField, successMsg, succ
 });
 }
 
-
+//DOM listen
 });
 
 
