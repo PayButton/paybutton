@@ -114,12 +114,6 @@ body
 
 
 
-
-
-
-
-
-
 /* Modal Base CSS */
 .paybutton-overlay
 {
@@ -142,30 +136,17 @@ body
     background: rgba(0,0,0,.6);
 }
 
-.addressdiv {
-  word-wrap: break-word;
-  font-size: 14px;
-  margin: 0px 0px 0px 0px;
-  }
-  
- .amountdiv {
-  word-wrap: break-word;
-  font-size: 16px;
-  margin: 0px 0px 12px 0px;
-  }
-
 .paybutton-modal
 {
     position: absolute;
     z-index: 9999;
     top: 50%;
     left: 50%;
-    text-align: center;
+
     opacity: 0;
-    overflow: auto;
-    width: 100%;
-    padding: 10px 10px 15px 10px;
-    /*padding: 24px 20px;*/
+
+    width: 94%;
+    padding: 24px 20px;
 
     -webkit-transition: 1ms opacity ease;
        -moz-transition: 1ms opacity ease;
@@ -179,7 +160,7 @@ body
          -o-transform: translate(-50%, -50%);
             transform: translate(-50%, -50%);
 
-    border-radius: 6px;
+    border-radius: 2px;
     background: #fff;
 }
 
@@ -227,82 +208,88 @@ body
 {
     top: 50%;
 
-    -webkit-transition: 300ms top 300ms ease;
-       -moz-transition: 300ms top 300ms ease;
-        -ms-transition: 300ms top 300ms ease;
-         -o-transition: 300ms top 300ms ease;
-            transition: 300ms top 300ms ease;
+    -webkit-transition: 500ms top 500ms ease;
+       -moz-transition: 500ms top 500ms ease;
+        -ms-transition: 500ms top 500ms ease;
+         -o-transition: 500ms top 500ms ease;
+            transition: 500ms top 500ms ease;
 }
 
 .paybutton-modal.fade-and-drop.paybutton-open.paybutton-anchored
 {
 
-    -webkit-transition: 300ms top 300ms ease;
-       -moz-transition: 300ms top 300ms ease;
-        -ms-transition: 300ms top 300ms ease;
-         -o-transition: 300ms top 300ms ease;
-            transition: 300ms top 300ms ease;
+    -webkit-transition: 500ms top 500ms ease;
+       -moz-transition: 500ms top 500ms ease;
+        -ms-transition: 500ms top 500ms ease;
+         -o-transition: 500ms top 500ms ease;
+            transition: 500ms top 500ms ease;
 }
 
 .paybutton-overlay.fade-and-drop.paybutton-open
 {
     top: 0;
 
-    -webkit-transition: 300ms opacity ease;
-       -moz-transition: 300ms opacity ease;
-        -ms-transition: 300ms opacity ease;
-         -o-transition: 300ms opacity ease;
-            transition: 300ms opacity ease;
+    -webkit-transition: 500ms opacity ease;
+       -moz-transition: 500ms opacity ease;
+        -ms-transition: 500ms opacity ease;
+         -o-transition: 500ms opacity ease;
+            transition: 500ms opacity ease;
 
     opacity: 1;
 }
 
 .paybutton-modal.fade-and-drop
 {
-    -webkit-transition: 300ms top ease;
-       -moz-transition: 300ms top ease;
-        -ms-transition: 300ms top ease;
-         -o-transition: 300ms top ease;
-            transition: 300ms top ease;
+    -webkit-transition: 500ms top ease;
+       -moz-transition: 500ms top ease;
+        -ms-transition: 500ms top ease;
+         -o-transition: 500ms top ease;
+            transition: 500ms top ease;
 }
 
 .paybutton-overlay.fade-and-drop
 {
-    -webkit-transition: 300ms opacity 300ms ease;
-       -moz-transition: 300ms opacity 300ms ease;
-        -ms-transition: 300ms opacity 300ms ease;
-         -o-transition: 300ms opacity 300ms ease;
-            transition: 300ms opacity 300ms ease;
+    -webkit-transition: 500ms opacity 500ms ease;
+       -moz-transition: 500ms opacity 500ms ease;
+        -ms-transition: 500ms opacity 500ms ease;
+         -o-transition: 500ms opacity 500ms ease;
+            transition: 500ms opacity 500ms ease;
 }
 
-
-
-
-
-
-/* Close Button */
-.paybutton-close
+/* Demo Styles */
+html
 {
-    font-family: Helvetica,Arial,sans-serif;
-    font-size: 24px;
-    font-weight: 700;
-    line-height: 12px;
-
-    position: absolute;
-    top: 5px;
-    right: 5px;
-
-    padding: 5px 7px 7px;
-
-    cursor: pointer;
-
-    color: #fff;
-    border: 0;
-    outline: none;
-    background: #e74c3c;
+    box-sizing: border-box;
 }
 
-.paybutton-close:hover
+*
 {
-    background: #c0392b;
+    box-sizing: inherit;
 }
+
+#content
+{
+    display: none;
+}
+
+
+
+
+
+
+
+
+
+
+
+.addressdiv {
+  word-wrap: break-word;
+  font-size: 14px;
+  margin: 0px 0px 0px 0px;
+  }
+  
+ .amountdiv {
+  word-wrap: break-word;
+  font-size: 16px;
+  margin: 0px 0px 12px 0px;
+  }
