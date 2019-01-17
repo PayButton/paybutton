@@ -337,6 +337,7 @@ this.innerHTML = ("<span>" + buttonText + "</span>");
 this.removeEventListener("mouseout", mouseout);
 }
 
+document.addEventListener("DOMContentLoaded", function(){
 
 var payButton = document.getElementsByClassName("pay-button");
 for (var i = 0; i < payButton.length; i++)
@@ -401,7 +402,7 @@ getBCHPrice (buttonAmount, amountType, toAddress, successField, successMsg, succ
 }
 
 
-
+});
 
 
 var cssId = 'pbCSS';  // you could encode the css path itself to generate id..
