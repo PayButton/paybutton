@@ -28,8 +28,8 @@ var defaults = {
 autoOpen: false,
 className: 'fade-and-drop',
 content: "",
-maxWidth: 270,
-minWidth: 250,
+maxWidth: 260,
+minWidth: 252,
 overlay: true
 }
 
@@ -104,13 +104,14 @@ docFrag.appendChild(this.overlay);
 // Create content area and append to modal
 contentHolder = document.createElement("div");
 contentHolder.className = "paybutton-content";
+contentHolder.id = "paybutton-test";
 contentHolder.innerHTML = content;
 this.modal.appendChild(contentHolder);
 
-resultHolder = document.createElement("div");
-resultHolder.className = "paybutton-content";
-resultHolder.innerHTML = this.options.amountMessage;
-this.modal.appendChild(resultHolder);
+//resultHolder = document.createElement("div");
+//resultHolder.className = "paybutton-content";
+//resultHolder.innerHTML = this.options.amountMessage;
+//this.modal.appendChild(resultHolder);
  
 
 //// Create content area and append to modal
@@ -199,16 +200,42 @@ console.log("Error", err);
 console.log("Confirmed. Transaction ID:", res);
 
 
-
 // find success element, display tx success
-if (successField && successMsg) {
-var success = document.getElementById(successField);
-success.innerText = successMsg;
+//if (successField && successMsg) {
+//var success = document.getElementById(successField);
+//success.innerText = successMsg;
 
+var successFieldExists = document.getElementById(successField);
+
+if (!successMsg) {
+successMsg = "Transaction Successful!";
 }
 
+
+if (!successFieldExists) {
+var success = document.getElementById("paybutton-test");
+success.innerHTML =
+
+' <div> ' +
+' <div> ' +
+' <div> ' +
+' <div class="amountdiv"><span>'+successMsg+'</span></div> ' +
+' </div> ' +
+' <div> ' +
+' <div class="amountdiv"><span>View: </span><a href="https://explorer.bitcoin.com/bch/tx/'+res+'" target="_blank" style="color: orangeRed; text-decoration: none;">Transaction</a></div>' +
+' </div> ' +
+' </div> ' +
+' </div> ';
+
+} else {
+document.getElementById(successField).innerText = successMsg;
+}
+
+
+//}
+
 if (successCallback) {
-alert("hi");
+//alert("hi");
 window[successCallback](res);
 }
 
@@ -238,7 +265,7 @@ backgroundAlpha: 1,
 foregroundAlpha: 1,
 level: 'M', // Error correction level of the QR code (L, M, Q, H)
 mime: 'image/png', // MIME type used to render the image for the QR code
-size: 250, // Size of the QR code in pixels.
+size: 400, // Size of the QR code in pixels.
 padding: null // padding in pixels
 })
 
@@ -250,16 +277,13 @@ var pbContent =
 ' <div> ' +
 ' <div> ' +
 ' <div> ' +
-' <div id="success"></div> ' +
-' </div> ' +
-' <div> ' +
-' <div><img src="'+qrdecoded+'"></div>' +
+' <div><img src="'+qrdecoded+'" height="250" width="250"></div>' +
 ' </div> ' +
 ' <div> ' +
 ' <div class="amountdiv"><span>'+amountMessage+'</span></div> ' +
 ' </div> ' +
 ' <div> ' +
-' <div><a href="'+toAddress+'?amount='+bchAmount+'"><button class="pbmodal-button"><span>Send with BitcoinCash Wallet</span></button></a>' +
+' <div><a href="'+toAddress+'?amount='+bchAmount+'"><button class="pbmodal-button"><span>Send with BitcoinCash Wallet</span></button></a></div>' +
 ' </div> ' +
 ' <div> ' +
 ' <div><button class = "pbmodal-button" onclick="sendToBadger(\''+toAddress+'\', \''+bchAmount+'\', \''+successField+'\', \''+successMsg+'\', \''+successCallback+'\')"><span>Send with Badger Wallet</span></button></div> '+
