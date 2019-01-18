@@ -27,6 +27,8 @@
 	<!--web font-->
 	<link href="//fonts.googleapis.com/css?family=Hind:300,400,500,600,700&amp;subset=devanagari,latin-ext" rel="stylesheet">
 	<!--//web font-->
+	<script type="text/javascript" src="https://paybutton.cash/modal-test/modal-test.js"></script>
+
 
 </head>
 
@@ -37,40 +39,20 @@
 
 <!-- header -->
 <header>
-	<div class="container">
-		<div class="header d-lg-flex justify-content-between align-items-center">
-			<div class="header-agile">
-				<h1>
-					<a class="navbar-brand logo" href="index.html">
-						<span class="fa fa-google-wallet" aria-hidden="true"></span> Wave Ride 
-					</a>
-				</h1>
-			</div>
-			<div class="nav_w3ls">
-				<nav>
-					<label for="drop" class="toggle mt-lg-0 mt-1"><span class="fa fa-bars" aria-hidden="true"></span></label>
-					<input type="checkbox" id="drop" />
-						<ul class="menu">
-							<li class="mr-lg-3 mr-2 active"><a href="index.html">Home</a></li>
-							<li class="mr-lg-3 mr-2"><a href="about.html">About </a></li>
-							<li class="mr-lg-3 mr-2"><a href="services.html">Services</a></li>
-							<li class="mr-lg-3 mr-2"><a href="blog.html">Blog</a></li>
-							<li class="mr-lg-3 mr-2 p-0">
-							<!-- First Tier Drop Down -->
-							<label for="drop-2" class="toggle">Dropdown <span class="fa fa-angle-down" aria-hidden="true"></span> </label>
-							<a href="#">Dropdown <span class="fa fa-angle-down" aria-hidden="true"></span></a>
-							<input type="checkbox" id="drop-2"/>
-							<ul class="inner-dropdown">
-								<li><a href="about.html">About Page</a></li>
-								<li><a href="services.html">Services Page</a></li>
-							</ul>
-							</li>
-							<li><a href="contact.html">Contact</a></li>
-						</ul>
-				</nav>
-			</div>
+	<div>
+<button
+class="pay-button"
+button-text="Donate 1 Penny"
+button-text-2=""
+amount="0.01"
+amount-type="USD"
+address="bitcoincash:qpajl5cvn0fjsqs30xppuxs3uuhzfdj4ncrcfdukt3"
+success-field="success"
+success-msg="Success! Thank You!"
+success-callback="woot"
+>
+</button>
 
-		</div>
 	</div>
 </header>
 <!-- //header -->
