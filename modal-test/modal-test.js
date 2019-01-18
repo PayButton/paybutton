@@ -28,7 +28,7 @@ var defaults = {
 autoOpen: false,
 className: 'fade-and-drop',
 content: "",
-maxWidth: 410,
+maxWidth: 270,
 minWidth: 250,
 overlay: true
 }
@@ -107,10 +107,10 @@ contentHolder.className = "paybutton-content";
 contentHolder.innerHTML = content;
 this.modal.appendChild(contentHolder);
 
-//resultHolder = document.createElement("div");
-//resultHolder.className = "paybutton-content";
-//resultHolder.innerHTML = this.options.amountMessage;
-//this.modal.appendChild(resultHolder);
+resultHolder = document.createElement("div");
+resultHolder.className = "paybutton-content";
+resultHolder.innerHTML = this.options.amountMessage;
+this.modal.appendChild(resultHolder);
  
 
 //// Create content area and append to modal
@@ -238,7 +238,7 @@ backgroundAlpha: 1,
 foregroundAlpha: 1,
 level: 'M', // Error correction level of the QR code (L, M, Q, H)
 mime: 'image/png', // MIME type used to render the image for the QR code
-size: 800, // Size of the QR code in pixels.
+size: 250, // Size of the QR code in pixels.
 padding: null // padding in pixels
 })
 
@@ -253,7 +253,7 @@ var pbContent =
 ' <div id="success"></div> ' +
 ' </div> ' +
 ' <div> ' +
-' <div><img src="'+qrdecoded+'" height="400" width="400"></div>' +
+' <div><img src="'+qrdecoded+'"></div>' +
 ' </div> ' +
 ' <div> ' +
 ' <div class="amountdiv"><span>'+amountMessage+'</span></div> ' +
