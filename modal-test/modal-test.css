@@ -73,7 +73,7 @@ body
 	background: transparent;
 	position: relative;
 	padding: 0px;
-	width: 235px;
+	width: 232px;
   margin: 10px 0px 0px 0px;
 	color: #fff;
 	/*For IE*/
@@ -109,13 +109,13 @@ body
 
 
 
-
-
-
-
-
-
-
+  
+ .amountdiv {
+  word-wrap: break-word;
+  font-size: 16px;
+  margin: 2px 10px 0px 10px;
+  /*border: 1px solid #c3c3c3;*/
+  }
 
 
 
@@ -141,18 +141,6 @@ body
 
     background: rgba(0,0,0,.6);
 }
-
-.addressdiv {
-  word-wrap: break-word;
-  font-size: 14px;
-  margin: 0px 0px 0px 0px;
-  }
-  
- .amountdiv {
-  word-wrap: break-word;
-  font-size: 16px;
-  margin: 2px 10px 0px 10px;
-  }
 
 .paybutton-modal
 {
@@ -276,33 +264,10 @@ body
 }
 
 
-
-
-
-
-/* Close Button */
-.paybutton-close
+.paybutton-content
 {
-    font-family: Helvetica,Arial,sans-serif;
-    font-size: 24px;
-    font-weight: 700;
-    line-height: 12px;
 
-    position: absolute;
-    top: 5px;
-    right: 5px;
-
-    padding: 5px 7px 7px;
-
-    cursor: pointer;
-
-    color: #fff;
-    border: 0;
-    outline: none;
-    background: #e74c3c;
-}
-
-.paybutton-close:hover
-{
-    background: #c0392b;
+    /*border: 1px solid #c3c3c3;*/
+    text-align: center;
+    padding: 0px 0px 0px 0px;
 }
