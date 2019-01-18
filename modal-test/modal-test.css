@@ -1,18 +1,27 @@
+body
+{
+    font-family: Helvetica,Arial,san-serif;
+    font-size: 16px;
+
+    margin: 0;
+    padding: 0;
+}
+
+
 .pay-button {
-  font-family: Helvetica, Arial, sans-serif;
-  font-size: 15px;
 	border-radius: 4px;
 	cursor: pointer;
 	border: 2px solid orangeRed;
 	background: transparent;
 	position: relative;
 	padding: 0px;
-	min-width: 170px;
+	min-width: 150px;
   margin: 5px;
 	color: #fff;
 	/*For IE*/
 
 }
+
 
 .pay-button > span {
   display: inline-block;
@@ -34,11 +43,14 @@
 	z-index: -2;
 }
 
+
+
 .pay-button > span,.pay-button:after {
 	background-size: 300%;
 	background-position: 100%;
 	transition: .6s, font-size .2s;
 }
+
 
 .pay-button:hover > span,.pay-button:hover:after {
 	background-position: 0;
@@ -55,15 +67,13 @@
 
 
 .pbmodal-button {
-  font-family: Helvetica, Arial, sans-serif;
-  font-size: 22px;
 	border-radius: 4px;
 	cursor: pointer;
 	border: 2px solid orangeRed;
 	background: transparent;
 	position: relative;
 	padding: 0px;
-	width: 390px;
+	width: 235px;
   margin: 10px 0px 0px 0px;
 	color: #fff;
 	/*For IE*/
@@ -92,7 +102,7 @@
 }
 .pbmodal-button:hover > span,.pbmodal-button:hover:after {
 	background-position: 0;
-	font-size: 1.1em;
+	font-size: 1.08em;
 	color: orangeRed;
 	/*For IE*/
 }
@@ -101,13 +111,6 @@
 
 
 
-  
- .amountdiv {
-  font-size: 22px;
-  word-wrap: break-word;
-  margin: 2px 10px 0px 10px;
-  /*border: 1px solid #c3c3c3;*/
-  }
 
 
 
@@ -139,17 +142,29 @@
     background: rgba(0,0,0,.6);
 }
 
+.addressdiv {
+  word-wrap: break-word;
+  font-size: 14px;
+  margin: 0px 0px 0px 0px;
+  }
+  
+ .amountdiv {
+  word-wrap: break-word;
+  font-size: 16px;
+  margin: 2px 10px 0px 10px;
+  }
+
 .paybutton-modal
 {
-    font-family: Helvetica, Arial, sans-serif;
     position: absolute;
     z-index: 9999;
     top: 50%;
     left: 50%;
+    text-align: center;
     opacity: 0;
     overflow: auto;
     width: 100%;
-    padding: 15px 15px 20px 15px;
+    padding: 10px 10px 15px 10px;
     /*padding: 24px 20px;*/
 
     -webkit-transition: 1ms opacity ease;
@@ -263,10 +278,31 @@
 
 
 
-.paybutton-content
-{
 
-    /*border: 1px solid #c3c3c3;*/
-    text-align: center;
-    margin: 0px 0px 0px 0px;
+
+/* Close Button */
+.paybutton-close
+{
+    font-family: Helvetica,Arial,sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 12px;
+
+    position: absolute;
+    top: 5px;
+    right: 5px;
+
+    padding: 5px 7px 7px;
+
+    cursor: pointer;
+
+    color: #fff;
+    border: 0;
+    outline: none;
+    background: #e74c3c;
+}
+
+.paybutton-close:hover
+{
+    background: #c0392b;
 }
