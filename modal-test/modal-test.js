@@ -17,7 +17,7 @@ var defaults = {
 autoOpen: false,
 className: 'fade-and-drop',
 content: "",
-maxWidth: 260,
+maxWidth: 262,
 minWidth: 262,
 overlay: true
 }
