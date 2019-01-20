@@ -18,13 +18,14 @@ padding: 0px;
 min-width: 160px;
 margin: 5px;
 color: #fff;
+z-index: 1;
 /*For IE*/
 
 }
 
 .pay-button > span {
 display: inline-block;
-padding: 8px 16px;
+padding: 8px 12px;
 position: relative;
 background: linear-gradient(45deg, #fff 50%, orangeRed 50%);
 -webkit-background-clip: text;
@@ -40,7 +41,7 @@ bottom: 0;
 left: 0;
 right: 0;
 background: linear-gradient(45deg, orangeRed 50%, transparent 50%);
-z-index: -2;
+z-index: -5;
 }
 
 .pay-button > span,.pay-button:after {
@@ -72,7 +73,7 @@ font-size: 1em;
 }
 .pbmodal-button > span {
 display: inline-block;
-padding: 8px 16px;
+padding: 8px 12px;
 background: linear-gradient(45deg, #fff 50%, orangeRed 50%);
 -webkit-background-clip: text;
 -webkit-text-fill-color: transparent;
@@ -94,7 +95,7 @@ transition: .6s, font-size .2s;
 }
 .pbmodal-button:hover > span,.pbmodal-button:hover:after {
 background-position: 0;
-font-size: 1.08em;
+font-size: 1.1em;
 color: orangeRed;
 /*For IE*/
 }
@@ -107,10 +108,31 @@ margin: 10px 10px 0px 10px;
 /*border: 1px solid #c3c3c3;*/
 }
 
-.qrdiv {
-margin: 5px 0px 0px 0px;
-/*border: 1px solid #c3c3c3;*/
+
+.qrparent {
+	
+  position: relative;
+  top: 0;
+  left: 0;
 }
+.qrcode {
+  position: relative;
+  top: 0;
+  left: 0;
+	border: 2px solid #000;
+}
+.qricon {
+    position: absolute;
+		top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    display: block;
+    margin: auto;
+		}
+
+
 
 
 /* Modal Base CSS */
@@ -143,7 +165,7 @@ text-align: center;
 opacity: 0;
 overflow: auto;
 width: 100%;
-padding: 15px 15px 20px 15px;
+padding: 20px 15px 20px 15px;
 /*padding: 24px 20px;*/
 
 -webkit-transition: 1ms opacity ease;
@@ -163,8 +185,9 @@ background: #fff;
 }
 
 .paybutton-content {
-border: 1px solid #c3c3c3;
-text-align: center;
+/*border: 1px solid #c3c3c3;*/
+	vertical-align:middle;
+	text-align:center;
 padding: 0px 0px 0px 0px;
 }
 
