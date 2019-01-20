@@ -154,12 +154,6 @@ return 'transitionend';
 
 
 
-
-document.addEventListener("DOMContentLoaded", function(){
-
-
-
-
 // * begin function detect and send data to badger wallet
 function sendToBadger (toAddress, bchAmount, successField, successMsg, successCallback, amountMessage) {
 
@@ -284,7 +278,7 @@ var pbContent =
 ' <div><a href="'+toAddress+'?amount='+bchAmount+'"><button class="pbmodal-button"><span>Send with BitcoinCash Wallet</span></button></a></div>' +
 ' </div> ' +
 ' <div> ' +
-' <div><button class = "pbmodal-button" onclick="sendToBadger(\''+toAddress+'\', \''+bchAmount+'\', \''+successField+'\', \''+successMsg+'\', \''+successCallback+'\')"><span>Send with Badger Wallet</span></button></div> '+
+' <div><button class = "pbmodal-button" onclick="sendToBadger(\''+toAddress+'\', \''+bchAmount+'\', \''+successField+'\', \''+successMsg+'\', \''+successCallback+'\')"><span>Send with Badger Wallet</span></button></div> ' +
 ' </div> ' +
 ' </div> ' +
 ' </div> ';
@@ -375,7 +369,7 @@ this.removeEventListener("mouseout", mouseout);
 }
 
 
-//document.addEventListener("DOMContentLoaded", function(){
+document.addEventListener("DOMContentLoaded", function(){
 
 // pull in buttons found
 var payButton = document.getElementsByClassName("pay-button");
