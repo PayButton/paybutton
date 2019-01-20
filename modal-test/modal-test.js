@@ -371,7 +371,7 @@ buttonText = "PayButton";
 }
 }
 this.innerHTML = ("<span>" + buttonText + "</span>");
-this.removeEventListener("mouseout", mouseout);
+//this.removeEventListener("mouseout", mouseout);
 }
 
 
