@@ -17,8 +17,8 @@ var defaults = {
 autoOpen: false,
 className: 'fade-and-drop',
 content: "",
-maxWidth: 262,
-minWidth: 262,
+maxWidth: 270,
+minWidth: 264,
 overlay: true
 }
 
@@ -241,46 +241,45 @@ function openModal (toAddress, bchAmount, successField, successMsg, successCallb
 // qr code generation
 var qrData = toAddress + "?amount=" + bchAmount;
 var qrParams = {
-ecclevel: "M",
+ecclevel: "H",
 fillcolor: "#FFFFFF",
 textcolor: "#000000",
 margin: " ",
 modulesize: 8
 };
 
-if (document.implementation.hasFeature("http://www.w3.org/2000/svg","1.1")) {
-genQR = QRCode.generateSVG(qrData, qrParams);
-var XMLS = new XMLSerializer();
-genQR = XMLS.serializeToString(genQR);
-genQR = "data:image/svg+xml;base64," + window.btoa(unescape(encodeURIComponent(genQR)));
-qrImage = genQR;
+//if (document.implementation.hasFeature("http://www.w3.org/2000/svg","1.1")) {
+//genQR = QRCode.generateSVG(qrData, qrParams);
+//var XMLS = new XMLSerializer();
+//genQR = XMLS.serializeToString(genQR);
+//genQR = "data:image/svg+xml;base64," + window.btoa(unescape(encodeURIComponent(genQR)));
+//qrImage = genQR;
 	
-} else {
+//} else {
 genQR = QRCode.generatePNG(qrData, qrParams);
 qrImage = genQR;
-}
+//}
 
 var pbContent =
 
-' <div> ' +
-' <div> ' +
-//' <div> ' +
-//' <div><img src="'+qrdecoded+'" height="250" width="250"></div>' +
-//' </div> ' +
-' <div> ' +
-' <div class="qrdiv"><img src="'+qrImage+'" height="260" width="260"></div>' +
-' </div> ' +
-' <div> ' +
-' <div class="amountdiv"><span>'+amountMessage+'</span></div> ' +
-' </div> ' +
-' <div> ' +
-' <div><a href="'+toAddress+'?amount='+bchAmount+'"><button class="pbmodal-button"><span>Send with BitcoinCash Wallet</span></button></a></div>' +
-' </div> ' +
-' <div> ' +
-' <div><button class = "pbmodal-button" onclick="sendToBadger(\''+toAddress+'\', \''+bchAmount+'\', \''+successField+'\', \''+successMsg+'\', \''+successCallback+'\')"><span>Send with Badger Wallet</span></button></div> ' +
-' </div> ' +
-' </div> ' +
-' </div> ';
+'<div>' +
+'<div>' +
+'<div>' +
+'<div class="qrparent">' +
+'<img class="qrcode" src="'+qrImage+'"  width="258" />' +
+'<img class="qricon" src="https://i.imgur.com/fpxx8mp.png" width="80" />' +
+'</div>' +
+'<div>' +
+'<div class="amountdiv"><span>'+amountMessage+'</span></div> ' +
+'</div>' +
+'<div>' +
+'<div><a href="'+toAddress+'?amount='+bchAmount+'"><button class="pbmodal-button"><span>Send with BitcoinCash Wallet</span></button></a></div>' +
+'</div>' +
+'<div>' +
+'<div><button class = "pbmodal-button" onclick="sendToBadger(\''+toAddress+'\', \''+bchAmount+'\', \''+successField+'\', \''+successMsg+'\', \''+successCallback+'\')"><span>Send with Badger Wallet</span></button></div> ' +
+'</div>' +
+'</div>' +
+'</div>';
 
 
 var pbModal = new Modal({
