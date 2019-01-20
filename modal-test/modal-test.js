@@ -1,3 +1,5 @@
+
+
 // Create an immediately invoked functional expression to wrap our code
 (function() {
 
@@ -152,8 +154,6 @@ return 'transitionend';
 
 
 
-
-
 // * begin function detect and send data to badger wallet
 function sendToBadger (toAddress, bchAmount, successField, successMsg, successCallback, amountMessage) {
 
@@ -235,6 +235,9 @@ alert("Please install BadgerWallet from https://badger.bitcoin.com to donate.\n\
 
 }
 // * end function detect and send data to badger wallet
+
+
+document.addEventListener("DOMContentLoaded", function(){
 
 
 function openModal (toAddress, bchAmount, successField, successMsg, successCallback, amountMessage) {
@@ -369,8 +372,6 @@ this.removeEventListener("mouseout", mouseout);
 }
 
 
-document.addEventListener("DOMContentLoaded", function(){
-
 // pull in buttons found
 var payButton = document.getElementsByClassName("pay-button");
 
@@ -387,7 +388,7 @@ buttonText = "PayButton";
 }
 
 payButtons.innerHTML = "<span>"+buttonText+"</span>";
-//payButtons.addEventListener("mouseover", mouseover);
+payButtons.addEventListener("mouseover", mouseover);
 
 
 // pull in attribute info from button when clicked
