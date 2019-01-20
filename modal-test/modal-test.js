@@ -348,8 +348,9 @@ buttonText = "Needs Setup!";
 }
 }
 this.innerHTML = ("<span>"+buttonText+"</span>");
-this.addEventListener("mouseout", mouseOut);
-if ('ontouchend' in window)this.addEventListener('touchstart', mouseOut, false);
+//this.addEventListener("mouseout", mouseOut);
+if (!('ontouchend' in window))this.addEventListener('mouseout', mouseOut, false);
+if ('ontouchend' in window)this.addEventListener('touchend', mouseOut, false);
 }
 
 
@@ -388,8 +389,8 @@ buttonText = "PayButton";
 
 payButtons.innerHTML = "<span>"+buttonText+"</span>";
 //payButtons.addEventListener("mouseover", mouseOver, false);
-if ('ontouchstart' in window)payButtons.addEventListener('touchstart', mouseOver, false);
 if (!('ontouchstart' in window))payButtons.addEventListener('mouseover', mouseOver, false);
+if ('ontouchstart' in window)payButtons.addEventListener('touchstart', mouseOver, false);
 
 
 
