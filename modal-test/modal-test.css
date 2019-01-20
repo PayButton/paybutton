@@ -25,7 +25,7 @@ z-index: 1;
 
 .pay-button > span {
 display: inline-block;
-padding: 8px 12px;
+padding: 8px 10px;
 position: relative;
 background: linear-gradient(45deg, #fff 50%, orangeRed 50%);
 -webkit-background-clip: text;
@@ -73,7 +73,7 @@ font-size: 1em;
 }
 .pbmodal-button > span {
 display: inline-block;
-padding: 8px 12px;
+padding: 8px 10px;
 background: linear-gradient(45deg, #fff 50%, orangeRed 50%);
 -webkit-background-clip: text;
 -webkit-text-fill-color: transparent;
