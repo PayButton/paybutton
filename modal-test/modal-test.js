@@ -337,7 +337,7 @@ fiatRequest.send();
 
 
 // insert info into button on hover
-function mouseEnter() {
+function mouseOn() {
 buttonText = this.getAttribute("button-text-2");
 if (!buttonText){
 showAmount = this.getAttribute('amount');
@@ -348,13 +348,13 @@ buttonText = "Needs Setup!";
 }
 }
 this.innerHTML = ("<span>"+buttonText+"</span>");
-this.addEventListener("mouseleave", mouseLeave);
-
+this.addEventListener("mouseout", mouseOut);
+if ('ontouchend' in window)payButtons.addEventListener('touchend, mouseOut, false);
 }
 
 
 // insert info into button on mouseout
-function mouseLeave() {
+function mouseOut() {
 buttonText = this.getAttribute("button-text");
 if (!buttonText){
 showAmount = this.getAttribute('amount');
@@ -387,12 +387,10 @@ buttonText = "PayButton";
 }
 
 payButtons.innerHTML = "<span>"+buttonText+"</span>";
-payButtons.addEventListener("mouseenter", mouseEnter);
+//payButtons.addEventListener("mouseenter", mouseEnter);
 
-payButtons.addEventListener('touchstart', () => {});
-payButtons.addEventListener('touchend', () => {});
-payButtons.addEventListener('touchcancel', () => {});
-payButtons.addEventListener('touchmove', () => {});
+if ('ontouchstart' in window)payButtons.addEventListener('touchstart, mouseOver, false);
+if (!('ontouchstart' in window))payButtons.addEventListener('mouseover', mouseOver, false);
 
 
 
