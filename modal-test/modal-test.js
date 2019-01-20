@@ -349,7 +349,7 @@ buttonText = "Needs Setup!";
 }
 this.innerHTML = ("<span>"+buttonText+"</span>");
 if (!('ontouchend' in window))this.addEventListener('mouseout', mouseOut, false);
-if ('ontouchend' in window)this.addEventListener('touchend', mouseOut, false);
+if ('ontouchend' in window)this.addEventListener('touchstart', mouseOut, false);
 }
 
 
