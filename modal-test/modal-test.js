@@ -371,7 +371,7 @@ buttonText = "PayButton";
 }
 }
 this.innerHTML = ("<span>" + buttonText + "</span>");
-//this.removeEventListener("mouseout", mouseout);
+this.removeEventListener("mouseout", mouseout);
 }
 
 
@@ -393,7 +393,7 @@ buttonText = "PayButton";
 }
 
 payButtons.innerHTML = "<span>"+buttonText+"</span>";
-payButtons.addEventListener("mouseover", mouseover);
+//payButtons.addEventListener("mouseover", mouseover);
 
 
 // pull in attribute info from button when clicked
