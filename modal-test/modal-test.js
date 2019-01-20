@@ -155,7 +155,7 @@ return 'transitionend';
 
 
 
-
+document.addEventListener("DOMContentLoaded", function(){
 
 
 
@@ -375,7 +375,7 @@ this.removeEventListener("mouseout", mouseout);
 }
 
 
-document.addEventListener("DOMContentLoaded", function(){
+//document.addEventListener("DOMContentLoaded", function(){
 
 // pull in buttons found
 var payButton = document.getElementsByClassName("pay-button");
