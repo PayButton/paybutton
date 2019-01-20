@@ -348,24 +348,24 @@ buttonText = "Needs Setup!";
 }
 }
 this.innerHTML = ("<span>"+buttonText+"</span>");
-//this.addEventListener("mouseleave", mouseLeave);
+this.addEventListener("mouseleave", mouseLeave);
+
 }
 
 
 // insert info into button on mouseout
-//function mouseLeave() {
-//buttonText = this.getAttribute("button-text");
-//if (!buttonText){
-//showAmount = this.getAttribute('amount');
-//showType = this.getAttribute('amount-type');
-//buttonText = "Tip Button";
-//if (isNaN(showAmount) || !showType) {
-//buttonText = "PayButton";
-//}
-//}
-//this.innerHTML = ("<span>" + buttonText + "</span>");
-//this.removeEventListener("mouseleave", mouseLeave);
-//}
+function mouseLeave() {
+buttonText = this.getAttribute("button-text");
+if (!buttonText){
+showAmount = this.getAttribute('amount');
+showType = this.getAttribute('amount-type');
+buttonText = "Tip Button";
+if (isNaN(showAmount) || !showType) {
+buttonText = "PayButton";
+}
+}
+this.innerHTML = ("<span>" + buttonText + "</span>");
+}
 
 
 document.addEventListener("DOMContentLoaded", function(){
@@ -388,6 +388,12 @@ buttonText = "PayButton";
 
 payButtons.innerHTML = "<span>"+buttonText+"</span>";
 payButtons.addEventListener("mouseenter", mouseEnter);
+
+payButtons.addEventListener('touchstart', () => {});
+payButtons.addEventListener('touchend', () => {});
+payButtons.addEventListener('touchcancel', () => {});
+payButtons.addEventListener('touchmove', () => {});
+
 
 
 // pull in attribute info from button when clicked
