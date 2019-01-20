@@ -388,7 +388,7 @@ buttonText = "PayButton";
 
 payButtons.innerHTML = "<span>"+buttonText+"</span>";
 //payButtons.addEventListener("mouseover", mouseOver, false);
-if ('ontouchstart' in window)payButtons.addEventListener('touchend', mouseOver, false);
+if ('ontouchstart' in window)payButtons.addEventListener('touchstart', mouseOver, false);
 if (!('ontouchstart' in window))payButtons.addEventListener('mouseover', mouseOver, false);
 
 
