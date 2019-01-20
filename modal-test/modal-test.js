@@ -350,7 +350,7 @@ buttonText = "Needs Setup!";
 this.innerHTML = ("<span>"+buttonText+"</span>");
 //this.addEventListener("mouseout", mouseOut);
 if (!('ontouchend' in window))this.addEventListener('mouseout', mouseOut, false);
-if ('ontouchend' in window)this.addEventListener('touchstart', mouseOut, false);
+if ('ontouchstart' in window)this.addEventListener('touchstart', mouseOut, false);
 }
 
 
