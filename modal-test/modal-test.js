@@ -1,5 +1,3 @@
-
-
 // Create an immediately invoked functional expression to wrap our code
 (function() {
 
@@ -237,8 +235,6 @@ alert("Please install BadgerWallet from https://badger.bitcoin.com to donate.\n\
 // * end function detect and send data to badger wallet
 
 
-document.addEventListener("DOMContentLoaded", function(){
-
 
 function openModal (toAddress, bchAmount, successField, successMsg, successCallback, amountMessage) {
 
@@ -341,7 +337,7 @@ fiatRequest.send();
 
 
 // insert info into button on hover
-function mouseover() {
+function mouseEnter() {
 buttonText = this.getAttribute("button-text-2");
 if (!buttonText){
 showAmount = this.getAttribute('amount');
@@ -352,12 +348,12 @@ buttonText = "Needs Setup!";
 }
 }
 this.innerHTML = ("<span>"+buttonText+"</span>");
-this.addEventListener("mouseout", mouseout);
+this.addEventListener("mouseleave", mouseLeave);
 }
 
 
 // insert info into button on mouseout
-function mouseout() {
+function mouseLeave() {
 buttonText = this.getAttribute("button-text");
 if (!buttonText){
 showAmount = this.getAttribute('amount');
@@ -368,8 +364,11 @@ buttonText = "PayButton";
 }
 }
 this.innerHTML = ("<span>" + buttonText + "</span>");
-this.removeEventListener("mouseout", mouseout);
+this.removeEventListener("mouseleave", mouseLeave);
 }
+
+
+document.addEventListener("DOMContentLoaded", function(){
 
 
 // pull in buttons found
@@ -388,7 +387,7 @@ buttonText = "PayButton";
 }
 
 payButtons.innerHTML = "<span>"+buttonText+"</span>";
-payButtons.addEventListener("mouseover", mouseover);
+payButtons.addEventListener("mouseenter", mouseEnter);
 
 
 // pull in attribute info from button when clicked
