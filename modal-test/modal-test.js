@@ -348,8 +348,8 @@ buttonText = "Needs Setup!";
 }
 }
 this.innerHTML = ("<span>"+buttonText+"</span>");
-//if (!('ontouchend' in window))this.addEventListener('mouseout', mouseOut, false);
-if ('ontouchend' in window)this.addEventListener('touchsend', mouseOut, false);
+if (!('ontouchend' in window))this.addEventListener('mouseout', mouseOut, false);
+if ('ontouchend' in window)this.addEventListener('touchend', mouseOut, false);
 }
 
 
@@ -380,12 +380,14 @@ var payButtons = payButton[i];
 var buttonText = payButtons.getAttribute("button-text");
 
 if (!buttonText){
+buttonText = "Tip Button";
+if (isNaN(payButtons.getAttribute("amount")) || !payButtons.getAttribute("amount-type")) {
 buttonText = "PayButton";
+}
 }
 
 payButtons.innerHTML = "<span>"+buttonText+"</span>";
-
-//if (!('ontouchstart' in window))payButtons.addEventListener('mouseover', mouseOver, false);
+if (!('ontouchstart' in window))payButtons.addEventListener('mouseover', mouseOver, false);
 if ('ontouchstart' in window)payButtons.addEventListener('touchstart', mouseOver, false);
 
 
