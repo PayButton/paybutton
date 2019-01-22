@@ -354,8 +354,7 @@ fiatRequest.send();
 
 // insert info into button on mouseover
 function mouseOver() {
-buttonText2 = this.getAttribute("button-text-2") || "";
-buttonText2 = buttonText2.trim().toUpperCase();
+buttonText2 = this.getAttribute("button-text-2") || ""; buttonText2 = buttonText2.trim();
 if (!buttonText2){
 showAmount = this.getAttribute('amount') || ""; showAmount = Number(showAmount.trim());
 showType = this.getAttribute('amount-type') || ""; showType = showType.trim().toUpperCase();
@@ -372,7 +371,7 @@ if ('ontouchend' in window)this.addEventListener('touchend', mouseOut, false);
 
 // insert info into button on mouseout
 function mouseOut() {
-buttonText = this.getAttribute("button-text") || ""; buttonText = buttonText.trim().toUpperCase();
+buttonText = this.getAttribute("button-text") || ""; buttonText = buttonText.trim();
 if (!buttonText){
 showAmount = this.getAttribute('amount') || ""; showAmount = Number(showAmount.trim());
 showType = this.getAttribute('amount-type') || ""; showType = showType.trim().toUpperCase();
