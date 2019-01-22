@@ -293,7 +293,7 @@ var pbContent =
 '<div><a href="'+URI+'"><button class="pbmodal-button"><span>Send with BitcoinCash Wallet</span></button></a></div>' +
 '</div>' +
 '<div>' +
-'<div><button class = "pbmodal-button" onclick="sendToBadger(\''+toAddress+'\', \''+bchAmount+'\', \''+successField+'\', \''+successMsg+'\', \''+successCallback+'\')"><span>Send with Badger Wallet</span></button></div> ' +
+'<div><button class = "pbmodal-button" onclick="sendToBadger(\''+URI+'\', \''+successField+'\', \''+successMsg+'\', \''+successCallback+'\')"><span>Send with Badger Wallet</span></button></div> ' +
 '</div>' +
 '</div>' +
 '</div>';
