@@ -60,7 +60,7 @@ this.overlay.className = this.overlay.className + " paybutton-open";
 
 function buildOut() {
 
-var content, contentHolder, docFrag, resultHolder;
+var content, contentHolder, docFrag, resultHolder, inp;
 
 /*
  * If content is an HTML string, append the HTML string.
@@ -96,6 +96,7 @@ contentHolder.className = "paybutton-content";
 contentHolder.id = "modal-content";
 contentHolder.innerHTML = content;
 this.modal.appendChild(contentHolder);
+
 
 //resultHolder = document.createElement("div");
 //resultHolder.className = "paybutton-content";
@@ -238,6 +239,17 @@ alert("To use Badger Wallet for this transaction, Please visit:\n\nhttps://badge
 // * end function detect and send data to badger wallet
 
 
+function copy(that){
+var inp = document.createElement('input');
+inp.value = that
+document.body.appendChild(inp)
+inp.select();
+document.execCommand('copy', false);
+inp.remove();
+alert("Bitcoin Cash address copied!");
+}
+
+
 
 function openModal (toAddress, bchAmount, successField, successMsg, successCallback, amountMessage, anyAmount) {
 
@@ -269,15 +281,14 @@ genQR = QRCode.generatePNG(qrData, qrParams);
 qrImage = genQR;
 //}
 
-
 var pbContent =
 
 '<div>' +
 '<div>' +
 
 '<div>' +
-'<div class="qrparent">' +
-'<img class="qrcode" src="'+qrImage+'"  width="258" />' +
+'<div class="qrparent" onclick=copy(\''+URI+'\')>' +
+'<img class="qrcode" src="'+qrImage+'"  width="260" />' +
 '<img class="qricon" src="https://i.imgur.com/fpxx8mp.png" width="70" />' +
 '<div class="qrctc">Click to Copy</div>'+
 '</div>' +
