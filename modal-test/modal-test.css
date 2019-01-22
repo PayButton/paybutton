@@ -52,7 +52,7 @@ transition: .9s, font-size .2s;
 
 .pay-button:hover > span,.pay-button:hover:after {
 background-position: 0;
-font-size: 1.1em;
+/*font-size: 1.1em;*/
 color: orangeRed;
 /*For IE*/
 }
@@ -95,7 +95,7 @@ transition: .9s, font-size .2s;
 }
 .pbmodal-button:hover > span,.pbmodal-button:hover:after {
 background-position: 0;
-font-size: 1.1em;
+/*font-size: 1.1em;*/
 color: orangeRed;
 /*For IE*/
 }
