@@ -91,7 +91,7 @@ z-index: -1;
 .pbmodal-button > span,.pbmodal-button:after {
 background-size: 300%;
 background-position: 100%;
-transition: .9s, font-size .2s;
+transition: 1.1s, font-size .2s;
 }
 .pbmodal-button:hover > span,.pbmodal-button:hover:after {
 background-position: 0;
