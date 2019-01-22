@@ -25,7 +25,7 @@ z-index: 1;
 
 .pay-button > span {
 display: inline-block;
-padding: 8px 10px;
+padding: 8px 12px;
 position: relative;
 background: linear-gradient(45deg, #fff 50%, orangeRed 50%);
 -webkit-background-clip: text;
@@ -73,7 +73,7 @@ font-size: 1em;
 }
 .pbmodal-button > span {
 display: inline-block;
-padding: 8px 10px;
+padding: 8px 12px;
 background: linear-gradient(45deg, #fff 50%, orangeRed 50%);
 -webkit-background-clip: text;
 -webkit-text-fill-color: transparent;
@@ -104,8 +104,13 @@ color: orangeRed;
  .amountdiv {
 word-wrap: break-word;
 font-size: 16px;
-margin: 10px 10px 0px 10px;
-/*border: 1px solid #c3c3c3;*/
+margin: 6px 8px 0px 8px;
+}
+
+ .addressdiv {
+word-wrap: break-word;
+font-size: 10px;
+margin: 10px 8px 0px 8px;
 }
 
 
@@ -119,7 +124,7 @@ margin: 10px 10px 0px 10px;
   position: relative;
   top: 0;
   left: 0;
-	border: 2px solid #000;
+	border: 2px solid #000000;
 }
 .qricon {
     position: absolute;
@@ -130,6 +135,19 @@ margin: 10px 10px 0px 10px;
 
     display: block;
     margin: auto;
+		}
+.qrctc {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+		color: #000000;
+		font-size: 14px;
+    display: block;
+    margin: 6px;
+		padding: 3px;
+		text-align:right;
+		opacity: 0.95;
+		background: #FFFFFF;
 		}
 
 
