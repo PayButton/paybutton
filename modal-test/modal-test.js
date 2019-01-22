@@ -184,12 +184,6 @@ console.log("Error", err);
 } else {
 console.log("Confirmed. Transaction ID:", res);
 
-
-// find success element, display tx success
-//if (successField && successMsg) {
-//var success = document.getElementById(successField);
-//success.innerText = successMsg;
-
 var successFieldExists = document.getElementById(successField);
 
 if (!successMsg) {
@@ -203,15 +197,12 @@ success.innerHTML =
 
 ' <div> ' +
 ' <div> ' +
-
 ' <div> ' +
 ' <div class="amountdiv"><span>'+successMsg+'</span></div> ' +
 ' </div> ' +
-
 ' <div> ' +
 ' <div class="amountdiv"><span>View: </span><a href="https://explorer.bitcoin.com/bch/tx/'+res+'" target="_blank" style="color: orangeRed; text-decoration: none;">Transaction</a></div>' +
 ' </div> ' +
-
 ' </div> ' +
 ' </div> ';
 
@@ -288,27 +279,22 @@ var pbContent =
 
 '<div>' +
 '<div>' +
-
 '<div>' +
 '<div class="qrparent" onclick=copy(\''+URI+'\')>' +
-'<img class="qrcode" src="'+qrImage+'"  width="260" />' +
+'<img class="qrcode" src="'+qrImage+'"  width="256" />' +
 '<img class="qricon" src="https://i.imgur.com/fpxx8mp.png" width="70" />' +
 '<div class="qrctc">Click to Copy</div>'+
 '</div>' +
 '</div>' +
-
 '<div>' +
 '<div class="amountdiv"><span>'+amountMessage+'</span></div> ' +
 '</div>' +
-
 '<div>' +
 '<div><a href="'+URI+'"><button class="pbmodal-button"><span>Send with BitcoinCash Wallet</span></button></a></div>' +
 '</div>' +
-
 '<div>' +
-'<div><button class = "pbmodal-button" onclick="sendToBadger(\''+URI+'\', \''+successField+'\', \''+successMsg+'\', \''+successCallback+'\')"><span>Send with Badger Wallet</span></button></div> ' +
+'<div><button class = "pbmodal-button" onclick="sendToBadger(\''+toAddress+'\', \''+bchAmount+'\', \''+successField+'\', \''+successMsg+'\', \''+successCallback+'\')"><span>Send with Badger Wallet</span></button></div> ' +
 '</div>' +
-
 '</div>' +
 '</div>';
 
@@ -369,7 +355,7 @@ fiatRequest.send();
 // insert info into button on mouseover
 function mouseOver() {
 buttonText2 = this.getAttribute("button-text-2") || ""; buttonText2 = buttonText2.trim();
-if (!buttonText2){
+if (!buttonText2) {
 showAmount = this.getAttribute('amount') || ""; showAmount = Number(showAmount.trim());
 showType = this.getAttribute('amount-type') || ""; showType = showType.trim().toUpperCase();
 buttonText2 = showAmount + " " + showType;
@@ -386,7 +372,7 @@ if ('ontouchend' in window)this.addEventListener('touchend', mouseOut, false);
 // insert info into button on mouseout
 function mouseOut() {
 buttonText = this.getAttribute("button-text") || ""; buttonText = buttonText.trim();
-if (!buttonText){
+if (!buttonText) {
 showAmount = this.getAttribute('amount') || ""; showAmount = Number(showAmount.trim());
 showType = this.getAttribute('amount-type') || ""; showType = showType.trim().toUpperCase();
 buttonText = "Pay with Bitcoin Cash";
@@ -470,7 +456,7 @@ bchAmount = bchAmount.toFixed(8);
 amountMessage = (bchAmount + " BCH");
 
 // send bch tx data to modal
-openModal(toAddress, bchAmount, successField, successMsg, successCallback, amountMessage);
+openModal(toAddress, bchAmount, successField, successMsg, successCallback, amountMessage, anyAmount);
 
 } else {
 // send fiat tx data to fiat/bch conversion
