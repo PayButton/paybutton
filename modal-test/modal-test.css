@@ -47,7 +47,7 @@ z-index: -5;
 .pay-button > span,.pay-button:after {
 background-size: 300%;
 background-position: 100%;
-transition: .5s, font-size .2s;
+transition: .9s, font-size .2s;
 }
 
 .pay-button:hover > span,.pay-button:hover:after {
@@ -91,7 +91,7 @@ z-index: -1;
 .pbmodal-button > span,.pbmodal-button:after {
 background-size: 300%;
 background-position: 100%;
-transition: .6s, font-size .2s;
+transition: .9s, font-size .2s;
 }
 .pbmodal-button:hover > span,.pbmodal-button:hover:after {
 background-position: 0;
