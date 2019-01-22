@@ -93,7 +93,7 @@ docFrag.appendChild(this.overlay);
 // Create content area and append to modal
 contentHolder = document.createElement("div");
 contentHolder.className = "paybutton-content";
-contentHolder.id = "paybutton-test";
+contentHolder.id = "modal-content";
 contentHolder.innerHTML = content;
 this.modal.appendChild(contentHolder);
 
@@ -162,7 +162,7 @@ web4bch = new Web4Bch(web4bch.currentProvider);
 
 // detect if wallet is locked
 if (!web4bch.bch.defaultAccount){
-alert("Please unlock BadgerWallet before continuing.");
+alert("Please unlock Badger Wallet before continuing.");
 
 } else {
 
@@ -194,17 +194,20 @@ successMsg = "Transaction Successful!";
 
 
 if (!successFieldExists) {
-var success = document.getElementById("paybutton-test");
+var success = document.getElementById("modal-content");
 success.innerHTML =
 
 ' <div> ' +
 ' <div> ' +
+
 ' <div> ' +
 ' <div class="amountdiv"><span>'+successMsg+'</span></div> ' +
 ' </div> ' +
+
 ' <div> ' +
 ' <div class="amountdiv"><span>View: </span><a href="https://explorer.bitcoin.com/bch/tx/'+res+'" target="_blank" style="color: orangeRed; text-decoration: none;">Transaction</a></div>' +
 ' </div> ' +
+
 ' </div> ' +
 ' </div> ';
 
@@ -228,7 +231,7 @@ window[successCallback](res);
 
 // notify user of wallet
 //window.open('https://badgerwallet.cash')
-alert("Please install BadgerWallet from https://badger.bitcoin.com to donate.\n\nOur devs are working hard to support more BitcoinCash wallets in the very near future.");
+alert("To use Badger Wallet for this transaction, Please visit:\n\nhttps://badger.bitcoin.com for installation instructions.");
 }
 
 }
@@ -236,16 +239,22 @@ alert("Please install BadgerWallet from https://badger.bitcoin.com to donate.\n\
 
 
 
-function openModal (toAddress, bchAmount, successField, successMsg, successCallback, amountMessage) {
+function openModal (toAddress, bchAmount, successField, successMsg, successCallback, amountMessage, anyAmount) {
 
 // qr code generation
-var qrData = toAddress + "?amount=" + bchAmount;
+if (!anyAmount) {
+qrData = toAddress + "?amount=" + bchAmount;
+URI = toAddress + "?amount=" + bchAmount;
+} else {
+qrData = toAddress;
+URI = toAddress;
+}
 var qrParams = {
-ecclevel: "H",
+ecclevel: "Q",
 fillcolor: "#FFFFFF",
 textcolor: "#000000",
-margin: " ",
-modulesize: 8
+margin: "0.5",
+modulesize: 12
 };
 
 //if (document.implementation.hasFeature("http://www.w3.org/2000/svg","1.1")) {
@@ -260,24 +269,32 @@ genQR = QRCode.generatePNG(qrData, qrParams);
 qrImage = genQR;
 //}
 
+
 var pbContent =
 
 '<div>' +
 '<div>' +
+
 '<div>' +
 '<div class="qrparent">' +
-'<img class="qrcode" src="'+qrImage+'"  width="258" />' +
-'<img class="qricon" src="https://i.imgur.com/fpxx8mp.png" width="80" />' +
+'<img class="qrcode" src="'+qrImage+'"  width="260" />' +
+'<img class="qricon" src="https://i.imgur.com/fpxx8mp.png" width="70" />' +
+'<div class="qrctc">Click to Copy</div>'+
 '</div>' +
+'</div>' +
+
 '<div>' +
 '<div class="amountdiv"><span>'+amountMessage+'</span></div> ' +
 '</div>' +
+
 '<div>' +
-'<div><a href="'+toAddress+'?amount='+bchAmount+'"><button class="pbmodal-button"><span>Send with BitcoinCash Wallet</span></button></a></div>' +
+'<div><a href="'+URI+'"><button class="pbmodal-button"><span>Send with BitcoinCash Wallet</span></button></a></div>' +
 '</div>' +
+
 '<div>' +
 '<div><button class = "pbmodal-button" onclick="sendToBadger(\''+toAddress+'\', \''+bchAmount+'\', \''+successField+'\', \''+successMsg+'\', \''+successCallback+'\')"><span>Send with Badger Wallet</span></button></div> ' +
 '</div>' +
+
 '</div>' +
 '</div>';
 
@@ -335,18 +352,19 @@ fiatRequest.send();
 // * end function query to obtain bch price
 
 
-// insert info into button on hover
+// insert info into button on mouseover
 function mouseOver() {
-buttonText = this.getAttribute("button-text-2");
-if (!buttonText){
-showAmount = this.getAttribute('amount');
-showType = this.getAttribute('amount-type');
-buttonText = showAmount + " " + showType;
-if (isNaN(showAmount) || !showType) {
-buttonText = "Needs Setup!";
+buttonText2 = this.getAttribute("button-text-2") || "";
+buttonText2 = buttonText2.trim().toUpperCase();
+if (!buttonText2){
+showAmount = this.getAttribute('amount') || ""; showAmount = Number(showAmount.trim());
+showType = this.getAttribute('amount-type') || ""; showType = showType.trim().toUpperCase();
+buttonText2 = showAmount + " " + showType;
+if (!showAmount || !showType) {
+buttonText2 = "Click to send BCH";
 }
 }
-this.innerHTML = ("<span>"+buttonText+"</span>");
+this.innerHTML = ("<span>"+buttonText2+"</span>");
 if (!('ontouchend' in window))this.addEventListener('mouseout', mouseOut, false);
 if ('ontouchend' in window)this.addEventListener('touchend', mouseOut, false);
 }
@@ -354,21 +372,21 @@ if ('ontouchend' in window)this.addEventListener('touchend', mouseOut, false);
 
 // insert info into button on mouseout
 function mouseOut() {
-buttonText = this.getAttribute("button-text");
+buttonText = this.getAttribute("button-text") || ""; buttonText = buttonText.trim().toUpperCase();
 if (!buttonText){
-showAmount = this.getAttribute('amount');
-showType = this.getAttribute('amount-type');
-buttonText = "Tip Button";
-if (isNaN(showAmount) || !showType) {
-buttonText = "PayButton";
+showAmount = this.getAttribute('amount') || ""; showAmount = Number(showAmount.trim());
+showType = this.getAttribute('amount-type') || ""; showType = showType.trim().toUpperCase();
+buttonText = "Pay with Bitcoin Cash";
+if (!showAmount || !showType) {
+buttonText = "Pay with Bitcoin Cash";
 }
 }
 this.innerHTML = ("<span>" + buttonText + "</span>");
 }
 
 
+// DOM listen
 document.addEventListener("DOMContentLoaded", function(){
-
 
 // pull in buttons found
 var payButton = document.getElementsByClassName("pay-button");
@@ -376,38 +394,55 @@ var payButton = document.getElementsByClassName("pay-button");
 for (var i = 0; i < payButton.length; i++) {
 
 var payButtons = payButton[i];
-var buttonText = payButtons.getAttribute("button-text");
+var buttonText = payButtons.getAttribute("button-text") || ""; buttonText = buttonText.trim();
+buttonAmount = payButtons.getAttribute("amount") || ""; buttonAmount = Number(buttonAmount.trim());
+amountType = payButtons.getAttribute("amountType") || ""; amountType = amountType.trim().toUpperCase();
+
+//console.log(buttonText, buttonAmount, amountType);
 
 if (!buttonText){
-buttonText = "Tip Button";
-if (isNaN(payButtons.getAttribute("amount")) || !payButtons.getAttribute("amount-type")) {
-buttonText = "PayButton";
+buttonText = "Pay with Bitcoin Cash";
+if (!buttonAmount || !amountType) {
+buttonText = "Pay with Bitcoin Cash";
 }
 }
-
 payButtons.innerHTML = "<span>"+buttonText+"</span>";
-if (!('ontouchstart' in window))payButtons.addEventListener('mouseover', mouseOver, false);
-if ('ontouchstart' in window)payButtons.addEventListener('touchstart', mouseOver, false);
 
-
+if (!('ontouchstart' in window))payButtons.addEventListener('mouseover', mouseOver.bind(payButtons), false);
+if ('ontouchstart' in window)payButtons.addEventListener('touchstart', mouseOver.bind(payButtons), false);
 
 // pull in attribute info from button when clicked
 payButtons.addEventListener("click", function(pbEvent) {
+var buttonAmount = this.getAttribute("amount") || ""; buttonAmount = Number(buttonAmount.trim());
+var amountType = this.getAttribute("amount-type") || ""; amountType = amountType.trim().toUpperCase();
+var toAddress = this.getAttribute("address") || ""; toAddress = toAddress.trim();
+var successField = this.getAttribute("success-field") || ""; successField = successField.trim();
+var successMsg = this.getAttribute("success-msg") || ""; successMsg = successMsg.trim();
+var successCallback = this.getAttribute("success-callback") || ""; successCallback = successCallback.trim();
 
-var buttonAmount = Number(this.getAttribute("amount"));
-var amountType = this.getAttribute("amount-type").toUpperCase();
-var toAddress = this.getAttribute("address");
-var successField = this.getAttribute("success-field");
-var successMsg = this.getAttribute("success-msg");
-var successCallback = this.getAttribute("success-callback");
-var bchAmount;
-var amountMessage;
+var bchAmount; var amountMessage; var anyAmount;
 
-if ( buttonAmount == "" || amountType == "" || toAddress == "" || isNaN(buttonAmount)) {
-alert("PayButton Setup Error:\n\nBelow are the minimum button requirements\n\n1. amount (Must be a number)\n2. amount-type (Can be BCH, Satoshi, USD, AUD etc)\n3. address (Bitcoin Cash address)");
+// bch address attribute missing
+if (!toAddress) {
+alert("PayButton Error:\n\nBelow are the minimum button requirements\n\n1. address (Bitcoin Cash address)");
 return;
 }
 
+// missing one of two amount attributes, alert
+if (buttonAmount || amountType) {
+if (!buttonAmount || !amountType) {
+alert ("PayButton Error:\n\nFor specific PayButton amounts, BOTH of the following MUST be set:\n\n1. amount (Must be a number)\n2. amount-type (Can be BCH, Satoshi, USD, AUD etc)\n\nTo allow \"Any\" amount, BOTH must be blank.");
+return;
+}
+} else {
+anyAmount = true;
+amountMessage = "Send any amount of Bitcoin Cash";
+//amountMessage = "";
+bchAmount = null;
+}
+
+// check for any amount else convert
+if (!anyAmount) {
 
 // check if amount type is set to bch or fiat
 if (amountType == "BCH" || amountType == "SATOSHI") {
@@ -417,8 +452,10 @@ if (amountType == "SATOSHI") {
 bchAmount = bchAmount / 100000000;
 }
 bchAmount = bchAmount.toFixed(8);
+
 // display bch amount in modal
 amountMessage = (bchAmount + " BCH");
+
 // send bch tx data to modal
 openModal(toAddress, bchAmount, successField, successMsg, successCallback, amountMessage);
 
@@ -427,10 +464,13 @@ openModal(toAddress, bchAmount, successField, successMsg, successCallback, amoun
 getBCHPrice (buttonAmount, amountType, toAddress, successField, successMsg, successCallback, bchAmount, amountMessage);
 }
 
+} else {
+openModal(toAddress, bchAmount, successField, successMsg, successCallback, amountMessage, anyAmount);
+}
+
 });
 }
 
-//DOM listen
 });
 
 var cssId = 'pbCSS';  // you could encode the css path itself to generate id..
