@@ -277,7 +277,7 @@ var pbContent =
 
 '<div>' +
 '<div class="qrparent">' +
-'<img class="qrcode" src="'+qrImage+'"  width="260" />' +
+'<img class="qrcode" src="'+qrImage+'"  width="258" />' +
 '<img class="qricon" src="https://i.imgur.com/fpxx8mp.png" width="70" />' +
 '<div class="qrctc">Click to Copy</div>'+
 '</div>' +
