@@ -114,6 +114,13 @@ margin: 10px 8px 0px 8px;
 }
 
 
+ .addressdiv {
+word-wrap: break-word;
+font-size: 10px;
+margin: 10px 8px 0px 8px;
+}
+
+
 .qrparent {
 	
   position: relative;
@@ -143,7 +150,7 @@ margin: 10px 8px 0px 8px;
 		color: #000000;
 		font-size: 14px;
     display: block;
-    margin: 6px;
+    margin: 0px 7px 7px 0px;
 		padding: 3px;
 		text-align:right;
 		opacity: 0.95;
