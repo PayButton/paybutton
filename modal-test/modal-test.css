@@ -47,7 +47,7 @@ z-index: -5;
 .pay-button > span,.pay-button:after {
 background-size: 300%;
 background-position: 100%;
-transition: .9s, font-size .2s;
+transition: .8s, font-size .4s;
 }
 
 .pay-button:hover > span,.pay-button:hover:after {
@@ -91,7 +91,7 @@ z-index: -1;
 .pbmodal-button > span,.pbmodal-button:after {
 background-size: 300%;
 background-position: 100%;
-transition: 1.5s, font-size .2s;
+transition: 1.2s, font-size .2s;
 }
 .pbmodal-button:hover > span,.pbmodal-button:hover:after {
 background-position: 0;
@@ -114,15 +114,8 @@ margin: 10px 8px 0px 8px;
 }
 
 
- .addressdiv {
-word-wrap: break-word;
-font-size: 10px;
-margin: 10px 8px 0px 8px;
-}
-
-
 .qrparent {
-	
+	cursor: pointer;
   position: relative;
   top: 0;
   left: 0;
@@ -251,14 +244,15 @@ opacity: 1;
 display: block;
 }
 
+/* speed of modal content entering window */
 .paybutton-modal.fade-and-drop.paybutton-open {
 top: 50%;
 
--webkit-transition: 300ms top 300ms ease;
- -moz-transition: 300ms top 300ms ease;
--ms-transition: 300ms top 300ms ease;
- -o-transition: 300ms top 300ms ease;
-transition: 300ms top 300ms ease;
+-webkit-transition: 250ms top 250ms ease;
+ -moz-transition: 250ms top 250ms ease;
+-ms-transition: 250ms top 250ms ease;
+ -o-transition: 250ms top 250ms ease;
+transition: 250ms top 250ms ease;
 }
 
 .paybutton-modal.fade-and-drop.paybutton-open.paybutton-anchored {
@@ -270,6 +264,7 @@ transition: 300ms top 300ms ease;
 transition: 300ms top 300ms ease;
 }
 
+/* speed of modal background entering window */
 .paybutton-overlay.fade-and-drop.paybutton-open {
 top: 0;
 
@@ -282,14 +277,16 @@ transition: 300ms opacity ease;
 opacity: 1;
 }
 
+/* speed of model close upward */
 .paybutton-modal.fade-and-drop {
--webkit-transition: 300ms top ease;
- -moz-transition: 300ms top ease;
--ms-transition: 300ms top ease;
- -o-transition: 300ms top ease;
-transition: 300ms top ease;
+-webkit-transition: 700ms top ease;
+ -moz-transition: 700ms top ease;
+-ms-transition: 700ms top ease;
+ -o-transition: 700ms top ease;
+transition: 700ms top ease;
 }
 
+/* speed of dark overlay exiting */
 .paybutton-overlay.fade-and-drop {
 -webkit-transition: 300ms opacity 300ms ease;
  -moz-transition: 300ms opacity 300ms ease;
@@ -297,6 +294,7 @@ transition: 300ms top ease;
  -o-transition: 300ms opacity 300ms ease;
 transition: 300ms opacity 300ms ease;
 }
+
 .donate
 {
     border: 1px;
