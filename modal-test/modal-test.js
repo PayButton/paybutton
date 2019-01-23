@@ -31,7 +31,6 @@ this.options = extendDefaults(defaults, arguments[0]);
 }
 
 if(this.options.autoOpen === true) this.open();
-
 }
 
 // Public Methods
@@ -63,7 +62,7 @@ this.overlay.className = this.overlay.className + " paybutton-open";
 
 function buildOut() {
 
-var content, contentHolder, docFrag, resultHolder, inp;
+var content, contentHolder, docFrag;
 
 /*
  * If content is an HTML string, append the HTML string.
@@ -99,21 +98,6 @@ contentHolder.className = "paybutton-content";
 contentHolder.id = "modal-content";
 contentHolder.innerHTML = content;
 this.modal.appendChild(contentHolder);
-
-
-//resultHolder = document.createElement("div");
-//resultHolder.className = "paybutton-content";
-//resultHolder.innerHTML = this.options.amountMessage;
-//this.modal.appendChild(resultHolder);
- 
-
-//// Create content area and append to modal
-//resultHolder = document.createElement("div");
-//resultHolder.className = "paybutton-content";
-//resultHolder.id = "result";
-//resultHolder.innerHTML = this.options.amountMessage;
-//this.modal.appendChild(resultHolder);
-
 
 // Append modal to DocumentFragment
 docFrag.appendChild(this.modal);
@@ -155,6 +139,17 @@ return 'transitionend';
 }());
 
 
+// copy address to clipboard
+function copy(that) {
+var inp = document.createElement('input');
+inp.value = that
+document.body.appendChild(inp)
+inp.select();
+document.execCommand('copy', false);
+inp.remove();
+alert("Bitcoin Cash address copied!");
+}
+
 
 // * begin function detect and send data to badger wallet
 function sendToBadger (toAddress, bchAmount, successField, successMsg, successCallback, amountMessage, anyAmount) {
@@ -178,7 +173,6 @@ var txParams = {
 to: toAddress,
 from: web4bch.bch.defaultAccount,
 value: bchAmount
-
 };
 
 // check for errors else proceed with success messages
@@ -194,28 +188,24 @@ if (!successMsg) {
 successMsg = "Transaction Successful!";
 }
 
-
 if (!successFieldExists) {
 var success = document.getElementById("modal-content");
 success.innerHTML =
 
-' <div> ' +
-' <div> ' +
-' <div> ' +
-' <div class="amountdiv"><span>'+successMsg+'</span></div> ' +
-' </div> ' +
-' <div> ' +
-' <div class="amountdiv"><span>View: </span><a href="https://explorer.bitcoin.com/bch/tx/'+res+'" target="_blank" style="color: orangeRed; text-decoration: none;">Transaction</a></div>' +
-' </div> ' +
-' </div> ' +
-' </div> ';
+'<div>' +
+'<div>' +
+'<div>' +
+'<div class="amountdiv"><span>'+successMsg+'</span></div>' +
+'</div>' +
+'<div>' +
+'<div class="amountdiv"><span>View: </span><a href="https://explorer.bitcoin.com/bch/tx/'+res+'" target="_blank" style="color: orangeRed; text-decoration: none;">Transaction</a></div>' +
+'</div>' +
+'</div>' +
+'</div>';
 
 } else {
 document.getElementById(successField).innerText = successMsg;
 }
-
-
-//}
 
 if (successCallback) {
 //alert("hi");
@@ -228,8 +218,7 @@ window[successCallback](res);
 
 } else {
 
-// notify user of wallet
-//window.open('https://badgerwallet.cash')
+//window.open('https://badger.bitcoin.com')
 alert("To use Badger Wallet for this transaction, Please visit:\n\nhttps://badger.bitcoin.com for installation instructions.");
 }
 
@@ -237,27 +226,17 @@ alert("To use Badger Wallet for this transaction, Please visit:\n\nhttps://badge
 // * end function detect and send data to badger wallet
 
 
-function copy(that){
-var inp = document.createElement('input');
-inp.value = that
-document.body.appendChild(inp)
-inp.select();
-document.execCommand('copy', false);
-inp.remove();
-alert("Bitcoin Cash address copied!");
-}
-
-
-
 function openModal (toAddress, bchAmount, successField, successMsg, successCallback, amountMessage, anyAmount) {
 
 // qr code generation
-if (!anyAmount) {
-qrData = toAddress + "?amount=" + bchAmount;
-URI = toAddress + "?amount=" + bchAmount;
-} else {
+if (anyAmount) {
+amountMessage = "Send any amount of Bitcoin Cash";
 qrData = toAddress;
 URI = toAddress;
+bchAmount = "";
+} else {
+qrData = toAddress + "?amount=" + bchAmount;
+URI = toAddress + "?amount=" + bchAmount;
 }
 var qrParams = {
 ecclevel: "Q",
@@ -267,17 +246,17 @@ margin: "0.5",
 modulesize: 12
 };
 
-//if (document.implementation.hasFeature("http://www.w3.org/2000/svg","1.1")) {
-//genQR = QRCode.generateSVG(qrData, qrParams);
-//var XMLS = new XMLSerializer();
-//genQR = XMLS.serializeToString(genQR);
-//genQR = "data:image/svg+xml;base64," + window.btoa(unescape(encodeURIComponent(genQR)));
-//qrImage = genQR;
+if (document.implementation.hasFeature("http://www.w3.org/2000/svg","1.1")) {
+genQR = QRCode.generateSVG(qrData, qrParams);
+var XMLS = new XMLSerializer();
+genQR = XMLS.serializeToString(genQR);
+genQR = "data:image/svg+xml;base64," + window.btoa(unescape(encodeURIComponent(genQR)));
+qrImage = genQR;
 	
-//} else {
+} else {
 genQR = QRCode.generatePNG(qrData, qrParams);
 qrImage = genQR;
-//}
+}
 
 var pbContent =
 
@@ -301,7 +280,6 @@ var pbContent =
 '</div>' +
 '</div>' +
 '</div>';
-
 
 var pbModal = new Modal({
 content: pbContent,
@@ -331,11 +309,9 @@ var addDecimal = fiatData.price / 100;
 bchAmount = (1 / addDecimal) * buttonAmount;
 bchAmount = bchAmount.toFixed(8);
 
-
 amountMessage = (buttonAmount + " " + amountType + " = " + bchAmount + " BCH");
 
 openModal(toAddress, bchAmount, successField, successMsg, successCallback, amountMessage);
-
 
 } else {
 console.log("Error Price Not Found");
@@ -439,14 +415,14 @@ return;
 }
 } else {
 anyAmount = true;
-amountMessage = "Send any amount of Bitcoin Cash";
-//amountMessage = "";
-bchAmount = "";
 }
 
-// check for any amount else convert
-if (!anyAmount) {
+// check for "any" amount allowed else convert
+if (anyAmount) {
 
+openModal(toAddress, bchAmount, successField, successMsg, successCallback, amountMessage, anyAmount);
+
+} else {
 // check if amount type is set to bch or fiat
 if (amountType == "BCH" || amountType == "SATOSHI") {
 bchAmount = buttonAmount;
@@ -466,9 +442,6 @@ openModal(toAddress, bchAmount, successField, successMsg, successCallback, amoun
 // send fiat tx data to fiat/bch conversion
 getBCHPrice (buttonAmount, amountType, toAddress, successField, successMsg, successCallback, bchAmount, amountMessage);
 }
-
-} else {
-openModal(toAddress, bchAmount, successField, successMsg, successCallback, amountMessage, anyAmount);
 }
 
 });
