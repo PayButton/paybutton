@@ -36,6 +36,7 @@ if(this.options.autoOpen === true) this.open();
 // Public Methods
 
 Modal.prototype.close = function() {
+stopListenForTX();
 var _ = this;
 this.modal.className = this.modal.className.replace(" paybutton-open", "");
 this.overlay.className = this.overlay.className.replace(" paybutton-open",
@@ -53,7 +54,7 @@ buildOut.call(this);
 initializeEvents.call(this);
 window.getComputedStyle(this.modal).height;
 this.modal.className = this.modal.className +
-(this.modal.offsetHeight > window.innerHeight ?
+(this.modal.offsetHeight > window.innerHeight ? 
 " paybutton-open paybutton-anchored" : " paybutton-open");
 this.overlay.className = this.overlay.className + " paybutton-open";
 }
@@ -84,7 +85,6 @@ this.modal.className = "paybutton-modal " + this.options.className;
 this.modal.style.minWidth = this.options.minWidth + "px";
 this.modal.style.maxWidth = this.options.maxWidth + "px";
 
-
 // If overlay is true, add one
 if (this.options.overlay === true) {
 this.overlay = document.createElement("div");
@@ -104,7 +104,6 @@ docFrag.appendChild(this.modal);
 
 // Append DocumentFragment to body
 document.body.appendChild(docFrag);
-
 }
 
 function extendDefaults(source, properties) {
@@ -139,8 +138,8 @@ return 'transitionend';
 }());
 
 
-// copy address to clipboard
-function copy(that) {
+// copy BCH URI to clipboard
+function copyBCHURI(that) {
 var inp = document.createElement('input');
 inp.value = that
 document.body.appendChild(inp)
@@ -149,6 +148,89 @@ document.execCommand('copy', false);
 inp.remove();
 alert("Bitcoin Cash address copied!");
 }
+
+
+var listen;
+
+function startListenForTX (toAddress, bchAmount, successField, successMsg) {
+var timeStamp = Math.floor(Date.now() / 1000);
+listen = setInterval(function(){ listenForTX(toAddress, bchAmount, successField, successMsg, timeStamp); }, 1500);
+}
+
+function stopListenForTX () {
+clearInterval(listen);
+}
+
+
+function listenForTX (toAddress, bchAmount, successField, successMsg, timeStamp) {
+
+var txRequest = new XMLHttpRequest();
+txRequest.open('GET', 'https://rest.bitcoin.com/v1/address/unconfirmed/' + toAddress, true);
+
+txRequest.onload = function() {
+if (txRequest.readyState == 4 && txRequest.status == 200) {
+
+var txData = JSON.parse(txRequest.responseText);
+
+for (var j in txData) {
+
+var getTransactions = txData[j];
+
+//console.log(timeStamp, getTransactions.ts, getTransactions.amount, getTransactions.txid)
+
+if (timeStamp < getTransactions.ts) {
+if (getTransactions.amount == bchAmount) {
+console.log("yes");
+stopListenForTX();
+
+var successFieldExists = document.getElementById(successField);
+
+if (!successMsg) {
+successMsg = "Transaction Successful!";
+}
+
+if (!successFieldExists) {
+var success = document.getElementById("modal-content");
+success.innerHTML =
+
+'<div>' +
+'<div>' +
+'<div>' +
+'<div class="amountdiv"><span>'+successMsg+'</span></div>' +
+'</div>' +
+'<div>' +
+'<div class="amountdiv"><span>View: </span><a href="https://explorer.bitcoin.com/bch/tx/'+getTransactions.txid+'" target="_blank" style="color: orangeRed; text-decoration: none;">Transaction</a></div>' +
+'</div>' +
+'</div>' +
+'</div>';
+
+} else {
+document.getElementById(successField).innerText = successMsg;
+}
+
+return;
+} // for if amount is equal
+} else {
+console.log("Waiting for transaction");
+} // for timestamp
+
+} // for j
+
+
+
+} else {
+console.log("Found Server But There Is An Error");
+}
+}; // for onload
+
+txRequest.onerror = function() {
+console.log("Could Not Connect To Server");
+};
+
+txRequest.send();
+
+}
+// end listen for transaction
 
 
 // * begin function detect and send data to badger wallet
@@ -180,6 +262,9 @@ web4bch.bch.sendTransaction(txParams, (err, res) => {
 if (err) {
 console.log("Error", err);
 } else {
+
+stopListenForTX();
+
 console.log("Confirmed. Transaction ID:", res);
 
 var successFieldExists = document.getElementById(successField);
@@ -208,7 +293,6 @@ document.getElementById(successField).innerText = successMsg;
 }
 
 if (successCallback) {
-//alert("hi");
 window[successCallback](res);
 }
 
@@ -237,6 +321,7 @@ bchAmount = "";
 } else {
 qrData = toAddress + "?amount=" + bchAmount;
 URI = toAddress + "?amount=" + bchAmount;
+startListenForTX(toAddress, bchAmount, successField, successMsg);
 }
 var qrParams = {
 ecclevel: "Q",
@@ -263,7 +348,7 @@ var pbContent =
 '<div>' +
 '<div>' +
 '<div>' +
-'<div class="qrparent" onclick=copy(\''+URI+'\')>' +
+'<div class="qrparent" onclick=copyBCHURI(\''+URI+'\')>' +
 '<img class="qrcode" src="'+qrImage+'"  width="256" />' +
 '<img class="qricon" src="https://i.imgur.com/fpxx8mp.png" width="70" />' +
 '<div class="qrctc">Click to Copy</div>'+
@@ -282,8 +367,7 @@ var pbContent =
 '</div>';
 
 var pbModal = new Modal({
-content: pbContent,
-amountMessage: ""
+content: pbContent
 });
 
 pbModal.open();
@@ -292,7 +376,7 @@ pbModal.open();
 
 
 // * begin function query to obtain bch price
-function getBCHPrice (buttonAmount, amountType, toAddress, successField, successMsg, successCallback, bchAmount, amountMessage) {
+function getBCHPrice (buttonAmount, amountType, toAddress, successField, successMsg, successCallback, bchAmount, amountMessage, anyAmount) {
 
 var fiatRequest = new XMLHttpRequest();
 fiatRequest.open('GET', 'https://index-api.bitcoin.com/api/v0/cash/price/' + amountType, true);
@@ -311,7 +395,7 @@ bchAmount = bchAmount.toFixed(8);
 
 amountMessage = (buttonAmount + " " + amountType + " = " + bchAmount + " BCH");
 
-openModal(toAddress, bchAmount, successField, successMsg, successCallback, amountMessage);
+openModal(toAddress, bchAmount, successField, successMsg, successCallback, amountMessage, anyAmount);
 
 } else {
 console.log("Error Price Not Found");
@@ -440,7 +524,7 @@ openModal(toAddress, bchAmount, successField, successMsg, successCallback, amoun
 
 } else {
 // send fiat tx data to fiat/bch conversion
-getBCHPrice (buttonAmount, amountType, toAddress, successField, successMsg, successCallback, bchAmount, amountMessage);
+getBCHPrice (buttonAmount, amountType, toAddress, successField, successMsg, successCallback, bchAmount, amountMessage, anyAmount);
 }
 }
 
