@@ -299,11 +299,11 @@ transition: 300ms opacity 300ms ease;
 {
     border: 1px;
     border-color: #000000;
-    width: 500px;
+    width: 450px;
     height: 500px;
     background-color: #f2f2f2;
     position: fixed;
-    margin-left: -250px;
+    margin-left: -225px;
     margin-top: -250px;
     top: 50%;
     left: 50%;
