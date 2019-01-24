@@ -182,7 +182,7 @@ var getTransactions = txData[j];
 
 if (timeStamp < getTransactions.ts) {
 if (getTransactions.amount == bchAmount) {
-console.log("yes");
+console.log("Confirmed. Transaction ID:", getTransactions.txid);
 stopListenForTX();
 
 var successFieldExists = document.getElementById(successField);
