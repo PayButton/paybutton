@@ -170,6 +170,8 @@ txRequest.open('GET', 'https://rest.bitcoin.com/v1/address/unconfirmed/' + toAdd
 txRequest.onload = function() {
 if (txRequest.readyState == 4 && txRequest.status == 200) {
 
+console.log("listening for transaction..");
+
 var txData = JSON.parse(txRequest.responseText);
 
 for (var j in txData) {
@@ -210,12 +212,9 @@ document.getElementById(successField).innerText = successMsg;
 
 return;
 } // for if amount is equal
-} else {
-console.log("Waiting for transaction");
 } // for timestamp
 
 } // for j
-
 
 
 } else {
