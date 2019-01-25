@@ -458,7 +458,7 @@ for (var i = 0; i < payButton.length; i++) {
 var payButtons = payButton[i];
 var buttonText = payButtons.getAttribute("button-text") || ""; buttonText = buttonText.trim();
 buttonAmount = payButtons.getAttribute("amount") || ""; buttonAmount = Number(buttonAmount.trim());
-amountType = payButtons.getAttribute("amountType") || ""; amountType = amountType.trim().toUpperCase();
+amountType = payButtons.getAttribute("amount-type") || ""; amountType = amountType.trim().toUpperCase();
 
 //console.log(buttonText, buttonAmount, amountType);
 
