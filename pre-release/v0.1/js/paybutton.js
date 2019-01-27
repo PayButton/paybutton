@@ -539,7 +539,7 @@ if (!document.getElementById(cssButtonId))
 {
     var head  = document.getElementsByTagName('head')[0];
     var link  = document.createElement('link');
-    link.id   = cssId;
+    link.id   = cssButtonId;
     link.rel  = 'stylesheet';
     link.type = 'text/css';
     link.href = 'https://paybutton.cash/pre-release/v0.1/css/buttons.css';
@@ -553,7 +553,7 @@ if (!document.getElementById(cssModalId))
 {
     var head  = document.getElementsByTagName('head')[0];
     var link  = document.createElement('link');
-    link.id   = cssId;
+    link.id   = cssModalId;
     link.rel  = 'stylesheet';
     link.type = 'text/css';
     link.href = 'https://paybutton.cash/pre-release/v0.1/css/modal.css';
