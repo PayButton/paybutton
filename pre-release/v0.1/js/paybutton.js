@@ -20,7 +20,7 @@ content: "",
 maxWidth: 270,
 minWidth: 264,
 overlay: true
-}
+};
 
 // Create options by extending defaults with the passed in arugments
 if (arguments[0] && typeof arguments[0] === "object") {
@@ -28,7 +28,7 @@ this.options = extendDefaults(defaults, arguments[0]);
 }
 
 if(this.options.autoOpen === true) this.open();
-}
+};
 
 // Public Methods
 
@@ -44,7 +44,7 @@ _.modal.parentNode.removeChild(_.modal);
 this.overlay.addEventListener(this.transitionEnd, function() {
 if(_.overlay.parentNode) _.overlay.parentNode.removeChild(_.overlay);
 });
-}
+};
 
 Modal.prototype.open = function() {
 buildOut.call(this);
@@ -54,7 +54,7 @@ this.modal.className = this.modal.className +
 (this.modal.offsetHeight > window.innerHeight ? 
 " paybutton-open paybutton-anchored" : " paybutton-open");
 this.overlay.className = this.overlay.className + " paybutton-open";
-}
+};
 
 // Private Methods
 
@@ -138,8 +138,8 @@ return 'transitionend';
 // copy BCH URI to clipboard
 function copyBCHURI(that) {
 var inp = document.createElement('input');
-inp.value = that
-document.body.appendChild(inp)
+inp.value = that;
+document.body.appendChild(inp);
 inp.select();
 document.execCommand('copy', false);
 inp.remove();
@@ -182,7 +182,7 @@ if (getTransactions.amount == bchAmount) {
 console.log("Confirmed. Transaction ID:", getTransactions.txid);
 stopListenForTX();
 
-new Audio('https://paybutton.cash/pre-release/v0.1/audio/pbding.mp3').play()
+new Audio('https://paybutton.cash/pre-release/v0.1/audio/pbding.mp3').play();
 
 var successFieldExists = document.getElementById(successField);
 
@@ -263,7 +263,7 @@ console.log("Error", err);
 
 stopListenForTX();
 
-new Audio('https://paybutton.cash/pre-release/v0.1/audio/pbding.mp3').play()
+new Audio('https://paybutton.cash/pre-release/v0.1/audio/pbding.mp3').play();
 
 console.log("Confirmed. Transaction ID:", res);
 
