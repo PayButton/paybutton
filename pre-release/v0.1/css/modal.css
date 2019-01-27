@@ -1,6 +1,5 @@
  .amountdiv {
 word-wrap: break-word;
-font-size: 16px;
 margin: 6px 8px 0px 8px;
 }
 
@@ -72,6 +71,8 @@ background: rgba(0,0,0,.6);
 }
 
 .paybutton-modal {
+font-family: Helvetica, Arial, sans-serif;
+font-size: 16px;
 position: absolute;
 z-index: 9999;
 top: 50%;
