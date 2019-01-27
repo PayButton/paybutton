@@ -1,4 +1,4 @@
-// Create an immediately invoked functional expression to wrap our code
+// * start of create modal
 (function() {
 
 // Define our constructor 
@@ -133,9 +133,10 @@ return 'transitionend';
 }
 
 }());
+// * end of create modal
 
 
-// copy BCH URI to clipboard
+// * start of copy BCH URI to clipboard
 function copyBCHURI(that) {
 var inp = document.createElement('input');
 inp.value = that;
@@ -145,21 +146,74 @@ document.execCommand('copy', false);
 inp.remove();
 alert("Bitcoin Cash address copied!");
 }
+// * end of copy BCH URI to clipboard
 
 
-var listen;
+// * start of transaction audio
+function playAudio () {
+var successAudio = new Audio('https://paybutton.cash/pre-release/v0.1/audio/pbding.mp3');
+successAudio.volume = 0.02; // 50%
+successAudio.play();
+}
+// * end of transaction audio
 
-function startListenForTX (toAddress, bchAmount, successField, successMsg) {
+
+// * start of start/stop transaction listen
+var txListen;
+
+function startListenForTX (toAddress, bchAmount, successField, successMsg, successCallback) {
 var timeStamp = Math.floor(Date.now() / 1000);
-listen = setInterval(function(){ listenForTX(toAddress, bchAmount, successField, successMsg, timeStamp); }, 1500);
+txListen = setInterval(function(){ listenForTX(toAddress, bchAmount, successField, successMsg, successCallback, timeStamp); }, 1500);
 }
 
 function stopListenForTX () {
-clearInterval(listen);
+clearInterval(txListen);
+}
+// * end of start/stop transaction listen
+
+
+// * start of show transaction message
+function txDialogue (message, transactionId, successField, successCallback) {
+
+playAudio();
+
+var successFieldExists = document.getElementById(successField);
+
+if (!message) {
+message = "Transaction Successful!";
 }
 
+if (!successFieldExists) {
+var success = document.getElementById("modal-content");
+success.innerHTML =
 
-function listenForTX (toAddress, bchAmount, successField, successMsg, timeStamp) {
+'<div>' +
+'<div>' +
+'<div>' +
+'<div class="amountdiv"><span>'+message+'</span></div>' +
+'</div>' +
+'<div>' +
+'<div class="amountdiv"><span>View: </span><a href="https://explorer.bitcoin.com/bch/tx/'+transactionId+'" target="_blank" style="color: orangeRed; text-decoration: none;">Transaction</a></div>' +
+'</div>' +
+'</div>' +
+'</div>';
+
+} else {
+document.getElementById(successField).innerText = message;
+}
+
+console.log("Confirmed. Transaction ID:", transactionId);
+
+if (successCallback && window[successCallback]()) {
+window[successCallback](transactionId);
+}
+
+}
+// * end of show transaction message
+
+
+// * start of transaction listener
+function listenForTX (toAddress, bchAmount, successField, successMsg, successCallback, timeStamp) {
 
 var txRequest = new XMLHttpRequest();
 txRequest.open('GET', 'https://rest.bitcoin.com/v1/address/unconfirmed/' + toAddress, true);
@@ -171,43 +225,15 @@ console.log("listening for transaction..");
 
 var txData = JSON.parse(txRequest.responseText);
 
-for (var j in txData) {
-
+for (var j = 0; j < txData.length; j++) {
 var getTransactions = txData[j];
-
-//console.log(timeStamp, getTransactions.ts, getTransactions.amount, getTransactions.txid)
 
 if (timeStamp < getTransactions.ts) {
 if (getTransactions.amount == bchAmount) {
-console.log("Confirmed. Transaction ID:", getTransactions.txid);
+
 stopListenForTX();
 
-new Audio('https://paybutton.cash/pre-release/v0.1/audio/pbding.mp3').play();
-
-var successFieldExists = document.getElementById(successField);
-
-if (!successMsg) {
-successMsg = "Transaction Successful!";
-}
-
-if (!successFieldExists) {
-var success = document.getElementById("modal-content");
-success.innerHTML =
-
-'<div>' +
-'<div>' +
-'<div>' +
-'<div class="amountdiv"><span>'+successMsg+'</span></div>' +
-'</div>' +
-'<div>' +
-'<div class="amountdiv"><span>View: </span><a href="https://explorer.bitcoin.com/bch/tx/'+getTransactions.txid+'" target="_blank" style="color: orangeRed; text-decoration: none;">Transaction</a></div>' +
-'</div>' +
-'</div>' +
-'</div>';
-
-} else {
-document.getElementById(successField).innerText = successMsg;
-}
+txDialogue(successMsg, getTransactions.txid, successField, successCallback);
 
 return;
 } // for if amount is equal
@@ -228,10 +254,10 @@ console.log("Could Not Connect To Server");
 txRequest.send();
 
 }
-// end listen for transaction
+// * end of transaction listener
 
 
-// * begin function detect and send data to badger wallet
+// * start of begin function detect and send data to badger wallet
 function sendToBadger (toAddress, bchAmount, successField, successMsg, successCallback, amountMessage, anyAmount) {
 
 if (!anyAmount) {
@@ -263,38 +289,7 @@ console.log("Error", err);
 
 stopListenForTX();
 
-new Audio('https://paybutton.cash/pre-release/v0.1/audio/pbding.mp3').play();
-
-console.log("Confirmed. Transaction ID:", res);
-
-var successFieldExists = document.getElementById(successField);
-
-if (!successMsg) {
-successMsg = "Transaction Successful!";
-}
-
-if (!successFieldExists) {
-var success = document.getElementById("modal-content");
-success.innerHTML =
-
-'<div>' +
-'<div>' +
-'<div>' +
-'<div class="amountdiv"><span>'+successMsg+'</span></div>' +
-'</div>' +
-'<div>' +
-'<div class="amountdiv"><span>View: </span><a href="https://explorer.bitcoin.com/bch/tx/'+res+'" target="_blank" style="color: orangeRed; text-decoration: none;">Transaction</a></div>' +
-'</div>' +
-'</div>' +
-'</div>';
-
-} else {
-document.getElementById(successField).innerText = successMsg;
-}
-
-if (successCallback) {
-window[successCallback](res);
-}
+txDialogue(successMsg, res, successField, successCallback);
 
 }
 });
@@ -307,9 +302,10 @@ alert("To use Badger Wallet for this transaction, Please visit:\n\nhttps://badge
 }
 
 }
-// * end function detect and send data to badger wallet
+// * end of begin function detect and send data to badger wallet
 
 
+// * start of open model
 function openModal (toAddress, bchAmount, successField, successMsg, successCallback, amountMessage, anyAmount) {
 
 // qr code generation
@@ -321,7 +317,7 @@ bchAmount = "";
 } else {
 qrData = toAddress + "?amount=" + bchAmount;
 URI = toAddress + "?amount=" + bchAmount;
-startListenForTX(toAddress, bchAmount, successField, successMsg);
+startListenForTX(toAddress, bchAmount, successField, successMsg, successCallback);
 }
 var qrParams = {
 ecclevel: "Q",
@@ -337,7 +333,6 @@ var XMLS = new XMLSerializer();
 genQR = XMLS.serializeToString(genQR);
 genQR = "data:image/svg+xml;base64," + window.btoa(unescape(encodeURIComponent(genQR)));
 qrImage = genQR;
-	
 } else {
 genQR = QRCode.generatePNG(qrData, qrParams);
 qrImage = genQR;
@@ -373,9 +368,9 @@ content: pbContent
 pbModal.open();
 
 }
+// * end of open model
 
-
-// * begin function query to obtain bch price
+// * start of begin function query to obtain bch price
 function getBCHPrice (buttonAmount, amountType, toAddress, successField, successMsg, successCallback, bchAmount, amountMessage, anyAmount) {
 
 var fiatRequest = new XMLHttpRequest();
@@ -413,7 +408,7 @@ console.log("Could Not Connect To Server");
 fiatRequest.send();
 
 }
-// * end function query to obtain bch price
+// * end of begin function query to obtain bch price
 
 
 // insert info into button on mouseover
