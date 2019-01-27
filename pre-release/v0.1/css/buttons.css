@@ -1,6 +1,5 @@
 /* begin default button set */
 .pay-button {
-font-family: Verdana, Geneva, sans-serif;
 font-size: 16px;
 font-weight: bold;
 border-radius: 4px;
@@ -451,7 +450,6 @@ width: 260px;
 	border: 2px solid #e67e22;
 }
 .modal > span {
-padding: 15px 6px;
 background: linear-gradient(45deg, #FFF 50%, #e67e22 50%);
 -webkit-background-clip: text;
 -webkit-text-fill-color: transparent;
