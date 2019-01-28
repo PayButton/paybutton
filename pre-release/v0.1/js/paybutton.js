@@ -1199,7 +1199,7 @@ var paywallFieldExists = document.getElementsByClassName(paywallField);
 if (paywallFieldExists) {
 for (var i = 0; i < paywallFieldExists.length; i++) {
 var paywallFields = paywallFieldExists[i];
-paywallFields.style.display = "block"
+paywallFields.style.display = "block";
 }
 }
 
@@ -1300,7 +1300,7 @@ txDialogue(successMsg, res, paywallField, successCallback);
 } else {
 
 document.getElementById("badger-open").innerHTML = ("<span>Badger Wallet Not Found</span>");
-window.open('https://badger.bitcoin.com')
+window.open('https://badger.bitcoin.com');
 alert("To use Badger Wallet for this transaction, Please visit:\n\nhttps://badger.bitcoin.com for installation instructions.");
 }
 
@@ -1347,8 +1347,8 @@ var pbContent =
 '<div>' +
 '<div>' +
 '<div class="qrparent" onclick=copyBCHURI(\''+URI+'\')>' +
-'<img class="qrcode" src="'+qrImage+'"width="256" />' +
-'<img class="qricon" src="https://paybutton.cash/images/bitcoincash_bare_logo.png" width="70" />' +
+'<img class="qrcode" src="'+qrImage+'"  width="256" />' +
+'<img class="qricon" src="https://i.imgur.com/fpxx8mp.png" width="70" />' +
 '<div class="qrctc">Click to Copy</div>'+
 '</div>' +
 '</div>' +
