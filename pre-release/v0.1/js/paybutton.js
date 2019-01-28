@@ -1348,7 +1348,7 @@ var pbContent =
 '<div>' +
 '<div class="qrparent" onclick=copyBCHURI(\''+URI+'\')>' +
 '<img class="qrcode" src="'+qrImage+'"  width="256" />' +
-'<img class="qricon" src="https://i.imgur.com/fpxx8mp.png" width="70" />' +
+'<img class="qricon" src="images/bitcoincash_bare_logo.png" width="70" />' +
 '<div class="qrctc">Click to Copy</div>'+
 '</div>' +
 '</div>' +
