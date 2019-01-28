@@ -73,7 +73,7 @@ background: rgba(0,0,0,.6);
 .paybutton-modal {
 font-family: Helvetica, Arial, sans-serif;
 font-size: 16px;
-position: absolute;
+position: fixed;
 z-index: 9999;
 top: 50%;
 left: 50%;
