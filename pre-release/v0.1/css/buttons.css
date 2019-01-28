@@ -397,6 +397,96 @@ background-position: 100%;
 /* end wa button set */
 
 
+/* begin gr button set */
+.gr {
+border: 2px solid #4CCA47;
+/*For IE*/
+}
+.gr:hover {
+	border: 2px solid #4CCA47;
+}
+.gr > span {
+background: linear-gradient(45deg, #fff 50%, #4CCA47 50%);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+}
+.gr:after {
+background: linear-gradient(20deg, #4CCA47 50%, transparent 50%);
+}
+.gr > span, .gr:after {
+background-size: 300%;
+background-position: 100%;
+}
+
+.grrev {
+border: 2px solid #4CCA47;
+/*For IE*/
+}
+.grrev:hover {
+	border: 2px solid #4CCA47;
+}
+.grrev > span {
+background: linear-gradient(45deg, #4CCA47 50%, #FFF 50%);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+}
+.grrev:after {
+background: linear-gradient(20deg, transparent 50%, #4CCA47 50%);
+}
+.grrev > span, .grrev:after {
+background-size: 300%;
+background-position: 100%;
+}
+
+.grdbl {
+border: 1px solid #4CCA47;
+background: transparent;
+/*For IE*/
+}
+.grdbl:hover {
+	border: 4px double #4CCA47;
+}
+.grdbl > span {
+background: linear-gradient(45deg, #FFF 50%, #4CCA47 50%);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+}
+.grdbl:after {
+background: linear-gradient(35deg, #4CCA47 50%, transparent 50%);
+}
+.grdbl > span,.grdbl:after {
+background-size: 300%;
+background-position: 100%;
+transition: 1s, font-size 1.1s;
+}
+.grdbl:hover > span,.grdbl:hover:after {
+padding: .55em;
+color: #4CCA47;
+}
+
+.grbare {
+border: 0px solid #4CCA47;
+background: transparent;
+/*For IE*/
+}
+.grbare:hover {
+	border: 0px solid #4CCA47;
+}
+.grbare > span {
+background: linear-gradient(45deg, #FFF 50%, #4CCA47 50%);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+}
+.grbare:after {
+background: linear-gradient(35deg, #4CCA47 50%, transparent 50%);
+}
+.grbare > span, .grbare:after {
+background-size: 300%;
+background-position: 100%;
+}
+/* end gr button set */
+
+
 /* begin spice button set */
 .spice {
 font-size: 18px;
