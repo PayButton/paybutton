@@ -161,9 +161,9 @@ successAudio.play();
 // * start of start/stop transaction listen
 var txListen;
 
-function startListenForTX (toAddress, bchAmount, successField, successMsg, successCallback) {
+function startListenForTX (toAddress, bchAmount, successMsg, paywallField, successCallback) {
 var timeStamp = Math.floor(Date.now() / 1000);
-txListen = setInterval(function(){ listenForTX(toAddress, bchAmount, successField, successMsg, successCallback, timeStamp); }, 1500);
+txListen = setInterval(function(){ listenForTX(toAddress, bchAmount, successMsg, paywallField, successCallback, timeStamp); }, 1250);
 }
 
 function stopListenForTX () {
@@ -173,19 +173,16 @@ clearInterval(txListen);
 
 
 // * start of show transaction message
-function txDialogue (message, transactionId, successField, successCallback) {
+function txDialogue (message, transactionId, paywallField, successCallback) {
 
 playAudio();
-
-var successFieldExists = document.getElementById(successField);
 
 if (!message) {
 message = "Transaction Successful!";
 }
 
-if (!successFieldExists) {
-var success = document.getElementById("modal-content");
-success.innerHTML =
+var successDisplay = document.getElementById("modal-content");
+successDisplay.innerHTML =
 
 '<div>' +
 '<div>' +
@@ -198,13 +195,17 @@ success.innerHTML =
 '</div>' +
 '</div>';
 
-} else {
-document.getElementById(successField).innerText = message;
-}
-
 console.log("Confirmed. Transaction ID:", transactionId);
 
-if (successCallback && window[successCallback]()) {
+var paywallFieldExists = document.getElementsByClassName(paywallField);
+if (paywallFieldExists) {
+for (var i = 0; i < paywallFieldExists.length; i++) {
+var paywallFields = paywallFieldExists[i];
+paywallFields.style.display = "block"
+}
+}
+
+if (successCallback && window[successCallback]) {
 window[successCallback](transactionId);
 }
 
@@ -213,7 +214,7 @@ window[successCallback](transactionId);
 
 
 // * start of transaction listener
-function listenForTX (toAddress, bchAmount, successField, successMsg, successCallback, timeStamp) {
+function listenForTX (toAddress, bchAmount, successMsg, paywallField, successCallback, timeStamp) {
 
 var txRequest = new XMLHttpRequest();
 txRequest.open('GET', 'https://rest.bitcoin.com/v1/address/unconfirmed/' + toAddress, true);
@@ -233,7 +234,7 @@ if (getTransactions.amount == bchAmount) {
 
 stopListenForTX();
 
-txDialogue(successMsg, getTransactions.txid, successField, successCallback);
+txDialogue(successMsg, getTransactions.txid, paywallField, successCallback);
 
 return;
 } // for if amount is equal
@@ -258,7 +259,7 @@ txRequest.send();
 
 
 // * start of begin function detect and send data to badger wallet
-function sendToBadger (toAddress, bchAmount, successField, successMsg, successCallback, amountMessage, anyAmount) {
+function sendToBadger (toAddress, bchAmount, successMsg, paywallField, successCallback, amountMessage, anyAmount) {
 
 if (!anyAmount) {
 bchAmount = bchAmount * 100000000;
@@ -289,7 +290,7 @@ console.log("Error", err);
 
 stopListenForTX();
 
-txDialogue(successMsg, res, successField, successCallback);
+txDialogue(successMsg, res, paywallField, successCallback);
 
 }
 });
@@ -306,7 +307,7 @@ alert("To use Badger Wallet for this transaction, Please visit:\n\nhttps://badge
 
 
 // * start of open model
-function openModal (toAddress, bchAmount, successField, successMsg, successCallback, amountMessage, anyAmount) {
+function openModal (toAddress, bchAmount, successMsg, paywallField, successCallback, amountMessage, anyAmount) {
 
 // qr code generation
 if (anyAmount) {
@@ -317,7 +318,7 @@ bchAmount = "";
 } else {
 qrData = toAddress + "?amount=" + bchAmount;
 URI = toAddress + "?amount=" + bchAmount;
-startListenForTX(toAddress, bchAmount, successField, successMsg, successCallback);
+startListenForTX(toAddress, bchAmount, successMsg, paywallField, successCallback);
 }
 var qrParams = {
 ecclevel: "Q",
@@ -356,7 +357,7 @@ var pbContent =
 '<div><a href="'+URI+'"><button class="pay-button modal"><span>Send with Bitcoin Cash Wallet</span></button></a></div>' +
 '</div>' +
 '<div>' +
-'<div><button class = "pay-button modal" onclick="sendToBadger(\''+toAddress+'\', \''+bchAmount+'\', \''+successField+'\', \''+successMsg+'\', \''+successCallback+'\')"><span>Send with Badger Wallet</span></button></div> ' +
+'<div><button class = "pay-button modal" onclick="sendToBadger(\''+toAddress+'\', \''+bchAmount+'\', \''+successMsg+'\', \''+paywallField+'\', \''+successCallback+'\')"><span>Send with Badger Wallet</span></button></div> ' +
 '</div>' +
 '</div>' +
 '</div>';
@@ -371,7 +372,7 @@ pbModal.open();
 // * end of open model
 
 // * start of begin function query to obtain bch price
-function getBCHPrice (buttonAmount, amountType, toAddress, successField, successMsg, successCallback, bchAmount, amountMessage, anyAmount) {
+function getBCHPrice (buttonAmount, amountType, toAddress, successMsg, paywallField, successCallback, bchAmount, amountMessage, anyAmount) {
 
 var fiatRequest = new XMLHttpRequest();
 fiatRequest.open('GET', 'https://index-api.bitcoin.com/api/v0/cash/price/' + amountType, true);
@@ -390,7 +391,7 @@ bchAmount = bchAmount.toFixed(8);
 
 amountMessage = (buttonAmount + " " + amountType + " = " + bchAmount + " BCH");
 
-openModal(toAddress, bchAmount, successField, successMsg, successCallback, amountMessage, anyAmount);
+openModal(toAddress, bchAmount, successMsg, paywallField, successCallback, amountMessage, anyAmount);
 
 } else {
 console.log("Error Price Not Found");
@@ -474,8 +475,8 @@ payButtons.addEventListener("click", function(pbEvent) {
 var buttonAmount = this.getAttribute("amount") || ""; buttonAmount = Number(buttonAmount.trim());
 var amountType = this.getAttribute("amount-type") || ""; amountType = amountType.trim().toUpperCase();
 var toAddress = this.getAttribute("address") || ""; toAddress = toAddress.trim();
-var successField = this.getAttribute("success-field") || ""; successField = successField.trim();
 var successMsg = this.getAttribute("success-msg") || ""; successMsg = successMsg.trim();
+var paywallField = this.getAttribute("paywall-field") || ""; paywallField = paywallField.trim();
 var successCallback = this.getAttribute("success-callback") || ""; successCallback = successCallback.trim();
 
 var bchAmount; var amountMessage; var anyAmount;
@@ -499,7 +500,7 @@ anyAmount = true;
 // check for "any" amount allowed else convert
 if (anyAmount) {
 
-openModal(toAddress, bchAmount, successField, successMsg, successCallback, amountMessage, anyAmount);
+openModal(toAddress, bchAmount, successMsg, paywallField, successCallback, amountMessage, anyAmount);
 
 } else {
 // check if amount type is set to bch or fiat
@@ -515,11 +516,11 @@ bchAmount = bchAmount.toFixed(8);
 amountMessage = (bchAmount + " BCH");
 
 // send bch tx data to modal
-openModal(toAddress, bchAmount, successField, successMsg, successCallback, amountMessage, anyAmount);
+openModal(toAddress, bchAmount, successMsg, paywallField, successCallback, amountMessage, anyAmount);
 
 } else {
 // send fiat tx data to fiat/bch conversion
-getBCHPrice (buttonAmount, amountType, toAddress, successField, successMsg, successCallback, bchAmount, amountMessage, anyAmount);
+getBCHPrice (buttonAmount, amountType, toAddress, successMsg, paywallField, successCallback, bchAmount, amountMessage, anyAmount);
 }
 }
 
