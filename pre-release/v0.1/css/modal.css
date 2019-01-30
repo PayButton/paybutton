@@ -144,12 +144,12 @@ transition: 300ms opacity 300ms ease;
 }
 
  .amountdiv {
+font-size: 16px;
 word-wrap: break-word;
 margin: 6px 8px 0px 8px;
 }
 
  .addressdiv {
-font-size: 10px;
 word-wrap: break-word;
 font-size: 10px;
 margin: 10px 8px 0px 8px;
