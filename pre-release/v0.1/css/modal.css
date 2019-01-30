@@ -1,9 +1,9 @@
- .amountdiv {
+.amountdiv {
 word-wrap: break-word;
 margin: 6px 8px 0px 8px;
 }
 
- .addressdiv {
+.addressdiv {
 word-wrap: break-word;
 font-size: 10px;
 margin: 10px 8px 0px 8px;
@@ -71,8 +71,9 @@ background: rgba(0,0,0,.6);
 }
 
 .paybutton-modal {
-font-family: Helvetica, Arial, sans-serif;
-font-size: 16px;
+all: initial;
+font-family: Helvetica Neu, Arial, sans-serif;
+font-size: 1em;
 position: fixed;
 z-index: 9999;
 top: 50%;
@@ -80,8 +81,8 @@ left: 50%;
 text-align: center;
 opacity: 0;
 overflow: auto;
-width: 270px !important;
-padding: 20px 15px 20px 15px;
+width: 100%;
+padding: 20px 12px 20px 12px;
 /*padding: 24px 20px;*/
 
 -webkit-transition: 1ms opacity ease;
