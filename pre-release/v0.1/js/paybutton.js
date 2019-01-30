@@ -1185,10 +1185,10 @@ successDisplay.innerHTML =
 '<div>' +
 '<div>' +
 '<div>' +
-'<div class="amountdiv"><span>'+message+'</span></div>' +
+'<div class="dialoguediv"><span>'+message+'</span></div>' +
 '</div>' +
 '<div>' +
-'<div class="amountdiv"><span>View: </span><a href="https://explorer.bitcoin.com/bch/tx/'+transactionId+'" target="_blank" style="color: orangeRed; text-decoration: none;">Transaction</a></div>' +
+'<div class="dialoguediv"><span>View: </span><a href="https://explorer.bitcoin.com/bch/tx/'+transactionId+'" target="_blank" style="color: orangeRed; text-decoration: none;">Transaction</a></div>' +
 '</div>' +
 '</div>' +
 '</div>';
@@ -1342,6 +1342,8 @@ genQR = QRCode.generatePNG(qrData, qrParams);
 qrImage = genQR;
 }
 
+
+
 var pbContent =
 
 '<div>' +
@@ -1354,7 +1356,7 @@ var pbContent =
 '</div>' +
 '</div>' +
 '<div>' +
-'<div class="amountdiv"><span>'+amountMessage+'</span></div> ' +
+'<div class="dialoguediv"><span>'+amountMessage+'</span></div> ' +
 '</div>' +
 '<div>' +
 '<div><button id="bch-open" class="pay-button modal" onclick="location.href=\''+URI+'\'" type="button"><span>Send with BCH Wallet</span></button></div>' +
@@ -1363,12 +1365,11 @@ var pbContent =
 //'<div><button id="badger-open" class = "pay-button modal" onclick="sendToBadger(\''+toAddress+'\', \''+bchAmount+'\', \''+successMsg+'\', \''+paywallField+'\', \''+successCallback+'\')"><span>Send with Badger Wallet</span></button></div> ' +
 //'</div>' +
 '<div>' +
-'<br/><div><a href="https://paybutton.cash" target="_blank" style="color: orangeRed; text-decoration: none; font-size: 12px;"><span>Powered by PayButton.cash</span></a></div>' +
+'<div class="poweredbydiv"><span><a href="https://paybutton.cash" target="_blank" style="color: orangeRed; text-decoration: none;">Powered by PayButton.cash</a></span></div>' +
 '</div>' +
 '</div>' +
 '</div>';
 
-//<img src="https://paybutton.cash/images/paybuttonlogo_s.png" width="110" style="vertical-align:middle">
 
 var pbModal = new Modal({
 content: pbContent
