@@ -1357,7 +1357,7 @@ var pbContent =
 '<div class="amountdiv"><span>'+amountMessage+'</span></div> ' +
 '</div>' +
 '<div>' +
-'<div><button id="bch-open" class="pay-button modal" onclick="location.href=\''+URI+'\'"><span>Send with BCH Wallet</span></button></div>' +
+'<div><button id="bch-open" class="pay-button modal" onclick="location.href=\''+URI+'\'" type="button"><span>Send with BCH Wallet</span></button></div>' +
 '</div>' +
 //'<div>' +
 //'<div><button id="badger-open" class = "pay-button modal" onclick="sendToBadger(\''+toAddress+'\', \''+bchAmount+'\', \''+successMsg+'\', \''+paywallField+'\', \''+successCallback+'\')"><span>Send with Badger Wallet</span></button></div> ' +
