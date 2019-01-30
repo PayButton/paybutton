@@ -1,192 +1,569 @@
-/* Modal Base CSS */
-.paybutton-overlay {
-position: fixed;
-z-index: 9998;
-top: 0;
-left: 0;
-
-opacity: 0;
-
-width: 100%;
-height: 100%;
-
--webkit-transition: 1ms opacity ease;
- -moz-transition: 1ms opacity ease;
--ms-transition: 1ms opacity ease;
- -o-transition: 1ms opacity ease;
-transition: 1ms opacity ease;
-
-background: rgba(0,0,0,.6);
-}
-
-.paybutton-modal {
+/* begin default button set */
+.pay-button {
 all: initial;
 font-family: Helvetica Neu, Arial, sans-serif;
-font-size: 1em;
-position: fixed;
-z-index: 9999;
-top: 50%;
-left: 50%;
+
+font-size: 17px;
+
+
+
+box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.08);
+
+font-weight: 500;
+border-radius: 4px;
+cursor: pointer;
+border: 2px solid #F57A00;
+background: transparent;
+position: relative;
+padding: 0px;
+min-width: 200px;
+max-width: 270px;
 text-align: center;
-opacity: 0;
-overflow: auto;
-width: 100%;
-padding: 20px 12px 20px 12px;
-/*padding: 24px 20px;*/
+margin: 10px;
+color: #fff;
 
--webkit-transition: 1ms opacity ease;
- -moz-transition: 1ms opacity ease;
--ms-transition: 1ms opacity ease;
- -o-transition: 1ms opacity ease;
-transition: 1ms opacity ease;
+z-index: 1;
 
--webkit-transform: translate(-50%, -50%);
- -moz-transform: translate(-50%, -50%);
--ms-transform: translate(-50%, -50%);
- -o-transform: translate(-50%, -50%);
-transform: translate(-50%, -50%);
-
-border-radius: 6px;
-background: #fff;
-}
-
-.paybutton-content {
-/*border: 1px solid #c3c3c3;*/
-	vertical-align:middle;
-	text-align:center;
-padding: 0px 0px 0px 0px;
-}
-
-.paybutton-modal.paybutton-open.paybutton-anchored {
-top: 20px;
-
--webkit-transform: translate(-50%, 0);
- -moz-transform: translate(-50%, 0);
--ms-transform: translate(-50%, 0);
- -o-transform: translate(-50%, 0);
-transform: translate(-50%, 0);
-}
-
-.paybutton-modal.paybutton-open {
-opacity: 1;
-}
-
-.paybutton-overlay.paybutton-open {
-opacity: 1;
+/*For IE*/
 
 }
 
-/* Default Animation */
+.pay-button:hover {
+border: 2px solid #F57A00;
+font-weight: 400;
+transition-property: width, border-radius, background-color;
+transition-duration: 1s, 2s, 5s;
+transition-timing-function:ease, ease-out, linear;
 
-.paybutton-overlay.fade-and-drop {
-display: block;
-
-opacity: 0;
 }
 
-.paybutton-modal.fade-and-drop {
-top: -300%;
-
-opacity: 1;
-
-display: block;
+.pay-button > span {
+display: inline-block;
+padding: 12px 8px;
+position: relative;
+background: linear-gradient(45deg, #fff 50%, #F57A00 50%);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+z-index: -1;
 }
 
-/* speed of modal content entering window */
-.paybutton-modal.fade-and-drop.paybutton-open {
-top: 50%;
-
--webkit-transition: 300ms top 300ms ease;
- -moz-transition: 300ms top 300ms ease;
--ms-transition: 300ms top 300ms ease;
- -o-transition: 300ms top 300ms ease;
-transition: 300ms top 300ms ease;
-}
-
-.paybutton-modal.fade-and-drop.paybutton-open.paybutton-anchored {
-
--webkit-transition: 300ms top 300ms ease;
- -moz-transition: 300ms top 300ms ease;
--ms-transition: 300ms top 300ms ease;
- -o-transition: 300ms top 300ms ease;
-transition: 300ms top 300ms ease;
-}
-
-/* speed of modal background entering window */
-.paybutton-overlay.fade-and-drop.paybutton-open {
+.pay-button:after {
+content: "";
+position: absolute;
 top: 0;
-
--webkit-transition: 300ms opacity ease;
- -moz-transition: 300ms opacity ease;
--ms-transition: 300ms opacity ease;
- -o-transition: 300ms opacity ease;
-transition: 300ms opacity ease;
-
-opacity: 1;
+bottom: 0;
+left: 0;
+right: 0;
+background: linear-gradient(20deg, #F59332 50%, transparent 50%);
+z-index: -5;
 }
 
-/* speed of model close upward */
-.paybutton-modal.fade-and-drop {
--webkit-transition: 700ms top ease;
- -moz-transition: 700ms top ease;
--ms-transition: 700ms top ease;
- -o-transition: 700ms top ease;
-transition: 700ms top ease;
+.pay-button > span,.pay-button:after {
+background-size: 300%;
+background-position: 100%;
+transition: .9s, text 10s;
+
+
 }
 
-/* speed of dark overlay exiting */
-.paybutton-overlay.fade-and-drop {
--webkit-transition: 300ms opacity 300ms ease;
- -moz-transition: 300ms opacity 300ms ease;
--ms-transition: 300ms opacity 300ms ease;
- -o-transition: 300ms opacity 300ms ease;
-transition: 300ms opacity 300ms ease;
+.pay-button:hover > span,.pay-button:hover:after {
+background-position: 0;
+/*padding: .75em;*/
+/*font-size: 1.1em;*/
+color: #F59332;
+/*For IE*/
 }
 
- .amountdiv {
-font-size: 16px;
-word-wrap: break-word;
-margin: 6px 8px 0px 8px;
+.rev {
+
+/*For IE*/
+}
+.rev > span {
+background: linear-gradient(45deg, #F57A00 50%, #FFF 50%);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+}
+.rev:after {
+background: linear-gradient(20deg, transparent 50%, #F59332 50%);
+}
+.rev > span, .rev:after {
+background-size: 300%;
+background-position: 100%;
 }
 
- .addressdiv {
-word-wrap: break-word;
-font-size: 10px;
-margin: 10px 8px 0px 8px;
+.dbl {
+border: 1px solid #F57A00;
+background: transparent;
+/*For IE*/
+}
+.dbl:hover {
+border: 4px double #F57A00;
+}
+.dbl > span {
+background: linear-gradient(45deg, #FFF 50%, #F59332 50%);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+}
+.dbl:after {
+background: linear-gradient(35deg, #F59332 50%, transparent 50%);
+}
+.dbl > span,.dbl:after {
+background-size: 300%;
+background-position: 100%;
+transition: 1s, font-size 1.1s;
+}
+.dbl:hover > span,.dbl:hover:after {
+padding: .51em;
+color: #F59332;
 }
 
-.qrparent {
-	cursor: pointer;
-  position: relative;
-  top: 0;
-  left: 0;
+.bare {
+border: 0px solid #F59332;
+background: transparent;
+/*For IE*/
 }
-.qrcode {
-  position: relative;
-  top: 0;
-  left: 0;
-	border: 2px solid #000000;
+.bare:hover {
+border: 0px solid #F59332;
 }
-.qricon {
-    position: absolute;
-		top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+.bare > span {
+background: linear-gradient(45deg, #FFF 50%, #F59332 50%);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+}
+.bare:after {
+background: linear-gradient(35deg, #F59332 50%, transparent 50%);
+}
+.bare > span, .bare:after {
+background-size: 300%;
+background-position: 100%;
+}
+/* end default button set */
 
-    display: block;
-    margin: auto;
-		}
-.qrctc {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-		color: #000000;
-		font-size: 14px;
-    display: block;
-    margin: 0px 7px 7px 0px;
-		padding: 3px;
-		text-align:right;
-		opacity: 0.95;
-		background: #FFFFFF;
-		}
+
+/* begin ca button set */
+.ca {
+border: 2px solid #e67e22;
+/*For IE*/
+}
+.ca:hover {
+border: 2px solid #e67e22;
+}
+.ca > span {
+background: linear-gradient(45deg, #fff 50%, #e67e22 50%);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+}
+.ca:after {
+background: linear-gradient(20deg, #e67e22 50%, transparent 50%);
+}
+.ca > span, .ca:after {
+background-size: 300%;
+background-position: 100%;
+}
+
+.carev {
+border: 2px solid #e67e22;
+/*For IE*/
+}
+.carev:hover {
+border: 2px solid #e67e22;
+}
+.carev > span {
+background: linear-gradient(45deg, #e67e22 50%, #FFF 50%);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+}
+.carev:after {
+background: linear-gradient(20deg, transparent 50%, #e67e22 50%);
+}
+.carev > span, .carev:after {
+background-size: 300%;
+background-position: 100%;
+}
+
+.cadbl {
+border: 1px solid #e67e22;
+background: transparent;
+/*For IE*/
+}
+.cadbl:hover {
+border: 4px double #e67e22;
+}
+.cadbl > span {
+background: linear-gradient(45deg, #FFF 50%, #e67e22 50%);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+}
+.cadbl:after {
+background: linear-gradient(35deg, #e67e22 50%, transparent 50%);
+}
+.cadbl > span,.cadbl:after {
+background-size: 300%;
+background-position: 100%;
+transition: 1s, font-size 1.1s;
+}
+.cadbl:hover > span,.cadbl:hover:after {
+padding: .55em;
+color: #e67e22;
+}
+
+.cabare {
+border: 0px solid #e67e22;
+background: transparent;
+/*For IE*/
+}
+.cabare:hover {
+border: 0px solid #e67e22;
+}
+.cabare > span {
+background: linear-gradient(45deg, #FFF 50%, #e67e22 50%);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+}
+.cabare:after {
+background: linear-gradient(35deg, #e67e22 50%, transparent 50%);
+}
+.cabare > span, .cabare:after {
+background-size: 300%;
+background-position: 100%;
+}
+/* end ca button set */
+
+
+/* begin po button set */
+.po {
+border: 2px solid #c0392b;
+/*For IE*/
+}
+.po:hover {
+border: 2px solid #c0392b;
+}
+.po > span {
+background: linear-gradient(45deg, #FFF 50%, #c0392b 50%);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+}
+.po:after {
+background: linear-gradient(20deg, #c0392b 50%, transparent 50%);
+}
+.po > span, .po:after {
+background-size: 300%;
+background-position: 100%;
+}
+
+.porev {
+border: 2px solid #c0392b;
+/*For IE*/
+}
+.porev:hover {
+border: 2px solid #c0392b;
+}
+.porev > span {
+background: linear-gradient(45deg, #c0392b 50%, #FFF 50%);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+}
+.porev:after {
+background: linear-gradient(20deg, transparent 50%, #c0392b 50%);
+}
+.porev > span, .porev:after {
+background-size: 300%;
+background-position: 100%;
+}
+
+.podbl {
+border: 1px solid #c0392b;
+background: transparent;
+/*For IE*/
+}
+.podbl:hover {
+border: 4px double #c0392b;
+}
+.podbl > span {
+background: linear-gradient(45deg, #FFF 50%, #c0392b 50%);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+}
+.podbl:after {
+background: linear-gradient(35deg, #c0392b 50%, transparent 50%);
+}
+.podbl > span,.podbl:after {
+background-size: 300%;
+background-position: 100%;
+transition: 1s, font-size 1.1s;
+}
+.podbl:hover > span,.podbl:hover:after {
+padding: .55em;
+color: #c0392b;
+}
+
+.pobare {
+border: 0px solid #c0392b;
+background: transparent;
+/*For IE*/
+}
+.pobare:hover {
+border: 0px solid #c0392b;
+}
+.pobare > span {
+background: linear-gradient(45deg, #FFF 50%, #c0392b 50%);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+}
+.pobare:after {
+background: linear-gradient(35deg, #c0392b 50%, transparent 50%);
+}
+.pobare > span, .pobare:after {
+background-size: 300%;
+background-position: 100%;
+}
+/* end po button set */
+
+
+/* begin wa button set */
+.wa {
+border: 2px solid #34495e;
+/*For IE*/
+}
+.wa:hover {
+border: 2px solid #34495e;
+}
+.wa > span {
+background: linear-gradient(45deg, #fff 50%, #34495e 50%);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+}
+.wa:after {
+background: linear-gradient(20deg, #34495e 50%, transparent 50%);
+}
+.wa > span, .wa:after {
+background-size: 300%;
+background-position: 100%;
+}
+
+.warev {
+border: 2px solid #34495e;
+/*For IE*/
+}
+.warev:hover {
+border: 2px solid #34495e;
+}
+.warev > span {
+background: linear-gradient(45deg, #34495e 50%, #FFF 50%);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+}
+.warev:after {
+background: linear-gradient(20deg, transparent 50%, #34495e 50%);
+}
+.warev > span, .warev:after {
+background-size: 300%;
+background-position: 100%;
+}
+
+.wadbl {
+border: 1px solid #34495e;
+background: transparent;
+/*For IE*/
+}
+.wadbl:hover {
+border: 4px double #34495e;
+}
+.wadbl > span {
+background: linear-gradient(45deg, #FFF 50%, #34495e 50%);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+}
+.wadbl:after {
+background: linear-gradient(35deg, #34495e 50%, transparent 50%);
+}
+.wadbl > span,.wadbl:after {
+background-size: 300%;
+background-position: 100%;
+transition: 1s, font-size 1.1s;
+}
+.wadbl:hover > span,.wadbl:hover:after {
+padding: .55em;
+color: #34495e;
+}
+
+.wabare {
+border: 0px solid #34495e;
+background: transparent;
+/*For IE*/
+}
+.wabare:hover {
+border: 0px solid #34495e;
+}
+.wabare > span {
+background: linear-gradient(45deg, #FFF 50%, #34495e 50%);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+}
+.wabare:after {
+background: linear-gradient(35deg, #34495e 50%, transparent 50%);
+}
+.wabare > span, .wabare:after {
+background-size: 300%;
+background-position: 100%;
+}
+/* end wa button set */
+
+
+/* begin gr button set */
+.gr {
+border: 2px solid #4CCA47;
+/*For IE*/
+}
+.gr:hover {
+border: 2px solid #4CCA47;
+}
+.gr > span {
+background: linear-gradient(45deg, #fff 50%, #4CCA47 50%);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+}
+.gr:after {
+background: linear-gradient(20deg, #4CCA47 50%, transparent 50%);
+}
+.gr > span, .gr:after {
+background-size: 300%;
+background-position: 100%;
+}
+
+.grrev {
+border: 2px solid #4CCA47;
+/*For IE*/
+}
+.grrev:hover {
+border: 2px solid #4CCA47;
+}
+.grrev > span {
+background: linear-gradient(45deg, #4CCA47 50%, #FFF 50%);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+}
+.grrev:after {
+background: linear-gradient(20deg, transparent 50%, #4CCA47 50%);
+}
+.grrev > span, .grrev:after {
+background-size: 300%;
+background-position: 100%;
+}
+
+.grdbl {
+border: 1px solid #4CCA47;
+background: transparent;
+/*For IE*/
+}
+.grdbl:hover {
+border: 4px double #4CCA47;
+}
+.grdbl > span {
+background: linear-gradient(45deg, #FFF 50%, #4CCA47 50%);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+}
+.grdbl:after {
+background: linear-gradient(35deg, #4CCA47 50%, transparent 50%);
+}
+.grdbl > span,.grdbl:after {
+background-size: 300%;
+background-position: 100%;
+transition: 1s, font-size 1.1s;
+}
+.grdbl:hover > span,.grdbl:hover:after {
+padding: .55em;
+color: #4CCA47;
+}
+
+.grbare {
+border: 0px solid #4CCA47;
+background: transparent;
+/*For IE*/
+}
+.grbare:hover {
+border: 0px solid #4CCA47;
+}
+.grbare > span {
+background: linear-gradient(45deg, #FFF 50%, #4CCA47 50%);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+}
+.grbare:after {
+background: linear-gradient(35deg, #4CCA47 50%, transparent 50%);
+}
+.grbare > span, .grbare:after {
+background-size: 300%;
+background-position: 100%;
+}
+/* end gr button set */
+
+
+/* begin spice button set */
+.spice {
+font-size: 18px;
+font-weight: normal;
+border-radius: 0px;
+border: 3px solid #000000;
+background: transparent;
+padding: 0px;
+width: 270px;
+color: #000000;
+/*For IE*/
+}
+
+.spice > span {
+padding: 15px 8px;
+background: linear-gradient(45deg, #000000 50%, #000000 50%);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+}
+
+.spice:hover {
+border: 3px solid #000;
+font-weight: normal;
+}
+
+.spice:after {
+background: linear-gradient(35deg, #E60B24 50%, transparent 50%);
+}
+
+.spice > span,.spice:after {
+background-size: 300%;
+background-position: 100%;
+transition: 1.1s, font-size 1.1s;
+}
+
+.spice:hover > span,.spice:hover:after {
+/*padding: .95em;*/
+/*font-size: 1.1em;*/
+/*For IE*/
+}
+/* begin spice button set */
+
+
+/* begin modal button */
+.modal {
+font-size: 18px;
+border: 2px solid #e67e22;
+margin: 10px 0px 0px 0px;
+width: 260px;
+/*For IE*/
+}
+.modal:hover {
+border: 2px solid #e67e22;
+}
+.modal > span {
+background: linear-gradient(45deg, #FFF 50%, #e67e22 50%);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+}
+.modal:after {
+background: linear-gradient(20deg, #F7941D 50%, transparent 50%);
+}
+.modal > span, .modal:after {
+background-size: 300%;
+background-position: 100%;
+}
+/* end modal button */
