@@ -1013,8 +1013,8 @@ var defaults = {
 autoOpen: false,
 className: 'fade-and-drop',
 content: "",
-maxWidth: 270 !important,
-minWidth: 264 !important,
+maxWidth: 270px !important;,
+minWidth: 264px !important;,
 overlay: true
 };
 
