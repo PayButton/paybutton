@@ -80,8 +80,8 @@ left: 50%;
 text-align: center;
 opacity: 0;
 overflow: auto;
-width: 100%;
-padding: 20px 15px 20px 15px;
+width: 100%; !important
+padding: 20px 15px 20px 15px; !important
 /*padding: 24px 20px;*/
 
 -webkit-transition: 1ms opacity ease;
