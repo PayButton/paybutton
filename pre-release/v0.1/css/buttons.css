@@ -1,7 +1,7 @@
 /* begin default button set */
 .pay-button {
 all: initial;
-font-family: Helvetica Neu, Arial, sans-serif;
+font-family: Helvetica Neu, Arial, sans-serif !important;
 font-size: 1.1em;
 line-height: 1.1em;
 box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.08);
