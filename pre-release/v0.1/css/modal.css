@@ -1,56 +1,6 @@
-.amountdiv {
-word-wrap: break-word;
-margin: 6px 8px 0px 8px;
-}
-
-.addressdiv {
-word-wrap: break-word;
-font-size: 10px;
-margin: 10px 8px 0px 8px;
-}
-
-
-.qrparent {
-	cursor: pointer;
-  position: relative;
-  top: 0;
-  left: 0;
-}
-.qrcode {
-  position: relative;
-  top: 0;
-  left: 0;
-	border: 2px solid #000000;
-}
-.qricon {
-    position: absolute;
-		top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-
-    display: block;
-    margin: auto;
-		}
-.qrctc {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-		color: #000000;
-		font-size: 14px;
-    display: block;
-    margin: 0px 7px 7px 0px;
-		padding: 3px;
-		text-align:right;
-		opacity: 0.95;
-		background: #FFFFFF;
-		}
-
-
-
-
 /* Modal Base CSS */
 .paybutton-overlay {
+	   all: initial;
 position: fixed;
 z-index: 9998;
 top: 0;
