@@ -1,11 +1,14 @@
 /* begin default button set */
 .pay-button {
-font-family: Helvetica, Arial, sans-serif;
-font-size: 16px;
-font-weight: bold;
+all: initial;
+font-family: Helvetica Neu, Arial, sans-serif;
+font-size: 1.1em;
+line-height: 1.1em;
+box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.08);
+font-weight: 500;
 border-radius: 4px;
 cursor: pointer;
-border: 2px solid #F7941D;
+border: 2px solid #F57A00;
 background: transparent;
 position: relative;
 padding: 0px;
@@ -22,15 +25,19 @@ z-index: 1;
 }
 
 .pay-button:hover {
-	border: 2px solid #F7941D;
-	font-weight: bold;
+	border: 2px solid #F57A00;
+	font-weight: 400;
+	transition-property: width, border-radius, background-color;
+transition-duration: 1s, 2s, 5s;
+transition-timing-function:  ease, ease-out, linear;
+	
 }
 
 .pay-button > span {
 display: inline-block;
 padding: 12px 8px;
 position: relative;
-background: linear-gradient(45deg, #fff 50%, #F7941D 50%);
+background: linear-gradient(45deg, #fff 50%, #F57A00 50%);
 -webkit-background-clip: text;
 -webkit-text-fill-color: transparent;
 z-index: -1;
@@ -43,21 +50,23 @@ top: 0;
 bottom: 0;
 left: 0;
 right: 0;
-background: linear-gradient(20deg, #F7941D 50%, transparent 50%);
+background: linear-gradient(20deg, #F59332 50%, transparent 50%);
 z-index: -5;
 }
 
 .pay-button > span,.pay-button:after {
 background-size: 300%;
 background-position: 100%;
-transition: .85s, text .9s;
+transition: .9s, text 10s;
+
+
 }
 
 .pay-button:hover > span,.pay-button:hover:after {
 background-position: 0;
 /*padding: .75em;*/
 /*font-size: 1.1em;*/
-color: #F7941D;
+color: #F59332;
 /*For IE*/
 }
 
@@ -66,12 +75,12 @@ color: #F7941D;
 /*For IE*/
 }
 .rev > span {
-background: linear-gradient(45deg, #F7941D 50%, #FFF 50%);
+background: linear-gradient(45deg, #F57A00 50%, #FFF 50%);
 -webkit-background-clip: text;
 -webkit-text-fill-color: transparent;
 }
 .rev:after {
-background: linear-gradient(20deg, transparent 50%, #F7941D 50%);
+background: linear-gradient(20deg, transparent 50%, #F59332 50%);
 }
 .rev > span, .rev:after {
 background-size: 300%;
@@ -79,20 +88,20 @@ background-position: 100%;
 }
 
 .dbl {
-border: 1px solid #F7941D;
+border: 1px solid #F57A00;
 background: transparent;
 /*For IE*/
 }
 .dbl:hover {
-	border: 4px double #F7941D;
+	border: 4px double #F57A00;
 }
 .dbl > span {
-background: linear-gradient(45deg, #FFF 50%, #F7941D 50%);
+background: linear-gradient(45deg, #FFF 50%, #F59332 50%);
 -webkit-background-clip: text;
 -webkit-text-fill-color: transparent;
 }
 .dbl:after {
-background: linear-gradient(35deg, #F7941D 50%, transparent 50%);
+background: linear-gradient(35deg, #F59332 50%, transparent 50%);
 }
 .dbl > span,.dbl:after {
 background-size: 300%;
@@ -100,25 +109,25 @@ background-position: 100%;
 transition: 1s, font-size 1.1s;
 }
 .dbl:hover > span,.dbl:hover:after {
-padding: .55em;
-color: #F7941D;
+padding: .51em;
+color: #F59332;
 }
 
 .bare {
-border: 0px solid #F7941D;
+border: 0px solid #F59332;
 background: transparent;
 /*For IE*/
 }
 .bare:hover {
-	border: 0px solid #F7941D;
+	border: 0px solid #F59332;
 }
 .bare > span {
-background: linear-gradient(45deg, #FFF 50%, #F7941D 50%);
+background: linear-gradient(45deg, #FFF 50%, #F59332 50%);
 -webkit-background-clip: text;
 -webkit-text-fill-color: transparent;
 }
 .bare:after {
-background: linear-gradient(35deg, #F7941D 50%, transparent 50%);
+background: linear-gradient(35deg, #F59332 50%, transparent 50%);
 }
 .bare > span, .bare:after {
 background-size: 300%;
@@ -490,7 +499,7 @@ background-position: 100%;
 /* begin spice button set */
 .spice {
 font-size: 18px;
-font-weight: bold;
+font-weight: normal;
 border-radius: 0px;
 border: 3px solid #000000;
 background: transparent;
@@ -509,7 +518,7 @@ background: linear-gradient(45deg, #000000 50%, #000000 50%);
 
 .spice:hover {
 	border: 3px solid #000;
-	font-weight: bold;
+	font-weight: normal;
 }
 
 .spice:after {
