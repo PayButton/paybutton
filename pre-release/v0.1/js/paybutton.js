@@ -1161,7 +1161,7 @@ var txListen;
 
 function startListenForTX (toAddress, bchAmount, successMsg, paywallField, successCallback) {
 var timeStamp = Math.floor(Date.now() / 1000);
-txListen = setInterval(function(){ listenForTX(toAddress, bchAmount, successMsg, paywallField, successCallback, timeStamp); }, 1250);
+txListen = setInterval(function(){ listenForTX(toAddress, bchAmount, successMsg, paywallField, successCallback, timeStamp); }, 1400);
 }
 
 function stopListenForTX () {
@@ -1275,7 +1275,7 @@ alert("Please unlock Badger Wallet before continuing.");
 
 } else {
 
-document.getElementById("badger-open").innerHTML = ("<span>Opening Badger Wallet</span>");
+document.getElementById("badger-open").innerHTML = ("<span>Listening for Transaction</span>");
 
 var txParams = {
 to: toAddress,
@@ -1286,7 +1286,8 @@ value: bchAmount
 // check for errors else proceed with success messages
 web4bch.bch.sendTransaction(txParams, (err, res) => {
 if (err) {
-console.log("Error", err);
+document.getElementById("badger-open").innerHTML = ("<span>Send With Badger Pay</span>");
+//console.log("Error", err);
 } else {
 
 stopListenForTX();
@@ -1356,13 +1357,18 @@ var pbContent =
 '<div class="amountdiv"><span>'+amountMessage+'</span></div> ' +
 '</div>' +
 '<div>' +
-'<div><a href="'+URI+'"><button id="bch-open" class="pay-button modal"><span>Send with Bitcoin Cash Wallet</span></button></a></div>' +
+'<div><button id="bch-open" class="pay-button modal" onclick="location.href=\''+URI+'\'"><span>Send with BCH Wallet</span></button></div>' +
 '</div>' +
+//'<div>' +
+//'<div><button id="badger-open" class = "pay-button modal" onclick="sendToBadger(\''+toAddress+'\', \''+bchAmount+'\', \''+successMsg+'\', \''+paywallField+'\', \''+successCallback+'\')"><span>Send with Badger Wallet</span></button></div> ' +
+//'</div>' +
 '<div>' +
-'<div><button id="badger-open" class = "pay-button modal" onclick="sendToBadger(\''+toAddress+'\', \''+bchAmount+'\', \''+successMsg+'\', \''+paywallField+'\', \''+successCallback+'\')"><span>Send with Badger Wallet</span></button></div> ' +
+'<br/><div><a href="https://paybutton.cash" target="_blank" style="color: orangeRed; text-decoration: none; font-size: 12px;"><span>Powered by PayButton.cash</span></a></div>' +
 '</div>' +
 '</div>' +
 '</div>';
+
+//<img src="https://paybutton.cash/images/paybuttonlogo_s.png" width="110" style="vertical-align:middle">
 
 var pbModal = new Modal({
 content: pbContent
@@ -1415,7 +1421,7 @@ fiatRequest.send();
 
 
 // insert info into button on mouseover
-function mouseOver() {
+function mouseEnter() {
 buttonText2 = this.getAttribute("button-text-2") || ""; buttonText2 = buttonText2.trim();
 if (!buttonText2) {
 showAmount = this.getAttribute('amount') || ""; showAmount = Number(showAmount.trim());
@@ -1426,13 +1432,13 @@ buttonText2 = "Click to send BCH";
 }
 }
 this.innerHTML = ("<span>"+buttonText2+"</span>");
-if (!('ontouchend' in window))this.addEventListener('mouseout', mouseOut, false);
-if ('ontouchend' in window)this.addEventListener('touchend', mouseOut, false);
+if (!('ontouchend' in window))this.addEventListener('mouseleave', buttonDefaultText, false);
+if ('ontouchend' in window)this.addEventListener('touchend', buttonDefaultText, false);
 }
 
 
 // insert info into button on mouseout
-function mouseOut() {
+function buttonDefaultText() {
 buttonText = this.getAttribute("button-text") || ""; buttonText = buttonText.trim();
 if (!buttonText) {
 showAmount = this.getAttribute('amount') || ""; showAmount = Number(showAmount.trim());
@@ -1455,22 +1461,15 @@ var payButton = document.getElementsByClassName("pay-button");
 for (var i = 0; i < payButton.length; i++) {
 
 var payButtons = payButton[i];
-var buttonText = payButtons.getAttribute("button-text") || ""; buttonText = buttonText.trim();
-buttonAmount = payButtons.getAttribute("amount") || ""; buttonAmount = Number(buttonAmount.trim());
-amountType = payButtons.getAttribute("amount-type") || ""; amountType = amountType.trim().toUpperCase();
 
-//console.log(buttonText, buttonAmount, amountType);
+let defaultText = buttonDefaultText.bind(payButtons);
+defaultText();
 
-if (!buttonText){
-buttonText = "Pay with Bitcoin Cash";
-if (!buttonAmount || !amountType) {
-buttonText = "Pay with Bitcoin Cash";
-}
-}
-payButtons.innerHTML = "<span>"+buttonText+"</span>";
+let buttonHoverText = mouseEnter.bind(payButtons);
 
-if (!('ontouchstart' in window))payButtons.addEventListener('mouseover', mouseOver, false);
-if ('ontouchstart' in window)payButtons.addEventListener('touchstart', mouseOver, false);
+if (!('ontouchstart' in window))payButtons.addEventListener('mouseenter', buttonHoverText, false);
+if ('ontouchstart' in window)payButtons.addEventListener('touchstart', buttonHoverText, false);
+
 
 // pull in attribute info from button when clicked
 payButtons.addEventListener("click", function(pbEvent) {
