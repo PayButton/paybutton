@@ -80,7 +80,7 @@ left: 50%;
 text-align: center;
 opacity: 0;
 overflow: auto;
-width: 100%;
+width: 270px !important;
 padding: 20px 15px 20px 15px;
 /*padding: 24px 20px;*/
 
