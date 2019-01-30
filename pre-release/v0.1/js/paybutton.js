@@ -1075,8 +1075,8 @@ docFrag = document.createDocumentFragment();
 // Create modal element
 this.modal = document.createElement("div");
 this.modal.className = "paybutton-modal " + this.options.className;
-this.modal.style.minWidth = this.options.minWidth + "px !important";
-this.modal.style.maxWidth = this.options.maxWidth + "px !important";
+this.modal.style.minWidth = this.options.minWidth + "px";
+this.modal.style.maxWidth = this.options.maxWidth + "px";
 
 // If overlay is true, add one
 if (this.options.overlay === true) {
