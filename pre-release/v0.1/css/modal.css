@@ -27,11 +27,13 @@ position: fixed;
 z-index: 9999;
 top: 50%;
 left: 50%;
-text-align: center;
 opacity: 0;
 overflow: auto;
-width: 100%;
-padding: 20px 12px 20px 12px;
+width: 260px;
+vertical-align: middle;
+text-align: center;
+padding: 20px 18px 20px 18px;
+
 /*padding: 24px 20px;*/
 
 -webkit-transition: 1ms opacity ease;
@@ -48,13 +50,6 @@ transform: translate(-50%, -50%);
 
 border-radius: 6px;
 background: #fff;
-}
-
-.paybutton-content {
-/*border: 1px solid #c3c3c3;*/
-vertical-align:middle;
-text-align:center;
-padding: 0px 0px 0px 0px;
 }
 
 .paybutton-modal.paybutton-open.paybutton-anchored {
@@ -143,49 +138,65 @@ transition: 700ms top ease;
 transition: 300ms opacity 300ms ease;
 }
 
-.dialoguediv {
-font-size: 16px;
-word-wrap: break-word;
-margin: 8px 8px 0px 8px;
-}
+.paybutton-content {
+	position: relative;
+	cursor: pointer;
+	margin: auto;
+	display: block;
 
-.poweredbydiv {
-font-size: 12px;
-margin: 10px 8px 0px 8px;
 }
 
 .qrparent {
-cursor: pointer;
-position: relative;
-top: 0;
-left: 0;
+	position: relative;
+	cursor: pointer;
+	margin: auto;
+	display: block;
 }
 .qrcode {
-position: relative;
-top: 0;
-left: 0;
-border: 2px solid #000000;
+	position: relative;
+	border: 2px solid #000000;
+	margin: auto;
+	display: block;
 }
 .qricon {
-position: absolute;
-top: 0;
-left: 0;
-right: 0;
-bottom: 0;
+	position: absolute;
+  width: 72px;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  display: block;
 
-display: block;
-margin: auto;
+
 }
 .qrctc {
-position: absolute;
-right: 0;
-bottom: 0;
-color: #000000;
-font-size: 14px;
-display: block;
-margin: 0px 8px 8px 0px;
-padding: 3px;
-text-align:right;
-opacity: 0.95;
-background: #FFFFFF;
+	position: absolute;
+	right: 3px;
+  bottom: 3px;
+  color: #000000;
+  font-size: 14px;
+  text-align:right;
+  opacity: 0.98;
+  background: #FFFFFF;
+	padding: 3px;
+	margin: auto;
+	display: block;
+}
+
+.dialoguediv {
+	position: relative;
+	font-size: 16px;
+  word-wrap: break-word;
+	margin: 12px 8px 0px 8px;
+	display: block;
+
+}
+
+.poweredbydiv {
+	position: relative;
+	font-size: 12px;
+  word-wrap: break-word;
+	margin: 10px 8px 0px 8px;
+	display: block;
 }
