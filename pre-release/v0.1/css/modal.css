@@ -140,7 +140,6 @@ transition: 300ms opacity 300ms ease;
 
 .paybutton-content {
 	position: relative;
-	cursor: pointer;
 	margin: auto;
 	display: block;
 
@@ -199,4 +198,12 @@ transition: 300ms opacity 300ms ease;
   word-wrap: break-word;
 	margin: 10px 8px 0px 8px;
 	display: block;
+}
+
+.qrparent:active{
+
+  opacity: 0.95;  
+
+	padding: 2px;
+  /* filter: saturate(80%);*/
 }
