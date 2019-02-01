@@ -1142,7 +1142,8 @@ document.body.appendChild(inp);
 inp.select();
 document.execCommand('copy', false);
 inp.remove();
-alert("Bitcoin Cash address copied!");
+//alert("Bitcoin Cash address copied!");
+document.getElementById("copyDiv").innerHTML = ("<span>Address Copied!</span>");
 }
 // * end of copy BCH URI to clipboard
 
@@ -1215,7 +1216,7 @@ window[successCallback](transactionId);
 function listenForTX (toAddress, bchAmount, successMsg, paywallField, successCallback, timeStamp) {
 
 var txRequest = new XMLHttpRequest();
-txRequest.open('GET', 'https://rest.bitcoin.com/v1/address/unconfirmed/' + toAddress, true);
+txRequest.open('GET', 'https://rest.bitcoin.com/v2/address/unconfirmed/' + toAddress, true);
 
 txRequest.onload = function() {
 if (txRequest.readyState == 4 && txRequest.status == 200) {
@@ -1224,8 +1225,9 @@ console.log("listening for transaction..");
 
 var txData = JSON.parse(txRequest.responseText);
 
-for (var j = 0; j < txData.length; j++) {
-var getTransactions = txData[j];
+for (var i = 0; i < txData.utxos.length; i++) {
+var getTransactions = txData.utxos[i];
+
 
 if (timeStamp < getTransactions.ts) {
 if (getTransactions.amount == bchAmount) {
@@ -1238,7 +1240,7 @@ return;
 } // for if amount is equal
 } // for timestamp
 
-} // for j
+} // for i
 
 
 } else {
@@ -1352,7 +1354,7 @@ var pbContent =
 '<div class="qrparent" onclick=copyBCHURI(\''+URI+'\')>' +
 '<img class="qrcode" src="'+qrImage+'" />' +
 '<img class="qricon" src="https://paybutton.cash/images/bitcoincash_bare_logo.png" />' +
-'<div class="qrctc">Click to Copy</div>'+
+'<div id="copyDiv" class="qrctc">Click to Copy</div>'+
 '</div>' +
 '</div>' +
 '<div>' +
