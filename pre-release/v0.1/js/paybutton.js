@@ -1119,7 +1119,7 @@ this.closeButton.addEventListener('click', this.close.bind(this));
 if (this.overlay) {
 this.overlay.addEventListener('click', this.close.bind(this));
 }
-document.getElementById("bch-open").addEventListener("click", function(){this.innerHTML = ("<span>Opening BCH Wallet</span>");});
+document.getElementById("bch-open").addEventListener("click", function(){this.innerHTML = ("<span>Opening Bitcoin Cash Wallet</span>");});
 }
 
 
@@ -1160,9 +1160,9 @@ successAudio.play();
 // * start of start/stop transaction listen
 var txListen;
 
-function startListenForTX (toAddress, bchAmount, successMsg, paywallField, successCallback) {
-var timeStamp = Math.floor(Date.now() / 1000);
-txListen = setInterval(function(){ listenForTX(toAddress, bchAmount, successMsg, paywallField, successCallback, timeStamp); }, 1400);
+function startListenForTX (pbAttr) {
+pbAttr.timeStamp = Math.floor(Date.now() / 1000);
+txListen = setInterval(function(){ listenForTX(pbAttr); }, 1400);
 }
 
 function stopListenForTX () {
@@ -1172,12 +1172,12 @@ clearInterval(txListen);
 
 
 // * start of show transaction message
-function txDialogue (message, transactionId, paywallField, successCallback) {
+function txDialogue (pbAttr) {
 
 playAudio();
 
-if (!message) {
-message = "Transaction Successful!";
+if (!pbAttr.successMsg) {
+pbAttr.successMsg = "Transaction Successful!";
 }
 
 var successDisplay = document.getElementById("modal-content");
@@ -1185,18 +1185,18 @@ successDisplay.innerHTML =
 
 '<div>' +
 '<div>' +
-'<div>' +
-'<div class="dialoguediv"><span>'+message+'</span></div>' +
+'<div class="txdialoguediv">' +
+'<div><span>'+pbAttr.successMsg+'</span></div>' +
 '</div>' +
-'<div>' +
-'<div class="dialoguediv"><span>View: </span><a href="https://explorer.bitcoin.com/bch/tx/'+transactionId+'" target="_blank" style="color: orangeRed; text-decoration: none;">Transaction</a></div>' +
+'<div class="txdialoguediv">' +
+'<div><span>View: </span><a href="https://explorer.bitcoin.com/bch/tx/'+pbAttr.txid+'" target="_blank" style="color: orangeRed; text-decoration: none;">Transaction</a></div>' +
 '</div>' +
 '</div>' +
 '</div>';
 
-console.log("Confirmed. Transaction ID:", transactionId);
+console.log("Confirmed. Transaction ID:", pbAttr.txid);
 
-var paywallFieldExists = document.getElementsByClassName(paywallField);
+var paywallFieldExists = document.getElementsByClassName(pbAttr.paywallField);
 if (paywallFieldExists) {
 for (var i = 0; i < paywallFieldExists.length; i++) {
 var paywallFields = paywallFieldExists[i];
@@ -1204,8 +1204,8 @@ paywallFields.style.display = "block";
 }
 }
 
-if (successCallback && window[successCallback]) {
-window[successCallback](transactionId);
+if (pbAttr.successCallback && window[pbAttr.successCallback]) {
+window[pbAttr.successCallback](pbAttr.txid);
 }
 
 }
@@ -1213,10 +1213,10 @@ window[successCallback](transactionId);
 
 
 // * start of transaction listener
-function listenForTX (toAddress, bchAmount, successMsg, paywallField, successCallback, timeStamp) {
+function listenForTX (pbAttr) {
 
 var txRequest = new XMLHttpRequest();
-txRequest.open('GET', 'https://rest.bitcoin.com/v2/address/unconfirmed/' + toAddress, true);
+txRequest.open('GET', 'https://rest.bitcoin.com/v2/address/unconfirmed/' + pbAttr.toAddress, true);
 
 txRequest.onload = function() {
 if (txRequest.readyState == 4 && txRequest.status == 200) {
@@ -1229,12 +1229,14 @@ for (var i = 0; i < txData.utxos.length; i++) {
 var getTransactions = txData.utxos[i];
 
 
-if (timeStamp < getTransactions.ts) {
-if (getTransactions.amount == bchAmount) {
+if (pbAttr.timeStamp < getTransactions.ts) {
+if (getTransactions.amount == pbAttr.bchAmount) {
 
 stopListenForTX();
 
-txDialogue(successMsg, getTransactions.txid, paywallField, successCallback);
+pbAttr.txid = getTransactions.txid;
+
+txDialogue(pbAttr);
 
 return;
 } // for if amount is equal
@@ -1259,13 +1261,13 @@ txRequest.send();
 
 
 // * start of begin function detect and send data to badger wallet
-function sendToBadger (toAddress, bchAmount, successMsg, paywallField, successCallback, amountMessage, anyAmount) {
+function sendToBadger (toAddress, bchAmount, successMsg, paywallField, successCallback) {
 
-if (!anyAmount) {
+console.log(bchAmount);
+
 bchAmount = bchAmount * 100000000;
-} else {
-bchAmount = "";
-}
+
+console.log(bchAmount);
 
 if (typeof web4bch !== "undefined") {
 web4bch = new Web4Bch(web4bch.currentProvider);
@@ -1277,7 +1279,7 @@ alert("Please unlock Badger Wallet before continuing.");
 
 } else {
 
-document.getElementById("badger-open").innerHTML = ("<span>Listening for Transaction</span>");
+document.getElementById("badger-open").innerHTML = ("<span>Opening Badger Wallet</span>");
 
 var txParams = {
 to: toAddress,
@@ -1288,13 +1290,15 @@ value: bchAmount
 // check for errors else proceed with success messages
 web4bch.bch.sendTransaction(txParams, (err, res) => {
 if (err) {
-document.getElementById("badger-open").innerHTML = ("<span>Send With Badger Pay</span>");
+document.getElementById("badger-open").innerHTML = ("<span>Send With Badger Wallet</span>");
 //console.log("Error", err);
 } else {
 
 stopListenForTX();
 
-txDialogue(successMsg, res, paywallField, successCallback);
+pbAttr.txid = res;
+
+txDialogue(pbAttr);
 
 }
 });
@@ -1312,19 +1316,17 @@ alert("To use Badger Wallet for this transaction, Please visit:\n\nhttps://badge
 
 
 // * start of open model
-function openModal (toAddress, bchAmount, successMsg, paywallField, successCallback, amountMessage, anyAmount) {
+function openModal (pbAttr) {
 
 // qr code generation
-if (anyAmount) {
-amountMessage = "Send any amount of Bitcoin Cash";
-qrData = toAddress;
-URI = toAddress;
-bchAmount = "";
+if (pbAttr.anyAmount) {
+pbAttr.amountMessage = "Send any amount of Bitcoin Cash";
+pbAttr.URI = pbAttr.toAddress;
 } else {
-qrData = toAddress + "?amount=" + bchAmount;
-URI = toAddress + "?amount=" + bchAmount;
-startListenForTX(toAddress, bchAmount, successMsg, paywallField, successCallback);
+pbAttr.URI = pbAttr.toAddress + "?amount=" + pbAttr.bchAmount;
+startListenForTX(pbAttr);
 }
+
 var qrParams = {
 ecclevel: "Q",
 fillcolor: "#FFFFFF",
@@ -1334,40 +1336,38 @@ modulesize: 12
 };
 
 if (document.implementation.hasFeature("http://www.w3.org/2000/svg","1.1")) {
-genQR = QRCode.generateSVG(qrData, qrParams);
+genQR = QRCode.generateSVG(pbAttr.URI, qrParams);
 var XMLS = new XMLSerializer();
 genQR = XMLS.serializeToString(genQR);
 genQR = "data:image/svg+xml;base64," + window.btoa(unescape(encodeURIComponent(genQR)));
 qrImage = genQR;
 } else {
-genQR = QRCode.generatePNG(qrData, qrParams);
+genQR = QRCode.generatePNG(pbAttr.URI, qrParams);
 qrImage = genQR;
 }
-
-
 
 var pbContent =
 
 '<div>' +
 '<div>' +
 '<div>' +
-'<div class="qrparent" onclick=copyBCHURI(\''+URI+'\')>' +
+'<div class="qrparent" onclick=copyBCHURI(\''+pbAttr.URI+'\')>' +
 '<img class="qrcode" src="'+qrImage+'" />' +
 '<img class="qricon" src="https://paybutton.cash/images/bitcoincash_bare_logo.png" />' +
 '<div id="copyDiv" class="qrctc">Click to Copy</div>'+
 '</div>' +
 '</div>' +
-'<div>' +
-'<div class="dialoguediv"><span>'+amountMessage+'</span></div> ' +
+'<div class="dialoguediv">' +
+'<div><span>'+pbAttr.amountMessage+'</span></div> ' +
 '</div>' +
 '<div>' +
-'<div><button id="bch-open" class="pay-button modal" onclick="location.href=\''+URI+'\'" type="button"><span>Send with BCH Wallet</span></button></div>' +
+'<div><button id="bch-open" class="pay-button modal" onclick="location.href=\''+pbAttr.URI+'\'" type="button"><span>Send with BCH Wallet</span></button></div>' +
 '</div>' +
 //'<div>' +
-//'<div><button id="badger-open" class = "pay-button modal" onclick="sendToBadger(\''+toAddress+'\', \''+bchAmount+'\', \''+successMsg+'\', \''+paywallField+'\', \''+successCallback+'\')"><span>Send with Badger Wallet</span></button></div> ' +
+//'<div><button id="badger-open" class = "pay-button modal" onclick="sendToBadger(\''+pbAttr.toAddress+'\', \''+pbAttr.bchAmount+'\', \''+pbAttr.successMsg+'\', \''+pbAttr.paywallField+'\', \''+pbAttr.successCallback+'\')"><span>Send with Badger Wallet</span></button></div> ' +
 //'</div>' +
-'<div>' +
-'<div class="poweredbydiv"><span><a href="https://paybutton.cash" target="_blank" style="color: orangeRed; text-decoration: none;">Powered by PayButton.cash</a></span></div>' +
+'<div class="poweredbydiv">' +
+'<div><span><a href="https://paybutton.cash" target="_blank" style="color: orangeRed; text-decoration: none;">Powered by PayButton.cash</a></span></div>' +
 '</div>' +
 '</div>' +
 '</div>';
@@ -1383,10 +1383,10 @@ pbModal.open();
 // * end of open model
 
 // * start of begin function query to obtain bch price
-function getBCHPrice (buttonAmount, amountType, toAddress, successMsg, paywallField, successCallback, bchAmount, amountMessage, anyAmount) {
+function getBCHPrice (pbAttr) {
 
 var fiatRequest = new XMLHttpRequest();
-fiatRequest.open('GET', 'https://index-api.bitcoin.com/api/v0/cash/price/' + amountType, true);
+fiatRequest.open('GET', 'https://index-api.bitcoin.com/api/v0/cash/price/' + pbAttr.amountType, true);
 
 fiatRequest.onload = function() {
 if (fiatRequest.readyState == 4 && fiatRequest.status == 200) {
@@ -1397,12 +1397,12 @@ if (fiatData.price != "") {
 
 // determine amount of satoshi based on button value
 var addDecimal = fiatData.price / 100;
-bchAmount = (1 / addDecimal) * buttonAmount;
-bchAmount = bchAmount.toFixed(8);
+var bchAmount = (1 / addDecimal) * pbAttr.buttonAmount;
+pbAttr.bchAmount = bchAmount.toFixed(8);
 
-amountMessage = (buttonAmount + " " + amountType + " = " + bchAmount + " BCH");
+pbAttr.amountMessage = (pbAttr.buttonAmount + " " + pbAttr.amountType + " = " + pbAttr.bchAmount + " BCH");
 
-openModal(toAddress, bchAmount, successMsg, paywallField, successCallback, amountMessage, anyAmount);
+openModal(pbAttr);
 
 } else {
 console.log("Error Price Not Found");
@@ -1425,10 +1425,10 @@ fiatRequest.send();
 
 // insert info into button on mouseover
 function mouseEnter() {
-buttonText2 = this.getAttribute("button-text-2") || ""; buttonText2 = buttonText2.trim();
+var buttonText2 = this.getAttribute("button-text-2") || ""; buttonText2 = buttonText2.trim();
 if (!buttonText2) {
-showAmount = this.getAttribute('amount') || ""; showAmount = Number(showAmount.trim());
-showType = this.getAttribute('amount-type') || ""; showType = showType.trim().toUpperCase();
+var showAmount = this.getAttribute('amount') || ""; showAmount = Number(showAmount.trim());
+var showType = this.getAttribute('amount-type') || ""; showType = showType.trim().toUpperCase();
 buttonText2 = showAmount + " " + showType;
 if (!showAmount || !showType) {
 buttonText2 = "Click to send BCH";
@@ -1442,13 +1442,13 @@ if ('ontouchend' in window)this.addEventListener('touchend', buttonDefaultText, 
 
 // insert info into button on mouseout
 function buttonDefaultText() {
-buttonText = this.getAttribute("button-text") || ""; buttonText = buttonText.trim();
+var buttonText = this.getAttribute("button-text") || ""; buttonText = buttonText.trim();
 if (!buttonText) {
-showAmount = this.getAttribute('amount') || ""; showAmount = Number(showAmount.trim());
-showType = this.getAttribute('amount-type') || ""; showType = showType.trim().toUpperCase();
-buttonText = "Pay with Bitcoin Cash";
+var showAmount = this.getAttribute('amount') || ""; showAmount = Number(showAmount.trim());
+var showType = this.getAttribute('amount-type') || ""; showType = showType.trim().toUpperCase();
+buttonText = "Send Bitcoin Cash";
 if (!showAmount || !showType) {
-buttonText = "Pay with Bitcoin Cash";
+buttonText = "Send Bitcoin Cash";
 }
 }
 this.innerHTML = ("<span>" + buttonText + "</span>");
@@ -1465,13 +1465,10 @@ for (var i = 0; i < payButton.length; i++) {
 
 var payButtons = payButton[i];
 
-let defaultText = buttonDefaultText.bind(payButtons);
-defaultText();
+window.addEventListener('load', buttonDefaultText.bind(payButtons), false);
 
-let buttonHoverText = mouseEnter.bind(payButtons);
-
-if (!('ontouchstart' in window))payButtons.addEventListener('mouseenter', buttonHoverText, false);
-if ('ontouchstart' in window)payButtons.addEventListener('touchstart', buttonHoverText, false);
+if (!('ontouchstart' in window))payButtons.addEventListener('mouseenter', mouseEnter, false);
+if ('ontouchstart' in window)payButtons.addEventListener('touchstart', mouseEnter, false);
 
 
 // pull in attribute info from button when clicked
@@ -1484,6 +1481,15 @@ var paywallField = this.getAttribute("paywall-field") || ""; paywallField = payw
 var successCallback = this.getAttribute("success-callback") || ""; successCallback = successCallback.trim();
 
 var bchAmount; var amountMessage; var anyAmount;
+
+var pbAttr = {
+    buttonAmount: buttonAmount,
+    amountType: amountType,
+    toAddress: toAddress,
+		successMsg: successMsg,
+    paywallField: paywallField,
+    successCallback: successCallback,
+};
 
 // bch address attribute missing
 if (!toAddress) {
@@ -1498,33 +1504,33 @@ alert ("PayButton Error:\n\nFor specific PayButton amounts, BOTH of the followin
 return;
 }
 } else {
-anyAmount = true;
+pbAttr.anyAmount = true;
 }
 
 // check for "any" amount allowed else convert
-if (anyAmount) {
+if (pbAttr.anyAmount) {
 
-openModal(toAddress, bchAmount, successMsg, paywallField, successCallback, amountMessage, anyAmount);
+openModal(pbAttr);
 
 } else {
+
 // check if amount type is set to bch or fiat
 if (amountType == "BCH" || amountType == "SATOSHI") {
 bchAmount = buttonAmount;
-
 if (amountType == "SATOSHI") {
 bchAmount = bchAmount / 100000000;
 }
-bchAmount = bchAmount.toFixed(8);
+pbAttr.bchAmount = bchAmount.toFixed(8);
 
 // display bch amount in modal
-amountMessage = (bchAmount + " BCH");
+pbAttr.amountMessage = ("Amount = " + pbAttr.bchAmount + " BCH");
 
 // send bch tx data to modal
-openModal(toAddress, bchAmount, successMsg, paywallField, successCallback, amountMessage, anyAmount);
+openModal(pbAttr);
 
 } else {
 // send fiat tx data to fiat/bch conversion
-getBCHPrice (buttonAmount, amountType, toAddress, successMsg, paywallField, successCallback, bchAmount, amountMessage, anyAmount);
+getBCHPrice (pbAttr);
 }
 }
 
