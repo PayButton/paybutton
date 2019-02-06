@@ -549,7 +549,7 @@ if (!document.getElementById(qrId))
 {
 var head= document.getElementsByTagName('head')[0];
 var script= document.createElement('script');
-script.src = 'https://paybutton.cash/pre-release/v0.1/js/qrjs2.js';
+script.src = 'https://paybutton.cash/pre-release/v0.1/js/qrjs2.min.js';
 script.id = qrId;
 head.appendChild(script);
 }
