@@ -550,7 +550,7 @@ if (!document.getElementById(buttonQR))
 var head= document.getElementsByTagName('head')[0];
 var script= document.createElement('script');
 link.id = buttonQR;
-link.href = 'https://paybutton.cash/pre-release/v0.1/js/qrjs2.js';
+link.src = 'https://paybutton.cash/pre-release/v0.1/js/qrjs2.js';
 head.appendChild(script);
 }
 
