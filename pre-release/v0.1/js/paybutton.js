@@ -544,7 +544,18 @@ getBCHPrice (pbAttr);
 });
 
 
-var cssButtonId = 'pbButtonCSS';// you could encode the css path itself to generate id..
+var buttonQR = 'pbQR';
+if (!document.getElementById(buttonQR))
+{
+var head= document.getElementsByTagName('head')[0];
+var script= document.createElement('script');
+link.id = buttonQR;
+link.href = 'https://paybutton.cash/pre-release/v0.1/js/qrjs2.js';
+head.appendChild(script);
+}
+
+
+var cssButtonId = 'pbButtonCSS';
 if (!document.getElementById(cssButtonId))
 {
 var head= document.getElementsByTagName('head')[0];
@@ -558,7 +569,7 @@ head.appendChild(link);
 }
 
 
-var cssModalId = 'pbModalCSS';// you could encode the css path itself to generate id..
+var cssModalId = 'pbModalCSS';
 if (!document.getElementById(cssModalId))
 {
 var head= document.getElementsByTagName('head')[0];
