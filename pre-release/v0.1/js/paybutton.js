@@ -544,13 +544,13 @@ getBCHPrice (pbAttr);
 });
 
 
-var buttonQR = 'pbQR';
-if (!document.getElementById(buttonQR))
+var qrId = 'pbQR';
+if (!document.getElementById(qrId))
 {
 var head= document.getElementsByTagName('head')[0];
 var script= document.createElement('script');
-script.id = buttonQR;
 script.src = 'https://paybutton.cash/pre-release/v0.1/js/qrjs2.js';
+script.id = qrId;
 head.appendChild(script);
 }
 
@@ -560,10 +560,10 @@ if (!document.getElementById(cssButtonId))
 {
 var head= document.getElementsByTagName('head')[0];
 var link= document.createElement('link');
-link.id = cssButtonId;
 link.rel= 'stylesheet';
 link.type = 'text/css';
 link.href = 'https://paybutton.cash/pre-release/v0.1/css/buttons.css';
+link.id = cssButtonId;
 link.media = 'all';
 head.appendChild(link);
 }
@@ -574,10 +574,10 @@ if (!document.getElementById(cssModalId))
 {
 var head= document.getElementsByTagName('head')[0];
 var link= document.createElement('link');
-link.id = cssModalId;
 link.rel= 'stylesheet';
 link.type = 'text/css';
 link.href = 'https://paybutton.cash/pre-release/v0.1/css/modal.css';
+link.id = cssModalId;
 link.media = 'all';
 head.appendChild(link);
 }
