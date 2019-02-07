@@ -161,6 +161,14 @@ successAudio.play();
 // * end of transaction audio
 
 
+// * start random sat gen
+function getRandomSat() 
+{
+return (Math.random() * (0.00000123 - 0.00000010) + 0.00000010).toFixed(8);
+}
+// * end random sat gen
+
+
 // * start of start/stop transaction listen
 var txListen;
 
@@ -229,9 +237,10 @@ console.log("listening for transaction..");
 
 var txData = JSON.parse(txRequest.responseText);
 
+//console.log(pbAttr.randSat, pbAttr.satAmount, pbAttr.bchAmount)
+
 for (var i = 0; i < txData.utxos.length; i++) {
 var getTransactions = txData.utxos[i];
-
 
 if (pbAttr.timeStamp < getTransactions.ts) {
 if (getTransactions.amount == pbAttr.bchAmount) {
@@ -267,11 +276,7 @@ txRequest.send();
 // * start of begin function detect and send data to badger wallet
 function sendToBadger (toAddress, bchAmount, successMsg, paywallField, successCallback) {
 
-console.log(bchAmount);
-
 bchAmount = bchAmount * 100000000;
-
-console.log(bchAmount);
 
 if (typeof web4bch !== "undefined") {
 web4bch = new Web4Bch(web4bch.currentProvider);
@@ -386,6 +391,7 @@ pbModal.open();
 }
 // * end of open model
 
+
 // * start of begin function query to obtain bch price
 function getBCHPrice (pbAttr) {
 
@@ -401,7 +407,12 @@ if (fiatData.price != "") {
 
 // determine amount of satoshi based on button value
 var addDecimal = fiatData.price / 100;
-var bchAmount = (1 / addDecimal) * pbAttr.buttonAmount;
+var satAmount = (1 / addDecimal) * pbAttr.buttonAmount;
+pbAttr.satAmount = satAmount.toFixed(8);
+
+// add small amount of random sats for slightly more acurate success dialogue
+pbAttr.randSat = getRandomSat();
+var bchAmount = Number(pbAttr.satAmount) + Number(pbAttr.randSat);
 pbAttr.bchAmount = bchAmount.toFixed(8);
 
 pbAttr.amountMessage = (pbAttr.buttonAmount + " " + pbAttr.amountType + " = " + pbAttr.bchAmount + " BCH");
@@ -520,10 +531,15 @@ openModal(pbAttr);
 
 // check if amount type is set to bch or fiat
 if (amountType == "BCH" || amountType == "SATOSHI") {
-bchAmount = buttonAmount;
+var satAmount = buttonAmount;
 if (amountType == "SATOSHI") {
-bchAmount = bchAmount / 100000000;
+satAmount = satAmount / 100000000;
 }
+pbAttr.satAmount = satAmount.toFixed(8);
+
+// add small amount of random sats for slightly more acurate success dialogue
+pbAttr.randSat = getRandomSat();
+bchAmount = Number(pbAttr.satAmount) + Number(pbAttr.randSat);
 pbAttr.bchAmount = bchAmount.toFixed(8);
 
 // display bch amount in modal
