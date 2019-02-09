@@ -305,7 +305,14 @@ document.getElementById("badger-open").innerHTML = ("<span>Send With Badger Wall
 
 stopListenForTX();
 
-pbAttr.txid = res;
+stopListenForTX();
+
+var pbAttr = {
+    txid: res,
+    successMsg: successMsg,
+    paywallField: paywallField,
+    successCallback: successCallback,
+};
 
 txDialogue(pbAttr);
 
