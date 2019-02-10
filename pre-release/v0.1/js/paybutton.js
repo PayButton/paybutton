@@ -456,7 +456,10 @@ if (!showAmount || !showType) {
 buttonText2 = "Click to send BCH";
 }
 }
-this.innerHTML = ("<span>"+buttonText2+"</span>");
+this.innerHTML = "<span>&nbsp</span>"
+var x = this;
+setTimeout(function(){ x.innerHTML = "<span>"+buttonText2+"</span>" }, 200);
+//this.innerHTML = "<span>"+buttonText2+"</span>";
 if (!('ontouchend' in window))this.addEventListener('mouseleave', buttonDefaultText, false);
 if ('ontouchend' in window)this.addEventListener('touchend', buttonDefaultText, false);
 }
@@ -473,7 +476,10 @@ if (!showAmount || !showType) {
 buttonText = "Send Bitcoin Cash";
 }
 }
-this.innerHTML = ("<span>" + buttonText + "</span>");
+this.innerHTML = "<span>&nbsp</span>"
+var x = this;
+setTimeout(function(){ x.innerHTML = "<span>"+buttonText+"</span>" }, 200);
+//this.innerHTML = "<span>"+buttonText+"</span>";
 }
 
 
@@ -491,6 +497,7 @@ window.addEventListener('load', buttonDefaultText.bind(payButtons), false);
 
 if (!('ontouchstart' in window))payButtons.addEventListener('mouseenter', mouseEnter, false);
 if ('ontouchstart' in window)payButtons.addEventListener('touchstart', mouseEnter, false);
+
 
 
 // pull in attribute info from button when clicked
