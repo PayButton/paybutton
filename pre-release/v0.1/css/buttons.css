@@ -1,21 +1,21 @@
 /* begin default button set */
 .pay-button, .pay-button:hover {
-all: initial;
-font-family: Helvetica Neu, Arial, sans-serif;
-font-size: 17px;
-box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.08);
-font-weight: 500;
-border-radius: 4px;
-cursor: pointer;
-border: 2px solid #F57A00;
-background: transparent;
-position: relative;
-padding: 0px;
-min-width: 200px;
-max-width: 270px;
-text-align: center;
-margin: 10px;
-z-index: 1;
+all: initial !important;
+font-family: Helvetica Neu, Arial, sans-serif !important;
+font-size: 17px !important;
+box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.08) !important;
+font-weight: 500 !important;
+border-radius: 4px !important;
+cursor: pointer !important;
+border: 2px solid #F57A00 !important;
+background: transparent !important;
+position: relative !important;
+padding: 0px !important;
+min-width: 200px !important;
+max-width: 270px !important;
+text-align: center !important;
+margin: 10px !important;
+z-index: 1 !important;
 }
 
 .pay-button > span {
