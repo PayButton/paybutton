@@ -1,6 +1,6 @@
 /* begin default button set */
 .pay-button, .pay-button:hover {
-all: initial !important;
+all: initial;
 font-family: Helvetica Neu, Arial, sans-serif !important;
 font-size: 17px !important;
 box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.08) !important;
@@ -79,15 +79,10 @@ background-size: 300%;
 background-position: 100%;
 }
 
-.bare {
-border: 0px;
-background: transparent;
+.bare, .bare:hover {
+border: 0px !important;
+background: transparent !important;
 /*For IE*/
-}
-
-.bare:hover {
-border: 0px;
-background: transparent;
 }
 
 .bare > span {
@@ -108,13 +103,9 @@ background-position: 100%;
 
 
 /* begin wa button set */
-.wa {
-border: 2px solid #34495e;
-/*For IE*/
-}
-.wa:hover {
-border: 2px solid #34495e;
-background: transparent;
+.wa, .wa:hover {
+border: 2px solid #34495e !important;
+background: transparent !important;
 }
 .wa > span {
 background: linear-gradient(45deg, #fff 50%, #34495e 50%);
@@ -129,13 +120,9 @@ background-size: 300%;
 background-position: 100%;
 }
 
-.warev {
-border: 2px solid #34495e;
-/*For IE*/
-}
-.warev:hover {
-border: 2px solid #34495e;
-background: transparent;
+.warev, .warev:hover {
+border: 2px solid #34495e !important;
+background: transparent !important;
 }
 .warev > span {
 background: linear-gradient(45deg, #34495e 50%, #FFF 50%);
@@ -150,14 +137,10 @@ background-size: 300%;
 background-position: 100%;
 }
 
-.wabare {
-border: 0px solid #34495e;
-background: transparent;
+.wabare, .wabare:hover {
+border: 0px !important;
+background: transparent !important;
 /*For IE*/
-}
-.wabare:hover {
-border: 0px;
-background: transparent;
 }
 .wabare > span {
 background: linear-gradient(45deg, #FFF 50%, #34495e 50%);
@@ -175,15 +158,14 @@ background-position: 100%;
 
 
 /* begin spice button set */
-.spice {
-font-size: 18px;
-font-weight: normal;
-border-radius: 0px;
-border: 3px solid #000000;
-background: transparent;
-padding: 0px;
-width: 270px;
-color: #000000;
+.spice, .spice:hover {
+font-size: 18px !important;
+font-weight: normal !important;
+border-radius: 0px !important;
+border: 3px solid #000000 !important;
+background: transparent !important;
+padding: 0px !important;
+width: 270px !important;
 /*For IE*/
 }
 
@@ -192,17 +174,6 @@ padding: 15px 8px;
 background: linear-gradient(45deg, #000000 50%, #000000 50%);
 -webkit-background-clip: text;
 -webkit-text-fill-color: transparent;
-}
-
-.spice:hover {
-font-size: 18px;
-font-weight: normal;
-border-radius: 0px;
-border: 3px solid #000000;
-background: transparent;
-padding: 0px;
-width: 270px;
-color: #000000;
 }
 
 .spice:after {
@@ -222,19 +193,11 @@ font-weight: 500;
 
 
 /* begin modal button */
-.modal {
-width: 254px;
-font-size: 18px;
-border: 2px solid #F57A00;
-margin: 10px 0px 0px 0px;
-/*For IE*/
-}
-.modal:hover {
-width: 254px;
-font-size: 18px;
-border: 2px solid #F57A00;
-margin: 10px 0px 0px 0px;
-background: transparent;
+.modal, .modal:hover {
+width: 254px !important;
+font-size: 18px !important;
+border: 2px solid #F57A00 !important;
+margin: 10px 0px 0px 0px !important;
 /*For IE*/
 }
 .modal > span {
