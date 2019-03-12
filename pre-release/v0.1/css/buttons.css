@@ -14,8 +14,9 @@ padding: 0px !important;
 min-width: 200px !important;
 max-width: 280px !important;
 text-align: center !important;
-margin: 10px !important;
 z-index: 1 !important;
+margin: auto; !important;
+display: block; !important;
 }
 
 .pay-button > span {
