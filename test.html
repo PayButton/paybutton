@@ -25,27 +25,37 @@
 
 <body>
   
-<button class="pay-button undefined" button-text="Pay with Bitcoin Cash ($240)" button-text-2="" success-msg="undefined" address="undefined" amount="240" amount-type="USD" paywall-field="undefined" success-callback="processSupporterPayment"></button>
-  <br />
-<script>
-  var config = {
-    style: '',
-button_text: "Pay with Bitcoin Cash ($240)", button_text_2: "", amount: 240, amount_type: "USD", success_callback: "processSupporterPayment"
-  }
-  Paybutton.render("elem1", config);
-</script>
-
-  <br />
- <script>
-  var config2 =  {address: "bitcoincash:qzqh7ej3rdrw6r32guzdg0x4a275hqwjkgtmjazc64", button_text: "Pay with Bitcoin Cash ($241)", button_text_2: "", amount: 241, amount_type: "USD", …}
-  Paybutton.render("elem1", config2);
-</script>
-  
-  <div class="c_container">
+<div class="c_container">
 
   <div id="elem1"></div>
 
 </div>
+  
+<script>
+  var config = {
+    style: 'pay-button',
+    button_text: 'Send 15 BCH',
+    button_text_2: 'Click to Send BCH',
+    amount: 15.000,
+    amount_type: 'BCH',
+    address: 'bitcoincash:qp24zfhleckncxq8snvtccxtsa05erxvsc0cjy542k',
+    success_msg: 'Thanks!'
+  }
+  Paybutton.render("elem1", config);
+</script>
+  
+<script>
+  var config2 = {
+    style: 'pay-button rev',
+    button_text: 'Send 17 BCH',
+    button_text_2: 'Click to Send BCH',
+    amount: 17.000,
+    amount_type: 'BCH',
+    address: 'bitcoincash:qp24zfhleckncxq8snvtccxtsa05erxvsc0cjy542k',
+    success_msg: 'Thanks!'
+  }
+  Paybutton.render("elem1", config2);
+</script>
   
   <br /><br />
 <button
