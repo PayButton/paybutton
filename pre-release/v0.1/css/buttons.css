@@ -12,7 +12,7 @@ background: transparent !important;
 position: relative !important;
 padding: 0px !important;
 min-width: 200px !important;
-max-width: 270px !important;
+max-width: 280px !important;
 text-align: center !important;
 margin: 10px !important;
 z-index: 1 !important;
@@ -159,37 +159,72 @@ background-position: 100%;
 
 /* begin spice button set */
 .spice, .spice:hover {
-font-size: 18px !important;
+font-size: 24px !important;
 font-weight: normal !important;
 border-radius: 0px !important;
-border: 3px solid #000000 !important;
+border: 3px solid #ED2B55 !important;
 background: transparent !important;
 padding: 0px !important;
-width: 270px !important;
+width: 280px !important;
 /*For IE*/
 }
 
 .spice > span {
-padding: 15px 8px;
-background: linear-gradient(45deg, #000000 50%, #000000 50%);
+padding: 18px 8px;
+background: linear-gradient(45deg, #FFFFFF 50%, #ED2B55 50%);
 -webkit-background-clip: text;
 -webkit-text-fill-color: transparent;
 }
 
 .spice:after {
-background: linear-gradient(45deg, #E60B24 50%, transparent 50%);
+background: linear-gradient(45deg, #ED2B55 50%, transparent 50%);
 }
 
 .spice > span,.spice:after {
 background-size: 300%;
 background-position: 100%;
-transition: 1s, font-weight .2s;
+transition: .8s, font-weight .2s;
 }
 
 .spice:hover > span,.spice:hover:after {
-font-weight: 500;
+font-weight: normal;
 }
 /* begin spice button set */
+
+
+/* begin spicerev button set */
+.spicerev, .spicerev:hover {
+font-size: 24px !important;
+font-weight: normal !important;
+border-radius: 0px !important;
+border: 3px solid #ED2B55 !important;
+background: transparent !important;
+padding: 0px !important;
+width: 280px !important;
+/*For IE*/
+}
+
+.spicerev > span {
+padding: 18px 8px;
+background: linear-gradient(45deg, #ED2B55 50%, #FFFFFF 50%);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+}
+
+.spicerev:after {
+background: linear-gradient(45deg, transparent 50%, #ED2B55 50%);
+}
+
+.spicerev > span,.spicerev:after {
+background-size: 300%;
+background-position: 100%;
+transition: .8s, font-weight .2s;
+}
+
+.spicerev:hover > span,.spicerev:hover:after {
+font-weight: normal;
+}
+/* begin spicerev button set */
 
 
 /* begin modal button */
