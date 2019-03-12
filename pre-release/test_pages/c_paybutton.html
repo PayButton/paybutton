@@ -73,9 +73,25 @@ address="bitcoincash:qp24zfhleckncxq8snvtccxtsa05erxvsc0cjy542k"
 success-msg="Thanks for The Tip!"
 >
 </button>
-</div>
 
+
+<div id="xxx"></div>
+
+</div>
   
+<script>
+  var config = {
+    style: '',
+    button_text: 'Send 15 BCH',
+    button_text_2: 'Click to Send BCH',
+    amount: 15.000,
+    amount_type: 'BCH',
+    address: 'bitcoincash:qp24zfhleckncxq8snvtccxtsa05erxvsc0cjy542k',
+    success_msg: 'Thanks!'
+  }
+  Paybutton.render("xxx", config);
+</script>
+
 </body>
 
 </html>
