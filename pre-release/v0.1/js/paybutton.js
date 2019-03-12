@@ -380,13 +380,13 @@ function openModal(pbAttr) {
     '</span></div> ' +
     '</div>' +
     '<div>' +
-    '<div><button id="bch-open" class="pay-button modal" onclick="location.href=\'' +
+    '<div><button id="bch-open" class="pay-button pb-modal-button" onclick="location.href=\'' +
     pbAttr.URI +
     '\'" type="button"><span>Send with BCH Wallet</span></button></div>' +
     '</div>' +
-    //'<div>' +
-    //'<div><button id="badger-open" class = "pay-button modal" onclick="sendToBadger(\''+pbAttr.toAddress+'\', \''+pbAttr.bchAmount+'\', \''+pbAttr.successMsg+'\', \''+pbAttr.paywallField+'\', \''+pbAttr.successCallback+'\')"><span>Send with Badger Wallet</span></button></div> ' +
-    //'</div>' +
+    '<div>' +
+    '<div><button id="badger-open" class = "pay-button pb-modal-button" onclick="sendToBadger(\''+pbAttr.toAddress+'\', \''+pbAttr.bchAmount+'\', \''+pbAttr.successMsg+'\', \''+pbAttr.paywallField+'\', \''+pbAttr.successCallback+'\')"><span>Send with Badger Wallet</span></button></div> ' +
+    '</div>' +
     '<div class="poweredbydiv">' +
     '<div><span><a href="https://paybutton.cash" target="_blank" style="color: orangeRed; text-decoration: none;">Powered by PayButton.cash</a></span></div>' +
     '</div>' +
