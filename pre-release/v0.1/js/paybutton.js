@@ -636,6 +636,8 @@ var Paybutton = {
     newBtn.setAttribute('address', config.address);
     newBtn.setAttribute('amount', config.amount);
     newBtn.setAttribute('amount-type', config.amount_type);
+    newBtn.setAttribute('paywall-field', config.paywall_field);
+    newBtn.setAttribute('success-callback', config.success_callback);
     elem.parentNode.replaceChild(newBtn, elem);
   }
 };
