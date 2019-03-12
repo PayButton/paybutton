@@ -20,39 +20,39 @@
     <meta name="msapplication-config" content="./images/icons/browserconfig.xml">
     <meta name="theme-color" content="#ffffff">
   
-  <style type="text/css">
 
-    .c_container {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        width: 100%;
-        text-align: center;
-        margin: 10% 0;
-        min-height: 200px;
-        background-color: #FFF;
-        align-items: center;
-    }
-
-</style>
 
 </head>
 
 <body>
 
-<div class="c_container">
+
 <button
 class="pay-button spice"
-button-text="Donate a Penny"
-button-text-2=""
+button-text="Support The Spice"
+button-text-2="Donate $1"
 amount="0.01"
-amount-type="USD"
-address="bitcoincash:qz7uphl05rk2g2wf0k6g59l0gffpf2gzf53m3tzjlu"
-success-msg="Thanks for supporting PayButton!"
+amount-type="usd"
+address="bitcoincash:qpajl5cvn0fjsqs30xppuxs3uuhzfdj4ncrcfdukt3"
+success-msg="Thanks for supporting Spice!"
+paywall-field="paywall"
+success-callback=""
 >
 </button>
-  <br /> <br />
+<br />
+<button
+class="pay-button spicerev"
+button-text="Support The Spice"
+button-text-2="Donate $1"
+amount="0.01"
+amount-type="usd"
+address="bitcoincash:qpajl5cvn0fjsqs30xppuxs3uuhzfdj4ncrcfdukt3"
+success-msg="Thanks for supporting Spice!"
+paywall-field="paywall"
+success-callback=""
+>
+</button>
+<br /> <br />
 <button
 class="pay-button"
 button-text="Donate $1"
@@ -127,8 +127,8 @@ success-field=""
 success-msg="Thanks for supporting PayButton!"
 >
 </button>
-</div>
-  
+
+ 
 </body>
 
 </html>
