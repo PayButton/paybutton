@@ -229,22 +229,22 @@ font-weight: normal;
 
 
 /* begin modal button */
-.modal, .modal:hover {
+.pb-modal-button, .pb-modal-button:hover {
 width: 254px !important;
 font-size: 18px !important;
 border: 2px solid #F57A00 !important;
 margin: 10px 0px 0px 0px !important;
 /*For IE*/
 }
-.modal > span {
+.pb-modal-button > span {
 background: linear-gradient(45deg, #FFFFFF 50%, #F57A00 50%);
 -webkit-background-clip: text;
 -webkit-text-fill-color: transparent;
 }
-.modal:after {
+.pb-modal-button:after {
 background: linear-gradient(45deg, #F7941D 50%, transparent 50%);
 }
-.modal > span, .modal:after {
+.pb-modal-button > span, .pb-modal-button:after {
 background-size: 300%;
 background-position: 100%;
 }
