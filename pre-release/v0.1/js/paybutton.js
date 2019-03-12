@@ -500,6 +500,26 @@ function buttonDefaultText() {
 
 // DOM listen
 document.addEventListener('DOMContentLoaded', function() {
+  
+  
+ var Paybutton = {
+  render: function(id, config) {
+    var elem = document.getElementById(id);
+    var newBtn = document.createElement('button');
+    newBtn.setAttribute('class', 'pay-button ' + config.style);
+    newBtn.setAttribute('button-text', config.button_text);
+    newBtn.setAttribute('button-text-2', config.button_text_2);
+    newBtn.setAttribute('success-msg', config.success_msg);
+    newBtn.setAttribute('address', config.address);
+    newBtn.setAttribute('amount', config.amount);
+    newBtn.setAttribute('amount-type', config.amount_type);
+    newBtn.setAttribute('paywall-field', config.paywall_field);
+    newBtn.setAttribute('success-callback', config.success_callback);
+    elem.parentNode.replaceChild(newBtn, elem);
+  }
+};
+  
+  
   // pull in buttons found
   var payButton = document.getElementsByClassName('pay-button');
 
@@ -624,20 +644,3 @@ if (!document.getElementById(cssModalId)) {
   link.media = 'all';
   head.appendChild(link);
 }
-
-var Paybutton = {
-  render: function(id, config) {
-    var elem = document.getElementById(id);
-    var newBtn = document.createElement('button');
-    newBtn.setAttribute('class', 'pay-button ' + config.style);
-    newBtn.setAttribute('button-text', config.button_text);
-    newBtn.setAttribute('button-text-2', config.button_text_2);
-    newBtn.setAttribute('success-msg', config.success_msg);
-    newBtn.setAttribute('address', config.address);
-    newBtn.setAttribute('amount', config.amount);
-    newBtn.setAttribute('amount-type', config.amount_type);
-    newBtn.setAttribute('paywall-field', config.paywall_field);
-    newBtn.setAttribute('success-callback', config.success_callback);
-    elem.parentNode.replaceChild(newBtn, elem);
-  }
-};
