@@ -508,7 +508,8 @@ document.addEventListener('DOMContentLoaded', function() {
   for (var i = 0; i < payButton.length; i++) {
     var payButtons = payButton[i];
 
-    window.addEventListener('DOMContentLoaded', buttonDefaultText.bind(payButtons), false);
+let defaultText = buttonDefaultText.bind(payButtons);
+defaultText();
 
     if (!('ontouchstart' in window))
       payButtons.addEventListener('mouseenter', mouseEnter, false);
