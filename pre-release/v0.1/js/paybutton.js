@@ -499,7 +499,7 @@ function buttonDefaultText() {
 }
 
 // DOM listen
-window.addEventListener('DOMContentLoaded', function() {
+window.addEventListener('load', function() {
   
   
   // pull in buttons found
