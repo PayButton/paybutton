@@ -632,15 +632,35 @@ var Paybutton = {
     var elem = document.getElementById(id);
     var newBtn = document.createElement('button');
     newBtn.setAttribute('id', id);
-    newBtn.setAttribute('class', 'pay-button ' + config.style);
-    newBtn.setAttribute('button-text', config.button_text);
-    newBtn.setAttribute('button-text-2', config.button_text_2);
-    newBtn.setAttribute('success-msg', config.success_msg);
-    newBtn.setAttribute('address', config.address);
-    newBtn.setAttribute('amount', config.amount);
-    newBtn.setAttribute('amount-type', config.amount_type);
-    newBtn.setAttribute('paywall-field', config.paywall_field);
-    newBtn.setAttribute('success-callback', config.success_callback);
+    if (config.style) {
+      newBtn.setAttribute('class', 'pay-button ' + config.style);
+    } else {
+      newBtn.setAttribute('class', 'pay-button');
+    };
+    if (config.button_text) {
+      newBtn.setAttribute('button-text', config.button_text);
+    };
+    if (config.button_text_2) {
+      newBtn.setAttribute('button-text-2', config.button_text_2);
+    };
+    if (config.success_msg) {
+      newBtn.setAttribute('success-msg', config.success_msg);
+    };
+    if (config.address) {
+      newBtn.setAttribute('address', config.address);
+    };
+    if (config.amount) {
+      newBtn.setAttribute('amount', config.amount);
+    };
+    if (config.amount_type) {
+      newBtn.setAttribute('amount-type', config.amount_type);
+    };
+    if (config.paywall_field) {
+      newBtn.setAttribute('paywall-field', config.paywall_field);
+    };
+    if (config.success_callback) {
+      newBtn.setAttribute('success-callback', config.success_callback);
+    }
     elem.parentNode.replaceChild(newBtn, elem);
   }
 };
