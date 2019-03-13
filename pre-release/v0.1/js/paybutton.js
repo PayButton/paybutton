@@ -627,10 +627,11 @@ if (!document.getElementById(cssModalId)) {
   head.appendChild(link);
 }
 
- var Paybutton = {
+var Paybutton = {
   render: function(id, config) {
     var elem = document.getElementById(id);
     var newBtn = document.createElement('button');
+    newBtn.setAttribute('id', id);
     newBtn.setAttribute('class', 'pay-button ' + config.style);
     newBtn.setAttribute('button-text', config.button_text);
     newBtn.setAttribute('button-text-2', config.button_text_2);
