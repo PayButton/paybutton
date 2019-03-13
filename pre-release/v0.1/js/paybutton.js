@@ -499,7 +499,7 @@ function buttonDefaultText() {
 }
 
 // DOM listen
-document.addEventListener('load', function() {
+document.addEventListener('DOMContentLoaded', function() {
   
   
   // pull in buttons found
@@ -508,7 +508,7 @@ document.addEventListener('load', function() {
   for (var i = 0; i < payButton.length; i++) {
     var payButtons = payButton[i];
 
-    window.addEventListener('load', buttonDefaultText.bind(payButtons), false);
+    window.addEventListener('DOMContentLoaded', buttonDefaultText.bind(payButtons), false);
 
     if (!('ontouchstart' in window))
       payButtons.addEventListener('mouseenter', mouseEnter, false);
