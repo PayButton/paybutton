@@ -483,6 +483,7 @@ fiatRequest.send();
 }
 // * end of begin function query to obtain bch price
 
+document.addEventListener("DOMContentLoaded", function(){
 
 // insert info into button on mouseover
 function mouseEnter() {
@@ -523,7 +524,7 @@ setTimeout(function(){ x.innerHTML = "<span>"+buttonText+"</span>" }, 200);
 
 
 // DOM listen
-window.addEventListener("load", function(){
+//document.addEventListener("DOMContentLoaded", function(){
 
 // pull in buttons found
 var payButton = document.getElementsByClassName("pay-button");
@@ -555,7 +556,7 @@ var pbAttr = {
     buttonAmount: buttonAmount,
     amountType: amountType,
     toAddress: toAddress,
-		successMsg: successMsg,
+    successMsg: successMsg,
     paywallField: paywallField,
     successCallback: successCallback,
 };
