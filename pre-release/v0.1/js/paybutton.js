@@ -528,7 +528,7 @@ setTimeout(function(){ x.innerHTML = "<span>"+buttonText+"</span>" }, 200);
 document.addEventListener("DOMContentLoaded", function(){
 
 // pull in buttons found
-var payButton = document.getElementsByClassName("pay-button");
+var payButton = window.getElementsByClassName("pay-button");
 
 for (var i = 0; i < payButton.length; i++) {
 
@@ -619,7 +619,7 @@ getBCHPrice (pbAttr);
 
 
 var Paybutton = {
-  window.render: function(id, config) {
+  render: function(id, config) {
     var elem = document.getElementById(id);
     var newBtn = document.createElement('button');
     newBtn.setAttribute('id', id);
