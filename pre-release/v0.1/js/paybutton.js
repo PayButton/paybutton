@@ -1,3 +1,42 @@
+var qrId = 'pbQR';
+if (!document.getElementById(qrId))
+{
+var head= document.getElementsByTagName('head')[0];
+var script= document.createElement('script');
+script.src = 'https://paybutton.cash/pre-release/v0.1/js/qrjs2.js';
+script.id = qrId;
+head.appendChild(script);
+}
+
+
+var cssButtonId = 'pbButtonCSS';
+if (!document.getElementById(cssButtonId))
+{
+var head= document.getElementsByTagName('head')[0];
+var link= document.createElement('link');
+link.rel= 'stylesheet';
+link.type = 'text/css';
+link.href = 'https://paybutton.cash/pre-release/v0.1/css/buttons.css';
+link.id = cssButtonId;
+link.media = 'all';
+head.appendChild(link);
+}
+
+
+var cssModalId = 'pbModalCSS';
+if (!document.getElementById(cssModalId))
+{
+var head= document.getElementsByTagName('head')[0];
+var link= document.createElement('link');
+link.rel= 'stylesheet';
+link.type = 'text/css';
+link.href = 'https://paybutton.cash/pre-release/v0.1/css/modal.css';
+link.id = cssModalId;
+link.media = 'all';
+head.appendChild(link);
+}
+
+
 // * start of create modal
 (function() {
 
@@ -573,45 +612,6 @@ getBCHPrice (pbAttr);
 }
 
 });
-
-
-var qrId = 'pbQR';
-if (!document.getElementById(qrId))
-{
-var head= document.getElementsByTagName('head')[0];
-var script= document.createElement('script');
-script.src = 'https://paybutton.cash/pre-release/v0.1/js/qrjs2.js';
-script.id = qrId;
-head.appendChild(script);
-}
-
-
-var cssButtonId = 'pbButtonCSS';
-if (!document.getElementById(cssButtonId))
-{
-var head= document.getElementsByTagName('head')[0];
-var link= document.createElement('link');
-link.rel= 'stylesheet';
-link.type = 'text/css';
-link.href = 'https://paybutton.cash/pre-release/v0.1/css/buttons.css';
-link.id = cssButtonId;
-link.media = 'all';
-head.appendChild(link);
-}
-
-
-var cssModalId = 'pbModalCSS';
-if (!document.getElementById(cssModalId))
-{
-var head= document.getElementsByTagName('head')[0];
-var link= document.createElement('link');
-link.rel= 'stylesheet';
-link.type = 'text/css';
-link.href = 'https://paybutton.cash/pre-release/v0.1/css/modal.css';
-link.id = cssModalId;
-link.media = 'all';
-head.appendChild(link);
-}
 
 
 var Paybutton = {
