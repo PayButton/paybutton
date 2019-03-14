@@ -619,7 +619,7 @@ getBCHPrice (pbAttr);
 
 
 var Paybutton = {
-  render: function(id, config) {
+  window.render: function(id, config) {
     var elem = document.getElementById(id);
     var newBtn = document.createElement('button');
     newBtn.setAttribute('id', id);
