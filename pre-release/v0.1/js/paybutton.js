@@ -525,10 +525,10 @@ setTimeout(function(){ x.innerHTML = "<span>"+buttonText+"</span>" }, 200);
 
 
 // DOM listen
-document.addEventListener("DOMContentLoaded", function(){
+window.addEventListener("DOMContentLoaded", function(){
 
 // pull in buttons found
-var payButton = window.getElementsByClassName("pay-button");
+var payButton = document.getElementsByClassName("pay-button");
 
 for (var i = 0; i < payButton.length; i++) {
 
