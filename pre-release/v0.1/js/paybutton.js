@@ -525,7 +525,7 @@ setTimeout(function(){ x.innerHTML = "<span>"+buttonText+"</span>" }, 200);
 
 
 // DOM listen
-window.addEventListener("DOMContentLoaded", function(){
+document.addEventListener("DOMContentLoaded", function(){
 
 // pull in buttons found
 var payButton = document.getElementsByClassName("pay-button");
