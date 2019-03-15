@@ -681,9 +681,10 @@ var Paybutton = {
     }
     if (config.amount_type) {
       newBtn.setAttribute('amount-type', config.amount_type);
-    } else if (config.amount) {
-      newBtn.setAttribute('amount-type', 'bch');
     }
+    //else if (config.amount) {
+      //newBtn.setAttribute('amount-type', 'bch');
+    //}
     if (config.paywall_field) {
       newBtn.setAttribute('paywall-field', config.paywall_field);
     }
