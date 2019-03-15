@@ -662,7 +662,7 @@ var Paybutton = {
     if (config.style) {
       newBtn.setAttribute('class', 'pay-button ' + config.style + ' pbtnjs');
     } else {
-      newBtn.setAttribute('class', 'pay-button pbtnjs');
+      newBtn.setAttribute('class', 'pay-button');
     }
     if (config.button_text) {
       newBtn.setAttribute('button-text', config.button_text);
