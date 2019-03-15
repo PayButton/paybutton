@@ -64,31 +64,37 @@ if (!document.getElementById(cssModalId)) {
   // Public Methods
 
   Modal.prototype.close = function() {
-    stopListenForTX();
-    var _ = this;
-    this.modal.className = this.modal.className.replace(' paybutton-open', '');
-    this.overlay.className = this.overlay.className.replace(
-      ' paybutton-open',
-      ''
-    );
-    this.modal.addEventListener(this.transitionEnd, function() {
-      _.modal.parentNode.removeChild(_.modal);
-    });
-    this.overlay.addEventListener(this.transitionEnd, function() {
-      if (_.overlay.parentNode) _.overlay.parentNode.removeChild(_.overlay);
-    });
+    if (window.payButtonModalOpen) {
+      stopListenForTX();
+      var _ = this;
+      this.modal.className = this.modal.className.replace(' paybutton-open', '');
+      this.overlay.className = this.overlay.className.replace(
+        ' paybutton-open',
+        ''
+      );
+      this.modal.addEventListener(this.transitionEnd, function() {
+        _.modal.parentNode.removeChild(_.modal);
+      });
+      this.overlay.addEventListener(this.transitionEnd, function() {
+        if (_.overlay.parentNode) _.overlay.parentNode.removeChild(_.overlay);
+      });
+      window.payButtonModalOpen = false;
+    }
   };
 
   Modal.prototype.open = function() {
-    buildOut.call(this);
-    initializeEvents.call(this);
-    window.getComputedStyle(this.modal).height;
-    this.modal.className =
-      this.modal.className +
-      (this.modal.offsetHeight > window.innerHeight
-        ? ' paybutton-open paybutton-anchored'
-        : ' paybutton-open');
-    this.overlay.className = this.overlay.className + ' paybutton-open';
+    if (!window.payButtonModalOpen) {
+      buildOut.call(this);
+      initializeEvents.call(this);
+      window.getComputedStyle(this.modal).height;
+      this.modal.className =
+        this.modal.className +
+        (this.modal.offsetHeight > window.innerHeight
+          ? ' paybutton-open paybutton-anchored'
+          : ' paybutton-open');
+      this.overlay.className = this.overlay.className + ' paybutton-open';
+      window.payButtonModalOpen = true;
+    }
   };
 
   // Private Methods
