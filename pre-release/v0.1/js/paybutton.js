@@ -682,6 +682,7 @@ var Paybutton = {
     if (config.amount_type) {
       newBtn.setAttribute('amount-type', config.amount_type);
     }
+    //System already has checks if one or the other, or both (amount/amount type) are set and throws appropriate errors
     //else if (config.amount) {
       //newBtn.setAttribute('amount-type', 'bch');
     //}
