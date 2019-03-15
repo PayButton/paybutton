@@ -682,10 +682,10 @@ var Paybutton = {
     if (config.amount_type) {
       newBtn.setAttribute('amount-type', config.amount_type);
     }
-    //System already has checks if one or the other, or both (amount/amount type) are set and throws appropriate errors
-    //else if (config.amount) {
-      //newBtn.setAttribute('amount-type', 'bch');
-    //}
+    //System already has checks if one or the other, or both (amount/amount type) are set and throws appropriate errors. wont need this in production.
+    else if (config.amount) {
+      newBtn.setAttribute('amount-type', 'bch');
+    }
     if (config.paywall_field) {
       newBtn.setAttribute('paywall-field', config.paywall_field);
     }
