@@ -618,6 +618,11 @@ function renderButtons(config) {
         pbAttr.anyAmount = true;
       }
 
+      if (!buttonAmount && !amountType) {
+        pbAttr.anyAmount = true;
+        pbAttr.bchAmount = '';
+      }
+
       // check for "any" amount allowed else convert
       if (pbAttr.anyAmount) {
         openModal(pbAttr);
