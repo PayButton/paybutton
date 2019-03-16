@@ -573,6 +573,7 @@ function renderButtons(config) {
       payButtons.addEventListener('touchstart', mouseEnter, false);
 
     // pull in attribute info from button when clicked
+    payButtons.setAttribute('type', 'button');
     payButtons.addEventListener('click', function(pbEvent) {
       window.payButtonParent = pbEvent.target.parentNode;
       var buttonAmount = this.getAttribute('amount') || '';
@@ -667,7 +668,6 @@ var Paybutton = {
     var elem = document.getElementById(id);
     var newBtn = document.createElement('button');
     newBtn.setAttribute('id', id);
-    newBtn.setAttribute('type', 'button');
     if (config.style) {
       newBtn.setAttribute('class', 'pay-button ' + config.style + ' pbtnjs');
     } else {
