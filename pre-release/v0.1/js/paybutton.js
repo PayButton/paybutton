@@ -667,6 +667,7 @@ var Paybutton = {
     var elem = document.getElementById(id);
     var newBtn = document.createElement('button');
     newBtn.setAttribute('id', id);
+    newBtn.setAttribute('type', 'button');
     if (config.style) {
       newBtn.setAttribute('class', 'pay-button ' + config.style + ' pbtnjs');
     } else {
