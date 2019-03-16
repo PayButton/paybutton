@@ -33,6 +33,7 @@ if (!document.getElementById(qrId)) {
 
 // * start of create modal
 (function() {
+
   // Define our constructor
   this.Modal = function() {
     // Create global element references
@@ -79,6 +80,7 @@ if (!document.getElementById(qrId)) {
         if (_.overlay.parentNode) _.overlay.parentNode.removeChild(_.overlay);
       });
       window.payButtonModalOpen = false;
+      delete window.payButtonParent; 
     }
   };
 
@@ -177,12 +179,12 @@ if (!document.getElementById(qrId)) {
 // * end of create modal
 
 // * start of copy BCH URI to clipboard
-function copyBCHURI(that) {
+function copyBCHURI(address) {
   var inp = document.createElement('input');
-  inp.value = that;
-  document.body.appendChild(inp);
+  inp.value = address;
+  window.payButtonParent.appendChild(inp);
   inp.select();
-  document.execCommand('copy', false);
+  document.execCommand('copy', false, null);
   inp.remove();
   //alert("Bitcoin Cash address copied!");
   document.getElementById('copyDiv').innerHTML = '<span>Address Copied!</span>';
@@ -572,6 +574,7 @@ function renderButtons(config) {
 
     // pull in attribute info from button when clicked
     payButtons.addEventListener('click', function(pbEvent) {
+      window.payButtonParent = pbEvent.target.parentNode;
       var buttonAmount = this.getAttribute('amount') || '';
       buttonAmount = Number(buttonAmount.trim());
       var amountType = this.getAttribute('amount-type') || '';
