@@ -343,7 +343,6 @@ function sendToBadger(
             '<span>Send With Badger Wallet</span>';
           //console.log("Error", err);
         } else {
-          stopListenForTX();
 
           stopListenForTX();
 
@@ -503,7 +502,7 @@ function getBCHPrice(pbAttr) {
 
 // insert info into button on mouseover
 function mouseEnter() {
-  console.log('Button text 2 worked');
+  //console.log('Button text 2 worked');
   var buttonText2 = this.getAttribute('button-text-2') || '';
   buttonText2 = buttonText2.trim();
   if (!buttonText2) {
@@ -530,7 +529,7 @@ function mouseEnter() {
 
 // insert info into button on mouseout
 function buttonDefaultText() {
-  console.log('Default button text worked');
+  //console.log('Default button text worked');
   var buttonText = this.getAttribute('button-text') || '';
   buttonText = buttonText.trim();
   if (!buttonText) {
@@ -562,7 +561,7 @@ function renderButtons(config) {
       continue;
     }
 
-    console.log('button created', payButtons);
+    //console.log('button created', payButtons);
 
     let defaultText = buttonDefaultText.bind(payButtons);
     defaultText();
