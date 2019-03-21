@@ -24,8 +24,40 @@
 </head>
 
 <body>
+  
+<div class="c_container">
 
+  <div id="elem1"></div>
 
+</div>
+  
+<script>
+  var config = {
+    style: 'pay-button',
+    button_text: 'Send 15 BCH',
+    button_text_2: 'Click to Send BCH',
+    amount: 15.000,
+    amount_type: 'BCH',
+    address: 'bitcoincash:qp24zfhleckncxq8snvtccxtsa05erxvsc0cjy542k',
+    success_msg: 'Thanks!'
+  }
+  Paybutton.render("elem1", config);
+</script>
+  
+<script>
+  var config = {
+    style: 'pay-button rev',
+    button_text: 'Send 17 BCH',
+    button_text_2: 'Click to Send BCH',
+    amount: 17.000,
+    amount_type: 'BCH',
+    address: 'bitcoincash:qp24zfhleckncxq8snvtccxtsa05erxvsc0cjy542k',
+    success_msg: 'Thanks!'
+  }
+  Paybutton.render("elem1", config);
+</script>
+  
+  <br /><br />
 <button
 class="pay-button spice"
 button-text="Support The Spice"
@@ -129,5 +161,3 @@ success-msg="Thanks for supporting PayButton!"
 
  
 </body>
-
-</html>
