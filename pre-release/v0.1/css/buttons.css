@@ -7,7 +7,7 @@ box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.08) !important;
 font-weight: 500 !important;
 border-radius: 4px !important;
 cursor: pointer !important;
-border: 2px solid #F57A00 !important;
+border: 2px solid #4BC846 !important;
 background: transparent !important;
 position: relative !important;
 padding: 0px !important;
@@ -23,7 +23,7 @@ z-index: 1 !important;
 display: inline-block;
 padding: 12px 8px;
 position: relative;
-background: linear-gradient(45deg, #FFFFFF 50%, #F57A00 50%);
+background: linear-gradient(45deg, #FFFFFF 50%, #4BC846 50%);
 -webkit-background-clip: text;
 -webkit-text-fill-color: transparent;
 z-index: -1;
@@ -36,7 +36,7 @@ top: 0;
 bottom: 0;
 left: 0;
 right: 0;
-background: linear-gradient(45deg, #F59332 50%, transparent 50%);
+background: linear-gradient(45deg, #4BC332 50%, transparent 50%);
 font-size: 18px;
 z-index: -5;
 }
@@ -54,7 +54,7 @@ background-position: 0;
 
 .pay-button:active{
 transform: translateY(1px);
-opacity: 0.95;  
+opacity: 0.95;
 box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.20);
 }
 
@@ -66,13 +66,13 @@ box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.20);
 }
 
 .rev > span {
-background: linear-gradient(45deg, #F57A00 50%, #FFFFFF 50%);
+background: linear-gradient(45deg, #4BC846 50%, #FFFFFF 50%);
 -webkit-background-clip: text;
 -webkit-text-fill-color: transparent;
 }
 
 .rev:after {
-background: linear-gradient(45deg, transparent 50%, #F59332 50%);
+background: linear-gradient(45deg, transparent 50%, #4BC332 50%);
 }
 
 .rev > span, .rev:after {
@@ -87,13 +87,13 @@ background: transparent !important;
 }
 
 .bare > span {
-background: linear-gradient(45deg, #FFF 50%, #F57A00 50%);
+background: linear-gradient(45deg, #FFF 50%, #4BC846 50%);
 -webkit-background-clip: text;
 -webkit-text-fill-color: transparent;
 }
 
 .bare:after {
-background: linear-gradient(45deg, #F59332 50%, transparent 50%);
+background: linear-gradient(45deg, #4BC332 50%, transparent 50%);
 }
 
 .bare > span, .bare:after {
@@ -232,17 +232,17 @@ font-weight: normal;
 .pb-modal-button, .pb-modal-button:hover {
 width: 254px !important;
 font-size: 18px !important;
-border: 2px solid #F57A00 !important;
+border: 2px solid #4BC846 !important;
 margin: 10px 0px 0px 0px !important;
 /*For IE*/
 }
 .pb-modal-button > span {
-background: linear-gradient(45deg, #FFFFFF 50%, #F57A00 50%);
+background: linear-gradient(45deg, #FFFFFF 50%, #4BC846 50%);
 -webkit-background-clip: text;
 -webkit-text-fill-color: transparent;
 }
 .pb-modal-button:after {
-background: linear-gradient(45deg, #F7941D 50%, transparent 50%);
+background: linear-gradient(45deg, #4BC41D 50%, transparent 50%);
 }
 .pb-modal-button > span, .pb-modal-button:after {
 background-size: 300%;
