@@ -437,9 +437,6 @@ function openModal(pbAttr) {
     pbAttr.successCallback +
     '\')" type="button"><span>Send with Badger Wallet</span></button></div> ' +
     '</div>' +
-    '<div class="poweredbydiv">' +
-    '<div><span><a href="https://alt-win.github.io/paybutton.github.io" target="_blank" style="color: orangeRed; text-decoration: none;">Powered by alt-win.github.io/paybutton.github.io</a></span></div>' +
-    '</div>' +
     '</div>' +
     '</div>';
 
