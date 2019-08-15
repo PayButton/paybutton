@@ -4,7 +4,7 @@ if (!document.getElementById(cssButtonId)) {
   var link = document.createElement('link');
   link.rel = 'stylesheet';
   link.type = 'text/css';
-  link.href = 'https://paybutton.cash/pre-release/v0.1/css/buttons.css';
+  link.href = 'https://alt-win.github.io/paybutton.github.io/pre-release/v0.1/css/buttons.css';
   link.id = cssButtonId;
   link.media = 'all';
   head.appendChild(link);
@@ -16,7 +16,7 @@ if (!document.getElementById(cssModalId)) {
   var link = document.createElement('link');
   link.rel = 'stylesheet';
   link.type = 'text/css';
-  link.href = 'https://paybutton.cash/pre-release/v0.1/css/modal.css';
+  link.href = 'https://alt-win.github.io/paybutton.github.io/pre-release/v0.1/css/modal.css';
   link.id = cssModalId;
   link.media = 'all';
   head.appendChild(link);
@@ -26,7 +26,7 @@ var qrId = 'pbQR';
 if (!document.getElementById(qrId)) {
   var head = document.getElementsByTagName('head')[0];
   var script = document.createElement('script');
-  script.src = 'https://paybutton.cash/pre-release/v0.1/js/qrjs2.js';
+  script.src = 'https://alt-win.github.io/paybutton.github.io/pre-release/v0.1/js/qrjs2.js';
   script.id = qrId;
   head.appendChild(script);
 }
@@ -80,7 +80,7 @@ if (!document.getElementById(qrId)) {
         if (_.overlay.parentNode) _.overlay.parentNode.removeChild(_.overlay);
       });
       window.payButtonModalOpen = false;
-      delete window.payButtonParent; 
+      delete window.payButtonParent;
     }
   };
 
@@ -194,7 +194,7 @@ function copyBCHURI(address) {
 // * start of transaction audio
 function playAudio() {
   var successAudio = new Audio(
-    'https://paybutton.cash/pre-release/v0.1/audio/pbding.mp3'
+    'https://alt-win.github.io/paybutton.github.io/pre-release/v0.1/audio/pbding.mp3'
   );
   successAudio.volume = 0.02; // 50%
   successAudio.play();
@@ -410,7 +410,7 @@ function openModal(pbAttr) {
     '<img class="qrcode" src="' +
     qrImage +
     '" />' +
-    '<img class="qricon" src="https://paybutton.cash/images/bitcoincash_bare_logo.png" />' +
+    '<img class="qricon" src="https://alt-win.github.io/paybutton.github.io/images/bitcoincash_bare_logo.png" />' +
     '<div id="copyDiv" class="qrctc">Click to Copy</div>' +
     '</div>' +
     '</div>' +
@@ -438,7 +438,7 @@ function openModal(pbAttr) {
     '\')" type="button"><span>Send with Badger Wallet</span></button></div> ' +
     '</div>' +
     '<div class="poweredbydiv">' +
-    '<div><span><a href="https://paybutton.cash" target="_blank" style="color: orangeRed; text-decoration: none;">Powered by PayButton.cash</a></span></div>' +
+    '<div><span><a href="https://alt-win.github.io/paybutton.github.io" target="_blank" style="color: orangeRed; text-decoration: none;">Powered by alt-win.github.io/paybutton.github.io</a></span></div>' +
     '</div>' +
     '</div>' +
     '</div>';
