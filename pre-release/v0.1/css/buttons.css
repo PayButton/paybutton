@@ -1,5 +1,5 @@
 /* begin default button set */
-.pay-button, .pay-button:hover {
+/* .pay-button, .pay-button:hover {
 all: initial;
 font-family: Helvetica Neu, Arial, sans-serif !important;
 font-size: 17px !important;
@@ -56,7 +56,7 @@ background-position: 0;
 transform: translateY(1px);
 opacity: 0.95;
 box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.20);
-}
+} */
 
 .rev {
 
