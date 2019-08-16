@@ -1,5 +1,5 @@
 /* begin default button set */
-.pay-button /*, .pay-button:hover */{
+.pay-button, .pay-button:hover {
 all: initial;
 font-family: Helvetica Neu, Arial, sans-serif !important;
 font-size: 17px !important;
