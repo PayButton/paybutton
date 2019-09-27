@@ -268,7 +268,7 @@ function listenForTX(pbAttr) {
   var txRequest = new XMLHttpRequest();
   txRequest.open(
     'GET',
-    'https://rest.bitcoin.com/v2/address/unconfirmed/' + pbAttr.toAddress,
+    'https://rest.imaginary.cash/v2/address/unconfirmed/' + pbAttr.toAddress,
     true
   );
 
