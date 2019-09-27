@@ -1,0 +1,28 @@
+* {
+  margin: 0 auto;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  position: fixed;
+  width: 100%;
+  height: auto;
+  border: 20px solid red;
+  padding: 10px;
+  color: red;
+}
+
+.header h1 {
+  letter-spacing: 0.1em;
+  font-family: Roboto;
+  font-weight: bold;
+  margin-left: 0;
+}
+
+.header img {
+  height: 50px;
+  margin-right: 0;
+}
