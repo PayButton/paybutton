@@ -613,7 +613,7 @@ function renderButtons(config) {
       if (buttonAmount || amountType) {
         if (!buttonAmount || !amountType) {
           alert(
-            'PayButton Error:\n\nFor specific PayButton amounts, BOTH of the following MUST be set:\n\n1. amount (Must be a number)\n2. amount-type (Can be BCH, Satoshi, USD, AUD etc)\n\nTo allow "Any" amount, BOTH must be blank.'
+            'Spice Button Error:\n\nFor specific Spice Button amounts, BOTH of the following MUST be set:\n\n1. amount (Must be a number)\n2. amount-type (Can be BCH, Satoshi, USD, AUD etc)\n\nTo allow "Any" amount, BOTH must be blank.'
           );
           return;
         }
