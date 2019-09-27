@@ -604,7 +604,7 @@ function renderButtons(config) {
       // bch address attribute missing
       if (!toAddress) {
         alert(
-          'PayButton Error:\n\nBelow are the minimum button requirements\n\n1. address (Bitcoin Cash address)'
+          'Spice Button Error:\n\nBelow are the minimum button requirements\n\n1. address (Bitcoin Cash address)'
         );
         return;
       }
