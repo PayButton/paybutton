@@ -209,6 +209,8 @@ function getRandomSat() {
 
 // * start of start/stop transaction listen
 var txListen;
+const spice = "4de69e374a8ed21cbddd47f2338cc0f479dc58daa2bbe11cd604ca488eca0ddf"
+
 
 function startListenForTX(pbAttr) {
   pbAttr.timeStamp = Math.floor(Date.now() / 1000);
@@ -268,7 +270,7 @@ function listenForTX(pbAttr) {
   var txRequest = new XMLHttpRequest();
   txRequest.open(
     'GET',
-    'https://rest.imaginary.cash/v2/address/unconfirmed/' + pbAttr.toAddress,
+    'https://rest.imaginary.cash/v2/slp/txDetails/' + pbAttr.txid,
     true
   );
 
