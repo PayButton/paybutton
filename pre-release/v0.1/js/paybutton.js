@@ -194,7 +194,7 @@ function copyBCHURI(address) {
 // * start of transaction audio
 function playAudio() {
   var successAudio = new Audio(
-    'https://paybutton.cash/pre-release/v0.1/audio/pbding.mp3'
+    'https://github.com/SLPVH/spicebutton/blob/master/pre-release/v0.1/audio/pbding.mp3'
   );
   successAudio.volume = 0.02; // 50%
   successAudio.play();
@@ -410,7 +410,7 @@ function openModal(pbAttr) {
     '<img class="qrcode" src="' +
     qrImage +
     '" />' +
-    '<img class="qricon" src="https://paybutton.cash/images/bitcoincash_bare_logo.png" />' +
+    '<img class="qricon" src="https://github.com/SLPVH/spicebutton/blob/master/images/bitcoincash_bare_logo.png" />' +
     '<div id="copyDiv" class="qrctc">Click to Copy</div>' +
     '</div>' +
     '</div>' +
