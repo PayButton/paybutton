@@ -438,7 +438,7 @@ function openModal(pbAttr) {
     '\')" type="button"><span>Send with Badger Wallet</span></button></div> ' +
     '</div>' +
     '<div class="poweredbydiv">' +
-    '<div><span><a href="https://paybutton.cash" target="_blank" style="color: orangeRed; text-decoration: none;">Powered by PayButton.cash</a></span></div>' +
+    '<div><span><a href="spicebutton.com" target="_blank" style="color: orangeRed; text-decoration: none;">Powered by SPICE</a></span></div>' +
     '</div>' +
     '</div>' +
     '</div>';
