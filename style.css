@@ -57,6 +57,11 @@ nav {
   font-family: Roboto;
 }
 
+/* nav tabs (divs) */
+nav > div {
+  cursor: pointer;
+}
+
 nav .nav-pos a {
   color: red;
   text-decoration: none;
@@ -75,22 +80,42 @@ nav .nav-widget a {
 }
 
 nav .nav-widget {
-  background-color: red;
   position: relative;
   text-decoration: none;
   width: 50%;
   padding: 20px;
 }
 
-.pos {
+.tabs {
+  color: white;
+  background-color: red;
+}
+
+.tabs.active {
+  color: black;
+  background-color: white;
+}
+
+.tab-content {
   position: relative;
-  margin: 5%;
-  
-  background-color: blue;
+  padding: 5%;
   width: 100%;
   height: calc(100% - 70px);
 }
 
+.pos {
+  background-color: blue;
+}
+
 .widget {
-  display: hide;
+  background-color: greenyellow;
+}
+
+/* Global Helper Classes */
+.show {
+  display: block;
+}
+
+.hide {
+  display: none;
 }
