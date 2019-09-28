@@ -73,6 +73,141 @@
     </div>
     <div class="tab-content widget hide">
       <h1>Widget</h1>
+      <div class="documentation">
+        <div class="item">
+          <h2>All that is needed to embed spicebutton on any site is the following snippet of code:</h2>
+          <pre>
+          <code>
+          &lt;script src="https://spicebutton.com/pre-release/v0.1/js/spicebutton.min.js"&gt;&lt;/script&gt;
+          &lt;button class="spice-button" address="simpleledger:slp_address_here"&gt;&lt;/button&gt;
+          </code>
+        </pre>
+        </div>
+
+        <div class="item">
+          <h2>The following example can be used to access more features:</h2>
+          <pre>
+          <code>
+            &lt;script src="https://paybutton.cash/pre-release/v0.1/js/paybutton.min.js"&gt;&lt;/script&gt;
+                &lt;button
+                class="pay-button"
+                button-text=""
+                button-text-2=""
+                amount=""
+                amount-type=""
+                address="bitcoincash:bch_address_here"
+                success-msg=""
+                paywall-field=""
+                success-callback=""
+                &gt;
+              &lt;/button&gt;
+          </code>
+        </pre>
+        </div>
+
+        <div class="item">
+          <h2>Here is a brief description of each additional attribute:</h2>
+          <pre>
+          <code>
+            class="spice-button"
+          </code>
+          </pre>
+          <p>
+            spiceButton class/button type: This will be refined in a future release. Choices currently are: ("spice-button", "spice-button rev", "spice-button bare", "spice-button wa", "spice-button warev", "spice-button wabare")
+          </p>
+        </div>
+
+        <div class="item">
+          <pre>
+          <code>
+            token-id=""
+          </code>
+        </pre>
+          <p>
+            Specify a token to be used other than SPICE Optional
+          </p>
+        </div>
+
+        <div class="item">
+          <pre>
+          <code>
+            button-text=""
+          </code>
+        </pre>
+          <p>
+            Text that appears inside the button. Example: (button-text="Tip us SPICE!") Optional
+          </p>
+        </div>
+
+
+        <div class="item">
+          <pre>
+          <code>
+            button-text-2=""
+          </code>
+        </pre>
+          <p>
+            Button text during hover/selected. Example: (button-text-2="Click to send SPICE"). Optional
+          </p>
+        </div>
+
+        <div class="item">
+          <pre>
+          <code>
+            amount=""
+          </code>
+        </pre>
+          <p>
+            Amount (units) button is set to. Example: (amount="1"). Optional
+          </p>
+        </div>
+
+        <div class="item">
+          <pre>
+          <code>
+            amount-type=""
+          </code>
+        </pre>
+          <p>
+            Type of amount. Examples: (amount-type="SPICE", or amount-type="USD", Or 160+ other currency types) Optional
+          </p>
+        </div>
+
+        <div class="item">
+          <pre>
+          <code>
+            success-msg=""
+          </code>
+        </pre>
+          <p>
+            Message upon successful transaction. Examples: (success-msg="Thanks for supporting spiceButton!") </p>
+        </div>
+
+        <div class="item">
+          <pre>
+          <code>
+            paywall-field=""
+          </code>
+        </pre>
+          <p>
+            Class name of hidden divs (can be multiple divs with same class name) that you would like to be viewable after successful transaction. Example (paywall-field="prem-content")
+          </p>
+        </div>
+
+        <div class="item">
+          <pre>
+          <code>
+            success-callback=""
+          </code>
+        </pre>
+          <p>
+            The following will allow those with the know how, to create their own functions/code that are called upon successful transaction.*
+          </p>
+        </div>
+
+        <p>Thanks to the badger wallet, bitcoin.com, soupernerd, and the DuneSquad team. A lot of the credit goes to them for making all of this possible.</p>
+
+      </div>
     </div>
   </div>
 
