@@ -92,7 +92,7 @@ nav .nav-widget {
 }
 
 .tabs.active {
-  color: black;
+  color: red;
   background-color: white;
 }
 
@@ -117,14 +117,14 @@ font-style: italic;
 font-weight: bold;
 
 }
-body > div.main > div.pos > div.launch-pos > button
+
 
 .pos {
-  background-color: blue;
+
 }
 
 .widget {
-  background-color: greenyellow;
+  
 }
 
 /* Global Helper Classes */
