@@ -209,6 +209,8 @@ function getRandomSat() {
 
 // * start of start/stop transaction listen
 var txListen;
+const spice = "4de69e374a8ed21cbddd47f2338cc0f479dc58daa2bbe11cd604ca488eca0ddf"
+
 
 function startListenForTX(pbAttr) {
   pbAttr.timeStamp = Math.floor(Date.now() / 1000);
@@ -265,10 +267,17 @@ function txDialogue(pbAttr) {
 
 // * start of transaction listener
 function listenForTX(pbAttr) {
+  var addrConvert = new XMLHttpRequest();
+  addrConvert.open(
+    'GET',
+    'https://rest.imaginary.casg/v2/slp/convert/' + pbAttr,
+    true
+  );
+
   var txRequest = new XMLHttpRequest();
   txRequest.open(
     'GET',
-    'https://rest.imaginary.cash/v2/address/unconfirmed/' + pbAttr.toAddress,
+    'https://rest.imaginary.cash/v2/slp/transactions/' + spice + addrConvert.toAddress,
     true
   );
 

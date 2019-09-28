@@ -12,6 +12,8 @@
   <!-- Custom styles for this template -->
   <link rel="stylesheet" href="style.css">
   <!-- icons -->
+  <!-- Scripts -->
+  <script src="./js/utils.js"></script>
 </head>
 
 <body class="homepage">
@@ -22,18 +24,20 @@
   <!-- Nav -->
   <div class="main">
     <nav class="nav">
-      <div class="nav-pos">
-        <a href="#pos">Point Of Sale</a>
+      <div class="tabs nav-pos active" data-target=".pos" onclick="tabSelect(event)">
+        Point Of Sale
       </div>
 
-      <div class="nav-widget">
-        <a href="#widget">Widget</a>
+      <div class="tabs nav-widget" data-target=".widget" onclick="tabSelect(event)">
+        Widget
       </div>
 
     </nav>
 
     <!-- Main -->
-    <div class="pos">
+
+    <div class="tab-content pos">
+    <h1>Point of Sale</h1>
       <div class="slp-address-field">
         <span>SLP Address:</span>
         <input id="slp-address-input" type="text" name="" value="">
@@ -44,12 +48,14 @@
       <div class="launch-pos">
         <button type="submit" name="button">Generate Custom POS Page</button>
       </div>
-    </div>
 
-    <div class="widget">
 
+    <div class="tab-content widget hide">
+      <h1>Widget</h1>
     </div>
   </div>
+
+  
 </body>
 
 </html>
