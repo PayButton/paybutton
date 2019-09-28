@@ -20,26 +20,28 @@
   </div>
   <!-- Nav -->
   <div class="main">
-    <!-- <nav class="nav">
-      <div class="nav-pos">
-        <a href="#pos">Point Of Sale</a>
+    <nav class="nav">
+      <div class="tabs nav-pos active" data-target=".pos" onclick="tabSelect(event)">
+        Point Of Sale
       </div>
 
-      <div class="nav-widget">
-        <a href="#widget">Widget</a>
+      <div class="tabs nav-widget" data-target=".widget" onclick="tabSelect(event)">
+        Widget
       </div>
 
-    </nav> -->
+    </nav>
 
     <!-- Main -->
-    <!-- <div class="pos">
-
+    <div class="tab-content pos">
+      <h1>Point of Sale</h1>
     </div>
 
-    <div class="widget">
-
+    <div class="tab-content widget hide">
+      <h1>Widget</h1>
     </div>
-  </div> -->
+  </div>
+
+  <script src="./js/utils.js"></script>
 </body>
 
 </html>
