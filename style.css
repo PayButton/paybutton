@@ -106,25 +106,31 @@ nav .nav-widget {
 }
 
 .launch-pos {
-
+  display: flex;
+  flex-direction: row;
 }
 .launch-pos button{
-display: flex;
-fle
+  display: flex;
+  flex-direction: row;
 font-family: Ubuntu;
-font-size: 5em;
+font-size: 2em;
 font-style: italic;
 font-weight: bold;
-
+height: 50px;
+align-content: left;
 }
 
+.launch-pos button img{
+  position: relative;
+  height:100%;
+}
 
 .pos {
 
 }
 
 .widget {
-  
+
 }
 
 /* Global Helper Classes */
