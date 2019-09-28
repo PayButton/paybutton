@@ -84,14 +84,26 @@ nav .nav-widget {
 
 .pos {
   position: relative;
-  /* margin: 5%; */
-
-  background-color: blue;
+  padding: 5%;
   width: 100%;
   height: calc(100% - 70px);
   align-content: center;
   text-align: left;
 }
+
+.launch-pos {
+
+}
+.launch-pos button{
+display: flex;
+fle
+font-family: Ubuntu;
+font-size: 5em;
+font-style: italic;
+font-weight: bold;
+
+}
+body > div.main > div.pos > div.launch-pos > button
 
 .widget {
   display: hide;
