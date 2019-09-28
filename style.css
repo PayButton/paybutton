@@ -84,11 +84,13 @@ nav .nav-widget {
 
 .pos {
   position: relative;
-  margin: 5%;
-  
+  /* margin: 5%; */
+
   background-color: blue;
   width: 100%;
   height: calc(100% - 70px);
+  align-content: center;
+  text-align: left;
 }
 
 .widget {
