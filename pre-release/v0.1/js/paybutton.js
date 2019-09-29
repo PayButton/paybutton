@@ -270,7 +270,7 @@ function listenForTX(pbAttr) {
   var addrConvert = new XMLHttpRequest();
   addrConvert.open(
     'GET',
-    'https://rest.imaginary.casg/v2/slp/convert/' + pbAttr,
+    'https://rest.imaginary.cash/v2/slp/convert/' + pbAttr,
     true
   );
 
