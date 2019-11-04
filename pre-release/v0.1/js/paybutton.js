@@ -4,7 +4,7 @@ if (!document.getElementById(cssButtonId)) {
   var link = document.createElement('link');
   link.rel = 'stylesheet';
   link.type = 'text/css';
-  link.href = 'https://alt-win.github.io/paybutton.github.io/pre-release/v0.1/css/buttons.css';
+  link.href = './pre-release/v0.1/css/buttons.css';
   link.id = cssButtonId;
   link.media = 'all';
   head.appendChild(link);
@@ -16,7 +16,7 @@ if (!document.getElementById(cssModalId)) {
   var link = document.createElement('link');
   link.rel = 'stylesheet';
   link.type = 'text/css';
-  link.href = 'https://alt-win.github.io/paybutton.github.io/pre-release/v0.1/css/modal.css';
+  link.href = './pre-release/v0.1/css/modal.css';
   link.id = cssModalId;
   link.media = 'all';
   head.appendChild(link);
@@ -26,7 +26,7 @@ var qrId = 'pbQR';
 if (!document.getElementById(qrId)) {
   var head = document.getElementsByTagName('head')[0];
   var script = document.createElement('script');
-  script.src = 'https://alt-win.github.io/paybutton.github.io/pre-release/v0.1/js/qrjs2.js';
+  script.src = './pre-release/v0.1/js/qrjs2.js';
   script.id = qrId;
   head.appendChild(script);
 }
@@ -194,7 +194,7 @@ function copyBCHURI(address) {
 // * start of transaction audio
 function playAudio() {
   var successAudio = new Audio(
-    'https://alt-win.github.io/paybutton.github.io/pre-release/v0.1/audio/pbding.mp3'
+    './pre-release/v0.1/audio/pbding.mp3'
   );
   successAudio.volume = 0.02; // 50%
   successAudio.play();
@@ -268,7 +268,7 @@ function listenForTX(pbAttr) {
   var txRequest = new XMLHttpRequest();
   txRequest.open(
     'GET',
-    'https://rest.imaginary.cash/v2/address/unconfirmed/' + pbAttr.toAddress,
+    'https://rest.bitcoin.com/v2/address/unconfirmed/' + pbAttr.toAddress,
     true
   );
 
@@ -410,7 +410,7 @@ function openModal(pbAttr) {
     '<img class="qrcode" src="' +
     qrImage +
     '" />' +
-    '<img class="qricon" src="https://alt-win.github.io/paybutton.github.io/images/bitcoincash_bare_logo.png" />' +
+    '<img class="qricon" src="./images/spice_bare_logo.png" />' +
     '<div id="copyDiv" class="qrctc">Click to Copy</div>' +
     '</div>' +
     '</div>' +
@@ -453,7 +453,7 @@ function getBCHPrice(pbAttr) {
   var fiatRequest = new XMLHttpRequest();
   fiatRequest.open(
     'GET',
-    'https://index-api.bitcoin.com/api/v0/cash/price/' + pbAttr.amountType,
+    'https://api.coingecko.com/api/v3/coins/spice/',
     true
   );
 
@@ -461,16 +461,24 @@ function getBCHPrice(pbAttr) {
     if (fiatRequest.readyState == 4 && fiatRequest.status == 200) {
       var fiatData = JSON.parse(fiatRequest.responseText);
 
-      if (fiatData.price != '') {
+      if (fiatData != '') {
+        let ticker=pbAttr.amountType;
+        let localPrice=fiatData.market_data.current_price.ticker;
         // determine amount of satoshi based on button value
-        var addDecimal = fiatData.price / 100;
-        var satAmount = (1 / addDecimal) * pbAttr.buttonAmount;
+        // var addDecimal = fiatData.price / 100;
+        // var satAmount = (1 / addDecimal) * pbAttr.buttonAmount;
+        var satAmount = (1 / localPrice) * pbAttr.buttonAmount;
+
+
         pbAttr.satAmount = satAmount.toFixed(8);
 
         // add small amount of random sats for slightly more acurate success dialogue
-        pbAttr.randSat = getRandomSat();
-        var bchAmount = Number(pbAttr.satAmount) + Number(pbAttr.randSat);
+        // pbAttr.randSat = getRandomSat();
+        // var bchAmount = Number(pbAttr.satAmount) + Number(pbAttr.randSat);
+        var bchAmount = pbAttr.satAmount;
+        // pbAttr.bchAmount = bchAmount.toFixed(8);
         pbAttr.bchAmount = bchAmount.toFixed(8);
+
 
         pbAttr.amountMessage =
           pbAttr.buttonAmount +
