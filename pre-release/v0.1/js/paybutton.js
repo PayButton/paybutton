@@ -410,7 +410,7 @@ function openModal(pbAttr) {
     '<img class="qrcode" src="' +
     qrImage +
     '" />' +
-    '<img class="qricon" src="https://alt-win.github.io/paybutton.github.io/images/spice_bare_logo.png" />' +
+    '<img class="qricon" src="https://alt-win.github.io/paybutton.github.io/images/bitcoincash_bare_logo.png" />' +
     '<div id="copyDiv" class="qrctc">Click to Copy</div>' +
     '</div>' +
     '</div>' +
@@ -453,7 +453,7 @@ function getBCHPrice(pbAttr) {
   var fiatRequest = new XMLHttpRequest();
   fiatRequest.open(
     'GET',
-    'https://api.coingecko.com/api/v3/coins/spice/',
+    'https://index-api.bitcoin.com/api/v0/cash/price/' + pbAttr.amountType,
     true
   );
 
@@ -461,24 +461,16 @@ function getBCHPrice(pbAttr) {
     if (fiatRequest.readyState == 4 && fiatRequest.status == 200) {
       var fiatData = JSON.parse(fiatRequest.responseText);
 
-      if (fiatData != '') {
-        let ticker=pbAttr.amountType;
-        let localPrice=fiatData.market_data.current_price.ticker;
+      if (fiatData.price != '') {
         // determine amount of satoshi based on button value
-        // var addDecimal = fiatData.price / 100;
-        // var satAmount = (1 / addDecimal) * pbAttr.buttonAmount;
-        var satAmount = (1 / localPrice) * pbAttr.buttonAmount;
-
-
+        var addDecimal = fiatData.price / 100;
+        var satAmount = (1 / addDecimal) * pbAttr.buttonAmount;
         pbAttr.satAmount = satAmount.toFixed(8);
 
         // add small amount of random sats for slightly more acurate success dialogue
-        // pbAttr.randSat = getRandomSat();
-        // var bchAmount = Number(pbAttr.satAmount) + Number(pbAttr.randSat);
-        var bchAmount = pbAttr.satAmount;
-        // pbAttr.bchAmount = bchAmount.toFixed(8);
+        pbAttr.randSat = getRandomSat();
+        var bchAmount = Number(pbAttr.satAmount) + Number(pbAttr.randSat);
         pbAttr.bchAmount = bchAmount.toFixed(8);
-
 
         pbAttr.amountMessage =
           pbAttr.buttonAmount +
