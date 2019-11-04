@@ -4,7 +4,7 @@ if (!document.getElementById(cssButtonId)) {
   var link = document.createElement('link');
   link.rel = 'stylesheet';
   link.type = 'text/css';
-  link.href = './pre-release/v0.1/css/buttons.css';
+  link.href = 'https://alt-win.github.io/paybutton.github.io/pre-release/v0.1/css/buttons.css';
   link.id = cssButtonId;
   link.media = 'all';
   head.appendChild(link);
@@ -16,7 +16,7 @@ if (!document.getElementById(cssModalId)) {
   var link = document.createElement('link');
   link.rel = 'stylesheet';
   link.type = 'text/css';
-  link.href = './pre-release/v0.1/css/modal.css';
+  link.href = 'https://alt-win.github.io/paybutton.github.io/pre-release/v0.1/css/modal.css';
   link.id = cssModalId;
   link.media = 'all';
   head.appendChild(link);
@@ -26,7 +26,7 @@ var qrId = 'pbQR';
 if (!document.getElementById(qrId)) {
   var head = document.getElementsByTagName('head')[0];
   var script = document.createElement('script');
-  script.src = './pre-release/v0.1/js/qrjs2.js';
+  script.src = 'https://alt-win.github.io/paybutton.github.io/pre-release/v0.1/js/qrjs2.js';
   script.id = qrId;
   head.appendChild(script);
 }
@@ -194,7 +194,7 @@ function copyBCHURI(address) {
 // * start of transaction audio
 function playAudio() {
   var successAudio = new Audio(
-    './pre-release/v0.1/audio/pbding.mp3'
+    'https://alt-win.github.io/paybutton.github.io/pre-release/v0.1/audio/pbding.mp3'
   );
   successAudio.volume = 0.02; // 50%
   successAudio.play();
@@ -410,7 +410,7 @@ function openModal(pbAttr) {
     '<img class="qrcode" src="' +
     qrImage +
     '" />' +
-    '<img class="qricon" src="./images/spice_bare_logo.png" />' +
+    '<img class="qricon" src="https://alt-win.github.io/paybutton.github.io/images/spice_bare_logo.png" />' +
     '<div id="copyDiv" class="qrctc">Click to Copy</div>' +
     '</div>' +
     '</div>' +
