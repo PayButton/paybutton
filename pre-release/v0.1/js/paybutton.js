@@ -278,7 +278,7 @@ function listenForTX(pbAttr) {
 
   var txRequest = new EventSource('https://bitsocket.bch.sx/s/' + btoa(JSON.stringify(query)))
 
-  txRequest.onload = function() {
+  txRequest.onmessage = function() {
     console.log('listening for transaction..');
 
     var txData = JSON.parse(txRequest.data);
@@ -302,7 +302,7 @@ function listenForTX(pbAttr) {
       }
     }
   }
-  txRequest.send();
+  //txRequest.send();
 }
 
 // Old transaction listener based on rest API
