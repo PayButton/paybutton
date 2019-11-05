@@ -278,10 +278,10 @@ function listenForTX(pbAttr) {
 
   var txRequest = new EventSource('https://bitsocket.bch.sx/s/' + btoa(JSON.stringify(query)))
 
-  txRequest.onmessage = function() {
+  txRequest.onmessage = function(event) {
     console.log('listening for transaction..');
 
-    var txData = JSON.parse(txRequest.data);
+    var txData = JSON.parse(event.data);
 
     //var tx = JSON.parse(event.data);
     if (txData.type == 'mempool') {
