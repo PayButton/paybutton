@@ -290,7 +290,7 @@ function listenForTX(pbAttr) {
           var bchReceived = txData.data[0].out[i].e.v / 100000000;
           var sender = txData.data[0].in[0].e.a;
           var txid = txData.data[0].tx.h;
-          if (bchReceived== pbAttr.bchamount) {
+          //if (bchReceived== pbAttr.bchamount) {
             txRequest.close();
 
             stopListenForTX();
@@ -300,7 +300,7 @@ function listenForTX(pbAttr) {
             txDialogue(pbAttr);
 
             return;
-          }
+          //}
         }
       }
     }
