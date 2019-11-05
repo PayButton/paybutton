@@ -290,7 +290,7 @@ function listenForTX(pbAttr) {
           var bchReceived = txData.data[0].out[i].e.v / 100000000;
           var sender = txData.data[0].in[0].e.a;
           var txid = txData.data[0].tx.h;
-          if ((bchreceived * 1.05) > pbAttr.bchamount) {
+          if ((bchReceived * 1.05) > pbAttr.bchamount) {
             stopListenForTX();
             //
             pbAttr.txid = txid;
