@@ -91,9 +91,9 @@ if (!document.getElementById(qrId)) {
       window.getComputedStyle(this.modal).height;
       this.modal.className =
         this.modal.className +
-        (this.modal.offsetHeight > window.innerHeight
-          ? ' paybutton-open paybutton-anchored'
-          : ' paybutton-open');
+        (this.modal.offsetHeight > window.innerHeight ?
+          ' paybutton-open paybutton-anchored' :
+          ' paybutton-open');
       this.overlay.className = this.overlay.className + ' paybutton-open';
       window.payButtonModalOpen = true;
     }
@@ -263,49 +263,83 @@ function txDialogue(pbAttr) {
 }
 // * end of show transaction message
 
-// * start of transaction listener
+// // * start of transaction listener
 function listenForTX(pbAttr) {
-  var txRequest = new XMLHttpRequest();
-  txRequest.open(
-    'GET',
-    'https://rest.bitcoin.com/v2/address/unconfirmed/' + pbAttr.toAddress,
-    true
-  );
 
-  txRequest.onload = function() {
-    if (txRequest.readyState == 4 && txRequest.status == 200) {
-      console.log('listening for transaction..');
-
-      var txData = JSON.parse(txRequest.responseText);
-
-      //console.log(pbAttr.randSat, pbAttr.satAmount, pbAttr.bchAmount)
-
-      for (var i = 0; i < txData.utxos.length; i++) {
-        var getTransactions = txData.utxos[i];
-
-        if (pbAttr.timeStamp < getTransactions.ts) {
-          if (getTransactions.amount == pbAttr.bchAmount) {
-            stopListenForTX();
-
-            pbAttr.txid = getTransactions.txid;
-
-            txDialogue(pbAttr);
-
-            return;
-          } // for if amount is equal
-        } // for timestamp
-      } // for i
-    } else {
-      console.log('Found Server But There Is An Error');
+  var query = {
+    "v": 3,
+    "q": {
+      "find": {
+        "out.e.a": pbAttr.toAddress
+      }
     }
-  }; // for onload
+  }
 
-  txRequest.onerror = function() {
-    console.log('Could Not Connect To Server');
-  };
+  var bitsocket = new EventSource('https://bitsocket.bch.sx/s/' + btoa(JSON.stringify(query)))
 
-  txRequest.send();
+  bitsocket.onmessage = function(event) {
+    var tx = JSON.parse(event.data);
+    if (tx.type == 'mempool') {
+      for (var i = 0; i < tx.data[0].out.length; i++) {
+        if (tx.data[0].out[i].e.a == pbAttr.toAddress) {
+          var bchReceived = tx.data[0].out[i].e.v / 100000000;
+          var sender = tx.data[0].in[0].e.a;
+          var txid = tx.data[0].tx.h;
+          if (bchReceived == pbAttr.bchAmount) {
+            stopListenForTX();
+            //
+            pbAttr.txid = txid;
+            //
+            txDialogue(pbAttr);
+          }
+        }
+      }
+    }
+  }
 }
+
+// function listenForTX(pbAttr) {
+//   var txRequest = new XMLHttpRequest();
+//   txRequest.open(
+//     'GET',
+//     'https://rest.bitcoin.com/v2/address/unconfirmed/' + pbAttr.toAddress,
+//     true
+//   );
+//
+//   txRequest.onload = function() {
+//     if (txRequest.readyState == 4 && txRequest.status == 200) {
+//       console.log('listening for transaction..');
+//
+//       var txData = JSON.parse(txRequest.responseText);
+//
+//       //console.log(pbAttr.randSat, pbAttr.satAmount, pbAttr.bchAmount)
+//
+//       for (var i = 0; i < txData.utxos.length; i++) {
+//         var getTransactions = txData.utxos[i];
+//
+//         if (pbAttr.timeStamp < getTransactions.ts) {
+//           if (getTransactions.amount == pbAttr.bchAmount) {
+//             stopListenForTX();
+//
+//             pbAttr.txid = getTransactions.txid;
+//
+//             txDialogue(pbAttr);
+//
+//             return;
+//           } // for if amount is equal
+//         } // for timestamp
+//       } // for i
+//     } else {
+//       console.log('Found Server But There Is An Error');
+//     }
+//   }; // for onload
+//
+//   txRequest.onerror = function() {
+//     console.log('Could Not Connect To Server');
+//   };
+//
+//   txRequest.send();
+// }
 // * end of transaction listener
 
 // * start of begin function detect and send data to badger wallet
@@ -656,7 +690,9 @@ function renderButtons(config) {
 
 // DOM listen
 document.addEventListener('DOMContentLoaded', function() {
-  renderButtons({ onDemand: false });
+  renderButtons({
+    onDemand: false
+  });
 });
 
 var Paybutton = {
@@ -701,6 +737,8 @@ var Paybutton = {
       newBtn.setAttribute('success-callback', config.success_callback);
     }
     elem.parentNode.replaceChild(newBtn, elem);
-    renderButtons({ onDemand: true });
+    renderButtons({
+      onDemand: true
+    });
   }
 };
