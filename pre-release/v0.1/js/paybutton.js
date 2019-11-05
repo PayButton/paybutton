@@ -266,38 +266,46 @@ function txDialogue(pbAttr) {
 // // * start of transaction listener
 function listenForTX(pbAttr) {
 
+  var address = pbAttr.toAddress.replace("bitcoincash:", "");
   var query = {
     "v": 3,
     "q": {
       "find": {
-        "out.e.a": pbAttr.toAddress
+        "out.e.a": address
       }
     }
   }
 
-  var bitsocket = new EventSource('https://bitsocket.bch.sx/s/' + btoa(JSON.stringify(query)))
+  var txRequest = new EventSource('https://bitsocket.bch.sx/s/' + btoa(JSON.stringify(query)))
 
-  bitsocket.onmessage = function(event) {
-    var tx = JSON.parse(event.data);
-    if (tx.type == 'mempool') {
-      for (var i = 0; i < tx.data[0].out.length; i++) {
-        if (tx.data[0].out[i].e.a == pbAttr.toAddress) {
-          var bchReceived = tx.data[0].out[i].e.v / 100000000;
-          var sender = tx.data[0].in[0].e.a;
-          var txid = tx.data[0].tx.h;
-          if (bchReceived == pbAttr.bchAmount) {
+  txRequest.onload = function() {
+    console.log('listening for transaction..');
+
+    var txData = JSON.parse(txRequest.data);
+
+    //var tx = JSON.parse(event.data);
+    if (txData.type == 'mempool') {
+      for (var i = 0; i < txData.data[0].out.length; i++) {
+        if (txData.data[0].out[i].e.a == address) {
+          var bchReceived = txData.data[0].out[i].e.v / 100000000;
+          var sender = txData.data[0].in[0].e.a;
+          var txid = txData.data[0].tx.h;
+          if ((bchreceived * 1.05) > pbAttr.bchamount) {
             stopListenForTX();
             //
             pbAttr.txid = txid;
             //
             txDialogue(pbAttr);
+            return;
           }
         }
       }
     }
   }
+  txRequest.send();
 }
 
+// Old transaction listener based on rest API
 // function listenForTX(pbAttr) {
 //   var txRequest = new XMLHttpRequest();
 //   txRequest.open(
