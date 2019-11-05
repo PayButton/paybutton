@@ -291,11 +291,14 @@ function listenForTX(pbAttr) {
           var sender = txData.data[0].in[0].e.a;
           var txid = txData.data[0].tx.h;
           if ((bchReceived * 1.05) > pbAttr.bchamount) {
+            txRequest.close();
+            
             stopListenForTX();
             //
             pbAttr.txid = txid;
             //
             txDialogue(pbAttr);
+
             return;
           }
         }
