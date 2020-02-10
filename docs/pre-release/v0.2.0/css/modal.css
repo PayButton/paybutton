@@ -1,0 +1,214 @@
+/* Modal Base CSS */
+.paybutton-overlay {
+position: fixed;
+z-index: 9998;
+top: 0;
+left: 0;
+opacity: 0;
+width: 100%;
+height: 100%;
+-webkit-transition: 1ms opacity ease;
+ -moz-transition: 1ms opacity ease;
+-ms-transition: 1ms opacity ease;
+ -o-transition: 1ms opacity ease;
+transition: 1ms opacity ease;
+background: rgba(0,0,0,.6);
+}
+
+.paybutton-modal {
+all: initial;
+font-family: Helvetica Neu, Arial, sans-serif;
+font-size: 16px;
+position: fixed;
+z-index: 9999;
+top: 50%;
+left: 50%;
+opacity: 0;
+overflow: auto;
+width: 260px;
+vertical-align: middle;
+text-align: center;
+padding: 20px 18px 20px 18px;
+
+/*padding: 24px 20px;*/
+
+-webkit-transition: 1ms opacity ease;
+ -moz-transition: 1ms opacity ease;
+-ms-transition: 1ms opacity ease;
+ -o-transition: 1ms opacity ease;
+transition: 1ms opacity ease;
+
+-webkit-transform: translate(-50%, -50%);
+ -moz-transform: translate(-50%, -50%);
+-ms-transform: translate(-50%, -50%);
+ -o-transform: translate(-50%, -50%);
+transform: translate(-50%, -50%);
+
+border-radius: 6px;
+background: #fff;
+}
+
+.paybutton-modal.paybutton-open.paybutton-anchored {
+top: 20px;
+
+-webkit-transform: translate(-50%, 0);
+ -moz-transform: translate(-50%, 0);
+-ms-transform: translate(-50%, 0);
+ -o-transform: translate(-50%, 0);
+transform: translate(-50%, 0);
+}
+
+.paybutton-modal.paybutton-open {
+opacity: 1;
+}
+
+.paybutton-overlay.paybutton-open {
+opacity: 1;
+
+}
+
+/* Default Animation */
+
+.paybutton-overlay.fade-and-drop {
+display: block;
+
+opacity: 0;
+}
+
+.paybutton-modal.fade-and-drop {
+top: -300%;
+
+opacity: 1;
+
+display: block;
+}
+
+/* speed of modal content entering window */
+.paybutton-modal.fade-and-drop.paybutton-open {
+top: 50%;
+
+-webkit-transition: 300ms top 300ms ease;
+ -moz-transition: 300ms top 300ms ease;
+-ms-transition: 300ms top 300ms ease;
+ -o-transition: 300ms top 300ms ease;
+transition: 300ms top 300ms ease;
+}
+
+.paybutton-modal.fade-and-drop.paybutton-open.paybutton-anchored {
+
+-webkit-transition: 300ms top 300ms ease;
+ -moz-transition: 300ms top 300ms ease;
+-ms-transition: 300ms top 300ms ease;
+ -o-transition: 300ms top 300ms ease;
+transition: 300ms top 300ms ease;
+}
+
+/* speed of modal background entering window */
+.paybutton-overlay.fade-and-drop.paybutton-open {
+top: 0;
+
+-webkit-transition: 300ms opacity ease;
+ -moz-transition: 300ms opacity ease;
+-ms-transition: 300ms opacity ease;
+ -o-transition: 300ms opacity ease;
+transition: 300ms opacity ease;
+
+opacity: 1;
+}
+
+/* speed of model close upward */
+.paybutton-modal.fade-and-drop {
+-webkit-transition: 700ms top ease;
+ -moz-transition: 700ms top ease;
+-ms-transition: 700ms top ease;
+ -o-transition: 700ms top ease;
+transition: 700ms top ease;
+}
+
+/* speed of dark overlay exiting */
+.paybutton-overlay.fade-and-drop {
+-webkit-transition: 300ms opacity 300ms ease;
+ -moz-transition: 300ms opacity 300ms ease;
+-ms-transition: 300ms opacity 300ms ease;
+ -o-transition: 300ms opacity 300ms ease;
+transition: 300ms opacity 300ms ease;
+}
+
+.paybutton-content {
+	position: relative;
+	margin: auto;
+	display: block;
+
+}
+
+.qrparent {
+	position: relative;
+	cursor: pointer;
+	margin: auto;
+	display: block;
+}
+
+.qrparent:active{
+
+  opacity: 0.95;  
+
+	padding: 2px;
+  /* filter: saturate(80%);*/
+}
+
+.qrcode {
+	position: relative;
+	border: 2px solid #000000;
+	margin: auto;
+	display: block;
+}
+.qricon {
+	position: absolute;
+  width: 72px;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  display: block;
+
+}
+.qrctc {
+	position: absolute;
+	right: 3px;
+  bottom: 3px;
+  color: #000000;
+  font-size: 14px;
+  text-align:right;
+  opacity: 0.98;
+  background: #FFFFFF;
+	padding: 3px;
+	margin: auto;
+	display: block;
+}
+
+.dialoguediv {
+	position: relative;
+	font-size: 16px;
+  word-wrap: break-word;
+	margin: 12px 8px 0px 8px;
+	display: block;
+
+}
+
+.poweredbydiv {
+	position: relative;
+	font-size: 12px;
+  word-wrap: break-word;
+	margin: 10px 8px 0px 8px;
+	display: block;
+}
+
+.txdialoguediv {
+	position: relative;
+	font-size: 16px;
+  word-wrap: break-word;
+	margin: 10px;
+	display: block;
+
+}
