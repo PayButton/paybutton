@@ -6,7 +6,7 @@ permalink: /docs/
 
 ## Summary
 
-PayButton makes it easy to accept Bitcoin Cash by adding a donation or buy button to your website. PayButton requires that you have setup a wallet already so you can begin receiving money. If you don't have one, [there are plenty to choose from](https://www.bitcoincash.org/wallets.html). 
+PayButton makes it easy to accept Bitcoin Cash by adding a donation or buy button to your website. PayButton requires that you have set up a wallet already so you can begin receiving money. If you don't have one, [there are plenty to choose from](https://www.bitcoincash.org/wallets.html). 
 
 ## Basic Usage
 
@@ -47,32 +47,72 @@ Paybutton.render('button_element_id', config);
 
 #### address
 
-**This parameter is required.**
+**This parameter is required. Possible values are any valid Bitcoin Cash address.**
 
 The 'address' parameter specifies where the money will be sent to.
 
-Example
+Example:
 
 ```address: 'bitcoincash:qzqh7ej3rdrw6r32guzdg0x4a275hqwjkgtmjazc64'```
 
 #### amount
 
-**This parameter is optional. Default value is 0.**
+**This parameter is optional. Default value is 0. Possible values are any decimal.**
 
 The 'amount' parameter specifies how much money to request. Use this in conjunction with the optional 'amount_type' paramter to specify a specific amount in a different currency.
 
-Example
+Example:
 
 ```amount: 100```
 
 #### amount-type
 
-**This parameter is optional. Default value is 'BCH'.**
+**This parameter is optional. Default value is 'BCH'. Possible values are 'BCH', 'SAT', 'USD', 'CAD', 'EUR', 'GBP', and 'AUD'.**
 
 The 'amount-type' parameter specifies what currency the amount will be denominated in. Use this in conjunction with the optional 'amount' paramter to specify an specific amount in a different currency.
 
-Example
+Example:
 
-```amount-type: USD```
+```amount-type: 'USD'```
+
+#### button-text
+
+**This parameter is optional. Default value is 'Donate'. Possible values are any string.**
+
+The 'button-text' parameter specifies the default text displayed on the button.
+
+Example:
+
+```button-text: 'Purchase'```
+
+#### button-text-2
+
+**This parameter is optional. Default value is 'Click to send BCH'. Possible values are any string.**
+
+The 'button-text-2' parameter specifies the text displayed on the button on hover.
+
+Example:
+
+```button-text: 'Send Bitcoin Cash'```
+
+#### success-msg
+
+**This parameter is optional. Default value is 'Thanks for your support!'. Possible values are any string.**
+
+The 'success-msg' parameter specifies the text displayed upon successful payment.
+
+Example:
+
+```success-msg: 'Thanks!'```
+
+#### success-callback
+
+**This parameter is optional. Default value is empty. Possible values are any string.**
+
+The 'success-callback' parameter specifies the name of the callback function that runs upon successful payment.
+
+Example:
+
+```success-callback: 'donationSuccessCallback'```
 
 You can find the source code on [GitHub](http://github.com/PayButton/paybutton).
