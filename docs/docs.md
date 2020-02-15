@@ -13,7 +13,7 @@ PayButton makes it easy to accept Bitcoin Cash by adding a donation or buy butto
 Simply add the following to your website's HTML:
 
 ```
-<script src="https://paybutton.cash/release/v1.0/js/paybutton.min.js"></script>
+<script src="https://paybutton.org/release/v1.0/js/paybutton.min.js"></script>
 
 <button class="pay-button" address="bch_address_here"></button>
 ```
