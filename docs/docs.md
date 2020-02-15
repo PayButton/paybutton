@@ -65,54 +65,54 @@ Example:
 
 ```amount: 100```
 
-#### amount-type
+#### amount_type
 
 **This parameter is optional. Default value is 'BCH'. Possible values are 'BCH', 'SAT', 'USD', 'CAD', 'EUR', 'GBP', and 'AUD'.**
 
-The 'amount-type' parameter specifies what currency the amount will be denominated in. Use this in conjunction with the optional 'amount' paramter to specify an specific amount in a different currency.
+The 'amount_type' parameter specifies what currency the amount will be denominated in. Use this in conjunction with the optional 'amount' paramter to specify an specific amount in a different currency.
 
 Example:
 
-```amount-type: 'USD'```
+```amount_type: 'USD'```
 
-#### button-text
+#### button_text
 
 **This parameter is optional. Default value is 'Donate'. Possible values are any string.**
 
-The 'button-text' parameter specifies the default text displayed on the button.
+The 'button_text' parameter specifies the default text displayed on the button.
 
 Example:
 
-```button-text: 'Purchase'```
+```button_text: 'Purchase'```
 
-#### button-text-2
+#### button_text_2
 
 **This parameter is optional. Default value is 'Click to send BCH'. Possible values are any string.**
 
-The 'button-text-2' parameter specifies the text displayed on the button on hover.
+The 'button_text_2' parameter specifies the text displayed on the button on hover.
 
 Example:
 
 ```button-text: 'Send Bitcoin Cash'```
 
-#### success-msg
+#### success_msg
 
 **This parameter is optional. Default value is 'Thanks for your support!'. Possible values are any string.**
 
-The 'success-msg' parameter specifies the text displayed upon successful payment.
+The 'success_msg' parameter specifies the text displayed upon successful payment.
 
 Example:
 
-```success-msg: 'Thanks!'```
+```success_msg: 'Thanks!'```
 
-#### success-callback
+#### success_callback
 
 **This parameter is optional. Default value is empty. Possible values are any string.**
 
-The 'success-callback' parameter specifies the name of the callback function that runs upon successful payment.
+The 'success_callback' parameter specifies the name of the callback function that runs upon successful payment.
 
 Example:
 
-```success-callback: 'donationSuccessCallback'```
+```success_callback: 'donationSuccessCallback'```
 
 You can find the source code on [GitHub](http://github.com/PayButton/paybutton).
