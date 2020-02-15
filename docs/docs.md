@@ -93,7 +93,7 @@ The 'button_text_2' parameter specifies the text displayed on the button on hove
 
 Example:
 
-```button-text: 'Send Bitcoin Cash'```
+```button-text_2: 'Send Bitcoin Cash'```
 
 #### success_msg
 
