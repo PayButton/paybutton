@@ -25,7 +25,7 @@ Simply add the following to your website's HTML:
 Example using JavaScript to generate a PayButton.
 
 ```
-<script src="https://paybutton.cash/release/v1.0/js/paybutton.min.js"></script>
+<script src="https://paybutton.org/pre-release/v0.1/js/paybutton.min.js"></script>
 
 <button id="button_element_id" class="pay-button"></button>
 
