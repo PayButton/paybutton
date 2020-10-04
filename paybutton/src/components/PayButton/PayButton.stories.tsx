@@ -32,3 +32,12 @@ Primary.args = {};
 
 export const Orange = Template.bind({});
 Orange.args = { theme: ThemeName.ORANGE };
+
+export const Payments = Template.bind({});
+Payments.args = {
+  amount: 5,
+  currency: 'USD',
+  text: 'Pay with BCH',
+  hoverText: 'Pay with BCH',
+  animation: 'invert',
+};

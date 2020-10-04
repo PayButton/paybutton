@@ -13,7 +13,7 @@ export interface PayButtonProps extends ButtonProps {
   to: string;
   amount?: number;
   currency?: currency;
-  detectPayment?: boolean;
+  randomSatoshis?: boolean;
   displayCurrency?: cryptoCurrency;
   hideToasts?: boolean;
   hoverText?: string;
@@ -32,7 +32,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
     amount,
     currency,
     animation = 'slide',
-    detectPayment = false,
+    randomSatoshis = true,
     displayCurrency,
     hideToasts = false,
     hoverText,
@@ -66,7 +66,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
           address={address}
           amount={amount}
           currency={currency}
-          detectPayment={detectPayment}
+          randomSatoshis={randomSatoshis}
           displayCurrency={displayCurrency}
           hideToasts={hideToasts}
           onSuccess={handleSuccess}

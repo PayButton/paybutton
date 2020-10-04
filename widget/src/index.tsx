@@ -10,7 +10,7 @@ const allowedProps = [
   'amount',
   'animation',
   'currency',
-  'detectPayment',
+  'randomSatoshis',
   'displayCurrency',
   'hideToasts',
   'hoverText',

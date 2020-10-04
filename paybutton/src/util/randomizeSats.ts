@@ -1,4 +1,4 @@
-export const randomizeSats = (amount: number): number => {
+export const randomizeSatoshis = (amount: number): number => {
   const date = new Date();
 
   // 0-99: 10 second window, resets every 16.5 minutes
@@ -14,4 +14,4 @@ export const randomizeSats = (amount: number): number => {
   return +randomizedAmount.toFixed(8);
 };
 
-export default randomizeSats;
+export default randomizeSatoshis;
