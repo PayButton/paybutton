@@ -1,6 +1,6 @@
-export { Button } from './UI/Button/Button';
-export type { ButtonProps } from './UI/Button/Button';
+export { Button } from './Button/Button';
+export type { ButtonProps } from './Button/Button';
 export { PayButton } from './PayButton/PayButton';
 export type { PayButtonProps } from './PayButton/PayButton';
-export { WidgetContainer as Widget } from './WidgetContainer/WidgetContainer';
-export type { WidgetContainerProps as WidgetProps } from './WidgetContainer/WidgetContainer';
+export { WidgetContainer as Widget } from './Widget/WidgetContainer';
+export type { WidgetContainerProps as WidgetProps } from './Widget/WidgetContainer';

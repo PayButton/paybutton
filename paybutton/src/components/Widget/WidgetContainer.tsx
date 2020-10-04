@@ -19,7 +19,7 @@ import {
 import format from '../../util/format';
 import { randomizeSats } from '../../util/randomizeSats';
 import { bchToSatoshis, satoshisToBch } from '../../util/satoshis';
-import Widget, { WidgetProps } from '../UI/Widget/Widget';
+import Widget, { WidgetProps } from './Widget';
 
 export type cryptoCurrency = 'BCH' | 'SAT';
 export type currency = cryptoCurrency | fiatCurrency;

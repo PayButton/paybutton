@@ -8,4 +8,9 @@ export const parameters = {
       { name: 'dark', value: '#282a2c' },
     ],
   },
+  options: {
+    storySort: {
+      order: ['PayButton', 'Button', 'Widget'],
+    },
+  },
 };

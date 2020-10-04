@@ -2,9 +2,12 @@ import { Dialog } from '@material-ui/core';
 import React, { useState } from 'react';
 
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
-import Button, { ButtonProps } from '../UI/Button/Button';
-import { WidgetContainer } from '../WidgetContainer';
-import { cryptoCurrency, currency } from '../WidgetContainer/WidgetContainer';
+import Button, { ButtonProps } from '../Button/Button';
+import {
+  WidgetContainer,
+  cryptoCurrency,
+  currency,
+} from '../Widget/WidgetContainer';
 
 export interface PayButtonProps extends ButtonProps {
   to: string;

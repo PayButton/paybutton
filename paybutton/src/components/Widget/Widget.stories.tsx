@@ -1,7 +1,7 @@
 import { Story } from '@storybook/react';
 import React from 'react';
 
-import { ThemeName } from '../../../themes';
+import { ThemeName } from '../../themes';
 import Widget, { WidgetProps } from './Widget';
 
 export default {

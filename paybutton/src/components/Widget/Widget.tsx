@@ -9,7 +9,7 @@ import copy from 'copy-to-clipboard';
 import QRCode, { BaseQRCodeProps } from 'qrcode.react';
 import React, { useEffect, useMemo, useState } from 'react';
 
-import { Theme, ThemeName, ThemeProvider, useTheme } from '../../../themes';
+import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
 import Button from '../Button/Button';
 
 type QRCodeProps = BaseQRCodeProps & { renderAs: 'svg' };
@@ -35,7 +35,7 @@ interface StyleProps {
 
 const useStyles = makeStyles({
   root: {
-    minWidth: 320,
+    minWidth: 240,
     background: '#f5f5f7',
   },
   qrCode: ({ success, loading, theme }: StyleProps) => ({
@@ -44,8 +44,8 @@ const useStyles = makeStyles({
     borderRadius: 4,
     outline: 'none',
     lineHeight: 0,
-    maxWidth: '40vh',
-    maxHeight: '40vh',
+    maxWidth: '28vh',
+    maxHeight: '28vh',
     position: 'relative',
     padding: '1rem',
     cursor: 'pointer',

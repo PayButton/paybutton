@@ -2,7 +2,7 @@ import { Button as MuiButton, makeStyles } from '@material-ui/core';
 import { CreateCSSProperties } from '@material-ui/styles';
 import React, { useRef, useState } from 'react';
 
-import { Theme, ThemeName, useTheme } from '../../../themes';
+import { Theme, ThemeName, useTheme } from '../../themes';
 
 type animation = 'slide' | 'invert' | 'none';
 
