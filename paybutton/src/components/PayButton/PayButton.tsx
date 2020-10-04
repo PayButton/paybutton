@@ -13,14 +13,15 @@ export interface PayButtonProps extends ButtonProps {
   to: string;
   amount?: number;
   currency?: currency;
-  randomSatoshis?: boolean;
-  displayCurrency?: cryptoCurrency;
-  hideToasts?: boolean;
+  theme?: ThemeName | Theme;
+  classes?: Record<string, string>;
+  text?: string;
   hoverText?: string;
+  displayCurrency?: cryptoCurrency;
+  randomSatoshis?: boolean;
+  hideToasts?: boolean;
   onSuccess?: (txid: string, amount: number) => void;
   onTransaction?: (txid: string, amount: number) => void;
-  theme?: ThemeName | Theme;
-  text?: string;
 }
 
 export const PayButton = (props: PayButtonProps): React.ReactElement => {
@@ -31,15 +32,15 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
     to: address,
     amount,
     currency,
-    animation = 'slide',
-    randomSatoshis = true,
+    animation,
+    randomSatoshis,
     displayCurrency,
-    hideToasts = false,
+    hideToasts,
     hoverText,
     onSuccess,
     onTransaction,
     text,
-  } = props;
+  } = Object.assign({}, props, PayButton.defaultProps);
 
   const handleButtonClick = (): void => setWidgetOpen(true);
   const handleWidgetClose = (): void => setWidgetOpen(false);
@@ -48,7 +49,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
     onSuccess?.(txid, amount);
   };
 
-  const AnimatedButton: React.FC<ButtonProps> = (
+  const ButtonComponent: React.FC<ButtonProps> = (
     props: ButtonProps,
   ): React.ReactElement => <Button animation={animation} {...props} />;
 
@@ -56,12 +57,12 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
 
   return (
     <ThemeProvider value={theme}>
-      <AnimatedButton onClick={handleButtonClick} hoverText={hoverText}>
+      <ButtonComponent onClick={handleButtonClick} hoverText={hoverText}>
         {text}
-      </AnimatedButton>
+      </ButtonComponent>
       <Dialog open={widgetOpen} onClose={handleWidgetClose} keepMounted>
         <WidgetContainer
-          ButtonComponent={AnimatedButton}
+          ButtonComponent={ButtonComponent}
           active={widgetOpen}
           address={address}
           amount={amount}
@@ -73,15 +74,21 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
           onTransaction={onTransaction}
           foot={
             success && (
-              <AnimatedButton onClick={handleWidgetClose} hoverText="Close">
+              <ButtonComponent onClick={handleWidgetClose} hoverText="Close">
                 Close
-              </AnimatedButton>
+              </ButtonComponent>
             )
           }
         />
       </Dialog>
     </ThemeProvider>
   );
+};
+
+PayButton.defaultProps = {
+  animation: 'slide',
+  hideToasts: false,
+  randomSatoshis: true,
 };
 
 export default PayButton;

@@ -16,6 +16,8 @@ export default {
   ],
   argTypes: {
     onClick: { table: { disable: true } },
+    onSuccess: { table: { disable: true } },
+    onTransaction: { table: { disable: true } },
   },
   args: {
     to: 'bitcoincash:qrtlhvv2dm79ltjq3tsdcn9qzsajpu86ccgjqjfq6j',
@@ -30,14 +32,15 @@ const Template: Story<PayButtonProps> = props => <PayButton {...props} />;
 export const Primary = Template.bind({});
 Primary.args = {};
 
-export const Orange = Template.bind({});
-Orange.args = { theme: ThemeName.ORANGE };
+export const OrangeTheme = Template.bind({});
+OrangeTheme.args = { theme: ThemeName.ORANGE };
 
-export const Payments = Template.bind({});
-Payments.args = {
+export const UsdAmount = Template.bind({});
+UsdAmount.storyName = 'USD Amount';
+UsdAmount.args = {
   amount: 5,
   currency: 'USD',
-  text: 'Pay with BCH',
+  text: '$5',
   hoverText: 'Pay with BCH',
   animation: 'invert',
 };

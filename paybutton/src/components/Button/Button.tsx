@@ -8,24 +8,20 @@ type animation = 'slide' | 'invert' | 'none';
 
 export interface ButtonProps {
   animation?: animation;
-  borderRadius?: number | string;
-  size?: number;
-  children?: string;
+  text?: string;
   hoverText?: string;
-  onClick?: () => void;
   theme?: ThemeName | Theme;
+  onClick?: () => void;
 }
 
 interface StyleProps {
   animation: animation;
-  borderRadius: number | string;
-  size: number;
   theme: Theme;
 }
 
 const useStyles = makeStyles({
   container: {
-    fontSize: (props: StyleProps): string => `${props.size / 100}rem`,
+    fontSize: '0.8rem',
   },
   button: ({ theme, ...props }: StyleProps): CreateCSSProperties => ({
     background: theme.palette.secondary,
@@ -44,7 +40,7 @@ const useStyles = makeStyles({
     margin: 'auto',
     boxShadow: '3px 3px 3px rgba(0, 0, 0, 0.08)',
     border: `2px solid ${theme.palette.primary}`,
-    borderRadius: props.borderRadius,
+    borderRadius: 10,
     fontSize: '1em',
     textTransform: 'none',
     '&:hover': {
@@ -75,21 +71,18 @@ const useStyles = makeStyles({
 });
 
 export const Button = (props: ButtonProps): React.ReactElement => {
-  const {
-    size = 80,
-    animation = 'slide',
-    children = 'Donate',
-    hoverText = 'Click to send BCH',
-  } = props;
+  const { animation, text, hoverText } = Object.assign(
+    {},
+    props,
+    Button.defaultProps,
+  );
 
   const [hovering, setHovering] = useState(false);
   const [transitioning, setTransitioning] = useState(false);
   const timer = useRef<number>();
 
-  const borderRadius = props.borderRadius ?? size / 8;
-
   const theme = useTheme(props.theme);
-  const styleProps: StyleProps = { animation, borderRadius, size, theme };
+  const styleProps: StyleProps = { animation, theme };
   const classes = useStyles(styleProps);
 
   const handleMouseEnter = (): void => {
@@ -108,8 +101,6 @@ export const Button = (props: ButtonProps): React.ReactElement => {
     timer.current = window.setTimeout(() => setTransitioning(false), 150);
   };
 
-  const text = transitioning !== hovering ? hoverText : children;
-
   return (
     <div className={classes.container}>
       <MuiButton
@@ -118,10 +109,16 @@ export const Button = (props: ButtonProps): React.ReactElement => {
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        <span>{text}</span>
+        <span>{transitioning !== hovering ? hoverText : text}</span>
       </MuiButton>
     </div>
   );
+};
+
+Button.defaultProps = {
+  animation: 'slide',
+  text: 'Donate',
+  hoverText: 'Send BCH',
 };
 
 export default Button;

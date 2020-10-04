@@ -112,7 +112,15 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
           onSuccess?.(txid, receivedAmount);
         }
       },
-      [amount, onSuccess, onTransaction, hideToasts, sound, txSound],
+      [
+        amount,
+        onSuccess,
+        onTransaction,
+        enqueueSnackbar,
+        hideToasts,
+        sound,
+        txSound,
+      ],
     );
 
     const handleNewTransaction = useCallback(

@@ -17,7 +17,6 @@ type QRCodeProps = BaseQRCodeProps & { renderAs: 'svg' };
 export interface WidgetProps {
   address: string;
   amount?: number | null;
-  displayAmount?: string;
   text?: string;
   ButtonComponent?: React.ComponentType;
   loading: boolean;
