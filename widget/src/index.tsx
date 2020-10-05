@@ -81,14 +81,14 @@ function renderButtons ( ): void {
 function renderWidgets ( ): void {
   Array
     .from( document.getElementsByClassName( 'paybutton-widget' ) )
-    .forEach( button => {
+    .forEach( el => {
 
-      const attributes = button.getAttributeNames( )
+      const attributes = el.getAttributeNames( )
         .reduce( 
           (attributes: Record<string,string>, name: string) => {
             const prop = camelcase( name );
             if ( allowedProps.includes( prop ) ) 
-              attributes[ prop ] = button.getAttribute( name )!;
+              attributes[ prop ] = el.getAttribute( name )!;
             return attributes;
           }, { } 
         )
@@ -125,7 +125,7 @@ function renderWidgets ( ): void {
         return;
       }
 
-      render( <Widget { ...props } />, button )
+      render( <Widget { ...props } />, el )
     } )
   ;
 }
@@ -134,3 +134,15 @@ export default {
   renderButtons,
   renderWidgets,
 };
+
+declare global {
+  interface Window { PayButton: any; }
+}
+
+window.PayButton = {
+  render: ( el: HTMLElement, props: PayButtonProps ) => {
+    render( <PayButton { ...props } />, el )
+  },
+  //renderWidget:
+  //openDialog:
+}
