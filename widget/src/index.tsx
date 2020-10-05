@@ -1,10 +1,10 @@
 import camelcase from 'camelcase';
-import PayButton from 'paybutton';
-import { PayButtonProps } from 'paybutton/dist/components';
+import { PayButton, PayButtonProps, Widget, WidgetProps } from 'paybutton';
 import { h } from 'preact';
 import { render } from 'preact/compat';
 
 document.addEventListener( 'DOMContentLoaded', renderButtons );
+document.addEventListener( 'DOMContentLoaded', renderWidgets );
 
 const allowedProps = [
   'amount',
@@ -48,7 +48,7 @@ function renderButtons ( ): void {
         props.amount = +attributes.amount;
 
       props.hideToasts = attributes.hideToasts === 'true';
-      props.detectPayment = attributes.detectPayment === 'true';
+      props.randomSatoshis = attributes.randomSatoshis === 'true';
 
       if ( attributes.onSuccess ) {
         const geval = window.eval;
@@ -78,6 +78,59 @@ function renderButtons ( ): void {
   ;
 }
 
+function renderWidgets ( ): void {
+  Array
+    .from( document.getElementsByClassName( 'paybutton-widget' ) )
+    .forEach( button => {
+
+      const attributes = button.getAttributeNames( )
+        .reduce( 
+          (attributes: Record<string,string>, name: string) => {
+            const prop = camelcase( name );
+            if ( allowedProps.includes( prop ) ) 
+              attributes[ prop ] = button.getAttribute( name )!;
+            return attributes;
+          }, { } 
+        )
+      ;
+
+      const props: WidgetProps = Object.assign( { }, attributes, { to: attributes.to } );
+
+      if ( attributes.amount != null )
+        props.amount = +attributes.amount;
+
+      props.hideToasts = attributes.hideToasts === 'true';
+      props.randomSatoshis = attributes.randomSatoshis === 'true';
+
+      if ( attributes.onSuccess ) {
+        const geval = window.eval;
+        props.onSuccess = geval( attributes.onSuccess );
+      }
+
+      if ( attributes.onTransaction ) {
+        const geval = window.eval;
+        props.onTransaction = geval( attributes.onTransaction );
+      }
+
+      if ( attributes.theme ) {
+        try { 
+          props.theme = JSON.parse( attributes.theme )
+        } catch {
+          // Keep the original string assignment
+        }
+      }
+      
+      if ( ! requiredProps.every( name => name in attributes ) ) {
+        console.error( 'PayButton: missing required attribute: ' + JSON.stringify( requiredProps.filter( name => ! ( name in attributes ) ) ) );
+        return;
+      }
+
+      render( <Widget { ...props } />, button )
+    } )
+  ;
+}
+
 export default {
   renderButtons,
+  renderWidgets,
 };
