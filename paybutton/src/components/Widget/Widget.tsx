@@ -15,7 +15,7 @@ import Button from '../Button/Button';
 type QRCodeProps = BaseQRCodeProps & { renderAs: 'svg' };
 
 export interface WidgetProps {
-  address: string;
+  to: string;
   amount?: number | null;
   text?: string;
   ButtonComponent?: React.ComponentType;
@@ -83,7 +83,7 @@ const useStyles = makeStyles({
 
 export const Widget: React.FC<WidgetProps> = props => {
   const {
-    address,
+    to,
     foot,
     loading,
     success,
@@ -123,6 +123,8 @@ export const Widget: React.FC<WidgetProps> = props => {
 
   const query = [];
   if (props.amount) query.push(`amount=${props.amount}`);
+
+  const address = to;
 
   const prefixedAddress = `bitcoincash:${address.replace(/^.*:/, '')}`;
   const url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');

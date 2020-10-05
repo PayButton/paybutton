@@ -28,7 +28,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
   const [success, setSuccess] = useState(false);
 
   const {
-    to: address,
+    to,
     amount,
     currency,
     animation,
@@ -65,7 +65,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
         <WidgetContainer
           ButtonComponent={ButtonComponent}
           active={widgetOpen}
-          address={address}
+          to={to}
           amount={amount}
           currency={currency}
           randomSatoshis={randomSatoshis}

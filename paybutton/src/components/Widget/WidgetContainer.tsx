@@ -57,7 +57,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
   (props): React.ReactElement => {
     const {
       active = true,
-      address,
+      to,
       currency = 'BCH',
       randomSatoshis = true,
       displayCurrency,
@@ -67,6 +67,8 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
       onTransaction,
       ...widgetProps
     } = props;
+
+    const address = to;
 
     const transactionsRef = useRef<Set<string>>(new Set());
     const hasLoadedTransactionsRef = useRef(false);
@@ -198,7 +200,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
     return (
       <React.Fragment>
         <Widget
-          address={address}
+          to={to}
           {...widgetProps}
           amount={amount}
           text={text}
