@@ -85,11 +85,11 @@ export const Widget: React.FC<WidgetProps> = props => {
   const {
     address,
     foot,
-    loading = false,
-    success = false,
-    successMessage = 'Thank You!',
+    loading,
+    success,
+    successMessage,
     ButtonComponent = Button,
-  } = props;
+  } = Object.assign({}, Widget.defaultProps, props);
 
   const theme = useTheme(props.theme);
   const classes = useStyles({ success, loading, theme });
@@ -235,9 +235,10 @@ export const Widget: React.FC<WidgetProps> = props => {
           </Box>
           {success || (
             <Box pt={2} flex={1}>
-              <ButtonComponent onClick={handleButtonClick}>
-                Send with BCH wallet
-              </ButtonComponent>
+              <ButtonComponent
+                text="Send with BCH wallet"
+                onClick={handleButtonClick}
+              />
             </Box>
           )}
           <Box flex={1}>{foot}</Box>
@@ -245,6 +246,12 @@ export const Widget: React.FC<WidgetProps> = props => {
       </Box>
     </ThemeProvider>
   );
+};
+
+Widget.defaultProps = {
+  loading: false,
+  success: false,
+  successMessage: 'Thank you!',
 };
 
 export default Widget;

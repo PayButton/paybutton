@@ -73,8 +73,8 @@ const useStyles = makeStyles({
 export const Button = (props: ButtonProps): React.ReactElement => {
   const { animation, text, hoverText } = Object.assign(
     {},
-    props,
     Button.defaultProps,
+    props,
   );
 
   const [hovering, setHovering] = useState(false);

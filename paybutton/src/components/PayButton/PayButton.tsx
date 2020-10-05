@@ -14,7 +14,6 @@ export interface PayButtonProps extends ButtonProps {
   amount?: number;
   currency?: currency;
   theme?: ThemeName | Theme;
-  classes?: Record<string, string>;
   text?: string;
   hoverText?: string;
   displayCurrency?: cryptoCurrency;
@@ -40,7 +39,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
     onSuccess,
     onTransaction,
     text,
-  } = Object.assign({}, props, PayButton.defaultProps);
+  } = Object.assign({}, PayButton.defaultProps, props);
 
   const handleButtonClick = (): void => setWidgetOpen(true);
   const handleWidgetClose = (): void => setWidgetOpen(false);
@@ -57,9 +56,11 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
 
   return (
     <ThemeProvider value={theme}>
-      <ButtonComponent onClick={handleButtonClick} hoverText={hoverText}>
-        {text}
-      </ButtonComponent>
+      <ButtonComponent
+        onClick={handleButtonClick}
+        text={text}
+        hoverText={hoverText}
+      />
       <Dialog open={widgetOpen} onClose={handleWidgetClose} keepMounted>
         <WidgetContainer
           ButtonComponent={ButtonComponent}
@@ -74,9 +75,11 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
           onTransaction={onTransaction}
           foot={
             success && (
-              <ButtonComponent onClick={handleWidgetClose} hoverText="Close">
-                Close
-              </ButtonComponent>
+              <ButtonComponent
+                onClick={handleWidgetClose}
+                text="Close"
+                hoverText="Close"
+              />
             )
           }
         />
