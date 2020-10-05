@@ -28,14 +28,20 @@ export default {
 
 const Template: Story<WidgetProps> = props => <Widget {...props} />;
 
-export const Primary = Template.bind({});
-Primary.args = {};
+export const Default = Template.bind({});
+Default.args = {};
 
 export const Success = Template.bind({});
-Success.args = { success: true };
+Success.args = {
+  success: true,
+};
 
 export const Loading = Template.bind({});
-Loading.args = { loading: true };
+Loading.args = {
+  loading: true,
+};
 
 export const OrangeTheme = Template.bind({});
-OrangeTheme.args = { theme: ThemeName.ORANGE };
+OrangeTheme.args = {
+  theme: ThemeName.ORANGE,
+};

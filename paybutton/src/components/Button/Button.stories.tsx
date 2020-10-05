@@ -24,8 +24,11 @@ export default {
 
 const Template: Story<ButtonProps> = props => <Button {...props} />;
 
-export const Primary = Template.bind({});
-Primary.args = {};
+export const Default = Template.bind({});
+Default.args = {};
 
 export const OrangeTheme = Template.bind({});
-OrangeTheme.args = { theme: ThemeName.ORANGE };
+OrangeTheme.args = {
+  theme: ThemeName.ORANGE,
+  animation: 'invert',
+};

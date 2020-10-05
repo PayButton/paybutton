@@ -47,7 +47,7 @@ const snackbarOptions: OptionsObject = {
 
 const withSnackbar = <T extends object>(
   Component: React.ComponentType<T>,
-): React.FC<T> => props => (
+): React.FC<T> => (props): React.ReactElement => (
   <SnackbarProvider>
     <Component {...props} />
   </SnackbarProvider>

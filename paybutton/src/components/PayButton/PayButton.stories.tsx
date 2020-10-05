@@ -33,7 +33,10 @@ export const Default = Template.bind({});
 Default.args = {};
 
 export const OrangeTheme = Template.bind({});
-OrangeTheme.args = { theme: ThemeName.ORANGE };
+OrangeTheme.args = {
+  theme: ThemeName.ORANGE,
+  animation: 'invert',
+};
 
 export const UsdAmount = Template.bind({});
 UsdAmount.storyName = 'USD Amount';
@@ -42,5 +45,5 @@ UsdAmount.args = {
   currency: 'USD',
   text: '$5',
   hoverText: 'Pay with BCH',
-  animation: 'invert',
+  animation: 'none',
 };
