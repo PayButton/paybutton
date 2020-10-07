@@ -1,8 +1,8 @@
-import common from './rollup.config.js';
-
 import html from '@rollup/plugin-html';
-import serve from 'rollup-plugin-serve';
 import livereload from 'rollup-plugin-livereload';
+import serve from 'rollup-plugin-serve';
+
+import common from './rollup.config.js';
 
 const config = common( 'development' );
 
@@ -46,6 +46,8 @@ function template ( { attributes, title, bundle } ) {
           <div class="paybutton" to="bitcoincash:qrtlhvv2dm79ltjq3tsdcn9qzsajpu86ccgjqjfq6j" amount="5" currency="USD" display-currency="BCH"></div>
           <br />
           <div class="paybutton" to="bitcoincash:qrtlhvv2dm79ltjq3tsdcn9qzsajpu86ccgjqjfq6j" amount="50000" currency="SAT" detect-payment="true"</div>
+          <br />
+          <div class="paybutton-widget" to="bitcoincash:qrtlhvv2dm79ltjq3tsdcn9qzsajpu86ccgjqjfq6j" amount="50000" currency="SAT" detect-payment="true"</div>
         </div>
       </body>
     </html>

@@ -143,6 +143,8 @@ window.PayButton = {
   render: ( el: HTMLElement, props: PayButtonProps ) => {
     render( <PayButton { ...props } />, el )
   },
-  //renderWidget:
+  renderWidget: ( el: HTMLElement, props: WidgetProps ) => {
+    render( <Widget { ...props } />, el )
+  },
   //openDialog:
 }
