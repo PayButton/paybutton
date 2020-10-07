@@ -20,7 +20,7 @@ export default {
     foot: { table: { disable: true } },
   },
   args: {
-    to: 'bitcoincash:qrtlhvv2dm79ltjq3tsdcn9qzsajpu86ccgjqjfq6j',
+    to: 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp',
     loading: false,
     success: false,
   },
