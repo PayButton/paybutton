@@ -4,6 +4,7 @@ import {
   Fade,
   Typography,
   makeStyles,
+  Link
 } from '@material-ui/core';
 import copy from 'copy-to-clipboard';
 import QRCode, { BaseQRCodeProps } from 'qrcode.react';
@@ -254,7 +255,7 @@ export const Widget: React.FC<WidgetProps> = props => {
           )}
           <Box py={0.8}>
             <Typography className={classes.footer}>
-              Powered by PayButton.org
+              <Link href="https://paybutton.org" target="_blank" rel="noopener" className="{classes.footer}">Powered by PayButton.org</Link>
             </Typography>
           </Box>
         </Box>
