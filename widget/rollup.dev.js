@@ -34,20 +34,20 @@ function template ( { attributes, title, bundle } ) {
             hover-text="Send BCH!!!"
             palette='{ "primary": "#26a", "secondary": "#dff", "dark": "#3a6" }'
             text="Donate!!!"
-            to="bitcoincash:qrtlhvv2dm79ltjq3tsdcn9qzsajpu86ccgjqjfq6j"
+            to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp"
             success-text="Thank you!!!!"
           >
           </div>
           <br />
-          <div class="paybutton" to="bitcoincash:qrtlhvv2dm79ltjq3tsdcn9qzsajpu86ccgjqjfq6j" animation="invert" palette='{ "primary": "#26a", "secondary": "#dff", "dark": "#3a6" }'></div>
+          <div class="paybutton" to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp" animation="invert" palette='{ "primary": "#26a", "secondary": "#dff", "dark": "#3a6" }'></div>
           <br />
-          <div class="paybutton" to="bitcoincash:qrtlhvv2dm79ltjq3tsdcn9qzsajpu86ccgjqjfq6j" amount="2.1999" animation="none" palette="orange"></div>
+          <div class="paybutton" to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp" amount="2.1999" animation="none" palette="orange"></div>
           <br />
-          <div class="paybutton" to="bitcoincash:qrtlhvv2dm79ltjq3tsdcn9qzsajpu86ccgjqjfq6j" amount="5" currency="USD" display-currency="BCH"></div>
+          <div class="paybutton" to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp" amount="5" currency="USD" display-currency="BCH"></div>
           <br />
-          <div class="paybutton" to="bitcoincash:qrtlhvv2dm79ltjq3tsdcn9qzsajpu86ccgjqjfq6j" amount="50000" currency="SAT" detect-payment="true"</div>
+          <div class="paybutton" to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp" amount="50000" currency="SAT" detect-payment="true"</div>
           <br />
-          <div class="paybutton-widget" to="bitcoincash:qrtlhvv2dm79ltjq3tsdcn9qzsajpu86ccgjqjfq6j" amount="50000" currency="SAT" detect-payment="true"</div>
+          <div class="paybutton-widget" to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp" amount="50000" currency="SAT" detect-payment="true"</div>
         </div>
       </body>
     </html>

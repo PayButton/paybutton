@@ -34,7 +34,7 @@ var config = {
   button_text: 'Donate',
   amount: 100,
   amount_type: 'USD',
-  address: 'bitcoincash:qzqh7ej3rdrw6r32guzdg0x4a275hqwjkgtmjazc64',
+  address: 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp',
   success_callback: '',
   type: 'button'
 };
@@ -53,7 +53,7 @@ The 'address' parameter specifies where the money will be sent to.
 
 Example:
 
-```address: 'bitcoincash:qzqh7ej3rdrw6r32guzdg0x4a275hqwjkgtmjazc64'```
+```address: 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp'```
 
 #### amount
 
