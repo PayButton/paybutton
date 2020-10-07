@@ -42,7 +42,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
   } = Object.assign({}, PayButton.defaultProps, props);
 
   const handleButtonClick = (): void => setWidgetOpen(true);
-  const handleWidgetClose = (): void => setWidgetOpen(false);
+  const handleWidgetClose = (): void => { setWidgetOpen(false); setSuccess(false); };
   const handleSuccess = (txid: string, amount: number): void => {
     setSuccess(true);
     onSuccess?.(txid, amount);
