@@ -29,14 +29,14 @@ const requiredProps = [
 function renderButtons ( ): void {
   Array
     .from( document.getElementsByClassName( 'paybutton' ) )
-    .forEach( button => {
+    .forEach( el => {
 
-      const attributes = button.getAttributeNames( )
+      const attributes = el.getAttributeNames( )
         .reduce( 
           (attributes: Record<string,string>, name: string) => {
             const prop = camelcase( name );
             if ( allowedProps.includes( prop ) ) 
-              attributes[ prop ] = button.getAttribute( name )!;
+              attributes[ prop ] = el.getAttribute( name )!;
             return attributes;
           }, { } 
         )
@@ -73,7 +73,7 @@ function renderButtons ( ): void {
         return;
       }
 
-      render( <PayButton { ...props } />, button )
+      render( <PayButton { ...props } />, el )
     } )
   ;
 }

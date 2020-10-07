@@ -20,7 +20,7 @@ export default {
     foot: { table: { disable: true } },
   },
   args: {
-    address: 'bitcoincash:qrtlhvv2dm79ltjq3tsdcn9qzsajpu86ccgjqjfq6j',
+    to: 'bitcoincash:qrtlhvv2dm79ltjq3tsdcn9qzsajpu86ccgjqjfq6j',
     loading: false,
     success: false,
   },
@@ -44,4 +44,16 @@ Loading.args = {
 export const OrangeTheme = Template.bind({});
 OrangeTheme.args = {
   theme: ThemeName.ORANGE,
+};
+
+export const CustomTheme = Template.bind({});
+CustomTheme.args = {
+  theme: {
+    palette: {
+      primary: '#d05050',
+      secondary: '#bee',
+      dark: '#084',
+      logo: '#404',
+    },
+  },
 };
