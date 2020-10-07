@@ -79,6 +79,10 @@ const useStyles = makeStyles({
   spinner: ({ theme }: StyleProps) => ({
     color: theme.palette.primary,
   }),
+  footer: ({ theme }: StyleProps) => ({
+    fontSize: '0.6rem',
+    color: theme.palette.dark,
+  }),
 });
 
 export const Widget: React.FC<WidgetProps> = props => {
@@ -190,7 +194,7 @@ export const Widget: React.FC<WidgetProps> = props => {
           flexDirection="column"
           alignItems="center"
           px={3}
-          py={2}
+          pt={2}
         >
           <Box
             flex={1}
@@ -248,6 +252,11 @@ export const Widget: React.FC<WidgetProps> = props => {
               {foot}
             </Box>
           )}
+          <Box py={0.8}>
+            <Typography className={classes.footer}>
+              Powered by PayButton.org
+            </Typography>
+          </Box>
         </Box>
       </Box>
     </ThemeProvider>
