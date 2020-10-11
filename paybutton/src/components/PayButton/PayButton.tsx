@@ -16,6 +16,7 @@ export interface PayButtonProps extends ButtonProps {
   theme?: ThemeName | Theme;
   text?: string;
   hoverText?: string;
+  successText?: string;
   displayCurrency?: cryptoCurrency;
   randomSatoshis?: boolean;
   hideToasts?: boolean;
@@ -31,18 +32,22 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
     to,
     amount,
     currency,
+    text,
+    hoverText,
+    successText,
     animation,
     randomSatoshis,
     displayCurrency,
     hideToasts,
-    hoverText,
     onSuccess,
     onTransaction,
-    text,
   } = Object.assign({}, PayButton.defaultProps, props);
 
   const handleButtonClick = (): void => setWidgetOpen(true);
-  const handleWidgetClose = (): void => { setWidgetOpen(false); setSuccess(false); };
+  const handleWidgetClose = (): void => {
+    setWidgetOpen(false);
+    setSuccess(false);
+  };
   const handleSuccess = (txid: string, amount: number): void => {
     setSuccess(true);
     onSuccess?.(txid, amount);
@@ -73,6 +78,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
           hideToasts={hideToasts}
           onSuccess={handleSuccess}
           onTransaction={onTransaction}
+          successText={successText}
           foot={
             success && (
               <ButtonComponent
@@ -92,6 +98,7 @@ PayButton.defaultProps = {
   animation: 'slide',
   hideToasts: false,
   randomSatoshis: true,
+  successText: 'Thank you!',
 };
 
 export default PayButton;

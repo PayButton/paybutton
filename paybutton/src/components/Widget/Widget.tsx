@@ -2,9 +2,9 @@ import {
   Box,
   CircularProgress,
   Fade,
+  Link,
   Typography,
   makeStyles,
-  Link
 } from '@material-ui/core';
 import copy from 'copy-to-clipboard';
 import QRCode, { BaseQRCodeProps } from 'qrcode.react';
@@ -22,7 +22,7 @@ export interface WidgetProps {
   ButtonComponent?: React.ComponentType;
   loading: boolean;
   success: boolean;
-  successMessage?: string;
+  successText?: string;
   theme?: ThemeName | Theme;
   foot?: React.ReactNode;
 }
@@ -92,7 +92,7 @@ export const Widget: React.FC<WidgetProps> = props => {
     foot,
     loading,
     success,
-    successMessage,
+    successText,
     ButtonComponent = Button,
   } = Object.assign({}, Widget.defaultProps, props);
 
@@ -187,7 +187,7 @@ export const Widget: React.FC<WidgetProps> = props => {
           textAlign="center"
         >
           <Typography className={classes.text}>
-            {loading ? 'Loading...' : success ? successMessage : text}
+            {loading ? 'Loading...' : success ? successText : text}
           </Typography>
         </Box>
         <Box
@@ -255,7 +255,14 @@ export const Widget: React.FC<WidgetProps> = props => {
           )}
           <Box py={0.8}>
             <Typography className={classes.footer}>
-              <Link href="https://paybutton.org" target="_blank" rel="noopener" className="{classes.footer}">Powered by PayButton.org</Link>
+              <Link
+                href="https://paybutton.org"
+                target="_blank"
+                rel="noopener"
+                className="{classes.footer}"
+              >
+                Powered by PayButton.org
+              </Link>
             </Typography>
           </Box>
         </Box>
@@ -267,7 +274,7 @@ export const Widget: React.FC<WidgetProps> = props => {
 Widget.defaultProps = {
   loading: false,
   success: false,
-  successMessage: 'Thank you!',
+  successText: 'Thank you!',
 };
 
 export default Widget;
