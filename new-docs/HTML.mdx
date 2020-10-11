@@ -1,0 +1,47 @@
+---
+name: HTML
+route: /html
+---
+
+import { Playground } from 'docz';
+import * as PayButton from '@paybutton/paybutton';
+
+# HTML
+
+## Installation
+
+### CDN
+
+`<script src="/path"></script>`
+
+### npm
+
+`npm i @paybutton/paybutton`
+
+# Usage
+
+## PayButton
+
+#### Basic
+
+<Playground language="html" showLivePreview={false}>
+  <div class="paybutton" to="1PayBtn3rF6einuqMed2gJ4XdvuoGtNTNd" />
+</Playground>
+
+#### All Props
+
+<Props of={PayButton} />
+
+<Playground language="html" showLivePreview={false}>
+  <div class="paybutton"
+    to="1PayBtn3rF6einuqMed2gJ4XdvuoGtNTNd"
+    amount="10"
+    currency="USD"
+    animation="invert"
+    text="Send BCH"
+    hover-text="Test"
+    success-text="Thank you for supporting us"
+  />
+</Playground>
+
+## Widget

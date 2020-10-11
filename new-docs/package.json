@@ -1,0 +1,23 @@
+{
+  "name": "paybutton-docs",
+  "private": "true",
+  "version": "1.0.0",
+  "description": "PayButton Documentation",
+  "type": "module",
+  "scripts": {
+    "start": "docz dev",
+    "build": "docz build"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@mdx-js/mdx": "^1.6.16",
+    "@paybutton/paybutton": "file:../widget/paybutton-paybutton-1.0.0.tgz",
+    "@paybutton/react": "file:../paybutton/paybutton-react-1.0.0.tgz",
+    "docz": "^2.3.1",
+    "react": "^16.13.1",
+    "react-codemirror2": "^7.2.1",
+    "react-datepicker": "^3.2.2",
+    "react-dom": "^16.13.1"
+  }
+}
