@@ -28,5 +28,9 @@
     "build": "npm ci && rollup -c rollup.prod.js"
   },
   "author": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PayButton/paybutton.git"
+  },
   "license": "MIT"
 }
