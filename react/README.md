@@ -2,29 +2,24 @@
 
 > The easiest way to accept Bitcoin Cash online
 
-[![NPM](https://img.shields.io/npm/v/@paybutton/paybutton.svg)](https://www.npmjs.com/package/@paybutton/paybutton) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+[![NPM](https://img.shields.io/npm/v/@paybutton/react.svg)](https://www.npmjs.com/package/@paybutton/react)
 
 ## Install
 
 ```bash
-npm install --save @paybutton/paybutton
+npm install --save @paybutton/react
 ```
 
 ## Usage
 
 ```tsx
-import React, { Component } from 'react'
+import React from 'react'
 
-import MyComponent from '@paybutton/paybutton'
-import '@paybutton/paybutton/dist/index.css'
+import { PayButton } from '@paybutton/react'
 
-class Example extends Component {
-  render() {
-    return <MyComponent />
-  }
-}
+<PayButton to={address} />
 ```
 
 ## License
 
-MIT © [poldridge](https://github.com/poldridge)
+MIT 
