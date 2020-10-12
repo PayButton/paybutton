@@ -1,4 +1,4 @@
-# @paybutton/paybutton
+# @paybutton/react
 
 > The easiest way to accept Bitcoin Cash online
 
