@@ -1,6 +1,6 @@
 {
   "name": "@paybutton/paybutton",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "The easiest way to accept Bitcoin Cash online",
   "main": "dist/paybutton.js",
   "devDependencies": {
