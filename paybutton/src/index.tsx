@@ -1,28 +1,16 @@
 import camelcase from 'camelcase';
 import { PayButton, PayButtonProps, Widget, WidgetProps } from 'paybutton';
-import { Component, h } from 'preact';
+import { h } from 'preact';
 import { render } from 'preact/compat';
-
-const payButtonApi = {
-  render: ( el: HTMLElement, props: PayButtonProps ) => {
-    render( <PayButton { ...props } />, el )
-  },
-  renderWidget: ( el: HTMLElement, props: WidgetProps ) => {
-    render( <Widget { ...props } />, el )
-  },
-  //openDialog:
-}
 
 declare global {
   interface Window { 
-    PayButton: typeof payButtonApi;
     WebKitMutationObserver: any;
   }
 }
 
 if ( typeof window !== 'undefined' ) {
   init();
-  window.PayButton = payButtonApi;
 }
 
 function init ( ) {
@@ -124,6 +112,10 @@ function findAndRender <T>( className: string, Component: React.ComponentType<an
 }
 
 export default {
-  renderButtons,
-  renderWidgets,
+  render: ( el: HTMLElement, props: PayButtonProps ) => {
+    render( <PayButton { ...props } />, el )
+  },
+  renderWidget: ( el: HTMLElement, props: WidgetProps ) => {
+    render( <Widget { ...props } />, el )
+  },
 };
