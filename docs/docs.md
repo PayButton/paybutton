@@ -106,7 +106,7 @@ Example:
 
 ```hover-text="Send Bitcoin Cash"``` (html)
 
-```hover-text: 'Send Bitcoin Cash'``` (js)
+```hoverText: 'Send Bitcoin Cash'``` (js)
 
 #### theme
 
