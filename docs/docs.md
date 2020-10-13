@@ -56,7 +56,9 @@ The 'to' parameter specifies where the money will be sent to.
 
 Example:
 
-```to: 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp'```
+```to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp"``` (html)
+
+```to: 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp'``` (js)
 
 #### amount
 
@@ -66,7 +68,9 @@ The 'amount' parameter specifies how much money to request. Use this in conjunct
 
 Example:
 
-```amount: 100```
+```amount=100``` (html)
+
+```amount: 100``` (js)
 
 #### currency
 
@@ -76,7 +80,9 @@ The 'currency' parameter specifies what currency the amount will be denominated 
 
 Example:
 
-```currency: 'USD'```
+```currency="USD"``` (html)
+
+```currency: 'USD'``` (js)
 
 #### text
 
@@ -86,7 +92,9 @@ The 'text' parameter specifies the default text displayed on the button.
 
 Example:
 
-```text: 'Purchase'```
+```text="Purchase"``` (html)
+
+```text: 'Purchase'``` (js)
 
 #### hover-text
 
@@ -96,8 +104,9 @@ The 'hover-text' parameter specifies the text displayed on the button on hover.
 
 Example:
 
-```hover-text: 'Send Bitcoin Cash'```
+```hover-text="Send Bitcoin Cash"``` (html)
 
+```hover-text: 'Send Bitcoin Cash'``` (js)
 
 #### theme
 
@@ -107,7 +116,9 @@ The 'theme' parameter specifies the themeing of the button and dialog.
 
 Example:
 
-```theme: '{ "palette": { "primary": "#ee8b2b", "secondary": "#fefbf8", "tertiary": "#504030"} }'```
+```theme='{ "palette": { "primary": "#ee8b2b", "secondary": "#fefbf8", "tertiary": "#504030"} }'``` (html)
+
+```theme: '{ "palette": { "primary": "#ee8b2b", "secondary": "#fefbf8", "tertiary": "#504030"} }'``` (js)
 
 #### success-text
 
@@ -117,27 +128,33 @@ The 'success-text' parameter specifies the text displayed upon successful paymen
 
 Example:
 
-```success-text: 'Thanks!'```
+```success-text="Thanks!"``` (html)
 
-#### onSuccess
+```successText: 'Thanks!'``` (js)
 
-**This parameter is optional. Default value is empty. Possible values are any defined function.**
-
-The 'onSuccess' parameter specifies the callback function that runs upon successful payment.
-
-Example:
-
-```onSuccess: successCallback```
-
-#### onTransaction
+#### on-success
 
 **This parameter is optional. Default value is empty. Possible values are any defined function.**
 
-The 'onTransaction' parameter specifies the callback function that runs upon any payment received to the specified address.
+The 'on-success' parameter specifies the callback function that runs upon successful payment.
 
 Example:
 
-```onTransaction: transactionCallback```
+```on-success="successCallback"``` (html)
+
+```onSuccess: successCallback``` (js)
+
+#### on-transaction
+
+**This parameter is optional. Default value is empty. Possible values are any defined function.**
+
+The 'on-transaction' parameter specifies the callback function that runs upon any payment received to the specified address.
+
+Example:
+
+```on-transaction="transactionCallback"``` (html)
+
+```onTransaction: transactionCallback``` (js)
 
 #### random-satoshis
 
@@ -147,7 +164,9 @@ The 'random-satoshis' parameter specifies whether to randomize the last few digi
 
 Example:
 
-```random-satoshis: true```
+```random-satoshis="true"``` (html)
+
+```randomSatoshis: true```(js)
 
 You can find the source code on [GitHub](http://github.com/PayButton/paybutton).
 
