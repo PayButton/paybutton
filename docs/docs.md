@@ -13,9 +13,9 @@ PayButton makes it easy to accept Bitcoin Cash by adding a donation or buy butto
 Simply add the following to your website's HTML:
 
 ```
-<script src="https://paybutton.org/pre-release/v0.1/js/paybutton.min.js"></script>
+<script src="https://unpkg.com/@paybutton/paybutton/dist/paybutton.js"></script>
 
-<button class="pay-button" address="bch_address_here"></button>
+<div class="paybutton" to="bch_address_here"></div>
 ```
 
 ## Advanced Usage
@@ -25,94 +25,128 @@ Simply add the following to your website's HTML:
 Example using JavaScript to generate a PayButton.
 
 ```
-<script src="https://paybutton.org/pre-release/v0.1/js/paybutton.min.js"></script>
+<script src="https://unpkg.com/@paybutton/paybutton/dist/paybutton.js"></script>
 
-<button id="button_element_id" class="pay-button"></button>
+<div id="button_element_id"></div>
 
 <script>
+function mySuccessFunction(txid, amount) {
+  console.log( { txid, amount } );
+}
+
 var config = {
-  button_text: 'Donate',
+  text: 'Donate',
   amount: 100,
-  amount_type: 'USD',
-  address: 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp',
-  success_callback: '',
-  type: 'button'
+  currency: 'USD',
+  to: 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp',
+  onSuccess: mySuccessFunction
 };
 
-Paybutton.render('button_element_id', config);
+PayButton.render(document.getElementById('button_element_id'), config);
 </script>
 ```
 
 ### Parameters
 
-#### address
+#### to
 
 **This parameter is required. Possible values are any valid Bitcoin Cash address.**
 
-The 'address' parameter specifies where the money will be sent to.
+The 'to' parameter specifies where the money will be sent to.
 
 Example:
 
-```address: 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp'```
+```to: 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp'```
 
 #### amount
 
 **This parameter is optional. Default value is 0. Possible values are any decimal.**
 
-The 'amount' parameter specifies how much money to request. Use this in conjunction with the optional 'amount_type' paramter to specify a specific amount in a different currency.
+The 'amount' parameter specifies how much money to request. Use this in conjunction with the optional 'currency' paramter to specify a specific amount in a different currency.
 
 Example:
 
 ```amount: 100```
 
-#### amount_type
+#### currency
 
 **This parameter is optional. Default value is 'BCH'. Possible values are 'BCH', 'SAT', 'USD', 'CAD', 'EUR', 'GBP', and 'AUD'.**
 
-The 'amount_type' parameter specifies what currency the amount will be denominated in. Use this in conjunction with the optional 'amount' paramter to specify an specific amount in a different currency.
+The 'currency' parameter specifies what currency the amount will be denominated in. Use this in conjunction with the optional 'amount' paramter to specify an specific amount in a different currency.
 
 Example:
 
-```amount_type: 'USD'```
+```currency: 'USD'```
 
-#### button_text
+#### text
 
 **This parameter is optional. Default value is 'Donate'. Possible values are any string.**
 
-The 'button_text' parameter specifies the default text displayed on the button.
+The 'text' parameter specifies the default text displayed on the button.
 
 Example:
 
-```button_text: 'Purchase'```
+```text: 'Purchase'```
 
-#### button_text_2
+#### hover-text
 
 **This parameter is optional. Default value is 'Click to send BCH'. Possible values are any string.**
 
-The 'button_text_2' parameter specifies the text displayed on the button on hover.
+The 'hover-text' parameter specifies the text displayed on the button on hover.
 
 Example:
 
-```button-text_2: 'Send Bitcoin Cash'```
+```hover-text: 'Send Bitcoin Cash'```
 
-#### success_msg
+
+#### theme
+
+**This parameter is optional. Default value is '{ "palette": { "primary": "#4bc846", "secondary": "#f8fdf8", "tertiary": "#374936" } }'. Possible values are any valid pallete object.**
+
+The 'theme' parameter specifies the themeing of the button and dialog.
+
+Example:
+
+```theme: '{ "palette": { "primary": "#ee8b2b", "secondary": "#fefbf8", "tertiary": "#504030"} }'```
+
+#### success-text
 
 **This parameter is optional. Default value is 'Thanks for your support!'. Possible values are any string.**
 
-The 'success_msg' parameter specifies the text displayed upon successful payment.
+The 'success-text' parameter specifies the text displayed upon successful payment.
 
 Example:
 
-```success_msg: 'Thanks!'```
+```success-text: 'Thanks!'```
 
-#### success_callback
+#### onSuccess
 
-**This parameter is optional. Default value is empty. Possible values are any string.**
+**This parameter is optional. Default value is empty. Possible values are any defined function.**
 
-The 'success_callback' parameter specifies the name of the callback function that runs upon successful payment.
+The 'onSuccess' parameter specifies the callback function that runs upon successful payment.
 
 Example:
 
-```success_callback: 'donationSuccessCallback'```
+```onSuccess: successCallback```
+
+#### onTransaction
+
+**This parameter is optional. Default value is empty. Possible values are any defined function.**
+
+The 'onTransaction' parameter specifies the callback function that runs upon any payment received to the specified address.
+
+Example:
+
+```onTransaction: transactionCallback```
+
+#### random-satoshis
+
+**This parameter is optional. Default value is false. Possible values are true or false.**
+
+The 'random-satoshis' parameter specifies whether to randomize the last few digits of the payment amount so that it's unlikely that a payment made by one person will trigger the onSuccess callback of another who has the payment screen open at the same time.
+
+Example:
+
+```random-satoshis: true```
 
 You can find the source code on [GitHub](http://github.com/PayButton/paybutton).
