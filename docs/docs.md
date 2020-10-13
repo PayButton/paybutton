@@ -13,7 +13,7 @@ PayButton makes it easy to accept Bitcoin Cash by adding a donation or buy butto
 Simply add the following to your website's HTML:
 
 ```
-<script src="https://unpkg.com/@paybutton/paybutton/dist/paybutton.js"></script>
+<script src="https://unpkg.com/@paybutton/paybutton@1.0.2/dist/paybutton.js"></script>
 
 <div class="paybutton" to="bch_address_here"></div>
 ```
@@ -25,7 +25,7 @@ Simply add the following to your website's HTML:
 Example using JavaScript to generate a PayButton.
 
 ```
-<script src="https://unpkg.com/@paybutton/paybutton/dist/paybutton.js"></script>
+<script src="https://unpkg.com/@paybutton/paybutton@1.0.2/dist/paybutton.js"></script>
 
 <div id="button_element_id"></div>
 
@@ -150,3 +150,13 @@ Example:
 ```random-satoshis: true```
 
 You can find the source code on [GitHub](http://github.com/PayButton/paybutton).
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-27127884-13"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'UA-27127884-13');
+</script>
+
