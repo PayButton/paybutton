@@ -69,20 +69,20 @@ const useStyles = makeStyles({
   copyText: ({ theme }: StyleProps) => ({
     lineHeight: '1.2em',
     fontSize: '0.7em',
-    color: theme.palette.dark,
+    color: theme.palette.tertiary,
     textShadow:
       '#fff -2px 0 1px, #fff 0 -2px 1px, #fff 0 2px 1px, #fff 2px 0 1px',
   }),
   text: ({ theme }: StyleProps) => ({
     fontSize: '0.9rem',
-    color: theme.palette.dark,
+    color: theme.palette.tertiary,
   }),
   spinner: ({ theme }: StyleProps) => ({
     color: theme.palette.primary,
   }),
   footer: ({ theme }: StyleProps) => ({
     fontSize: '0.6rem',
-    color: theme.palette.dark,
+    color: theme.palette.tertiary,
   }),
 });
 
@@ -148,7 +148,7 @@ export const Widget: React.FC<WidgetProps> = props => {
     size: 300,
     level: 'H', // High error correction allows for a larger logo
     value: url,
-    fgColor: theme.palette.dark,
+    fgColor: theme.palette.tertiary,
     imageSettings: {
       src: success ? checkSvg : bchSvg,
       excavate: false,

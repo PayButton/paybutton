@@ -52,7 +52,7 @@ CustomTheme.args = {
     palette: {
       primary: '#d05050',
       secondary: '#bee',
-      dark: '#084',
+      tertiary: '#084',
       logo: '#404',
     },
   },

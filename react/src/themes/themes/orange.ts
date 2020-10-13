@@ -6,7 +6,7 @@ const theme: Theme = {
   palette: {
     primary,
     secondary: '#fefbf8',
-    dark: '#504030',
+    tertiary: '#504030',
     logo: primary,
   },
 };
