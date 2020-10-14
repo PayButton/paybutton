@@ -130,7 +130,7 @@ Example:
 
 ```animation="invert"``` (html)
 
-```animation: 'invert``` (js)
+```animation: 'invert'``` (js)
 
 #### success-text
 
