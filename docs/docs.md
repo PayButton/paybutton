@@ -120,6 +120,18 @@ Example:
 
 ```theme: { "palette": { "primary": "#ee8b2b", "secondary": "#fefbf8", "tertiary": "#504030"} }``` (js)
 
+#### animation
+
+**This parameter is optional. Default value is 'slide'. Possible values are 'slide', 'invert', 'none'.**
+
+The 'animation' parameter specifies how the buttons change when hovering over them.
+
+Example:
+
+```animation="invert"``` (html)
+
+```theme: 'invert``` (js)
+
 #### success-text
 
 **This parameter is optional. Default value is 'Thanks for your support!'. Possible values are any string.**
