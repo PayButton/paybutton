@@ -118,7 +118,7 @@ Example:
 
 ```theme='{ "palette": { "primary": "#ee8b2b", "secondary": "#fefbf8", "tertiary": "#504030"} }'``` (html)
 
-```theme: '{ "palette": { "primary": "#ee8b2b", "secondary": "#fefbf8", "tertiary": "#504030"} }'``` (js)
+```theme: { "palette": { "primary": "#ee8b2b", "secondary": "#fefbf8", "tertiary": "#504030"} }``` (js)
 
 #### success-text
 
