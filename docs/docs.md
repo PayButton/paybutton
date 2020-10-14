@@ -110,7 +110,7 @@ Example:
 
 #### theme
 
-**This parameter is optional. Default value is '{ "palette": { "primary": "#4bc846", "secondary": "#f8fdf8", "tertiary": "#374936" } }'. Possible values are any valid pallete object.**
+**This parameter is optional. Default value is '{ "palette": { "primary": "#4bc846", "secondary": "#f8fdf8", "tertiary": "#374936" } }'. Possible values are any valid palette object.**
 
 The 'theme' parameter specifies the themeing of the button and dialog.
 
