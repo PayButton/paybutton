@@ -66,7 +66,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
         text={text}
         hoverText={hoverText}
       />
-      <Dialog open={widgetOpen} onClose={handleWidgetClose}>
+      <Dialog open={widgetOpen} onClose={handleWidgetClose} disableScrollLock>
         <WidgetContainer
           ButtonComponent={ButtonComponent}
           active={widgetOpen}
