@@ -12,7 +12,7 @@ import * as PayButton from '@paybutton/paybutton';
 
 ### CDN
 
-`<script src="/path"></script>`
+`<script src="https://unpkg.com/@paybutton/paybutton@1.0.3/dist/paybutton.js"></script>`
 
 ### npm
 
@@ -22,25 +22,29 @@ import * as PayButton from '@paybutton/paybutton';
 
 ## PayButton
 
-#### Basic
+#### Basic Usage
 
 <Playground language="html" showLivePreview={false}>
-  <div class="paybutton" to="1PayBtn3rF6einuqMed2gJ4XdvuoGtNTNd" />
+  <div class="paybutton" to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp" />
 </Playground>
 
-#### All Props
+#### Advanced Usage (All Options)
 
 <Props of={PayButton} />
 
 <Playground language="html" showLivePreview={false}>
   <div class="paybutton"
-    to="1PayBtn3rF6einuqMed2gJ4XdvuoGtNTNd"
+    to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp"
     amount="10"
     currency="USD"
     animation="invert"
     text="Send BCH"
-    hover-text="Test"
+    hover-text="Click Me"
     success-text="Thank you for supporting us"
+	theme='{ "palette": { "primary": "#ee8b2b", "secondary": "#fefbf8", "tertiary": "#504030"} }'
+	random-satoshis="true"
+	on-success="console.log('success');"
+	on-transaction="console.log('transaction');"
   />
 </Playground>
 
