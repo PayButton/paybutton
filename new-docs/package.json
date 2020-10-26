@@ -11,9 +11,10 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@material-ui/styles": "^4.10.0",
     "@mdx-js/mdx": "^1.6.16",
-    "@paybutton/paybutton": "^1.0.2",
-    "@paybutton/react": "^1.0.3",
+    "@paybutton/paybutton": "^1.0.4",
+    "@paybutton/react": "^1.0.5",
     "docz": "^2.3.1",
     "gatsby-theme-docz": "^2.3.1",
     "react": "^16.13.1",
