@@ -5,8 +5,11 @@
   "description": "PayButton Documentation",
   "type": "module",
   "scripts": {
-    "start": "docz dev",
-    "build": "docz build"
+    "update-pb": "npm i @paybutton/paybutton @paybutton/react",
+    "update-version": "npm ls @paybutton/paybutton --json | jq '.dependencies[\"@paybutton/paybutton\"].version' -rj > VERSION",
+    "start": "GATSBY_PAYBUTTON_VERSION=\"$(cat VERSION)\" docz dev",
+    "prebuild": "npm run update-pb",
+    "build": "GATSBY_PAYBUTTON_VERSION=\"$(cat VERSION)\" docz build"
   },
   "author": "",
   "license": "MIT",
@@ -20,6 +23,7 @@
     "react": "^16.13.1",
     "react-codemirror2": "^7.2.1",
     "react-datepicker": "^3.2.2",
-    "react-dom": "^16.13.1"
+    "react-dom": "^16.13.1",
+    "react-helmet-async": "^1.0.7"
   }
 }

@@ -7,6 +7,7 @@ export default {
     'JavaScript',
     'React',
   ],
+  useScopingInPlayground: true,
   themeConfig: {
     showDarkModeSwitch: false,
   },
