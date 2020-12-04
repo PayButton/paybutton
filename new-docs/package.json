@@ -7,9 +7,9 @@
   "scripts": {
     "update-pb": "npm i @paybutton/paybutton @paybutton/react",
     "update-version": "npm ls @paybutton/paybutton --json | jq '.dependencies[\"@paybutton/paybutton\"].version' -rj > VERSION",
-    "start": "GATSBY_PAYBUTTON_VERSION=\"$(cat VERSION)\" docz dev",
+    "start": "cross-env GATSBY_PAYBUTTON_VERSION=\"$(cat VERSION)\" docz dev",
     "prebuild": "npm run update-pb",
-    "build": "GATSBY_PAYBUTTON_VERSION=\"$(cat VERSION)\" docz build"
+    "build": "cross-env GATSBY_PAYBUTTON_VERSION=\"$(cat VERSION)\" docz build"
   },
   "author": "",
   "license": "MIT",
@@ -25,5 +25,8 @@
     "react-datepicker": "^3.2.2",
     "react-dom": "^16.13.1",
     "react-helmet-async": "^1.0.7"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3"
   }
 }
