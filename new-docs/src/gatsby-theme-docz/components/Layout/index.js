@@ -17,7 +17,7 @@ export const Layout = ({ children, pageContext: { frontmatter } }) => {
   const content = fullpage
     ? children
     : (
-        <>
+        <React.Fragment>
           <Header onOpen={() => setOpen(s => !s)} />
           <div sx={styles.wrapper}>
             <Sidebar
@@ -29,7 +29,7 @@ export const Layout = ({ children, pageContext: { frontmatter } }) => {
             />
             <MainContainer data-testid="main-container">{children}</MainContainer>
           </div>
-        </>
+        </React.Fragment>
       )
   ;
 
