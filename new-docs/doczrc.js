@@ -1,14 +1,14 @@
 export default {
-  title: 'PayButton',
+  title: 'PayButton Documentation',
   typescript: true,
   menu: [
-    'Getting Started',
+    'Intro',
     'HTML',
     'JavaScript',
     'React',
   ],
   useScopingInPlayground: true,
   themeConfig: {
-    showDarkModeSwitch: false,
+    initialColorMode: 'dark',
   },
 }

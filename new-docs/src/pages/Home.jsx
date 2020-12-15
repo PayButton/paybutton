@@ -24,7 +24,7 @@ export const Home = ( ) => {
   const classes = useStyles();
   return (
     <div className={classes.root}>
-      <div>PayButton</div>
+      <h1>PayButton</h1>
       <div style={{ paddingTop: 24 }}>
         <Link to="/start">Get Started</Link>
       </div>
