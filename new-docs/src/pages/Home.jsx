@@ -25,6 +25,7 @@ export const Home = ( ) => {
   return (
     <div className={classes.root}>
       <h1>PayButton</h1>
+      <h3 style={{ marginTop: '0' }}>The easiest way to accept Bitcoin Cash online.</h3>
       <div style={{ paddingTop: 24 }}>
         <Link to="/start">Get Started</Link>
       </div>

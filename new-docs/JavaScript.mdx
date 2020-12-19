@@ -3,10 +3,121 @@ name: JavaScript
 route: /javascript
 ---
 
+import { Playground } from 'docz';
+import * as PayButton from '@paybutton/paybutton';
+
 # HTML
 
 ## Installation
 
+### CDN
+
+```
+<script src="https://unpkg.com/@paybutton/paybutton@1.0.3/dist/paybutton.js"></script>
+```
+
+### npm
+
+```
+npm i @paybutton/paybutton
+```
+
+# Usage
+
 ## PayButton
 
-## PayButton Widget
+#### Basic Usage
+
+<div class="paybutton" to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp"></div>
+
+```
+<div id="button_element_id"></div>
+
+<script>
+	var config = {
+		to: 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp'
+	};
+
+	PayButton.render(document.getElementById('button_element_id'), config);
+</script>
+```
+
+#### Advanced Usage (All Options)
+
+<div class="paybutton" to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp" amount="10" currency="USD" animation="invert" text="Send BCH" hover-text="Click Me" success-text="Thank you for supporting us" theme='{ "palette": { "primary": "#ee8b2b", "secondary": "#fefbf8", "tertiary": "#504030"} }' random-satoshis="true" on-success="console.log('success');" on-transaction="console.log('transaction');"
+></div>
+
+```
+<div id="button_element_id"></div>
+<script>
+	function mySuccessFunction(txid, amount) {
+		console.log( { txid, amount } );
+	}
+
+	function myTransactionFunction(txid, amount) {
+		console.log( { txid, amount } );
+	}
+
+	var config = {
+		to: 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp',
+		amount: 10,
+		currency: 'USD',
+		animation: 'invert',
+		text: 'Send BCH',
+		hoverText: 'Click Me',
+		successText: 'Thank you for supporting us',
+		theme: { "palette": { "primary": "#ee8b2b", "secondary": "#fefbf8", "tertiary": "#504030"} },
+		randomSatoshis: true,
+		onSuccess: mySuccessFunction,
+		onTransaction: myTransactionFunction
+	};
+	
+	PayButton.render(document.getElementById('button_element_id'), config);
+</script>
+```
+
+## Widget
+
+<div
+  class="paybutton-widget"
+  to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp"
+  amount="10"
+  currency="USD"
+  animation="invert"
+  text="Send BCH"
+  hover-text="Click Me"
+  success-text="Thank you for supporting us"
+  theme='{ "palette": { "primary": "#065a82", "secondary": "#eff9fe", "tertiary": "#21295c"} }'
+  random-satoshis="true"
+  on-success="console.log('success');"
+  on-transaction="console.log('transaction');"
+></div>
+
+```
+<div id="button_element_id"></div>
+<script>
+	function mySuccessFunction(txid, amount) {
+		console.log( { txid, amount } );
+	}
+
+	function myTransactionFunction(txid, amount) {
+		console.log( { txid, amount } );
+	}
+
+	var config = {
+		to: 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp',
+		amount: 10,
+		currency: 'USD',
+		animation: 'invert',
+		text: 'Send BCH',
+		hoverText: 'Click Me',
+		successText: 'Thank you for supporting us',
+		theme: { "palette": { "primary": "#ee8b2b", "secondary": "#fefbf8", "tertiary": "#504030"} },
+		randomSatoshis: true,
+		onSuccess: mySuccessFunction,
+		onTransaction: myTransactionFunction
+	};
+	
+	PayButton.render(document.getElementById('button_element_id'), config);
+</script>
+```
