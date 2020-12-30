@@ -1,0 +1,15 @@
+{
+  "name": "docsify",
+  "version": "1.0.0",
+  "description": "The easiest way to accept Bitcoin Cash online.",
+  "main": "index.js",
+  "dependencies": {
+    "docsify": "^4.11.6"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "serve": "npx docsify serve"
+  },
+  "author": "",
+  "license": "ISC"
+}
