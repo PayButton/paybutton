@@ -107,6 +107,14 @@ render( '#advanced-usage-1', {
 
 </script>
 
+# React
+
+Example using React to generate a PayButton:
+
+```react
+
+```
+
 # Parameters
 
 Customize your PayButton with the following available options:
