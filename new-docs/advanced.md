@@ -1,3 +1,4 @@
 ## Advanced Usage
 
-<div id="donate"></div>
+<div class="donate"></div>
+
