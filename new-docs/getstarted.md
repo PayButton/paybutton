@@ -133,6 +133,18 @@ Customize your PayButton with the following available options:
 to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp"
 ```
 
+#### ** JavaScript **
+
+```javascript
+to: 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp'
+```
+
+#### ** React **
+
+```react
+
+```
+
 <!-- tabs:end -->
 
 ## amount
@@ -147,6 +159,18 @@ to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp"
 
 ```html
 amount=100
+```
+
+#### ** JavaScript **
+
+```javascript
+amount: 100
+```
+
+#### ** React **
+
+```react
+
 ```
 
 <!-- tabs:end -->
@@ -166,6 +190,18 @@ amount=100
 currency="USD"
 ```
 
+#### ** JavaScript **
+
+```javascript
+currency: 'USD'
+```
+
+#### ** React **
+
+```react
+
+```
+
 <!-- tabs:end -->
 
 ## text
@@ -180,6 +216,18 @@ currency="USD"
 
 ```html
 text="Purchase"
+```
+
+#### ** JavaScript **
+
+```javascript
+text: 'Purchase'
+```
+
+#### ** React **
+
+```react
+
 ```
 
 <!-- tabs:end -->
@@ -198,6 +246,18 @@ text="Purchase"
 hover-text="Send Bitcoin Cash"
 ```
 
+#### ** JavaScript **
+
+```javascript
+hoverText: 'Send Bitcoin Cash'
+```
+
+#### ** React **
+
+```react
+
+```
+
 <!-- tabs:end -->
 
 ## theme
@@ -212,6 +272,18 @@ hover-text="Send Bitcoin Cash"
 
 ```html
 theme='{ "palette": { "primary": "#ee8b2b", "secondary": "#fefbf8", "tertiary": "#504030"} }'
+```
+
+#### ** JavaScript **
+
+```javascript
+theme: { "palette": { "primary": "#ee8b2b", "secondary": "#fefbf8", "tertiary": "#504030"} }
+```
+
+#### ** React **
+
+```react
+
 ```
 
 <!-- tabs:end -->
@@ -230,6 +302,18 @@ theme='{ "palette": { "primary": "#ee8b2b", "secondary": "#fefbf8", "tertiary": 
 animation="invert"
 ```
 
+#### ** JavaScript **
+
+```javascript
+animation: 'invert'
+```
+
+#### ** React **
+
+```react
+
+```
+
 <!-- tabs:end -->
 
 ## success-text
@@ -244,6 +328,18 @@ animation="invert"
 
 ```html
 success-text="Thanks!"
+```
+
+#### ** JavaScript **
+
+```javascript
+successText: 'Thanks!'
+```
+
+#### ** React **
+
+```react
+
 ```
 
 <!-- tabs:end -->
@@ -262,6 +358,18 @@ success-text="Thanks!"
 on-success="successCallback"
 ```
 
+#### ** JavaScript **
+
+```javascript
+onSuccess: successCallback
+```
+
+#### ** React **
+
+```react
+
+```
+
 <!-- tabs:end -->
 
 ## on-transaction
@@ -276,6 +384,18 @@ on-success="successCallback"
 
 ```html
 on-transaction="transactionCallback"
+```
+
+#### ** JavaScript **
+
+```javascript
+onTransaction: transactionCallback
+```
+
+#### ** React **
+
+```react
+
 ```
 
 <!-- tabs:end -->
@@ -294,12 +414,16 @@ on-transaction="transactionCallback"
 random-satoshis="true"
 ```
 
-<!-- tabs:end -->
-
 #### ** JavaScript **
 
+```javascript
+randomSatoshis: true
 ```
-to: 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp'
+
+#### ** React **
+
+```react
+
 ```
 
 <!-- tabs:end -->
