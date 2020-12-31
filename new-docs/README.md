@@ -1,4 +1,4 @@
-## What Is PayButton?
+# What Is PayButton?
 
 > PayButton makes it easy to accept Bitcoin Cash by adding a donation or buy button to your website. PayButton requires that you have set up a wallet already so you can begin receiving money. If you don’t have one, there are plenty to choose from.
 
@@ -6,7 +6,7 @@
 
 >
 
-## Basic Usage
+# Basic Usage
 
 Simply add the following to your website’s HTML:
 
@@ -17,7 +17,7 @@ Simply add the following to your website’s HTML:
 <div class="paybutton" to="bch_address_here"></div>
 ```
 
-## Advanced Usage
+# Advanced Usage
 
 Example using JavaScript to generate a PayButton:
 
@@ -107,4 +107,191 @@ render( '#advanced-usage-1', {
 
 </script>
 
-## Parameters
+# Parameters
+
+Customize your PayButton with the following available options:
+
+## to
+
+> **The ‘to’ parameter specifies where the money will be sent to.**
+
+?> This parameter is required. Possible values are any valid Bitcoin Cash address.
+
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp"
+```
+
+<!-- tabs:end -->
+
+## amount
+
+> **The ‘amount’ parameter specifies how much money to request. Use this in conjunction with the optional ‘currency’ paramter to specify a specific amount in a different currency.**
+
+?> This parameter is optional. Default value is 0. Possible values are any decimal.
+
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+amount=100
+```
+
+<!-- tabs:end -->
+
+## currency
+
+> **The ‘currency’ parameter specifies what currency the amount will be denominated in. Use this in conjunction with the optional ‘amount’ paramter to specify an specific amount in a different currency.**
+
+?> This parameter is optional. Default value is ‘BCH’. Possible values are ‘BCH’, ‘SAT’, ‘USD’, ‘CAD’, ‘EUR’, ‘GBP’, and ‘AUD’.
+
+
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+currency="USD"
+```
+
+<!-- tabs:end -->
+
+## text
+
+> **The ‘text’ parameter specifies the default text displayed on the button.**
+
+?> This parameter is optional. Default value is ‘Donate’. Possible values are any string.
+
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+text="Purchase"
+```
+
+<!-- tabs:end -->
+
+## hover-text
+
+> **The ‘hover-text’ parameter specifies the text displayed on the button on hover.**
+
+?> This parameter is optional. Default value is ‘Click to send BCH’. Possible values are any string.
+
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+hover-text="Send Bitcoin Cash"
+```
+
+<!-- tabs:end -->
+
+## theme
+
+> **The ‘theme’ parameter specifies the themeing of the button and dialog.**
+
+?> This parameter is optional. Default value is ‘{ “palette”: { “primary”: “#4bc846”, “secondary”: “#f8fdf8”, “tertiary”: “#374936” } }’. Possible values are any valid palette object.
+
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+theme='{ "palette": { "primary": "#ee8b2b", "secondary": "#fefbf8", "tertiary": "#504030"} }'
+```
+
+<!-- tabs:end -->
+
+## animation
+
+> **The ‘animation’ parameter specifies how the buttons change when hovering over them.**
+
+?> This parameter is optional. Default value is ‘slide’. Possible values are ‘slide’, ‘invert’, ‘none’.
+
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+animation="invert"
+```
+
+<!-- tabs:end -->
+
+## success-text
+
+> **The ‘success-text’ parameter specifies the text displayed upon successful payment.**
+
+?> This parameter is optional. Default value is ‘Thanks for your support!’. Possible values are any string.
+
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+success-text="Thanks!"
+```
+
+<!-- tabs:end -->
+
+## on-success
+
+> **The ‘on-success’ parameter specifies the callback function that runs upon successful payment.**
+
+?> This parameter is optional. Default value is empty. Possible values are any defined function.
+
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+on-success="successCallback"
+```
+
+<!-- tabs:end -->
+
+## on-transaction
+
+> **The ‘on-transaction’ parameter specifies the callback function that runs upon any payment received to the specified address.**
+
+?> This parameter is optional. Default value is empty. Possible values are any defined function.
+
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+on-transaction="transactionCallback"
+```
+
+<!-- tabs:end -->
+
+## random-satoshis
+
+> **The ‘random-satoshis’ parameter specifies whether to randomize the last few digits of the payment amount so that it’s unlikely that a payment made by one person will trigger the onSuccess callback of another who has the payment screen open at the same time.**
+
+?> This parameter is optional. Default value is false. Possible values are true or false.
+
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+random-satoshis="true"
+```
+
+<!-- tabs:end -->
+
+#### ** JavaScript **
+
+```
+to: 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp'
+```
+
+<!-- tabs:end -->
