@@ -23,7 +23,7 @@
   <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
   <script src="https://unpkg.com/@paybutton/paybutton@1.0.2/dist/paybutton.js"></script>
   <script type="text/javascript">
-  	function randomColour() {
+  	/*function randomColour() {
   		return Math.floor(Math.random()*16777215).toString(16);
   	}
 
@@ -110,12 +110,9 @@
   		theme: { "palette": { "primary": "#42b983", "secondary": "#ffffff", "tertiary": "#333333"} }
   	};
 
-    window.addEventListener( 'load', () => {
-      const buttons = document.querySelectorAll( '.donate' )
-
-      for ( const button of buttons )
-        PayButton.render( button, config );
-    })
+  	setTimeout(function () {
+  		PayButton.render(document.getElementById('donate'), config);
+  	}, 200);*/
   </script>
 </body>
 </html>
