@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Document</title>
+  <title>PayButton | The easiest way to accept Bitcoin Cash online.</title>
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <meta name="description" content="Description">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
@@ -108,9 +108,9 @@
   		theme: { "palette": { "primary": "#" + donationButtonColour + "", "secondary": "#" + hexToComplimentary(donationButtonColour) + "", "tertiary": "#333333"} }
   	};
 
-  	window.addEventListener('load', function () {
+  	setTimeout(function () {
   		PayButton.render(document.getElementById('donate'), config);
-  	});
+  	}, 100);
   </script>
 </body>
 </html>
