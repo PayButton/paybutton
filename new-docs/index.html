@@ -14,14 +14,15 @@
     window.$docsify = {
       name: '',
       repo: '',
-      coverpage: true
+      coverpage: true,
+      loadSidebar: true
     }
   </script>
   <!-- Docsify v4 -->
   <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
   <script src="https://unpkg.com/@paybutton/paybutton@1.0.2/dist/paybutton.js"></script>
   <script type="text/javascript">
-  	function randomColour() {
+  	/*function randomColour() {
   		return Math.floor(Math.random()*16777215).toString(16);
   	}
 
@@ -105,12 +106,12 @@
   	var config = {
   		text: 'Donate',
   		to: 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp',
-  		theme: { "palette": { "primary": "#" + donationButtonColour + "", "secondary": "#" + hexToComplimentary(donationButtonColour) + "", "tertiary": "#333333"} }
+  		theme: { "palette": { "primary": "#42b983", "secondary": "#ffffff", "tertiary": "#333333"} }
   	};
 
   	setTimeout(function () {
   		PayButton.render(document.getElementById('donate'), config);
-  	}, 100);
+  	}, 200);*/
   </script>
 </body>
 </html>
