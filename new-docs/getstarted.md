@@ -123,7 +123,7 @@ Customize your PayButton with the following available options:
 
 > **The ‘to’ parameter specifies where the money will be sent to.**
 
-?> This parameter is required. Possible values are any valid Bitcoin Cash address.
+!> This parameter is required. Possible values are any valid Bitcoin Cash address.
 
 <!-- tabs:start -->
 
