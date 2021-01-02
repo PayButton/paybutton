@@ -111,9 +111,27 @@ render( '#advanced-usage-1', {
 
 Example using React to generate a PayButton:
 
-```react
-
+```bash
+npm i --save @paybutton/react
 ```
+
+```jsx
+import React from 'react'
+import ReactDOM from 'react-dom'
+import { PayButton } from '@paybutton/react'
+```
+
+```jsx
+/*react*/
+<script>
+  export default class Application extends React.Component {
+    render() {
+      return <PayButton to='bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp'>Test React Button</PayButton>
+    }
+  }
+```
+
+
 
 # Parameters
 
@@ -395,7 +413,6 @@ onTransaction: transactionCallback
 #### ** React **
 
 ```react
-
 ```
 
 <!-- tabs:end -->
