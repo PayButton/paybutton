@@ -2,7 +2,7 @@
 
 ![logo](_media/pbLogoNoBorder.png)
 
-> The easiest way to accept Bitcoin Cash online.
+> 在线接受比特币现金的最简单方法。
 
 [GitHub](https://github.com/paybutton/paybutton/)
-[Get Started](#what-is-paybutton)
+[开始](#paybutton是什么)

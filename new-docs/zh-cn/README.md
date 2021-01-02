@@ -1,14 +1,14 @@
-# What Is PayButton?
+# PayButton是什么?
 
-> PayButton makes it easy to accept Bitcoin Cash by adding a donation or buy button to your website. PayButton requires that you have set up a wallet already so you can begin receiving money. If you don’t have one, there are plenty to choose from.
+> 使用PayButton可以轻松接受比特币现金。 向您的网站添加捐赠或购买按钮。 PayButton要求您已经设置了一个钱包，这样您才能开始收款。
 
 <div class="paybutton" to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp" theme='{ "palette": { "primary": "#42b983", "secondary": "#ffffff", "tertiary": "#333333"} }'></div>
 
 >
 
-# Basic Usage
+# 基本用法
 
-Simply add the following to your website’s HTML:
+只需将以下内容添加到您网站的HTML中:
 
 <div class="paybutton" to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp"></div>
 
@@ -17,9 +17,9 @@ Simply add the following to your website’s HTML:
 <div class="paybutton" to="bch_address_here"></div>
 ```
 
-# Advanced Usage
+# 高级用法
 
-Example using JavaScript to generate a PayButton:
+使用JavaScript生成PayButton的示例:
 
 <div id="advanced-usage"></div>
 
@@ -113,11 +113,11 @@ render( '#react-usage', {
 
 # React
 
-Example using React to generate a PayButton:
+使用React生成PayButton的示例:
 
 <div id="react-usage"></div>
 
-!> Requires React v16.3 or later.
+!> 需要React v16.3或更高版本.
 
 ```bash
 npm i --save @paybutton/react
@@ -157,9 +157,9 @@ function App() {
 }
 ```
 
-# Parameters
+# 参量
 
-Customize your PayButton with the following available options:
+使用以下可用选项自定义您的PayButton:
 
 ## to
 
