@@ -21,7 +21,7 @@
 
 使用JavaScript生成PayButton的示例:
 
-<div id="advanced-usage"></div>
+<div id="advanced-usage-example"></div>
 
 ```html
 <script src="https://unpkg.com/@paybutton/paybutton@1.0.2/dist/paybutton.js"></script>
@@ -72,7 +72,7 @@ function myTransactionFunction(txid, amount) {
 }
 
 // render JS button
-render( '#advanced-usage', {
+render( '#advanced-usage-example', {
   to: 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp',
   amount: 25,
   currency: 'EUR',
@@ -93,7 +93,7 @@ render( '#advanced-usage', {
 })
 
 // render 'react' button
-render( '#react-usage', {
+render( '#react-usage-example', {
   text: 'Join the Cause',
   hoverText: 'Fee: $12',
   currency: 'USD',
@@ -115,7 +115,7 @@ render( '#react-usage', {
 
 使用React生成PayButton的示例:
 
-<div id="react-usage"></div>
+<div id="react-usage-example"></div>
 
 !> 需要React v16.3或更高版本.
 

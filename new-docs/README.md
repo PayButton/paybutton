@@ -21,7 +21,7 @@ Simply add the following to your website’s HTML:
 
 Example using JavaScript to generate a PayButton:
 
-<div id="advanced-usage"></div>
+<div id="advanced-usage-example"></div>
 
 ```html
 <script src="https://unpkg.com/@paybutton/paybutton@1.0.2/dist/paybutton.js"></script>
@@ -72,7 +72,7 @@ function myTransactionFunction(txid, amount) {
 }
 
 // render JS button
-render( '#advanced-usage', {
+render( '#advanced-usage-example', {
   to: 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp',
   amount: 25,
   currency: 'EUR',
@@ -93,7 +93,7 @@ render( '#advanced-usage', {
 })
 
 // render 'react' button
-render( '#react-usage', {
+render( '#react-usage-example', {
   text: 'Join the Cause',
   hoverText: 'Fee: $12',
   currency: 'USD',
@@ -115,7 +115,7 @@ render( '#react-usage', {
 
 Example using React to generate a PayButton:
 
-<div id="react-usage"></div>
+<div id="react-usage-example"></div>
 
 !> Requires React v16.3 or later.
 
