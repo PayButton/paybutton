@@ -167,7 +167,7 @@ function App() {
 
 !> This parameter is required. Possible values are any valid Bitcoin Cash address.
 
-**Example:**
+**例子:**
 <!-- tabs:start -->
 
 #### ** HTML **
@@ -196,7 +196,7 @@ to = "bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp"
 
 ?> This parameter is optional. Default value is 0. Possible values are any decimal.
 
-**Example:**
+**例子:**
 <!-- tabs:start -->
 
 #### ** HTML **
@@ -225,7 +225,7 @@ amount = 100
 
 ?> This parameter is optional. Default value is ‘BCH’. Possible values are ‘BCH’, ‘SAT’, ‘USD’, ‘CAD’, ‘EUR’, ‘GBP’, and ‘AUD’.
 
-**Example:**
+**例子:**
 <!-- tabs:start -->
 
 #### ** HTML **
@@ -254,7 +254,7 @@ currency = "USD"
 
 ?> This parameter is optional. Default value is ‘Donate’. Possible values are any string.
 
-**Example:**
+**例子:**
 <!-- tabs:start -->
 
 #### ** HTML **
@@ -283,7 +283,7 @@ text = "Purchase"
 
 ?> This parameter is optional. Default value is ‘Click to send BCH’. Possible values are any string.
 
-**Example:**
+**例子:**
 <!-- tabs:start -->
 
 #### ** HTML **
@@ -312,7 +312,7 @@ hoverText = "Send Bitcoin Cash"
 
 ?> This parameter is optional. Default value is ‘{ “palette”: { “primary”: “#4bc846”, “secondary”: “#f8fdf8”, “tertiary”: “#374936” } }’. Possible values are any valid palette object.
 
-**Example:**
+**例子:**
 <!-- tabs:start -->
 
 #### ** HTML **
@@ -341,7 +341,7 @@ theme = { palette: { primary: "#ee8b2b", secondary: "#fefbf8", tertiary: "#50403
 
 ?> This parameter is optional. Default value is ‘slide’. Possible values are ‘slide’, ‘invert’, ‘none’.
 
-**Example:**
+**例子:**
 <!-- tabs:start -->
 
 #### ** HTML **
@@ -370,7 +370,7 @@ animation = "invert"
 
 ?> This parameter is optional. Default value is ‘Thanks for your support!’. Possible values are any string.
 
-**Example:**
+**例子:**
 <!-- tabs:start -->
 
 #### ** HTML **
@@ -399,7 +399,7 @@ successText = "Thanks!"
 
 ?> This parameter is optional. Default value is empty. Possible values are any defined function.
 
-**Example:**
+**例子:**
 <!-- tabs:start -->
 
 #### ** HTML **
@@ -428,7 +428,7 @@ onSuccess = successCallback
 
 ?> This parameter is optional. Default value is empty. Possible values are any defined function.
 
-**Example:**
+**例子:**
 <!-- tabs:start -->
 
 #### ** HTML **
@@ -457,7 +457,7 @@ onTransaction = transactionCallback
 
 ?> This parameter is optional. Default value is false. Possible values are true or false.
 
-**Example:**
+**例子:**
 <!-- tabs:start -->
 
 #### ** HTML **
