@@ -21,7 +21,7 @@ Simply add the following to your website’s HTML:
 
 Example using JavaScript to generate a PayButton:
 
-<div id="advanced-usage-1"></div>
+<div id="advanced-usage"></div>
 
 ```html
 <script src="https://unpkg.com/@paybutton/paybutton@1.0.2/dist/paybutton.js"></script>
@@ -71,8 +71,8 @@ function myTransactionFunction(txid, amount) {
   console.log( 'Received: ' + amount );
 }
 
-// render button 1
-render( '#advanced-usage-1', {
+// render JS button
+render( '#advanced-usage', {
   to: 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp',
   amount: 25,
   currency: 'EUR',
@@ -92,9 +92,12 @@ render( '#advanced-usage-1', {
   randomSatoshis: true
 })
 
-// render button 2
-/*render( '#advanced-usage-2', {
-  text: 'Purchase',
+// render 'react' button
+render( '#react-usage', {
+  text: 'Join the Cause',
+  hoverText: 'Fee: $12',
+  currency: 'USD',
+  amount: 12,
   to: 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp',
   theme: {
     palette: {
@@ -103,13 +106,17 @@ render( '#advanced-usage-1', {
       tertiary: '#333333'
     }
   }
-})*/
+})
 
 </script>
 
 # React
 
 Example using React to generate a PayButton:
+
+<div id="react-usage"></div>
+
+!> Requires React v16.3 or later.
 
 ```bash
 npm i --save @paybutton/react
@@ -119,16 +126,12 @@ npm i --save @paybutton/react
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { PayButton } from '@paybutton/react'
-```
 
-```jsx
-/*react*/
-<script>
-  export default class Application extends React.Component {
-    render() {
-      return <PayButton to='bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp' text="Test React Button" />
-    }
+export default class Application extends React.Component {
+  render() {
+    return <PayButton to='bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp' text="Join the Cause" hoverText="" />
   }
+}
 ```
 
 
@@ -143,6 +146,7 @@ Customize your PayButton with the following available options:
 
 !> This parameter is required. Possible values are any valid Bitcoin Cash address.
 
+**Example:**
 <!-- tabs:start -->
 
 #### ** HTML **
@@ -160,7 +164,7 @@ to: 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp'
 #### ** React **
 
 ```react
-
+to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp"
 ```
 
 <!-- tabs:end -->
@@ -171,6 +175,7 @@ to: 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp'
 
 ?> This parameter is optional. Default value is 0. Possible values are any decimal.
 
+**Example:**
 <!-- tabs:start -->
 
 #### ** HTML **
@@ -188,7 +193,7 @@ amount: 100
 #### ** React **
 
 ```react
-
+amount=100
 ```
 
 <!-- tabs:end -->
@@ -199,7 +204,7 @@ amount: 100
 
 ?> This parameter is optional. Default value is ‘BCH’. Possible values are ‘BCH’, ‘SAT’, ‘USD’, ‘CAD’, ‘EUR’, ‘GBP’, and ‘AUD’.
 
-
+**Example:**
 <!-- tabs:start -->
 
 #### ** HTML **
@@ -217,7 +222,7 @@ currency: 'USD'
 #### ** React **
 
 ```react
-
+currency="USD"
 ```
 
 <!-- tabs:end -->
@@ -228,6 +233,7 @@ currency: 'USD'
 
 ?> This parameter is optional. Default value is ‘Donate’. Possible values are any string.
 
+**Example:**
 <!-- tabs:start -->
 
 #### ** HTML **
@@ -245,7 +251,7 @@ text: 'Purchase'
 #### ** React **
 
 ```react
-
+text="Purchase"
 ```
 
 <!-- tabs:end -->
@@ -256,6 +262,7 @@ text: 'Purchase'
 
 ?> This parameter is optional. Default value is ‘Click to send BCH’. Possible values are any string.
 
+**Example:**
 <!-- tabs:start -->
 
 #### ** HTML **
@@ -273,7 +280,7 @@ hoverText: 'Send Bitcoin Cash'
 #### ** React **
 
 ```react
-
+hover-text="Send Bitcoin Cash"
 ```
 
 <!-- tabs:end -->
@@ -284,6 +291,7 @@ hoverText: 'Send Bitcoin Cash'
 
 ?> This parameter is optional. Default value is ‘{ “palette”: { “primary”: “#4bc846”, “secondary”: “#f8fdf8”, “tertiary”: “#374936” } }’. Possible values are any valid palette object.
 
+**Example:**
 <!-- tabs:start -->
 
 #### ** HTML **
@@ -301,7 +309,7 @@ theme: { "palette": { "primary": "#ee8b2b", "secondary": "#fefbf8", "tertiary": 
 #### ** React **
 
 ```react
-
+theme='{ "palette": { "primary": "#ee8b2b", "secondary": "#fefbf8", "tertiary": "#504030"} }'
 ```
 
 <!-- tabs:end -->
@@ -312,6 +320,7 @@ theme: { "palette": { "primary": "#ee8b2b", "secondary": "#fefbf8", "tertiary": 
 
 ?> This parameter is optional. Default value is ‘slide’. Possible values are ‘slide’, ‘invert’, ‘none’.
 
+**Example:**
 <!-- tabs:start -->
 
 #### ** HTML **
@@ -329,7 +338,7 @@ animation: 'invert'
 #### ** React **
 
 ```react
-
+animation="invert"
 ```
 
 <!-- tabs:end -->
@@ -340,6 +349,7 @@ animation: 'invert'
 
 ?> This parameter is optional. Default value is ‘Thanks for your support!’. Possible values are any string.
 
+**Example:**
 <!-- tabs:start -->
 
 #### ** HTML **
@@ -357,7 +367,7 @@ successText: 'Thanks!'
 #### ** React **
 
 ```react
-
+success-text="Thanks!"
 ```
 
 <!-- tabs:end -->
@@ -368,6 +378,7 @@ successText: 'Thanks!'
 
 ?> This parameter is optional. Default value is empty. Possible values are any defined function.
 
+**Example:**
 <!-- tabs:start -->
 
 #### ** HTML **
@@ -385,7 +396,7 @@ onSuccess: successCallback
 #### ** React **
 
 ```react
-
+on-success="successCallback"
 ```
 
 <!-- tabs:end -->
@@ -396,6 +407,7 @@ onSuccess: successCallback
 
 ?> This parameter is optional. Default value is empty. Possible values are any defined function.
 
+**Example:**
 <!-- tabs:start -->
 
 #### ** HTML **
@@ -413,6 +425,7 @@ onTransaction: transactionCallback
 #### ** React **
 
 ```react
+on-transaction="transactionCallback"
 ```
 
 <!-- tabs:end -->
@@ -423,6 +436,7 @@ onTransaction: transactionCallback
 
 ?> This parameter is optional. Default value is false. Possible values are true or false.
 
+**Example:**
 <!-- tabs:start -->
 
 #### ** HTML **
@@ -440,7 +454,7 @@ randomSatoshis: true
 #### ** React **
 
 ```react
-
+random-satoshis="true"
 ```
 
 <!-- tabs:end -->
