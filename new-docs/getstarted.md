@@ -105,7 +105,8 @@ render( '#react-usage', {
       secondary: '#ffffff',
       tertiary: '#333333'
     }
-  }
+  },
+  onSuccess: mySuccessFunction
 })
 
 </script>
@@ -122,19 +123,39 @@ Example using React to generate a PayButton:
 npm i --save @paybutton/react
 ```
 
-```jsx
-import React from 'react'
-import ReactDOM from 'react-dom'
+```react
 import { PayButton } from '@paybutton/react'
 
-export default class Application extends React.Component {
-  render() {
-    return <PayButton to='bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp' text="Join the Cause" hoverText="" />
+function App() {
+  function mySuccessFunction() {
+    console.log("Success!")
   }
+
+  const to = 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp'
+  const amount = 12
+  const currency = 'USD'
+  const text = 'Join the Cause'
+  const hoverText = 'Fee: $12'
+  const theme = {
+    palette: {
+      primary: '#B94283',
+      secondary: '#FFFFFF',
+      tertiary: '#333333'
+    }
+  }
+  const onSuccess = mySuccessFunction()
+
+  return <PayButton
+    to={to}
+    amount={amount}
+    currency={currency}
+    text={text}
+    hoverText={hoverText}
+    theme={theme}
+    onSuccess={onSuccess}
+  />
 }
 ```
-
-
 
 # Parameters
 
@@ -164,7 +185,7 @@ to: 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp'
 #### ** React **
 
 ```react
-to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp"
+to = "bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp"
 ```
 
 <!-- tabs:end -->
@@ -193,7 +214,7 @@ amount: 100
 #### ** React **
 
 ```react
-amount=100
+amount = 100
 ```
 
 <!-- tabs:end -->
@@ -222,7 +243,7 @@ currency: 'USD'
 #### ** React **
 
 ```react
-currency="USD"
+currency = "USD"
 ```
 
 <!-- tabs:end -->
@@ -251,7 +272,7 @@ text: 'Purchase'
 #### ** React **
 
 ```react
-text="Purchase"
+text = "Purchase"
 ```
 
 <!-- tabs:end -->
@@ -280,7 +301,7 @@ hoverText: 'Send Bitcoin Cash'
 #### ** React **
 
 ```react
-hover-text="Send Bitcoin Cash"
+hoverText = "Send Bitcoin Cash"
 ```
 
 <!-- tabs:end -->
@@ -309,7 +330,7 @@ theme: { "palette": { "primary": "#ee8b2b", "secondary": "#fefbf8", "tertiary": 
 #### ** React **
 
 ```react
-theme='{ "palette": { "primary": "#ee8b2b", "secondary": "#fefbf8", "tertiary": "#504030"} }'
+theme = { palette: { primary: "#ee8b2b", secondary: "#fefbf8", tertiary: "#504030"} }
 ```
 
 <!-- tabs:end -->
@@ -338,7 +359,7 @@ animation: 'invert'
 #### ** React **
 
 ```react
-animation="invert"
+animation = "invert"
 ```
 
 <!-- tabs:end -->
@@ -367,7 +388,7 @@ successText: 'Thanks!'
 #### ** React **
 
 ```react
-success-text="Thanks!"
+successText = "Thanks!"
 ```
 
 <!-- tabs:end -->
@@ -396,7 +417,7 @@ onSuccess: successCallback
 #### ** React **
 
 ```react
-on-success="successCallback"
+onSuccess = successCallback
 ```
 
 <!-- tabs:end -->
@@ -425,7 +446,7 @@ onTransaction: transactionCallback
 #### ** React **
 
 ```react
-on-transaction="transactionCallback"
+onTransaction = transactionCallback
 ```
 
 <!-- tabs:end -->
@@ -454,7 +475,7 @@ randomSatoshis: true
 #### ** React **
 
 ```react
-random-satoshis="true"
+randomSatoshis = true
 ```
 
 <!-- tabs:end -->

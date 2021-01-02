@@ -1,5 +1,5 @@
 <!-- docs/_sidebar.md -->
-- [What Is PayButton](/?id=what-is-paybutton)
+- [What Is PayButton?](/?id=what-is-paybutton)
 - [Basic Usage](/?id=basic-usage)
 - [Advanced Usage](/?id=advanced-usage)
 - [React](/?id=react)
