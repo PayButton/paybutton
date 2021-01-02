@@ -16,21 +16,6 @@
 </head>
 <body>
   <div id="app"></div>
-  
-  <!-- Docsify v4 -->
-  <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
-  
-  <script src="https://cdn.jsdelivr.net/npm/docsify-tabs@1"></script>
-  <script src="https://unpkg.com/docsify-copy-code@2"></script>
-  <script src="//cdn.jsdelivr.net/npm/docsify-dark-mode@latest/dist/index.min.js"></script>
-  <script src="https://unpkg.com/@paybutton/paybutton@1.0.2/dist/paybutton.js"></script>
-
-  
-  <!-- docsify box react -->
-  <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
-  <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
-  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
-  <script src="//unpkg.com/docsify-demo-box-react@1.0.1/dist/docsify-demo-box-react.min.js"></script>
 
   <script>
     window.$docsify = {
@@ -42,19 +27,16 @@
       themeColor: "#42b983", // this is the default 'vue' color
       loadSidebar: true,
       loadNavbar: 'nav.md',
-      plugins: [
-        (function () {
-          const jsResources = [
-            'https://unpkg.com/react@17/umd/react.development.js',
-            'https://unpkg.com/react-dom@17/umd/react-dom.development.js',
-            '//unpkg.com/@paybutton/react',
-          ].map( (url) => `<script src="${url}"><` + `/script>` )
-           .join('\n')
-          return DemoBoxReact.create(jsResources)
-        })()
-      ]
     }
   </script>
+
+  <!-- Docsify v4 -->
+  <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify-tabs@1"></script>
+  <script src="https://unpkg.com/docsify-copy-code@2"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify-dark-mode@latest/dist/index.min.js"></script>
+  <script src="https://unpkg.com/@paybutton/paybutton@1.0.2/dist/paybutton.js"></script>
+
 
   <script type="text/javascript">
   	function render( selector, config ) {
