@@ -23,15 +23,12 @@
   <script src="https://cdn.jsdelivr.net/npm/docsify-tabs@1"></script>
   <script src="https://unpkg.com/docsify-copy-code@2"></script>
   <script src="//cdn.jsdelivr.net/npm/docsify-dark-mode@latest/dist/index.min.js"></script>
-  <script src="https://cdn.bootcss.com/react/15.6.1/react.js"></script>
-  <script src="https://cdn.bootcss.com/react/15.6.1/react-dom.js"></script>
-
   <script src="https://unpkg.com/@paybutton/paybutton@1.0.2/dist/paybutton.js"></script>
 
   
   <!-- docsify box react -->
-  <script src="https://cdn.bootcss.com/react/15.6.1/react.js"></script>
-  <script src="https://cdn.bootcss.com/react/15.6.1/react-dom.js"></script>
+  <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
   <script src="//unpkg.com/docsify-demo-box-react@1.0.1/dist/docsify-demo-box-react.min.js"></script>
 
@@ -48,8 +45,8 @@
       plugins: [
         (function () {
           const jsResources = [
-            '//cdn.bootcss.com/react/15.6.1/react.js',
-            '//cdn.bootcss.com/react/15.6.1/react-dom.js',
+            'https://unpkg.com/react@17/umd/react.development.js',
+            'https://unpkg.com/react-dom@17/umd/react-dom.development.js',
             '//unpkg.com/@paybutton/react',
           ].map( (url) => `<script src="${url}"><` + `/script>` )
            .join('\n')

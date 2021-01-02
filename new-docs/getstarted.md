@@ -126,7 +126,7 @@ import { PayButton } from '@paybutton/react'
 <script>
   export default class Application extends React.Component {
     render() {
-      return <PayButton to='bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp'>Test React Button</PayButton>
+      return <PayButton to='bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp' text="Test React Button" />
     }
   }
 ```
