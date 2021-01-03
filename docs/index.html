@@ -9,6 +9,9 @@
   <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css" />
   <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify-dark-mode@latest/dist/style.min.css" />
   <style type="text/css">
+  	.app-nav li ul {
+  		min-width: 5rem;
+  	}
   	section.cover a:hover {
       color: #333 !important;
   	}
@@ -26,7 +29,7 @@
       executeScript: true,
       themeColor: "#42b983", // this is the default 'vue' color
       loadSidebar: true,
-      loadNavbar: 'nav.md',
+      loadNavbar: 'nav.md'
     }
   </script>
 
@@ -37,6 +40,14 @@
   <script src="//cdn.jsdelivr.net/npm/docsify-dark-mode@latest/dist/index.min.js"></script>
   <script src="https://unpkg.com/@paybutton/paybutton@1.0.2/dist/paybutton.js"></script>
 
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-27127884-13"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'UA-27127884-13');
+  </script>
 
   <script type="text/javascript">
   	function render( selector, config ) {
