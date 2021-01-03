@@ -1,6 +1,6 @@
 # PayButton是什么?
 
-> 使用PayButton可以轻松接受比特币现金。 向您的网站添加捐赠或购买按钮。 PayButton要求您已经设置了一个钱包，这样您才能开始收款。
+> 使用PayButton可以轻松接受比特币现金。 向您的网站添加捐赠或购买按钮。 PayButton要求您已经设置了一个钱包，[这样您才能开始收款](https://bitcoincash.org/zh-CN/wallets/)。
 
 <div class="paybutton" to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp" theme='{ "palette": { "primary": "#42b983", "secondary": "#ffffff", "tertiary": "#333333"} }'></div>
 
