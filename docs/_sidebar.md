@@ -16,7 +16,7 @@
   - [on-transaction](/?id=on-transaction)
   - [random-satoshis](/?id=random-satoshis)
 - [Contribute](/?id=contribute)
-  - [Developers Quick Start](/?id=developers-quick-start)
+  - [Developer Quick Start](/?id=developer-quick-start)
     - [Build](/?id=build)
     - [Starting Storybook](/?id=starting-storybook)
     - [Website / Documentation](/?id=website-documentation)
