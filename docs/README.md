@@ -484,7 +484,7 @@ randomSatoshis = true
 
 PayButton is a community-driven open-source initiative. Contributions from the community are _crucial_ to the success of the project.
 
-## Developers Quick Start
+## Developer Quick Start
 
 ### Build
 
