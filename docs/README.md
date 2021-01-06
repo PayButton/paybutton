@@ -479,3 +479,32 @@ randomSatoshis = true
 ```
 
 <!-- tabs:end -->
+
+# Contribute
+
+PayButton is a community-driven open-source initiative. Contributions from the community are _crucial_ to the success of the project.
+
+## Developers Quick Start
+
+### Build
+
+1. `git clone https://github.com/PayButton/paybutton.git`
+2. `cd paybutton/react && npm i && npm run build && cd ../paybutton && npm i && npm run build`
+
+### Starting Storybook
+
+1. `cd react && npm i`
+2. `npm start`
+3. If site does not open automatically, it will be running on `localhost:6006`.
+
+### Website / Documentation
+
+1. `cd docs && npm i`
+2. `npm run serve`
+3. Site will be running on `localhost:3000`.
+
+## Donate
+
+> All PayButton donations received are used to directly fund PayButton development.
+
+<div class="paybutton-widget" to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp"></div>
