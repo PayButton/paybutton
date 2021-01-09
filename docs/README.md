@@ -1,6 +1,6 @@
 # What Is PayButton?
 
-> PayButton makes it easy to accept Bitcoin Cash by adding a donation or buy button to your website. PayButton requires that you have set up a wallet already so you can begin receiving money. If you don’t have one, there are [plenty to choose from](https://bitcoincash.org/wallets/).
+> PayButton makes it easy to accept Bitcoin Cash by adding a donation or buy button to your website.<br />To get started, you'll have to set up a Bitcoin Cash wallet so you can begin receiving money. If you don’t have one yet, there are [plenty to choose from](https://bitcoincash.org/wallets/).
 
 <div class="paybutton" to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp" theme='{ "palette": { "primary": "#42b983", "secondary": "#ffffff", "tertiary": "#333333"} }'></div>
 
@@ -8,13 +8,13 @@
 
 # Basic Usage
 
-Simply add the following to your website’s HTML:
+Simply add the following to your website’s HTML, replacing `YOUR_ADDRESS_HERE` with an address from your Bitcoin Cash wallet:
 
 <div class="paybutton" to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp"></div>
 
 ```html
 <script src="https://unpkg.com/@paybutton/paybutton@1.0.2/dist/paybutton.js"></script>
-<div class="paybutton" to="bch_address_here"></div>
+<div class="paybutton" to="YOUR_ADDRESS_HERE"></div>
 ```
 
 # Advanced Usage
