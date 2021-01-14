@@ -2,6 +2,7 @@
 - [基本用法](/zh-cn/?id=基本用法)
 - [高级用法](/zh-cn/?id=高级用法)
 - [React](/zh-cn/?id=react)
+- [Widget](/zh-cn/?id=widget)
 - [参量](/zh-cn/?id=参量)
   - [to](/zh-cn/?id=to)
   - [amount](/zh-cn/?id=amount)

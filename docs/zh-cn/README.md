@@ -13,7 +13,7 @@
 <div class="paybutton" to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp"></div>
 
 ```html
-<script src="https://unpkg.com/@paybutton/paybutton@1.0.2/dist/paybutton.js"></script>
+<script src="https://unpkg.com/@paybutton/paybutton@1.0.4/dist/paybutton.js"></script>
 <div class="paybutton" to="bch_address_here"></div>
 ```
 
@@ -24,7 +24,7 @@
 <div id="advanced-usage-example"></div>
 
 ```html
-<script src="https://unpkg.com/@paybutton/paybutton@1.0.2/dist/paybutton.js"></script>
+<script src="https://unpkg.com/@paybutton/paybutton@1.0.4/dist/paybutton.js"></script>
 
 <div id="my_button"></div>
 
@@ -155,6 +155,33 @@ function App() {
     onSuccess={onSuccess}
   />
 }
+```
+
+# Widget
+
+You can also create an always-visible PayButton Widget that doesn't require clicking a button to open:
+
+<div class="paybutton-widget" to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp"></div>
+
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+<script src="https://unpkg.com/@paybutton/paybutton@1.0.4/dist/paybutton.js"></script>
+<div class="paybutton-widget" to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp"></div>
+```
+
+#### ** JavaScript **
+
+```javascript
+<script src="https://unpkg.com/@paybutton/paybutton@1.0.4/dist/paybutton.js"></script>
+
+<div id="my_button"></div>
+
+<script>
+PayButton.renderWidget(document.getElementById('my_button'), { to: 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp' });
+</script>
 ```
 
 # 参量

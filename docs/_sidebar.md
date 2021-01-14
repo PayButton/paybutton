@@ -3,6 +3,7 @@
 - [Basic Usage](/?id=basic-usage)
 - [Advanced Usage](/?id=advanced-usage)
 - [React](/?id=react)
+- [Widget](/?id=widget)
 - [Parameters](/?id=parameters)
   - [to](/?id=to)
   - [amount](/?id=amount)
