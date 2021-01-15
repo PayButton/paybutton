@@ -184,6 +184,21 @@ PayButton.renderWidget(document.getElementById('my_button'), { to: 'bitcoincash:
 </script>
 ```
 
+#### ** React **
+
+```react
+import { Widget as PayButtonWidget } from '@paybutton/react'
+
+function App() {
+  return <PayButtonWidget
+    to='bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp'
+  />
+}
+export default App;
+```
+
+<!-- tabs:end -->
+
 # 参量
 
 使用以下可用选项自定义您的PayButton:
