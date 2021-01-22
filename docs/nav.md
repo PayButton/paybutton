@@ -1,3 +1,4 @@
 - Language
-  - [:uk: EN](/)
-  - [:cn: 中文](/zh-cn/)
+  - [![logo](_media/flags/flag-usa.png) EN](/)
+  - [![logo](_media/flags/flag-china.png) 中文](/zh-cn/)
+  - [![logo](_media/flags/flag-taiwan.png) 中文](/zh-tw/)
