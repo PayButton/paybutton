@@ -49,6 +49,7 @@ const useStyles = makeStyles({
     position: 'relative',
     padding: '1rem',
     cursor: 'pointer',
+    userSelect: "none",
     '&:active': {
       borderWidth: 2,
       margin: -1,
