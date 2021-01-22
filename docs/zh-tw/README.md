@@ -1,14 +1,14 @@
-# 什么是PayButton?
+# 什麼是PayButton?
 
-> PayButton可以通过在您的网站上添加捐助或购买的按钮，来接收比特币现金。<br />首先PayButton需要您先设置一个比特币现金钱包，这样才能开始进行收款。如果您还没有钱包，[目前有很多方案供您选择](https://bitcoincash.org/zh-CN/wallets/)。
+> PayButton可以通過在您的網站上添加捐款或購買的按鈕，來接收比特幣現金。<br />首先PayButton需要您先設置一個比特幣現金錢包，這樣才能開始進行收款。如果您還沒有錢包，[目前有很多方案供您選擇](https://bitcoincash.org/zh-CN/wallets/)。
 
 <div class="paybutton" to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp" theme='{ "palette": { "primary": "#42b983", "secondary": "#ffffff", "tertiary": "#333333"} }'></div>
 
 >
 
-# 基础用法
+# 基礎用法
 
-只需将以下内容添加到您网站的HTML中，用您的比特币现金钱包中的地址替换YOUR_ADDRESS_HERE:
+只需將以下內容添加到您網站的HTML中，用您的比特幣現金錢包中的地址替換YOUR_ADDRESS_HERE:
 
 <div class="paybutton" to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp"></div>
 
@@ -17,7 +17,7 @@
 <div class="paybutton" to="bch_address_here"></div>
 ```
 
-# 进阶用法
+# 進階用法
 
 使用JavaScript生成PayButton的示例:
 
@@ -159,7 +159,7 @@ function App() {
 
 # 插件
 
-您还可以创建一个可视性的PayButton插件，不需要点击按钮即可打开:
+您還可以創建一個可視性的PayButton插件，不需要點擊按鈕即可打開:
 
 <div class="paybutton-widget" to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp"></div>
 
@@ -199,15 +199,15 @@ export default App;
 
 <!-- tabs:end -->
 
-# 参数
+# 參數
 
-使用以下选项来自定义您的PayButton:
+使用以下選項來自定義您的PayButton:
 
 ## to
 
-> **参数"to"用来定义汇款去向。**
+> **參數"to"用來定義匯款去向。**
 
-!> 此参数是必需使用的。可用值是一切有效的比特币现金地址。
+!> 此參數是必需使用的。可用值是一切有效的比特幣現金地址。
 
 **例子:**
 <!-- tabs:start -->
@@ -234,9 +234,9 @@ to = "bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp"
 
 ## amount
 
-> **参数"amount"用来定义指定金额。将此参数与可选用的参数"currency"结合使用，可以指定以其他货币来显示特定的金额。**
+> **參數"amount"用來定義指定金額。將此參數與可選用的參數"currency"結合使用，可以指定以其他貨幣來顯示特定的金額。**
 
-?> 此参数是可选用的。默认值为0。有效值为任何十进制。
+?> 此參數是可選用的。默認值為0。有效值為任何十進制。
 
 **例子:**
 <!-- tabs:start -->
@@ -263,9 +263,9 @@ amount = 100
 
 ## currency
 
-> **参数"currency"用来定义币种。将此参数与可选用的参数"amount"结合使用，可以指定以其他货币来显示特定的金额。**
+> **參數"currency"用來定義幣種。將此參數與可選用的參數"currency"結合使用，可以指定以其他貨幣來顯示特定的金額。**
 
-?> 此参数是可选用的。默认货币为"BCH"。可用币种如下：BCH、SAT、美元、加拿大元、欧元、英镑、澳大利亚元
+?> 此參數是可選用的。替代貨幣為"BCH"。可用幣種如下：BCH、SAT、美元、加幣、歐元、英鎊、澳元。
 
 **例子:**
 <!-- tabs:start -->
@@ -292,9 +292,9 @@ currency = "USD"
 
 ## text
 
-> **参数"text"用来定义按钮上显示的默认文字。**
+> **參數"text"用來定義按鈕上顯示的默認文字。**
 
-?> 此参数是可选用的。默认文字为"Donate"。可用内容为任何文字符号。
+?> 此參數是可選用的。默認文字為"Donate"。可用內容為任何文字符號。
 
 **例子:**
 <!-- tabs:start -->
@@ -321,9 +321,9 @@ text = "Purchase"
 
 ## hover-text
 
-> **参数"hover-text"用来定义当鼠标停留时所显示的文字。**
+> **參數"hover-text"用來定義當滑鼠懸停留時所顯示的文字。**
 
-?> 此参数是可选用的。默认文字为"Click to send BCH"。可用内容为任何文字符号。
+?> 此參數是可選用的。默認文字為"Click to send BCH"。可用內容為任何文字符號。
 
 **例子:**
 <!-- tabs:start -->
@@ -350,9 +350,9 @@ hoverText = "Send Bitcoin Cash"
 
 ## theme
 
-> **参数"theme"用来定义按钮和对话框的主题。**
+> **參數"theme"用來定義按鈕和對話框的主題。**
 
-?> 此参数是可选用的。默认值为{ "palette": { "primary": "#4bc846", "secondary": "#f8fdf8", "tertiary": "#374936" } }。可用值为任何有效的调色板代码值。
+?> 此參數是可選用的。默認值為{ "palette": { "primary": "#4bc846", "secondary": "#f8fdf8", "tertiary": "#374936" } }。可用值為任何有效的調色板代碼值。
 
 **例子:**
 <!-- tabs:start -->
@@ -379,9 +379,9 @@ theme = { palette: { primary: "#ee8b2b", secondary: "#fefbf8", tertiary: "#50403
 
 ## animation
 
-> **参数"animation"用来定义当鼠标停留时按钮所产生的改变。**
+> **參數"animation"用來定義當滑鼠停留時按鈕所產生的改變。**
 
-?> 此参数是可选用的。默认值为slide。可用值为slide、invert、none。
+?> 此參數是可選用的。默認值為slide。可用值為slide、invert、none。
 
 **例子:**
 <!-- tabs:start -->
@@ -408,9 +408,9 @@ animation = "invert"
 
 ## success-text
 
-> **参数"success-text"用来定义成功付款后所显示的文字。**
+> **參數"success-text"用來定義成功付款後所顯示的文字。**
 
-?> 此参数是可选用的。默认文字为"Thank for your support!"。可用内容为任何文字符号。
+?> 此參數是可選用的。默認文字為"Thank for your support!"。可用內容為任何文字符號。
 
 **例子:**
 <!-- tabs:start -->
@@ -437,9 +437,9 @@ successText = "Thanks!"
 
 ## on-success
 
-> **参数"on-success"用来定义指定地址收款后运行的回调函数。**
+> **參數"on-success"用來定義指定地址收款後運行的回呼函式。**
 
-?> 此参数是可选用的。默认值为空白。有效值为任何已定义的函数。
+?> 此參數是可選用的。默認值為空白。有效值為任何已定義的函式。
 
 **例子:**
 <!-- tabs:start -->
@@ -466,9 +466,9 @@ onSuccess = successCallback
 
 ## on-transaction
 
-> **参数"on-transaction"用来定义收到任何付款到指定地址后运行回调函数。**
+> **參數"on-transaction"用來定義收到任何付款到指定地址後運行回呼函式。**
 
-?> 此参数是可选用的。默认值为空白。有效值为任何已定义的函数。
+?> 此參數是可選用的。默認值為空白。有效值為任何已定義的函式。
 
 **例子:**
 <!-- tabs:start -->
@@ -495,9 +495,9 @@ onTransaction = transactionCallback
 
 ## random-satoshis
 
-> **参数"random-satoshis"用来定义是否将付款金额的最后几位随机化，因此当一个人进行付款时不太可能触发回调 onSuccess的同时另一个人正打开付款屏幕。**
+> **參數"random-satoshis"用來定義是否將付款金額的最後幾位隨機化，因此當一個人進行付款時不太可能觸發回呼onSuccess的同時另一個人正打開付款螢幕。**
 
-?> 此参数是可选用的。默认值为false。有效值为true或false 。
+?> 此參數是可選用的。默認值為false。有效值為true或false 。
 
 **例子:**
 <!-- tabs:start -->
@@ -522,11 +522,11 @@ randomSatoshis = true
 
 <!-- tabs:end -->
 
-# 贡献
+# 貢獻
 
-PayButton是一个社群主导的开放源代码促进会。此项目的成功关键在于对社群的贡献。
+PayButton是一個社區主導的開放源代碼促進會。此項目的成功關鍵在於對社區的貢獻。
 
-## 开发人员快速入门
+## 開發人員快速入門
 
 ### 构建
 
@@ -537,16 +537,16 @@ PayButton是一个社群主导的开放源代码促进会。此项目的成功�
 
 1. `cd react && npm i`
 2. `npm start`
-3. 如果网站没有自动打开，它将在localhost：6006上运行。
+3. 如果網站沒有自動打開，它將在localhost：6006上運行。
 
 ### 网站/文件
 
 1. `cd docs && npm i`
 2. `npm run serve`
-3. 网站将在localhost:3000上运行。
+3. 網站將在localhost:3000上運行。
 
-## 捐助
+## 捐款
 
-> 所有收到的PayButton捐助都直接用於资助PayButton的开发。
+> 所有收到的PayButton捐款都直接用於資助PayButton的開發。
 
 <div class="paybutton-widget" to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp"></div>
