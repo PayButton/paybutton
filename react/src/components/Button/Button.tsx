@@ -11,6 +11,7 @@ export interface ButtonProps {
   text?: string;
   hoverText?: string;
   theme?: ThemeName | Theme;
+  disabled?: boolean;
   onClick?: () => void;
 }
 
@@ -71,7 +72,7 @@ const useStyles = makeStyles({
 });
 
 export const Button = (props: ButtonProps): React.ReactElement => {
-  const { animation, text, hoverText } = Object.assign(
+  const { animation, text, hoverText, disabled } = Object.assign(
     {},
     Button.defaultProps,
     props,
@@ -104,6 +105,7 @@ export const Button = (props: ButtonProps): React.ReactElement => {
   return (
     <div className={classes.container}>
       <MuiButton
+        disabled={disabled}
         className={classes.button}
         onClick={props.onClick}
         onMouseEnter={handleMouseEnter}
@@ -119,6 +121,7 @@ Button.defaultProps = {
   animation: 'slide',
   text: 'Donate',
   hoverText: 'Send BCH',
+  disabled: false,
 };
 
 export default Button;

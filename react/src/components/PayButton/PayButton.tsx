@@ -20,6 +20,7 @@ export interface PayButtonProps extends ButtonProps {
   displayCurrency?: cryptoCurrency;
   randomSatoshis?: boolean;
   hideToasts?: boolean;
+  disabled?: boolean;
   onSuccess?: (txid: string, amount: number) => void;
   onTransaction?: (txid: string, amount: number) => void;
 }
@@ -41,6 +42,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
     hideToasts,
     onSuccess,
     onTransaction,
+    disabled,
   } = Object.assign({}, PayButton.defaultProps, props);
 
   const handleButtonClick = (): void => setWidgetOpen(true);
@@ -65,6 +67,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
         onClick={handleButtonClick}
         text={text}
         hoverText={hoverText}
+        disabled={disabled}
       />
       <Dialog open={widgetOpen} onClose={handleWidgetClose} disableScrollLock>
         <WidgetContainer
@@ -79,12 +82,14 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
           onSuccess={handleSuccess}
           onTransaction={onTransaction}
           successText={successText}
+          disabled={disabled}
           foot={
             success && (
               <ButtonComponent
                 onClick={handleWidgetClose}
                 text="Close"
                 hoverText="Close"
+                disabled={disabled}
               />
             )
           }
@@ -99,6 +104,7 @@ PayButton.defaultProps = {
   hideToasts: false,
   randomSatoshis: true,
   successText: 'Thank you!',
+  disabled: false,
 };
 
 export default PayButton;

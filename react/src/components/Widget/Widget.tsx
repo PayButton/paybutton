@@ -25,12 +25,14 @@ export interface WidgetProps {
   successText?: string;
   theme?: ThemeName | Theme;
   foot?: React.ReactNode;
+  disabled: boolean;
 }
 
 interface StyleProps {
   success: boolean;
   loading: boolean;
   theme: Theme;
+  disabled: boolean;
 }
 
 const useStyles = makeStyles({
@@ -38,7 +40,7 @@ const useStyles = makeStyles({
     minWidth: 240,
     background: '#f5f5f7',
   },
-  qrCode: ({ success, loading, theme }: StyleProps) => ({
+  qrCode: ({ success, loading, theme, disabled }: StyleProps) => ({
     background: '#fff',
     border: '1px solid #eee',
     borderRadius: 4,
@@ -49,7 +51,7 @@ const useStyles = makeStyles({
     position: 'relative',
     padding: '1rem',
     cursor: 'pointer',
-    userSelect: "none",
+    userSelect: 'none',
     '&:active': {
       borderWidth: 2,
       margin: -1,
@@ -61,6 +63,7 @@ const useStyles = makeStyles({
     '& image': {
       opacity: loading ? 0 : 1,
     },
+    filter: disabled ? 'blur(5px)' : '',
   }),
   copyTextContainer: ({ loading }: StyleProps) => ({
     display: loading ? 'none' : 'block',
@@ -94,11 +97,12 @@ export const Widget: React.FC<WidgetProps> = props => {
     loading,
     success,
     successText,
+    disabled,
     ButtonComponent = Button,
   } = Object.assign({}, Widget.defaultProps, props);
 
   const theme = useTheme(props.theme);
-  const classes = useStyles({ success, loading, theme });
+  const classes = useStyles({ success, loading, theme, disabled });
 
   const [copied, setCopied] = useState(false);
   const [recentlyCopied, setRecentlyCopied] = useState(false);
@@ -139,6 +143,7 @@ export const Widget: React.FC<WidgetProps> = props => {
     window.location.href = url;
   };
   const handleQrCodeClick = (): void => {
+    if (disabled) return;
     if (!copy(prefixedAddress)) return;
     setCopied(true);
     setRecentlyCopied(true);
@@ -246,6 +251,7 @@ export const Widget: React.FC<WidgetProps> = props => {
               <ButtonComponent
                 text="Send with BCH wallet"
                 onClick={handleButtonClick}
+                disabled={disabled}
               />
             </Box>
           )}
@@ -276,6 +282,7 @@ Widget.defaultProps = {
   loading: false,
   success: false,
   successText: 'Thank you!',
+  disabled: false,
 };
 
 export default Widget;
