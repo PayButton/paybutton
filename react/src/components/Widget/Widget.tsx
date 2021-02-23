@@ -26,6 +26,7 @@ export interface WidgetProps {
   theme?: ThemeName | Theme;
   foot?: React.ReactNode;
   disabled: boolean;
+  totalReceived?: number | null;
 }
 
 interface StyleProps {
@@ -98,6 +99,7 @@ export const Widget: React.FC<WidgetProps> = props => {
     success,
     successText,
     disabled,
+    totalReceived,
     ButtonComponent = Button,
   } = Object.assign({}, Widget.defaultProps, props);
 
