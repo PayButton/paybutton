@@ -201,11 +201,6 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
     }
 
     const text = `Send ${formattedAmount ?? 'any amount of BCH'}`;
-    let cleanGoalAmount: any;
-    if (goalAmount) {
-      cleanGoalAmount = +goalAmount;
-      cleanGoalAmount = bchToSatoshis(cleanGoalAmount);
-    }
 
     return (
       <React.Fragment>
@@ -215,7 +210,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
           amount={amount}
           text={text}
           totalReceived={totalReceived}
-          goalAmount={cleanGoalAmount}
+          goalAmount={goalAmount}
           loading={loading}
           success={success}
         />

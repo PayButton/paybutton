@@ -14,7 +14,8 @@ import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
 import Button from '../Button/Button';
 import BarChart from '../BarChart/BarChart';
 
-import { satoshisToBch } from '../../util/satoshis';
+import { satoshisToBch, bchToSatoshis } from '../../util/satoshis';
+import { useAddressDetails } from '../../hooks/useAddressDetails';
 
 type QRCodeProps = BaseQRCodeProps & { renderAs: 'svg' };
 
@@ -113,6 +114,7 @@ export const Widget: React.FC<WidgetProps> = props => {
 
   const [copied, setCopied] = useState(false);
   const [recentlyCopied, setRecentlyCopied] = useState(false);
+  const [totalSatsReceived, setTotalSatsReceived] = useState(0);
 
   const bchSvg = useMemo((): string => {
     const color = theme.palette.logo ?? theme.palette.primary;
@@ -137,6 +139,20 @@ export const Widget: React.FC<WidgetProps> = props => {
 
     return (): void => clearTimeout(timer);
   }, [recentlyCopied]);
+
+  const isMissingWidgetContainer = !totalReceived;
+  const addressDetails = useAddressDetails(to, isMissingWidgetContainer);
+
+  useEffect(() => {
+    if (totalReceived) {
+      return setTotalSatsReceived(totalReceived);
+    }
+
+    if (addressDetails?.transactions?.length) {
+      const { totalReceivedSat } = addressDetails;
+      setTotalSatsReceived(totalReceivedSat);
+    }
+  }, [addressDetails, totalReceived]);
 
   const query = [];
   if (props.amount) query.push(`amount=${props.amount}`);
@@ -183,12 +199,17 @@ export const Widget: React.FC<WidgetProps> = props => {
     .replace(/(\.\d*?)0*$/, '$1');
   const text = props.text ?? `Send ${formattedAmount ?? 'any amount of'} BCH`;
 
+  let cleanGoalAmount: any;
+  if (goalAmount) {
+    cleanGoalAmount = +goalAmount;
+    cleanGoalAmount = bchToSatoshis(cleanGoalAmount);
+  }
+
   let goalPercentage = 0;
-  const formattedGoalAmount = +goalAmount!;
   const shouldDisplayGoal: boolean =
-    goalAmount !== undefined && totalReceived! > 0;
+    goalAmount !== undefined && totalSatsReceived > 0;
   if (shouldDisplayGoal) {
-    goalPercentage = 100 * (totalReceived! / formattedGoalAmount);
+    goalPercentage = 100 * (totalSatsReceived / cleanGoalAmount);
   }
 
   return (
@@ -230,7 +251,7 @@ export const Widget: React.FC<WidgetProps> = props => {
               />
               <Typography className={classes.copyText}>
                 {' '}
-                Goal: {satoshisToBch(formattedGoalAmount)} BCH{' '}
+                Goal: {satoshisToBch(cleanGoalAmount)} BCH{' '}
               </Typography>
             </>
           )}
