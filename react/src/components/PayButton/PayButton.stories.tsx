@@ -47,3 +47,11 @@ UsdAmount.args = {
   hoverText: 'Pay with BCH',
   animation: 'none',
 };
+
+export const withGoal = Template.bind({});
+withGoal.storyName = 'With Goal';
+withGoal.args = {
+  hoverText: 'Pay with BCH',
+  animation: 'none',
+  goalAmount: 950,
+};
