@@ -17,7 +17,7 @@ type QRCodeProps = BaseQRCodeProps & { renderAs: 'svg' };
 
 export interface WidgetProps {
   to: string;
-  amount?: number | null;
+  amount?: number | null | string;
   text?: string;
   ButtonComponent?: React.ComponentType;
   loading: boolean;
@@ -98,6 +98,7 @@ export const Widget: React.FC<WidgetProps> = props => {
     success,
     successText,
     disabled,
+    amount,
     ButtonComponent = Button,
   } = Object.assign({}, Widget.defaultProps, props);
 
@@ -132,8 +133,12 @@ export const Widget: React.FC<WidgetProps> = props => {
   }, [recentlyCopied]);
 
   const query = [];
-  if (props.amount) query.push(`amount=${props.amount}`);
+  let cleanAmount: any;
 
+  if (amount) {
+    cleanAmount = +amount;
+    query.push(`amount=${cleanAmount}`);
+  }
   const address = to;
 
   const prefixedAddress = `bitcoincash:${address.replace(/^.*:/, '')}`;
@@ -170,7 +175,7 @@ export const Widget: React.FC<WidgetProps> = props => {
     />
   );
 
-  const formattedAmount = props.amount
+  const formattedAmount = cleanAmount
     ?.toFixed(8)
     .replace(/\.0*$/, '')
     .replace(/(\.\d*?)0*$/, '$1');
