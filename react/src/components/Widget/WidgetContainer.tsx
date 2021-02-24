@@ -34,6 +34,7 @@ export interface WidgetContainerProps
   onSuccess?: (txid: string, amount: number) => void;
   onTransaction?: (txid: string, amount: number) => void;
   sound?: boolean;
+  goalAmount?: number | string;
 }
 
 const snackbarOptions: OptionsObject = {
@@ -65,6 +66,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
       sound = true,
       onSuccess,
       onTransaction,
+      goalAmount,
       ...widgetProps
     } = props;
 
@@ -199,6 +201,11 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
     }
 
     const text = `Send ${formattedAmount ?? 'any amount of BCH'}`;
+    let cleanGoalAmount: any;
+    if (goalAmount) {
+      cleanGoalAmount = +goalAmount;
+      cleanGoalAmount = bchToSatoshis(cleanGoalAmount);
+    }
 
     return (
       <React.Fragment>
@@ -208,6 +215,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
           amount={amount}
           text={text}
           totalReceived={totalReceived}
+          goalAmount={cleanGoalAmount}
           loading={loading}
           success={success}
         />

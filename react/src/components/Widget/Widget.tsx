@@ -12,6 +12,9 @@ import React, { useEffect, useMemo, useState } from 'react';
 
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
 import Button from '../Button/Button';
+import BarChart from '../BarChart/BarChart';
+
+import { satoshisToBch } from '../../util/satoshis';
 
 type QRCodeProps = BaseQRCodeProps & { renderAs: 'svg' };
 
@@ -27,6 +30,7 @@ export interface WidgetProps {
   foot?: React.ReactNode;
   disabled: boolean;
   totalReceived?: number | null;
+  goalAmount?: number | string | null;
 }
 
 interface StyleProps {
@@ -100,6 +104,7 @@ export const Widget: React.FC<WidgetProps> = props => {
     successText,
     disabled,
     totalReceived,
+    goalAmount,
     ButtonComponent = Button,
   } = Object.assign({}, Widget.defaultProps, props);
 
@@ -178,6 +183,14 @@ export const Widget: React.FC<WidgetProps> = props => {
     .replace(/(\.\d*?)0*$/, '$1');
   const text = props.text ?? `Send ${formattedAmount ?? 'any amount of'} BCH`;
 
+  let goalPercentage = 0;
+  const formattedGoalAmount = +goalAmount!;
+  const shouldDisplayGoal: boolean =
+    goalAmount !== undefined && totalReceived! > 0;
+  if (shouldDisplayGoal) {
+    goalPercentage = 100 * (totalReceived! / formattedGoalAmount);
+  }
+
   return (
     <ThemeProvider value={theme}>
       <Box
@@ -205,6 +218,22 @@ export const Widget: React.FC<WidgetProps> = props => {
           px={3}
           pt={2}
         >
+          {shouldDisplayGoal && (
+            <>
+              <Typography className={classes.copyText}>
+                {' '}
+                {goalPercentage.toFixed(2)}% reached{' '}
+              </Typography>
+              <BarChart
+                color={theme.palette.primary}
+                value={Math.round(goalPercentage)}
+              />
+              <Typography className={classes.copyText}>
+                {' '}
+                Goal: {satoshisToBch(formattedGoalAmount)} BCH{' '}
+              </Typography>
+            </>
+          )}
           <Box
             flex={1}
             position="relative"
