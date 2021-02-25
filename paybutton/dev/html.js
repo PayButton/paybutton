@@ -6,7 +6,10 @@ const port = 3000;
 app.use(express.static(`${path.join(__dirname, '..', 'dist')}`));
 
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname + '/htmlindex.html'));
+  res.sendFile(path.join(__dirname + '/index.html'));
+});
+app.get('/widget', (req, res) => {
+  res.sendFile(path.join(__dirname + '/widget.html'));
 });
 
 app.listen(port, () => {
