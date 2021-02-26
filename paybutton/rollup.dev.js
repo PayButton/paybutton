@@ -48,8 +48,13 @@ function template ( { attributes, title, bundle } ) {
           <div class="paybutton" to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp" amount="50000" currency="SAT" detect-payment="true"</div>
           <br />
           <div class="paybutton-widget" to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp" amount="50000" currency="SAT" detect-payment="true"</div>
+          <br />
+          <div id="js-test" />
         </div>
       </body>
+      <script>
+        PayButton.renderWidget(document.getElementById('js-test'), { to: 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp', currency: 'SAT', detect-payment: 'true' });
+      </script>
     </html>
   `;
 }
