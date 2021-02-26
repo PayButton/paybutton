@@ -1,0 +1,13 @@
+nav {
+  text-align: center;
+  margin: 2rem auto;
+}
+
+nav a {
+  text-decoration: none;
+  font-size: 1rem;
+  margin: 2rem auto;
+  color: #ee8b2b;
+  border: 1px solid #efefef;
+  padding: 0.7rem;
+}

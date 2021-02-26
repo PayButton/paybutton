@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <meta property="og:title" content="" />
+    <meta property="og:type" content="" />
+    <meta property="og:url" content="" />
+    <meta property="og:image" content="" />
+
+    <link rel="stylesheet" href="style.css" />
+
+    <meta name="theme-color" content="#fafafa" />
+  </head>
+
+  <body>
+    <script src="paybutton.js"></script>
+
+    <nav>
+      <a href="/"> Default </a>
+      <a href="/widget"> Widget </a>
+      <a href="/advanced"> Advanced </a>
+    </nav>
+
+    <div id="my_button"></div>
+
+    <script>
+      function mySuccessFunction(txid, amount) {
+        console.log({ txid, amount });
+      }
+
+      function myTransactionFunction(txid, amount) {
+        console.log('Received: ' + amount);
+      }
+
+      var config = {
+        to: 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp',
+        amount: '25',
+        currency: 'EUR',
+        text: 'Purchase (25 EUR)',
+        hoverText: 'Limited Time Only!',
+        theme: {
+          palette: {
+            primary: '#ee8b2b',
+            secondary: '#fefbf8',
+            tertiary: '#504030',
+          },
+        },
+        animation: 'invert',
+        successText: 'Purchase Complete!',
+        onSuccess: mySuccessFunction,
+        onTransaction: myTransactionFunction,
+        randomSatoshis: true,
+      };
+
+      PayButton.render(document.getElementById('my_button'), config);
+    </script>
+  </body>
+</html>

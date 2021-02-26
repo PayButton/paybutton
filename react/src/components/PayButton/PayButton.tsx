@@ -11,7 +11,7 @@ import {
 
 export interface PayButtonProps extends ButtonProps {
   to: string;
-  amount?: number;
+  amount?: number | string;
   currency?: currency;
   theme?: ThemeName | Theme;
   text?: string;
@@ -63,6 +63,12 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
 
   const theme = useTheme(props.theme);
 
+  let cleanAmount: any;
+
+  if (amount) {
+    cleanAmount = +amount;
+  }
+
   return (
     <ThemeProvider value={theme}>
       <ButtonComponent
@@ -76,7 +82,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
           ButtonComponent={ButtonComponent}
           active={widgetOpen}
           to={to}
-          amount={amount}
+          amount={cleanAmount}
           currency={currency}
           randomSatoshis={randomSatoshis}
           displayCurrency={displayCurrency}
