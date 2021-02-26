@@ -551,6 +551,36 @@ randomSatoshis = true
 
 <!-- tabs:end -->
 
+## disableEnforceFocus
+
+> **The ‘disableEnforceFocus’ parameter is passed to the Dialog material UI component. Setting it to false can help with accessibility with technology such as screen readers. **
+
+?> This parameter is optional. Default value is true. Possible values are true or false.
+
+**Example:**
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+disable-enforce-focus="false"
+```
+
+#### ** JavaScript **
+
+```javascript
+// Note: Setting to false will cause issues with sites running Material UI
+disableEnforceFocus: false
+```
+
+#### ** React **
+
+```react
+disableEnforceFocus = false
+```
+
+<!-- tabs:end -->
+
 # 贡献
 
 PayButton是一个社群主导的开放源代码促进会。此项目的成功关键在于对社群的贡献。
