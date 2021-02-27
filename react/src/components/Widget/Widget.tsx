@@ -246,18 +246,17 @@ export const Widget: React.FC<WidgetProps> = props => {
         >
           {shouldDisplayGoal && (
             <>
-              <Typography className={classes.copyText}>
-                {' '}
-                {goalPercentage.toFixed(2)}% reached{' '}
+              <Typography
+                className={classes.copyText}
+                style={{ marginBottom: '0.6rem' }}
+              >
+                {satoshisToBch(totalSatsReceived).toFixed(2)} /{' '}
+                {satoshisToBch(cleanGoalAmount).toFixed(2)} <strong>BCH</strong>
               </Typography>
               <BarChart
                 color={theme.palette.primary}
                 value={Math.round(goalPercentage)}
               />
-              <Typography className={classes.copyText}>
-                {' '}
-                Goal: {satoshisToBch(cleanGoalAmount)} BCH{' '}
-              </Typography>
             </>
           )}
           <Box
