@@ -141,6 +141,10 @@ export const Widget: React.FC<WidgetProps> = props => {
       setDisabled(true);
       setErrorMsg('Invalid Recipient');
     }
+
+    if (to === '') {
+      setErrorMsg('Missing Recipient');
+    }
   }, [to]);
 
   const query = [];
@@ -289,7 +293,16 @@ export const Widget: React.FC<WidgetProps> = props => {
             </Typography>
           </Box>
           {errorMsg && (
-            <p style={{ color: '#EB3B3B', fontSize: '14px' }}>{errorMsg}</p>
+            <p
+              style={{
+                color: '#EB3B3B',
+                fontSize: '14px',
+                maxWidth: '400px',
+                textAlign: 'center',
+              }}
+            >
+              {errorMsg}
+            </p>
           )}
         </Box>
       </Box>

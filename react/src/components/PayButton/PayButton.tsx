@@ -64,6 +64,9 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
       setDisabled(true);
       setErrorMsg('Invalid Recipient');
     }
+    if (to === '') {
+      setErrorMsg('Missing Recipient');
+    }
   }, [to]);
 
   const ButtonComponent: React.FC<ButtonProps> = (
@@ -106,7 +109,16 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
         />
       </Dialog>
       {errorMsg && (
-        <p style={{ color: '#EB3B3B', fontSize: '14px' }}>{errorMsg}</p>
+        <p
+          style={{
+            color: '#EB3B3B',
+            fontSize: '14px',
+            maxWidth: '190px',
+            textAlign: 'center',
+          }}
+        >
+          {errorMsg}
+        </p>
       )}
     </ThemeProvider>
   );
