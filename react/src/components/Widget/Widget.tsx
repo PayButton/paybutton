@@ -151,8 +151,8 @@ export const Widget: React.FC<WidgetProps> = props => {
     }
 
     if (addressDetails?.transactions?.length) {
-      const { totalReceivedSat } = addressDetails;
-      setTotalSatsReceived(totalReceivedSat);
+      const { totalReceivedSat, unconfirmedBalanceSat } = addressDetails;
+      setTotalSatsReceived(totalReceivedSat + unconfirmedBalanceSat);
       setIsLoading(false);
     }
   }, [addressDetails, totalReceived]);
