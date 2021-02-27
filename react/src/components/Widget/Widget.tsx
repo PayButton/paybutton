@@ -116,6 +116,7 @@ export const Widget: React.FC<WidgetProps> = props => {
   const [copied, setCopied] = useState(false);
   const [recentlyCopied, setRecentlyCopied] = useState(false);
   const [totalSatsReceived, setTotalSatsReceived] = useState(0);
+  const [isLoading, setIsLoading] = useState(!!goalAmount);
 
   const bchSvg = useMemo((): string => {
     const color = theme.palette.logo ?? theme.palette.primary;
@@ -152,6 +153,7 @@ export const Widget: React.FC<WidgetProps> = props => {
     if (addressDetails?.transactions?.length) {
       const { totalReceivedSat } = addressDetails;
       setTotalSatsReceived(totalReceivedSat);
+      setIsLoading(false);
     }
   }, [addressDetails, totalReceived]);
 
@@ -244,19 +246,35 @@ export const Widget: React.FC<WidgetProps> = props => {
           px={3}
           pt={2}
         >
-          {shouldDisplayGoal && (
-            <>
-              <Typography
-                className={classes.copyText}
-                style={{ marginBottom: '0.6rem' }}
-              >
-                {satoshisToBch(totalSatsReceived).toFixed(2)} /{' '}
-                {satoshisToBch(cleanGoalAmount).toFixed(2)} <strong>BCH</strong>
-              </Typography>
-              <BarChart
-                color={theme.palette.primary}
-                value={Math.round(goalPercentage)}
+          {isLoading ? (
+            <Typography
+              className={classes.text}
+              style={{ margin: '10px auto 20px' }}
+            >
+              <CircularProgress
+                size={15}
+                thickness={4}
+                className={classes.spinner}
               />
+            </Typography>
+          ) : (
+            <>
+              {shouldDisplayGoal && (
+                <>
+                  <Typography
+                    className={classes.copyText}
+                    style={{ marginBottom: '0.6rem' }}
+                  >
+                    {satoshisToBch(totalSatsReceived).toFixed(2)} /{' '}
+                    {satoshisToBch(cleanGoalAmount).toFixed(2)}{' '}
+                    <strong>BCH</strong>
+                  </Typography>
+                  <BarChart
+                    color={theme.palette.primary}
+                    value={Math.round(goalPercentage)}
+                  />
+                </>
+              )}
             </>
           )}
           <Box
