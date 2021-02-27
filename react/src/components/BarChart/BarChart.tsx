@@ -11,7 +11,7 @@ export const BarChart = (props: BarChartProps): React.ReactElement => {
 
   const containerStyle: CSSProperties = {
     width: '100%',
-    marginBottom: '25px',
+    marginBottom: '20px',
   };
 
   const barHolder: CSSProperties = {
