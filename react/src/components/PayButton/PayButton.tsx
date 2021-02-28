@@ -1,5 +1,5 @@
 import { Dialog } from '@material-ui/core';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
 import Button, { ButtonProps } from '../Button/Button';
@@ -8,6 +8,7 @@ import {
   cryptoCurrency,
   currency,
 } from '../Widget/WidgetContainer';
+import { validateCashAddress } from '../../util/address';
 
 export interface PayButtonProps extends ButtonProps {
   to: string;
@@ -29,6 +30,8 @@ export interface PayButtonProps extends ButtonProps {
 export const PayButton = (props: PayButtonProps): React.ReactElement => {
   const [widgetOpen, setWidgetOpen] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [disabled, setDisabled] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
 
   const {
     to,
@@ -56,6 +59,19 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
     setSuccess(true);
     onSuccess?.(txid, amount);
   };
+
+  useEffect(() => {
+    if (validateCashAddress(to)) {
+      setDisabled(false);
+      setErrorMsg('');
+    } else {
+      setDisabled(true);
+      setErrorMsg('Invalid Recipient');
+    }
+    if (to === '') {
+      setErrorMsg('Missing Recipient');
+    }
+  }, [to]);
 
   const ButtonComponent: React.FC<ButtonProps> = (
     props: ButtonProps,
@@ -104,6 +120,18 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
           }
         />
       </Dialog>
+      {errorMsg && (
+        <p
+          style={{
+            color: '#EB3B3B',
+            fontSize: '14px',
+            maxWidth: '190px',
+            textAlign: 'center',
+          }}
+        >
+          {errorMsg}
+        </p>
+      )}
     </ThemeProvider>
   );
 };
@@ -113,7 +141,6 @@ PayButton.defaultProps = {
   hideToasts: false,
   randomSatoshis: true,
   successText: 'Thank you!',
-  disabled: false,
 };
 
 export default PayButton;
