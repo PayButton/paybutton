@@ -155,7 +155,7 @@ export const Widget: React.FC<WidgetProps> = props => {
       setTotalSatsReceived(totalReceivedSat + unconfirmedBalanceSat);
       setIsLoading(false);
     }
-  }, [addressDetails, totalSatsReceived]);
+  }, [addressDetails, totalReceived, totalSatsReceived]);
 
   const query = [];
   let cleanAmount: any;

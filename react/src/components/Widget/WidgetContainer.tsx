@@ -146,10 +146,12 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
     useEffect(() => {
       const txIds = transactionsRef.current;
 
-      addressDetails?.transactions?.map(txid => {
-        const { totalReceivedSat } = addressDetails;
-        setTotalReceived(totalReceivedSat);
+      if (addressDetails) {
+        const { totalReceivedSat, unconfirmedBalanceSat } = addressDetails;
+        setTotalReceived(totalReceivedSat + unconfirmedBalanceSat);
+      }
 
+      addressDetails?.transactions?.map(txid => {
         if (!txIds.has(txid)) {
           txIds.add(txid);
           if (hasLoadedTransactionsRef.current) handleNewTransaction(txid);
