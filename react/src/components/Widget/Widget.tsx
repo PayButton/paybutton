@@ -264,9 +264,9 @@ export const Widget: React.FC<WidgetProps> = props => {
                     className={classes.copyText}
                     style={{ marginBottom: '0.6rem' }}
                   >
-                    {satoshisToBch(totalSatsReceived).toFixed(2)} /
+                    {satoshisToBch(totalSatsReceived).toFixed(2)} /&nbsp;
                     {satoshisToBch(cleanGoalAmount).toFixed(2)}
-                    <strong>BCH</strong>
+                    <strong>&nbsp;BCH</strong>
                   </Typography>
                   <BarChart
                     color={theme.palette.primary}
