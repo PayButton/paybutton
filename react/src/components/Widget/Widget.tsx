@@ -11,6 +11,7 @@ import QRCode, { BaseQRCodeProps } from 'qrcode.react';
 import React, { useEffect, useMemo, useState } from 'react';
 
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
+import { validateCashAddress } from '../../util/address';
 import Button from '../Button/Button';
 
 type QRCodeProps = BaseQRCodeProps & { renderAs: 'svg' };
@@ -25,14 +26,12 @@ export interface WidgetProps {
   successText?: string;
   theme?: ThemeName | Theme;
   foot?: React.ReactNode;
-  disabled: boolean;
 }
 
 interface StyleProps {
   success: boolean;
   loading: boolean;
   theme: Theme;
-  disabled: boolean;
 }
 
 const useStyles = makeStyles({
@@ -40,7 +39,7 @@ const useStyles = makeStyles({
     minWidth: 240,
     background: '#f5f5f7',
   },
-  qrCode: ({ success, loading, theme, disabled }: StyleProps) => ({
+  qrCode: ({ success, loading, theme }: StyleProps) => ({
     background: '#fff',
     border: '1px solid #eee',
     borderRadius: 4,
@@ -63,7 +62,6 @@ const useStyles = makeStyles({
     '& image': {
       opacity: loading ? 0 : 1,
     },
-    filter: disabled ? 'blur(5px)' : '',
   }),
   copyTextContainer: ({ loading }: StyleProps) => ({
     display: loading ? 'none' : 'block',
@@ -97,16 +95,19 @@ export const Widget: React.FC<WidgetProps> = props => {
     loading,
     success,
     successText,
-    disabled,
     amount,
     ButtonComponent = Button,
   } = Object.assign({}, Widget.defaultProps, props);
 
   const theme = useTheme(props.theme);
-  const classes = useStyles({ success, loading, theme, disabled });
+  const classes = useStyles({ success, loading, theme });
 
   const [copied, setCopied] = useState(false);
   const [recentlyCopied, setRecentlyCopied] = useState(false);
+  const [disabled, setDisabled] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
+
+  const blurCSS = disabled ? { filter: 'blur(5px)' } : {};
 
   const bchSvg = useMemo((): string => {
     const color = theme.palette.logo ?? theme.palette.primary;
@@ -131,6 +132,20 @@ export const Widget: React.FC<WidgetProps> = props => {
 
     return (): void => clearTimeout(timer);
   }, [recentlyCopied]);
+
+  useEffect(() => {
+    if (validateCashAddress(to)) {
+      setDisabled(false);
+      setErrorMsg('');
+    } else {
+      setDisabled(true);
+      setErrorMsg('Invalid Recipient');
+    }
+
+    if (to === '') {
+      setErrorMsg('Missing Recipient');
+    }
+  }, [to]);
 
   const query = [];
   let cleanAmount: any;
@@ -171,7 +186,7 @@ export const Widget: React.FC<WidgetProps> = props => {
   const qrCode = (
     <QRCode
       {...qrCodeProps}
-      style={{ flex: 1, width: '100%', height: 'auto' }}
+      style={{ flex: 1, width: '100%', height: 'auto', ...blurCSS }}
     />
   );
 
@@ -277,6 +292,18 @@ export const Widget: React.FC<WidgetProps> = props => {
               </Link>
             </Typography>
           </Box>
+          {errorMsg && (
+            <p
+              style={{
+                color: '#EB3B3B',
+                fontSize: '14px',
+                maxWidth: '400px',
+                textAlign: 'center',
+              }}
+            >
+              {errorMsg}
+            </p>
+          )}
         </Box>
       </Box>
     </ThemeProvider>
@@ -287,7 +314,6 @@ Widget.defaultProps = {
   loading: false,
   success: false,
   successText: 'Thank you!',
-  disabled: false,
 };
 
 export default Widget;
