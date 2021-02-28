@@ -150,12 +150,12 @@ export const Widget: React.FC<WidgetProps> = props => {
       return setTotalSatsReceived(totalReceived);
     }
 
-    if (addressDetails?.transactions?.length) {
+    if (addressDetails) {
       const { totalReceivedSat, unconfirmedBalanceSat } = addressDetails;
       setTotalSatsReceived(totalReceivedSat + unconfirmedBalanceSat);
       setIsLoading(false);
     }
-  }, [addressDetails, totalReceived]);
+  }, [addressDetails, totalSatsReceived]);
 
   const query = [];
   let cleanAmount: any;
@@ -213,8 +213,7 @@ export const Widget: React.FC<WidgetProps> = props => {
   }
 
   let goalPercentage = 0;
-  const shouldDisplayGoal: boolean =
-    goalAmount !== undefined && totalSatsReceived > 0;
+  const shouldDisplayGoal: boolean = goalAmount !== undefined;
   if (shouldDisplayGoal) {
     goalPercentage = 100 * (totalSatsReceived / cleanGoalAmount);
   }
@@ -265,8 +264,8 @@ export const Widget: React.FC<WidgetProps> = props => {
                     className={classes.copyText}
                     style={{ marginBottom: '0.6rem' }}
                   >
-                    {satoshisToBch(totalSatsReceived).toFixed(2)} /{' '}
-                    {satoshisToBch(cleanGoalAmount).toFixed(2)}{' '}
+                    {satoshisToBch(totalSatsReceived).toFixed(2)} /
+                    {satoshisToBch(cleanGoalAmount).toFixed(2)}
                     <strong>BCH</strong>
                   </Typography>
                   <BarChart
