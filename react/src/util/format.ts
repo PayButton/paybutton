@@ -1,5 +1,6 @@
 export const amount = (x?: number | null): string | undefined => {
   const clean = +x!;
+  if (clean === 0) return;
   return clean
     ?.toFixed(8)
     .replace(/\.0*$/, '')
