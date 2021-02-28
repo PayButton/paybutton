@@ -13,6 +13,10 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
 import { validateCashAddress } from '../../util/address';
 import Button from '../Button/Button';
+import BarChart from '../BarChart/BarChart';
+
+import { satoshisToBch, bchToSatoshis } from '../../util/satoshis';
+import { useAddressDetails } from '../../hooks/useAddressDetails';
 
 type QRCodeProps = BaseQRCodeProps & { renderAs: 'svg' };
 
@@ -26,6 +30,9 @@ export interface WidgetProps {
   successText?: string;
   theme?: ThemeName | Theme;
   foot?: React.ReactNode;
+  disabled: boolean;
+  totalReceived?: number | null;
+  goalAmount?: number | string | null;
 }
 
 interface StyleProps {
@@ -95,6 +102,9 @@ export const Widget: React.FC<WidgetProps> = props => {
     loading,
     success,
     successText,
+    disabled,
+    totalReceived,
+    goalAmount,
     amount,
     ButtonComponent = Button,
   } = Object.assign({}, Widget.defaultProps, props);
@@ -104,6 +114,8 @@ export const Widget: React.FC<WidgetProps> = props => {
 
   const [copied, setCopied] = useState(false);
   const [recentlyCopied, setRecentlyCopied] = useState(false);
+  const [totalSatsReceived, setTotalSatsReceived] = useState(0);
+  const [isLoading, setIsLoading] = useState(!!goalAmount);
   const [disabled, setDisabled] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -133,6 +145,22 @@ export const Widget: React.FC<WidgetProps> = props => {
     return (): void => clearTimeout(timer);
   }, [recentlyCopied]);
 
+    
+  const isMissingWidgetContainer = !totalReceived;
+  const addressDetails = useAddressDetails(to, isMissingWidgetContainer);
+
+  useEffect(() => {
+    if (totalReceived) {
+      return setTotalSatsReceived(totalReceived);
+    }
+
+    if (addressDetails) {
+      const { totalReceivedSat, unconfirmedBalanceSat } = addressDetails;
+      setTotalSatsReceived(totalReceivedSat + unconfirmedBalanceSat);
+      setIsLoading(false);
+    }
+  }, [addressDetails, totalReceived, totalSatsReceived]);
+    
   useEffect(() => {
     if (validateCashAddress(to)) {
       setDisabled(false);
@@ -146,6 +174,7 @@ export const Widget: React.FC<WidgetProps> = props => {
       setErrorMsg('Missing Recipient');
     }
   }, [to]);
+    
 
   const query = [];
   let cleanAmount: any;
@@ -196,6 +225,18 @@ export const Widget: React.FC<WidgetProps> = props => {
     .replace(/(\.\d*?)0*$/, '$1');
   const text = props.text ?? `Send ${formattedAmount ?? 'any amount of'} BCH`;
 
+  let cleanGoalAmount: any;
+  if (goalAmount) {
+    cleanGoalAmount = +goalAmount;
+    cleanGoalAmount = bchToSatoshis(cleanGoalAmount);
+  }
+
+  let goalPercentage = 0;
+  const shouldDisplayGoal: boolean = goalAmount !== undefined;
+  if (shouldDisplayGoal) {
+    goalPercentage = 100 * (totalSatsReceived / cleanGoalAmount);
+  }
+
   return (
     <ThemeProvider value={theme}>
       <Box
@@ -223,6 +264,37 @@ export const Widget: React.FC<WidgetProps> = props => {
           px={3}
           pt={2}
         >
+          {isLoading ? (
+            <Typography
+              className={classes.text}
+              style={{ margin: '10px auto 20px' }}
+            >
+              <CircularProgress
+                size={15}
+                thickness={4}
+                className={classes.spinner}
+              />
+            </Typography>
+          ) : (
+            <>
+              {shouldDisplayGoal && (
+                <>
+                  <Typography
+                    className={classes.copyText}
+                    style={{ marginBottom: '0.6rem' }}
+                  >
+                    {satoshisToBch(totalSatsReceived).toFixed(2)} /&nbsp;
+                    {satoshisToBch(cleanGoalAmount).toFixed(2)}
+                    <strong>&nbsp;BCH</strong>
+                  </Typography>
+                  <BarChart
+                    color={theme.palette.primary}
+                    value={Math.round(goalPercentage)}
+                  />
+                </>
+              )}
+            </>
+          )}
           <Box
             flex={1}
             position="relative"

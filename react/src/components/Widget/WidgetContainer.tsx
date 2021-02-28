@@ -34,6 +34,7 @@ export interface WidgetContainerProps
   onSuccess?: (txid: string, amount: number) => void;
   onTransaction?: (txid: string, amount: number) => void;
   sound?: boolean;
+  goalAmount?: number | string;
 }
 
 const snackbarOptions: OptionsObject = {
@@ -65,6 +66,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
       sound = true,
       onSuccess,
       onTransaction,
+      goalAmount,
       ...widgetProps
     } = props;
 
@@ -75,7 +77,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
     const [success, setSuccess] = useState(false);
     const { enqueueSnackbar } = useSnackbar();
     const addressDetails = useAddressDetails(address, active && !success);
-
+    const [totalReceived, setTotalReceived] = useState(0);
     const transformAmount = useMemo(
       () => (randomSatoshis ? randomizeSatoshis : (x: number): number => x),
       [randomSatoshis],
@@ -144,6 +146,11 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
     useEffect(() => {
       const txIds = transactionsRef.current;
 
+      if (addressDetails) {
+        const { totalReceivedSat, unconfirmedBalanceSat } = addressDetails;
+        setTotalReceived(totalReceivedSat + unconfirmedBalanceSat);
+      }
+
       addressDetails?.transactions?.map(txid => {
         if (!txIds.has(txid)) {
           txIds.add(txid);
@@ -204,6 +211,8 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
           {...widgetProps}
           amount={amount}
           text={text}
+          totalReceived={totalReceived}
+          goalAmount={goalAmount}
           loading={loading}
           success={success}
         />

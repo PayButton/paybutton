@@ -21,6 +21,8 @@ export interface PayButtonProps extends ButtonProps {
   displayCurrency?: cryptoCurrency;
   randomSatoshis?: boolean;
   hideToasts?: boolean;
+  disabled?: boolean;
+  goalAmount?: number | string;
   onSuccess?: (txid: string, amount: number) => void;
   onTransaction?: (txid: string, amount: number) => void;
 }
@@ -44,6 +46,8 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
     hideToasts,
     onSuccess,
     onTransaction,
+    disabled,
+    goalAmount,
   } = Object.assign({}, PayButton.defaultProps, props);
 
   const handleButtonClick = (): void => setWidgetOpen(true);
@@ -102,6 +106,8 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
           onSuccess={handleSuccess}
           onTransaction={onTransaction}
           successText={successText}
+          disabled={disabled}
+          goalAmount={goalAmount}
           foot={
             success && (
               <ButtonComponent
