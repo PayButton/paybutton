@@ -46,7 +46,6 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
     hideToasts,
     onSuccess,
     onTransaction,
-    disabled,
     goalAmount,
   } = Object.assign({}, PayButton.defaultProps, props);
 

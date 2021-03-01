@@ -102,7 +102,6 @@ export const Widget: React.FC<WidgetProps> = props => {
     loading,
     success,
     successText,
-    disabled,
     totalReceived,
     goalAmount,
     amount,
@@ -145,7 +144,6 @@ export const Widget: React.FC<WidgetProps> = props => {
     return (): void => clearTimeout(timer);
   }, [recentlyCopied]);
 
-    
   const isMissingWidgetContainer = !totalReceived;
   const addressDetails = useAddressDetails(to, isMissingWidgetContainer);
 
@@ -160,7 +158,7 @@ export const Widget: React.FC<WidgetProps> = props => {
       setIsLoading(false);
     }
   }, [addressDetails, totalReceived, totalSatsReceived]);
-    
+
   useEffect(() => {
     if (validateCashAddress(to)) {
       setDisabled(false);
@@ -174,7 +172,6 @@ export const Widget: React.FC<WidgetProps> = props => {
       setErrorMsg('Missing Recipient');
     }
   }, [to]);
-    
 
   const query = [];
   let cleanAmount: any;
