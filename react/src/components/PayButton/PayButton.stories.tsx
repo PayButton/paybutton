@@ -55,3 +55,19 @@ withGoal.args = {
   animation: 'none',
   goalAmount: 950,
 };
+
+export const withUSDGoalCurrency = Template.bind({});
+withUSDGoalCurrency.storyName = 'With USD Goal';
+withUSDGoalCurrency.args = {
+  animation: 'none',
+  goalAmount: 500000,
+  currency: 'USD',
+};
+
+export const withEURGoalCurrency = Template.bind({});
+withEURGoalCurrency.storyName = 'With EUR Goal';
+withEURGoalCurrency.args = {
+  animation: 'none',
+  goalAmount: 400000,
+  currency: 'EUR',
+};
