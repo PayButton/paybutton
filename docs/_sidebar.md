@@ -10,6 +10,7 @@
   - [currency](/?id=currency)
   - [text](/?id=text)
   - [hover-text](/?id=hover-text)
+  - [goal-amount](/?id=goal-amount)
   - [theme](/?id=theme)
   - [animation](/?id=animation)
   - [success-text](/?id=success-text)

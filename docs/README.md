@@ -348,6 +348,35 @@ hoverText = "Send Bitcoin Cash"
 
 <!-- tabs:end -->
 
+## goal-amount
+
+> **The ‘goal-amount’ parameter specifies how much in donations/contributions is required for funding to be considered complete, indicated by a progress bar.**
+
+?> This parameter is optional. Default value is 0 (none). Possible values are any number.
+
+**Example:**
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+goal-amount="10"
+```
+
+#### ** JavaScript **
+
+```javascript
+goalAmount: 10
+```
+
+#### ** React **
+
+```react
+goalAmount = 10
+```
+
+<!-- tabs:end -->
+
 ## theme
 
 > **The ‘theme’ parameter specifies the themeing of the button and dialog.**

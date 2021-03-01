@@ -9,6 +9,7 @@
   - [currency](/zh-cn/?id=currency)
   - [text](/zh-cn/?id=text)
   - [hover-text](/zh-cn/?id=hover-text)
+  - [goal-amount](/zh-cn/?id=goal-amount)
   - [theme](/zh-cn/?id=theme)
   - [animation](/zh-cn/?id=animation)
   - [success-text](/zh-cn/?id=success-text)
