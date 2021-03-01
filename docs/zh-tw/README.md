@@ -566,7 +566,13 @@ PayButton是一個社區主導的開放源代碼促進會。此項目的成功�
 
 1. `cd react && npm i`
 2. `npm start`
-3. 如果網站沒有自動打開，它將在localhost：6006上運行。
+3. 如果網站沒有自動打開，它將在localhost:6006上運行。
+
+### HTML Webserver
+
+1. `cd paybutton && npm i`
+2. `npm start`
+3. 網站將在localhost:10001上運行。
 
 ### 网站/文件
 
