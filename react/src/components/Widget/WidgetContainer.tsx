@@ -213,6 +213,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
           text={text}
           totalReceived={totalReceived}
           goalAmount={goalAmount}
+          currency={currency}
           loading={loading}
           success={success}
         />
