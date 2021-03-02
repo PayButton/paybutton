@@ -35,7 +35,7 @@ const plugin = (hook, vm) => {
   var defaultConfig = {
     dark: {
       background: '#1c2022',
-      toggleBtnBg: '#34495e',
+      toggleBtnBg: '#97b1cb',
       textColor: '#b4b4b4',
       codeBackground: '#393e46',
       codeFontColor: '#eeeeee',

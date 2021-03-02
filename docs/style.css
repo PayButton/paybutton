@@ -75,12 +75,26 @@ p {
 }
 
 .markdown-section pre,
-.markdown-section code {
+.markdown-section code,
+.markdown-section p.tip {
   background-color: var(--docsify_dark_mode_code);
   color: var(--docsify_dark_mode_code_color) !important;
+}
+
+.markdown-section strong,
+blockquote p {
+  color: var(--docsify_dark_mode_btn) !important;
 }
 
 [class*='docsify-tabs--'] .docsify-tabs__tab {
   background-color: var(--docsify_dark_mode_code) !important;
   color: var(--docsify_dark_mode_code_color) !important;
+}
+
+.anchor span,
+.token.tag,
+.token.punctuation,
+a.app-name-link,
+.sidebar ul li a {
+  color: var(--docsify_dark_mode_btn) !important;
 }
