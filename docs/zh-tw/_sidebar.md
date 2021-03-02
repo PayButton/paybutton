@@ -16,6 +16,7 @@
   - [on-success](/zh-cn/?id=on-success)
   - [on-transaction](/zh-cn/?id=on-transaction)
   - [random-satoshis](/zh-cn/?id=random-satoshis)
+  - [disable-enforce-focus](/zh-cn/?id=disable-enforce-focus)
 - [貢獻](/zh-cn/?id=貢獻)
   - [開發人員快速入門](/zh-cn/?id=開發人員快速入門)
     - [搭建](/zh-cn/?id=搭建)
