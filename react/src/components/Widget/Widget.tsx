@@ -12,13 +12,18 @@ import React, { useEffect, useMemo, useState } from 'react';
 
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
 import { validateCashAddress } from '../../util/address';
+import { formatPrice } from '../../util/format';
 import Button from '../Button/Button';
 import BarChart from '../BarChart/BarChart';
 
 import { satoshisToBch, bchToSatoshis } from '../../util/satoshis';
 import { useAddressDetails } from '../../hooks/useAddressDetails';
+import { fiatCurrency, getFiatPrice } from '../../util/api-client';
 
 type QRCodeProps = BaseQRCodeProps & { renderAs: 'svg' };
+
+export type cryptoCurrency = 'BCH' | 'SAT';
+export type currency = cryptoCurrency | fiatCurrency;
 
 export interface WidgetProps {
   to: string;
@@ -33,6 +38,7 @@ export interface WidgetProps {
   disabled: boolean;
   totalReceived?: number | null;
   goalAmount?: number | string | null;
+  currency?: currency;
 }
 
 interface StyleProps {
@@ -106,6 +112,7 @@ export const Widget: React.FC<WidgetProps> = props => {
     goalAmount,
     amount,
     ButtonComponent = Button,
+    currency = 'BCH',
   } = Object.assign({}, Widget.defaultProps, props);
 
   const theme = useTheme(props.theme);
@@ -117,6 +124,8 @@ export const Widget: React.FC<WidgetProps> = props => {
   const [isLoading, setIsLoading] = useState(!!goalAmount);
   const [disabled, setDisabled] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const [goalText, setGoalText] = useState('');
+  const [goalPercent, setGoalPercent] = useState(0);
 
   const blurCSS = disabled ? { filter: 'blur(5px)' } : {};
 
@@ -155,7 +164,6 @@ export const Widget: React.FC<WidgetProps> = props => {
     if (addressDetails) {
       const { totalReceivedSat, unconfirmedBalanceSat } = addressDetails;
       setTotalSatsReceived(totalReceivedSat + unconfirmedBalanceSat);
-      setIsLoading(false);
     }
   }, [addressDetails, totalReceived, totalSatsReceived]);
 
@@ -225,14 +233,42 @@ export const Widget: React.FC<WidgetProps> = props => {
   let cleanGoalAmount: any;
   if (goalAmount) {
     cleanGoalAmount = +goalAmount;
-    cleanGoalAmount = bchToSatoshis(cleanGoalAmount);
+    cleanGoalAmount =
+      currency === 'BCH' ? bchToSatoshis(cleanGoalAmount) : cleanGoalAmount;
   }
 
-  let goalPercentage = 0;
   const shouldDisplayGoal: boolean = goalAmount !== undefined;
-  if (shouldDisplayGoal) {
-    goalPercentage = 100 * (totalSatsReceived / cleanGoalAmount);
-  }
+
+  useEffect(() => {
+    if (currency === 'BCH') {
+      setGoalPercent((100 * totalSatsReceived) / cleanGoalAmount);
+      setIsLoading(false);
+      return setGoalText(
+        `${satoshisToBch(totalSatsReceived).toFixed(2)} / ${satoshisToBch(
+          cleanGoalAmount,
+        ).toFixed(2)}`,
+      );
+    } else if (currency === 'SAT') {
+      setGoalPercent((100 * totalSatsReceived) / cleanGoalAmount);
+      setIsLoading(false);
+      return setGoalText(`${totalSatsReceived} / ${cleanGoalAmount}`);
+    } else {
+      (async (): Promise<void> => {
+        const data = await getFiatPrice(currency);
+        const { price } = data;
+
+        if (totalSatsReceived !== 0) {
+          const receivedVal: number =
+            satoshisToBch(totalSatsReceived) * (price / 100);
+          const receivedText: string = formatPrice(receivedVal, currency);
+          const goalText: string = formatPrice(cleanGoalAmount, currency);
+          setIsLoading(false);
+          setGoalPercent(100 * (receivedVal / cleanGoalAmount));
+          return setGoalText(`${receivedText} / ${goalText}`);
+        }
+      })();
+    }
+  }, [totalSatsReceived, currency, cleanGoalAmount]);
 
   return (
     <ThemeProvider value={theme}>
@@ -278,15 +314,14 @@ export const Widget: React.FC<WidgetProps> = props => {
                 <>
                   <Typography
                     className={classes.copyText}
-                    style={{ marginBottom: '0.6rem' }}
+                    style={{ marginBottom: '0.61rem' }}
                   >
-                    {satoshisToBch(totalSatsReceived).toFixed(2)} /&nbsp;
-                    {satoshisToBch(cleanGoalAmount).toFixed(2)}
-                    <strong>&nbsp;BCH</strong>
+                    {goalText}
+                    <strong>&nbsp;{currency}</strong>
                   </Typography>
                   <BarChart
                     color={theme.palette.primary}
-                    value={Math.round(goalPercentage)}
+                    value={Math.round(goalPercent)}
                   />
                 </>
               )}
