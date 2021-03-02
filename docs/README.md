@@ -161,7 +161,7 @@ function App() {
 
 You can also create an always-visible PayButton Widget that doesn't require clicking a button to open:
 
-<div class="paybutton-widget" to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp"></div>
+<div class="paybutton-widget" to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp" style="max-width:140px"></div>
 
 <!-- tabs:start -->
 
@@ -584,4 +584,4 @@ PayButton is a community-driven open-source initiative. Contributions from the c
 
 > All PayButton donations received are used to directly fund PayButton development.
 
-<div class="paybutton-widget" to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp"></div>
+<div class="paybutton-widget" to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp" style="max-width:140px"></div>
