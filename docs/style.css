@@ -86,6 +86,10 @@ blockquote p {
   color: var(--docsify_dark_mode_btn) !important;
 }
 
+section.cover.show blockquote p {
+  color: var(--docsify_dark_mode_code) !important;
+}
+
 [class*='docsify-tabs--'] .docsify-tabs__tab {
   background-color: var(--docsify_dark_mode_code) !important;
   color: var(--docsify_dark_mode_code_color) !important;
