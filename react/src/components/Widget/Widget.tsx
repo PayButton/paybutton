@@ -164,7 +164,6 @@ export const Widget: React.FC<WidgetProps> = props => {
     if (addressDetails) {
       const { totalReceivedSat, unconfirmedBalanceSat } = addressDetails;
       setTotalSatsReceived(totalReceivedSat + unconfirmedBalanceSat);
-      setIsLoading(false);
     }
   }, [addressDetails, totalReceived, totalSatsReceived]);
 
@@ -243,6 +242,7 @@ export const Widget: React.FC<WidgetProps> = props => {
   useEffect(() => {
     if (currency === 'BCH') {
       setGoalPercent((100 * totalSatsReceived) / cleanGoalAmount);
+      setIsLoading(false);
       return setGoalText(
         `${satoshisToBch(totalSatsReceived).toFixed(2)} / ${satoshisToBch(
           cleanGoalAmount,
@@ -250,22 +250,25 @@ export const Widget: React.FC<WidgetProps> = props => {
       );
     } else if (currency === 'SAT') {
       setGoalPercent((100 * totalSatsReceived) / cleanGoalAmount);
+      setIsLoading(false);
       return setGoalText(`${totalSatsReceived} / ${cleanGoalAmount}`);
     } else {
       (async (): Promise<void> => {
         const data = await getFiatPrice(currency);
         const { price } = data;
 
-        const receivedVal: number =
-          satoshisToBch(totalSatsReceived) * (price / 100);
-        const receivedText: string = formatPrice(receivedVal, currency);
-        const goalText: string = formatPrice(cleanGoalAmount, currency);
-
-        setGoalPercent(100 * (receivedVal / cleanGoalAmount));
-        return setGoalText(`${receivedText} / ${goalText}`);
+        if (totalSatsReceived !== 0) {
+          const receivedVal: number =
+            satoshisToBch(totalSatsReceived) * (price / 100);
+          const receivedText: string = formatPrice(receivedVal, currency);
+          const goalText: string = formatPrice(cleanGoalAmount, currency);
+          setIsLoading(false);
+          setGoalPercent(100 * (receivedVal / cleanGoalAmount));
+          return setGoalText(`${receivedText} / ${goalText}`);
+        }
       })();
     }
-  }, [totalSatsReceived, currency]);
+  }, [totalSatsReceived, currency, cleanGoalAmount]);
 
   return (
     <ThemeProvider value={theme}>
@@ -311,7 +314,7 @@ export const Widget: React.FC<WidgetProps> = props => {
                 <>
                   <Typography
                     className={classes.copyText}
-                    style={{ marginBottom: '0.6rem' }}
+                    style={{ marginBottom: '0.61rem' }}
                   >
                     {goalText}
                     <strong>&nbsp;{currency}</strong>
