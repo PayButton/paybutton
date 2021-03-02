@@ -17,6 +17,7 @@
   - [on-success](/?id=on-success)
   - [on-transaction](/?id=on-transaction)
   - [random-satoshis](/?id=random-satoshis)
+  - [disable-enforce-focus](/?id=disable-enforce-focus)
 - [Contribute](/?id=contribute)
   - [Developer Quick Start](/?id=developer-quick-start)
     - [Build](/?id=build)
