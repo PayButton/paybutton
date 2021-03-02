@@ -1,101 +1,139 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>PayButton | The easiest way to accept Bitcoin Cash online.</title>
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-  <meta name="description" content="PayButton makes it easy to accept Bitcoin Cash by adding a donation or buy button to your website.">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="twitter:card" content="summary" />
-  <meta name="twitter:site" content="@thepaybutton" />
-  <meta name="twitter:title" content="The easiest way to accept Bitcoin Cash online." />
-  <meta name="twitter:description" content="PayButton makes it easy to accept Bitcoin Cash by adding a donation or buy button to your website." />
-  <meta name="twitter:image" content="https://paybutton.org/_media/pblogo.png" />
-  <meta property="og:title" content="PayButton" />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://paybutton.org/" />
-  <meta property="og:image" content="https://paybutton.org/_media/pblogo.png" />
-  <link rel="apple-touch-icon" href="https://paybutton.org/_media/pblogo.png" />
+  <head>
+    <meta charset="UTF-8" />
+    <title>PayButton | The easiest way to accept Bitcoin Cash online.</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta
+      name="description"
+      content="PayButton makes it easy to accept Bitcoin Cash by adding a donation or buy button to your website."
+    />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, minimum-scale=1.0"
+    />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@thepaybutton" />
+    <meta
+      name="twitter:title"
+      content="The easiest way to accept Bitcoin Cash online."
+    />
+    <meta
+      name="twitter:description"
+      content="PayButton makes it easy to accept Bitcoin Cash by adding a donation or buy button to your website."
+    />
+    <meta
+      name="twitter:image"
+      content="https://paybutton.org/_media/pblogo.png"
+    />
+    <meta property="og:title" content="PayButton" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://paybutton.org/" />
+    <meta
+      property="og:image"
+      content="https://paybutton.org/_media/pblogo.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      href="https://paybutton.org/_media/pblogo.png"
+    />
 
-  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css" />
-  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify-dark-mode@latest/dist/style.min.css" />
-  <style type="text/css">
-  	.app-nav li ul {
-  		min-width: 5rem;
-  	}
-    .app-nav img {
-      max-width: 19px;
-    }
-  	section.cover a:hover {
-      color: #333 !important;
-  	}
-  </style>
-</head>
-<body>
-  <div id="app"></div>
+    <link
+      rel="stylesheet"
+      href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css"
+    />
+    <link
+      rel="stylesheet"
+      href="//cdn.jsdelivr.net/npm/docsify-dark-mode@latest/dist/style.min.css"
+    />
+    <link rel="stylesheet" href="./style.css" />
+    <style type="text/css">
+      .app-nav li ul {
+        min-width: 5rem;
+      }
+      .app-nav img {
+        max-width: 19px;
+      }
+      section.cover a:hover {
+        color: #333 !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
 
-  <script>
-    window.$docsify = {
-      name: 'PayButton',
-      repo: 'paybutton/paybutton',
-      homepage: 'README.md',
-      coverpage: ['/', '/zh-cn/', '/zh-tw/'],
-      executeScript: true,
-      themeColor: "#42b983", // this is the default 'vue' color
-      loadSidebar: true,
-      loadNavbar: 'nav.md'
-    }
-  </script>
+    <script>
+      window.$docsify = {
+        name: 'PayButton',
+        repo: 'paybutton/paybutton',
+        homepage: 'README.md',
+        coverpage: ['/', '/zh-cn/', '/zh-tw/'],
+        executeScript: true,
+        themeColor: '#42b983', // this is the default 'vue' color
+        loadSidebar: true,
+        loadNavbar: 'nav.md',
+      };
+    </script>
 
-  <!-- Docsify v4 -->
-  <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
-  <script src="https://cdn.jsdelivr.net/npm/docsify-tabs@1"></script>
-  <script src="https://unpkg.com/docsify-copy-code@2"></script>
-  <script src="//cdn.jsdelivr.net/npm/docsify-dark-mode@latest/dist/index.min.js"></script>
-  <script src="https://unpkg.com/@paybutton/paybutton@^1.0/dist/paybutton.js"></script>
+    <!-- Docsify v4 -->
+    <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/docsify-tabs@1"></script>
+    <script src="https://unpkg.com/docsify-copy-code@2"></script>
+    <!-- <script src="//cdn.jsdelivr.net/npm/docsify-dark-mode@latest/dist/index.min.js"></script> -->
+    <script src="./darkmode.js"></script>
+    <script src="https://unpkg.com/@paybutton/paybutton@^1.0/dist/paybutton.js"></script>
 
-  <script>
-    // docsify-fix-pageload-scroll.js
-    (function () {
+    <script>
+      // docsify-fix-pageload-scroll.js
+      (function () {
         function create() {
-            return (hook) => {
-                const TARGET_QUERY = 'id';
-                const SCROLL_DELAY = 500;
+          return (hook) => {
+            const TARGET_QUERY = 'id';
+            const SCROLL_DELAY = 500;
 
-                hook.ready(function () {
-                    if (!location.hash.includes('?')) return;
-                    let searchParams = new URLSearchParams(location.hash.split('?')[1]);
-                    let header = document.querySelector('#' + searchParams.get(TARGET_QUERY));
-                    header && setTimeout(() => header.scrollIntoView(), SCROLL_DELAY);
-                });
-            };
+            hook.ready(function () {
+              if (!location.hash.includes('?')) return;
+              let searchParams = new URLSearchParams(
+                location.hash.split('?')[1]
+              );
+              let header = document.querySelector(
+                '#' + searchParams.get(TARGET_QUERY)
+              );
+              header && setTimeout(() => header.scrollIntoView(), SCROLL_DELAY);
+            });
+          };
         }
 
         if (typeof $docsify === 'object') {
-            $docsify.plugins = [].concat(create(), $docsify.plugins);
+          $docsify.plugins = [].concat(create(), $docsify.plugins);
         }
-    })();
-  </script>
-  
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-27127884-13"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-	gtag('js', new Date());
-	gtag('config', 'UA-27127884-13');
-  </script>
+      })();
+    </script>
 
-  <script type="text/javascript">
-  	function render( selector, config ) {
-      const buttons = document.querySelectorAll( selector )
-      for ( const button of buttons ) {
-        PayButton.render( button, config );
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=UA-27127884-13"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
       }
-    }
-  </script>
-</body>
+      gtag('js', new Date());
+      gtag('config', 'UA-27127884-13');
+    </script>
+
+    <script type="text/javascript">
+      function render(selector, config) {
+        const buttons = document.querySelectorAll(selector);
+        for (const button of buttons) {
+          PayButton.render(button, config);
+        }
+      }
+    </script>
+  </body>
 </html>
