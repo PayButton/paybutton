@@ -57,6 +57,29 @@
   <script src="//cdn.jsdelivr.net/npm/docsify-dark-mode@latest/dist/index.min.js"></script>
   <script src="https://unpkg.com/@paybutton/paybutton@^1.0/dist/paybutton.js"></script>
 
+  <script>
+    // docsify-fix-pageload-scroll.js
+    (function () {
+        function create() {
+            return (hook) => {
+                const TARGET_QUERY = 'id';
+                const SCROLL_DELAY = 500;
+
+                hook.ready(function () {
+                    if (!location.hash.includes('?')) return;
+                    let searchParams = new URLSearchParams(location.hash.split('?')[1]);
+                    let header = document.querySelector('#' + searchParams.get(TARGET_QUERY));
+                    header && setTimeout(() => header.scrollIntoView(), SCROLL_DELAY);
+                });
+            };
+        }
+
+        if (typeof $docsify === 'object') {
+            $docsify.plugins = [].concat(create(), $docsify.plugins);
+        }
+    })();
+  </script>
+  
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-27127884-13"></script>
   <script>
