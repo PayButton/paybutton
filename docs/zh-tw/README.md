@@ -553,7 +553,7 @@ randomSatoshis = true
 
 ## disableEnforceFocus
 
-> **The ‘disableEnforceFocus’ parameter is passed to the Dialog material UI component. Setting it to false can help with accessibility with technology such as screen readers. **
+> **The ‘disableEnforceFocus’ parameter is passed to the Dialog material UI component. The ‘disableEnforceFocus’ parameter is passed to the Dialog material UI component. Setting it to false can help with accessibility with technology such as screen readers but may throw errors on sites running Material UI.**
 
 ?> This parameter is optional. Default value is true. Possible values are true or false.
 
@@ -569,7 +569,6 @@ disable-enforce-focus="false"
 #### ** JavaScript **
 
 ```javascript
-// Note: Setting to false will cause issues with sites running Material UI
 disableEnforceFocus: false
 ```
 
