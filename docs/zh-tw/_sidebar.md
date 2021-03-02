@@ -20,5 +20,6 @@
   - [開發人員快速入門](/zh-cn/?id=開發人員快速入門)
     - [搭建](/zh-cn/?id=搭建)
     - [啟動Storybook](/zh-cn/?id=啟動Storybook)
+    - [啟動Rollup](/zh-cn/?id=啟動Rollup)
     - [網站/文件](/zh-cn/?id=網站文件)
   - [捐款](/zh-cn/?id=捐款)

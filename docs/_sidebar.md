@@ -21,5 +21,6 @@
   - [Developer Quick Start](/?id=developer-quick-start)
     - [Build](/?id=build)
     - [Starting Storybook](/?id=starting-storybook)
+    - [Starting Rollup](/?id=starting-rollup)
     - [Website / Documentation](/?id=website-documentation)
   - [Donate](/?id=donate)

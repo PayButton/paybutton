@@ -568,7 +568,7 @@ PayButton is a community-driven open-source initiative. Contributions from the c
 2. `npm start`
 3. If site does not open automatically, it will be running on `localhost:6006`.
 
-### HTML Webserver
+### Starting Rollup
 
 1. `cd paybutton && npm i`
 2. `npm start`
