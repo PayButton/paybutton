@@ -1,0 +1,86 @@
+/**
+ * Skipped minification because the original files appears to be already minified.
+ * Do NOT use SRI with dynamically generated files! More information: https://www.jsdelivr.com/using-sri-with-dynamic-files
+ */
+:root {
+  --text_color: var(--theme-color);
+  --docsify_dark_mode_bg: #fff;
+  --docsify_dark_mode_btn: var(--theme-color);
+  --docsify_dark_mode_code: var(--codeBackground);
+  --docsify_dark_mode_code_color: var(--codeFontColor);
+}
+.sidebar,
+.sidebar-toggle,
+aside,
+body,
+html,
+main {
+  background: #fff;
+  background: var(--docsify_dark_mode_bg);
+}
+#dark_mode > input[type='checkbox'] {
+  height: 0;
+  width: 0;
+  visibility: hidden;
+}
+#dark_mode > label {
+  cursor: pointer;
+  text-indent: -9999px;
+  width: 55px;
+  height: 30px;
+  background: var(--theme-color);
+  background: var(--docsify_dark_mode_btn);
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 100px;
+  position: relative;
+}
+#dark_mode > label:after {
+  content: '';
+  background: #fff;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  position: absolute;
+  top: 5px;
+  left: 4px;
+  transition: 0.32s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+#dark_mode > input:checked + label {
+  background: var(--theme-color);
+  background: var(--docsify_dark_mode_btn);
+}
+#dark_mode > input:checked + label:after {
+  left: calc(100% - 5px);
+  transform: translateX(-100%);
+}
+html.transition,
+html.transition *,
+html.transition :after,
+html.transition :before {
+  transition: 0.42s cubic-bezier(0.68, -0.55, 0.27, 1.55) !important;
+  transition-delay: 0 !important;
+}
+#dark_mode {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+p {
+  color: var(--theme-color);
+  color: var(--text_color);
+}
+
+.markdown-section pre,
+.markdown-section code {
+  background-color: var(--docsify_dark_mode_code);
+  color: var(--docsify_dark_mode_code_color) !important;
+}
+
+[class*='docsify-tabs--'] .docsify-tabs__tab {
+  background-color: var(--docsify_dark_mode_code) !important;
+  color: var(--docsify_dark_mode_code_color) !important;
+}
