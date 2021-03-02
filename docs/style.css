@@ -83,7 +83,8 @@ p {
 }
 
 .markdown-section strong,
-blockquote p {
+blockquote p,
+li {
   color: var(--docsify_dark_mode_btn) !important;
 }
 
