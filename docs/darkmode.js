@@ -1,16 +1,17 @@
 const plugin = (hook, vm) => {
-  var trans = () => {
+  let trans = () => {
     document.documentElement.classList.add('transition');
     window.setTimeout(() => {
       document.documentElement.classList.remove('transition');
     }, 800);
   };
-  var setColor = ({
+  let setColor = ({
     background,
     toggleBtnBg,
     textColor,
     codeBackground,
     codeFontColor,
+    header,
   }) => {
     document.documentElement.style.setProperty(
       '--docsify_dark_mode_bg',
@@ -28,30 +29,36 @@ const plugin = (hook, vm) => {
       '--docsify_dark_mode_code_color',
       codeFontColor
     );
+    document.documentElement.style.setProperty(
+      '--docsify_dark_mode_header',
+      header
+    );
     document.documentElement.style.setProperty('--text_color', textColor);
   };
 
-  var theme = { dark: {}, light: {} };
-  var defaultConfig = {
+  let theme = { dark: {}, light: {} };
+  let defaultConfig = {
     dark: {
       background: '#1c2022',
       toggleBtnBg: '#97b1cb',
       textColor: '#b4b4b4',
       codeBackground: '#393e46',
       codeFontColor: '#eeeeee',
+      header: '#20202f',
     },
     light: {
       background: 'white',
       toggleBtnBg: 'var(--theme-color)',
       textColor: 'var(--theme-color)',
       codeBackground: '#f8f8f8',
+      header: '#42b983',
     },
   };
 
   theme = { ...defaultConfig, ...vm.config.darkMode };
 
   hook.afterEach(function (html, next) {
-    var darkEl = ` <div id="dark_mode">
+    let darkEl = ` <div id="dark_mode">
              <input class="container_toggle" type="checkbox" id="switch" name="mode" />
              <label for="switch">Toggle</label>
            </div>`;
@@ -60,7 +67,7 @@ const plugin = (hook, vm) => {
   });
 
   hook.doneEach(function () {
-    var currColor;
+    let currColor;
     if (localStorage.getItem('DOCSIFY_DARK_MODE')) {
       currColor = localStorage.getItem('DOCSIFY_DARK_MODE');
       setColor(theme[`${currColor}`]);
@@ -69,7 +76,7 @@ const plugin = (hook, vm) => {
       setColor(theme.light);
     }
 
-    var checkbox = document.querySelector('input[name=mode]');
+    let checkbox = document.querySelector('input[name=mode]');
 
     if (!checkbox) {
       return;

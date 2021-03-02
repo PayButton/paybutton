@@ -8,6 +8,7 @@
   --docsify_dark_mode_btn: var(--theme-color);
   --docsify_dark_mode_code: var(--codeBackground);
   --docsify_dark_mode_code_color: var(--codeFontColor);
+  --docsify_dark_mode_header: var(--header);
 }
 .sidebar,
 .sidebar-toggle,
@@ -87,7 +88,7 @@ blockquote p {
 }
 
 section.cover.show blockquote p {
-  color: var(--docsify_dark_mode_code) !important;
+  color: var(--docsify_dark_mode_header) !important;
 }
 
 [class*='docsify-tabs--'] .docsify-tabs__tab {
