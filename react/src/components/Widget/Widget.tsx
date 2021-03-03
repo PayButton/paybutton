@@ -343,9 +343,11 @@ export const Widget: React.FC<WidgetProps> = props => {
                     timeout={{ enter: 0, exit: 2000 }}
                   >
                     <Box className={classes.copyTextContainer}>
-                      <Typography className={classes.copyText}>
-                        {copied ? 'Address copied!' : 'Click to copy'}
-                      </Typography>
+                      {!disabled && (
+                        <Typography className={classes.copyText}>
+                          {copied ? 'Address copied!' : 'Click to copy'}
+                        </Typography>
+                      )}
                     </Box>
                   </Fade>
                 </Box>
