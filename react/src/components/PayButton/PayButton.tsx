@@ -72,7 +72,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
     if (to === '') {
       setErrorMsg('Missing Recipient');
     }
-  }, [to]);
+  }, [to, props.disabled]);
 
   const ButtonComponent: React.FC<ButtonProps> = (
     props: ButtonProps,
