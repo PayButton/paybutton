@@ -169,7 +169,7 @@ export const Widget: React.FC<WidgetProps> = props => {
 
   useEffect(() => {
     if (validateCashAddress(to)) {
-      setDisabled(false);
+      setDisabled(!!props.disabled);
       setErrorMsg('');
     } else {
       setDisabled(true);

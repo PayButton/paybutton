@@ -63,7 +63,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
 
   useEffect(() => {
     if (validateCashAddress(to)) {
-      setDisabled(false);
+      setDisabled(!!props.disabled);
       setErrorMsg('');
     } else {
       setDisabled(true);
@@ -94,7 +94,12 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
         hoverText={hoverText}
         disabled={disabled}
       />
-      <Dialog open={widgetOpen} onClose={handleWidgetClose} disableEnforceFocus={disableEnforceFocus} disableScrollLock>
+      <Dialog
+        open={widgetOpen}
+        onClose={handleWidgetClose}
+        disableEnforceFocus={disableEnforceFocus}
+        disableScrollLock
+      >
         <WidgetContainer
           ButtonComponent={ButtonComponent}
           active={widgetOpen}
@@ -143,6 +148,7 @@ PayButton.defaultProps = {
   randomSatoshis: true,
   successText: 'Thank you!',
   disableEnforceFocus: false,
+  disabled: false,
 };
 
 export default PayButton;
