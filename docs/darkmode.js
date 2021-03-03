@@ -48,8 +48,8 @@ const plugin = (hook, vm) => {
     },
     light: {
       background: 'white',
-      toggleBtnBg: 'var(--theme-color)',
-      textColor: 'var(--theme-color)',
+      toggleBtnBg: '#34495e',
+      textColor: '#2c3e50',
       codeBackground: '#f8f8f8',
       header: '#42b983',
     },

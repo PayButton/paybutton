@@ -85,7 +85,10 @@ p {
 .markdown-section strong,
 blockquote p,
 li {
-  color: var(--docsify_dark_mode_btn) !important;
+  color: var(--textColor) !important;
+}
+.markdown-section p.warn {
+  color: var(--theme-color);
 }
 
 section.cover.show blockquote p {
