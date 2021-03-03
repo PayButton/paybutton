@@ -391,6 +391,7 @@ export const Widget: React.FC<WidgetProps> = props => {
                 target="_blank"
                 rel="noopener"
                 className="{classes.footer}"
+                style={{ color: '#3f51b5' }}
               >
                 Powered by PayButton.org
               </Link>
