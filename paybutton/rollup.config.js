@@ -7,8 +7,9 @@ import resolve from '@rollup/plugin-node-resolve';
 import svg from 'rollup-plugin-svg';
 import typescript from '@rollup/plugin-typescript';
 import { terser } from 'rollup-plugin-terser';
+import json from '@rollup/plugin-json';
 
-export default ( env ) => ({
+export default (env) => ({
   input: 'src/index.tsx',
   output: {
     file: 'dist/paybutton.js',
@@ -18,22 +19,30 @@ export default ( env ) => ({
   plugins: [
     alias({
       entries: [
-        { find: 'react', replacement: require.resolve( 'preact/compat' ) },
-        { find: 'react-dom', replacement: require.resolve( 'preact/compat' ) },
-      ]
+        { find: 'react', replacement: require.resolve('preact/compat') },
+        { find: 'react-dom', replacement: require.resolve('preact/compat') },
+      ],
     }),
-    replace( {
-      'process.env.NODE_ENV': JSON.stringify( env )
-    } ),
+    replace({
+      preventAssignment: true,
+      'process.env.NODE_ENV': JSON.stringify(env),
+    }),
     image(),
     svg(),
-    resolve( { browser: true, extensions: [ '.js', '.jsx', '.ts', '.tsx', '.svg' ] } ),
-    commonJS( { extensions: [ '.js', '.jsx', '.ts', '.tsx', '.svg' ], transformMixedEsModules: true } ),
+    resolve({
+      browser: true,
+      extensions: ['.js', '.jsx', '.ts', '.tsx', '.svg'],
+    }),
+    commonJS({
+      extensions: ['.js', '.jsx', '.ts', '.tsx', '.svg'],
+      transformMixedEsModules: true,
+    }),
     image(),
-    typescript( ),
-    terser( {
+    typescript(),
+    terser({
       mangle: true,
-    } ),
-    cleanup( { comments: 'none' } ),
-  ]
+    }),
+    cleanup({ comments: 'none' }),
+    json({ compact: true }),
+  ],
 });
