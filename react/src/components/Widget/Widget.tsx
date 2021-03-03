@@ -169,7 +169,7 @@ export const Widget: React.FC<WidgetProps> = props => {
 
   useEffect(() => {
     if (validateCashAddress(to)) {
-      setDisabled(false);
+      setDisabled(!!props.disabled);
       setErrorMsg('');
     } else {
       setDisabled(true);
@@ -179,7 +179,7 @@ export const Widget: React.FC<WidgetProps> = props => {
     if (to === '') {
       setErrorMsg('Missing Recipient');
     }
-  }, [to]);
+  }, [to, props.disabled]);
 
   const query = [];
   let cleanAmount: any;
@@ -343,9 +343,11 @@ export const Widget: React.FC<WidgetProps> = props => {
                     timeout={{ enter: 0, exit: 2000 }}
                   >
                     <Box className={classes.copyTextContainer}>
-                      <Typography className={classes.copyText}>
-                        {copied ? 'Address copied!' : 'Click to copy'}
-                      </Typography>
+                      {!disabled && (
+                        <Typography className={classes.copyText}>
+                          {copied ? 'Address copied!' : 'Click to copy'}
+                        </Typography>
+                      )}
                     </Box>
                   </Fade>
                 </Box>
