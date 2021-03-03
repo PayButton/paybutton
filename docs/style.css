@@ -83,9 +83,14 @@ p {
 }
 
 .markdown-section strong,
-blockquote p,
+blockquote p {
+  color: var(--textColor) !important;
+}
 li {
-  color: var(--docsify_dark_mode_btn) !important;
+  color: var(--docsify_dark_mode_code_color);
+}
+.markdown-section p.warn {
+  color: var(--theme-color);
 }
 
 section.cover.show blockquote p {
