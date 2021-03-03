@@ -44,6 +44,8 @@ const allowedProps = [
   'theme',
   'text',
   'to',
+  'disabled',
+  'goalAmount'
 ];
 
 const requiredProps = [
