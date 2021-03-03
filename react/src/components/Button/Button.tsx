@@ -1,6 +1,6 @@
 import { Button as MuiButton, makeStyles } from '@material-ui/core';
 import { CreateCSSProperties } from '@material-ui/styles';
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 
 import { Theme, ThemeName, useTheme } from '../../themes';
 
@@ -81,10 +81,22 @@ export const Button = (props: ButtonProps): React.ReactElement => {
   const [hovering, setHovering] = useState(false);
   const [transitioning, setTransitioning] = useState(false);
   const timer = useRef<number>();
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   const theme = useTheme(props.theme);
   const styleProps: StyleProps = { animation, theme };
   const classes = useStyles(styleProps);
+
+  useEffect(() => {
+    if (buttonRef !== null && text) {
+      const { current } = buttonRef;
+      if (current !== null) {
+        const { style } = current;
+        style.width = `${current.clientWidth}px`;
+        style.height = `${current.clientHeight}px`;
+      }
+    }
+  }, [text, buttonRef]);
 
   const handleMouseEnter = (): void => {
     setHovering(true);
@@ -110,6 +122,7 @@ export const Button = (props: ButtonProps): React.ReactElement => {
         onClick={props.onClick}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
+        ref={buttonRef}
       >
         <span>{transitioning !== hovering ? hoverText : text}</span>
       </MuiButton>
