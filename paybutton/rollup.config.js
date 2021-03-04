@@ -13,7 +13,7 @@ export default ( env ) => ({
   output: {
     file: 'dist/paybutton.js',
     name: 'PayButton',
-    format: 'iife',
+    format: 'umd',
   },
   plugins: [
     alias({
@@ -22,9 +22,9 @@ export default ( env ) => ({
         { find: 'react-dom', replacement: require.resolve( 'preact/compat' ) },
       ]
     }),
-    replace( {
-      'process.env.NODE_ENV': JSON.stringify( env )
-    } ),
+    replace({
+      'process.env.NODE_ENV': JSON.stringify(env),
+    }),
     image(),
     svg(),
     resolve( { browser: true, extensions: [ '.js', '.jsx', '.ts', '.tsx', '.svg' ] } ),
@@ -33,7 +33,8 @@ export default ( env ) => ({
     typescript( ),
     terser( {
       mangle: true,
-    } ),
-    cleanup( { comments: 'none' } ),
-  ]
+    }),
+    cleanup({ comments: 'none' }),
+  ],
+  external: ['@types/currency-formatter', 'currency-formatter'],
 });
