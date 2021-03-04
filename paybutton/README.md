@@ -13,9 +13,9 @@ npm install --save @paybutton/paybutton
 ## Usage
 
 ```
-<script src="https://unpkg.com/@paybutton/paybutton@^1.0/dist/paybutton.js"></script>
+<script src="https://unpkg.com/@paybutton/paybutton/dist/paybutton.js"></script>
 <div class="paybutton"
-  to="1PayBtn3rF6einuqMed2gJ4XdvuoGtNTNd"
+  to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp"
   amount="5"
   currency="USD"
   animation="invert"
