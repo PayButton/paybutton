@@ -35,8 +35,5 @@
   "files": [
     "dist"
   ],
-  "license": "MIT",
-  "dependencies": {
-    "@rollup/plugin-json": "^4.1.0"
-  }
+  "license": "MIT"
 }
