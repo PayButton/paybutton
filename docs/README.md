@@ -551,6 +551,35 @@ randomSatoshis = true
 
 <!-- tabs:end -->
 
+## hide-toasts
+
+> **The ‘hide-toasts’ parameter specifies whether to let the application take full control of what happens when a payment is detected.**
+
+?> This parameter is optional. Default value is false. Possible values are true or false.
+
+**Example:**
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+disabled="true"
+```
+
+#### ** JavaScript **
+
+```javascript
+disabled: true
+```
+
+#### ** React **
+
+```react
+disabled = true
+```
+
+<!-- tabs:end -->
+
 ## disable-enforce-focus
 
 > **The ‘disable-enforce-focus’ parameter is passed to the Dialog material UI component. The ‘disable-enforce-focus’ parameter is passed to the Dialog material UI component. Setting it to false can help with accessibility with technology such as screen readers but may throw errors on sites running Material UI.**
@@ -579,6 +608,36 @@ disableEnforceFocus = false
 ```
 
 <!-- tabs:end -->
+
+## disabled
+
+> **The ‘disabled’ parameter specifies whether to lock out the button/widget to prevent it from being used.**
+
+?> This parameter is optional. Default value is false. Possible values are true or false.
+
+**Example:**
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+disabled="true"
+```
+
+#### ** JavaScript **
+
+```javascript
+disabled: true
+```
+
+#### ** React **
+
+```react
+disabled = true
+```
+
+<!-- tabs:end -->
+
 # Contribute
 
 PayButton is a community-driven open-source initiative. Contributions from the community are _crucial_ to the success of the project.

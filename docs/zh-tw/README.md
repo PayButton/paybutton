@@ -551,13 +551,42 @@ randomSatoshis = true
 
 <!-- tabs:end -->
 
+## hide-toasts
+
+> **The ‘hide-toasts’ parameter specifies whether to let the application take full control of what happens when a payment is detected.**
+
+?> 此參數是可選用的。默認值為false。有效值為true或false 。
+
+**例子:**
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+disabled="true"
+```
+
+#### ** JavaScript **
+
+```javascript
+disabled: true
+```
+
+#### ** React **
+
+```react
+disabled = true
+```
+
+<!-- tabs:end -->
+
 ## disable-enforce-focus
 
 > **The ‘disable-enforce-focus’ parameter is passed to the Dialog material UI component. The ‘disable-enforce-focus’ parameter is passed to the Dialog material UI component. Setting it to false can help with accessibility with technology such as screen readers but may throw errors on sites running Material UI.**
 
-?> This parameter is optional. Default value is true. Possible values are true or false.
+?> 此參數是可選用的。默認值為true。有效值為true或false 。
 
-**Example:**
+**例子:**
 <!-- tabs:start -->
 
 #### ** HTML **
@@ -576,6 +605,35 @@ disableEnforceFocus: false
 
 ```react
 disableEnforceFocus = false
+```
+
+<!-- tabs:end -->
+
+## disabled
+
+> **The ‘disabled’ parameter specifies whether to lock out the button/widget to prevent it from being used.**
+
+?> 此參數是可選用的。默認值為false。有效值為true或false 。
+
+**例子:**
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+disabled="true"
+```
+
+#### ** JavaScript **
+
+```javascript
+disabled: true
+```
+
+#### ** React **
+
+```react
+disabled = true
 ```
 
 <!-- tabs:end -->
