@@ -20,7 +20,7 @@ import { randomizeSatoshis } from '../../util/randomizeSats';
 import { bchToSatoshis, satoshisToBch } from '../../util/satoshis';
 import Widget, { WidgetProps } from './Widget';
 
-export type cryptoCurrency = 'BCH' | 'SAT';
+export type cryptoCurrency = 'BCH' | 'SAT' | 'bits';
 export type currency = cryptoCurrency | fiatCurrency;
 
 export interface WidgetContainerProps
@@ -200,6 +200,9 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
         )} ${currency} = ${formattedAmount}`;
       if (displayCurrency === 'BCH')
         formattedAmount = `${format.amount(amount)} BCH`;
+      if (displayCurrency === 'bits') {
+        //
+      }
       if (displayCurrency === 'SAT')
         formattedAmount = `${bchToSatoshis(amount)} BCH satoshis`;
     }

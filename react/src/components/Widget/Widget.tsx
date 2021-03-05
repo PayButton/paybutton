@@ -16,13 +16,17 @@ import { formatPrice } from '../../util/format';
 import Button from '../Button/Button';
 import BarChart from '../BarChart/BarChart';
 
-import { satoshisToBch, bchToSatoshis } from '../../util/satoshis';
+import {
+  satoshisToBch,
+  bchToSatoshis,
+  getCurrencyObject,
+} from '../../util/satoshis';
 import { useAddressDetails } from '../../hooks/useAddressDetails';
 import { fiatCurrency, getFiatPrice } from '../../util/api-client';
 
 type QRCodeProps = BaseQRCodeProps & { renderAs: 'svg' };
 
-export type cryptoCurrency = 'BCH' | 'SAT';
+export type cryptoCurrency = 'BCH' | 'SAT' | 'bits';
 export type currency = cryptoCurrency | fiatCurrency;
 
 export interface WidgetProps {
@@ -126,6 +130,7 @@ export const Widget: React.FC<WidgetProps> = props => {
   const [errorMsg, setErrorMsg] = useState('');
   const [goalText, setGoalText] = useState('');
   const [goalPercent, setGoalPercent] = useState(0);
+  const [currencyObj, setCurrencyObj] = useState({});
 
   const blurCSS = disabled ? { filter: 'blur(5px)' } : {};
 
@@ -240,6 +245,13 @@ export const Widget: React.FC<WidgetProps> = props => {
   const shouldDisplayGoal: boolean = goalAmount !== undefined;
 
   useEffect(() => {
+    if (amount && currency) {
+      const obj = getCurrencyObject(cleanAmount, currency);
+      setCurrencyObj(obj);
+    }
+  }, [amount, currency]);
+
+  useEffect(() => {
     if (currency === 'BCH') {
       setGoalPercent((100 * totalSatsReceived) / cleanGoalAmount);
       setIsLoading(false);
@@ -252,6 +264,8 @@ export const Widget: React.FC<WidgetProps> = props => {
       setGoalPercent((100 * totalSatsReceived) / cleanGoalAmount);
       setIsLoading(false);
       return setGoalText(`${totalSatsReceived} / ${cleanGoalAmount}`);
+    } else if (currency === 'bits') {
+      //
     } else {
       (async (): Promise<void> => {
         const data = await getFiatPrice(currency);
