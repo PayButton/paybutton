@@ -354,7 +354,7 @@ hoverText = "Send Bitcoin Cash"
 
 ?> This parameter is optional. Default value is 0 (none). Possible values are any number.
 
-**Example:**
+**例子:**
 <!-- tabs:start -->
 
 #### ** HTML **
