@@ -10,11 +10,7 @@ import React, {
 
 import successSound from '../../assets/success.mp3.json';
 import { useAddressDetails } from '../../hooks/useAddressDetails';
-import {
-  fiatCurrency,
-  getFiatPrice,
-  getTransactionDetails,
-} from '../../util/api-client';
+import { fiatCurrency, getTransactionDetails } from '../../util/api-client';
 import { randomizeSatoshis } from '../../util/randomizeSats';
 import {
   bchToSatoshis,
