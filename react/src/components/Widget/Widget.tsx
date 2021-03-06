@@ -8,7 +8,7 @@ import {
 } from '@material-ui/core';
 import copy from 'copy-to-clipboard';
 import QRCode, { BaseQRCodeProps } from 'qrcode.react';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useCallback } from 'react';
 
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
 import { validateCashAddress } from '../../util/address';
@@ -20,6 +20,7 @@ import {
   satoshisToBch,
   bchToSatoshis,
   getCurrencyObject,
+  currencyObject,
 } from '../../util/satoshis';
 import { useAddressDetails } from '../../hooks/useAddressDetails';
 import { fiatCurrency, getFiatPrice } from '../../util/api-client';
@@ -43,6 +44,7 @@ export interface WidgetProps {
   totalReceived?: number | null;
   goalAmount?: number | string | null;
   currency?: currency;
+  currencyObject?: currencyObject | undefined;
 }
 
 interface StyleProps {
@@ -117,6 +119,7 @@ export const Widget: React.FC<WidgetProps> = props => {
     amount,
     ButtonComponent = Button,
     currency = 'BCH',
+    currencyObject,
   } = Object.assign({}, Widget.defaultProps, props);
 
   const theme = useTheme(props.theme);
@@ -130,7 +133,10 @@ export const Widget: React.FC<WidgetProps> = props => {
   const [errorMsg, setErrorMsg] = useState('');
   const [goalText, setGoalText] = useState('');
   const [goalPercent, setGoalPercent] = useState(0);
-  const [currencyObj, setCurrencyObj] = useState({});
+  const [currencyObj, setCurrencyObj] = useState<currencyObject>(
+    currencyObject!,
+  );
+  const [price, setPrice] = useState(0);
 
   const blurCSS = disabled ? { filter: 'blur(5px)' } : {};
 
@@ -158,8 +164,18 @@ export const Widget: React.FC<WidgetProps> = props => {
     return (): void => clearTimeout(timer);
   }, [recentlyCopied]);
 
+  const query: string[] = [];
   const isMissingWidgetContainer = !totalReceived;
   const addressDetails = useAddressDetails(to, isMissingWidgetContainer);
+
+  const getPrice = useCallback(async (): Promise<void> => {
+    const data = await getFiatPrice(currency);
+    const { price } = data;
+    setPrice(price);
+  }, [currency]);
+
+  const isFiat: boolean =
+    currency !== 'SAT' && currency !== 'BCH' && currency !== 'bits';
 
   useEffect(() => {
     if (totalReceived) {
@@ -186,15 +202,41 @@ export const Widget: React.FC<WidgetProps> = props => {
     }
   }, [to, props.disabled]);
 
-  const query = [];
-  let cleanAmount: any;
+  useEffect(() => {
+    let cleanAmount: any;
+    if (amount) {
+      cleanAmount = +amount;
+      if (currencyObj === undefined) {
+        const obj = getCurrencyObject(cleanAmount, currency);
+        setCurrencyObj(obj);
+      }
+      if (isFiat) {
+        getPrice();
+      }
+    }
+  }, [amount, currency, currencyObj, getPrice, isFiat]);
 
-  if (amount) {
-    cleanAmount = +amount;
-    query.push(`amount=${cleanAmount}`);
+  let text = '';
+  if (currencyObj) {
+    const bchAmount = getCurrencyObject(
+      currencyObj.float / (price / 100),
+      'BCH',
+    );
+
+    if (!isFiat) {
+      const bchType: string =
+        currency === 'SAT' ? 'satoshis' : currencyObj.currency;
+      text = `Send ${currencyObj.string} ${bchType}`;
+      query.push(`amount=${currencyObj.BCHstring}`);
+    } else {
+      text = `Send ${currencyObj.string} ${currencyObj.currency} = ${bchAmount.BCHstring} BCH`;
+      query.push(`amount=${bchAmount.float}`);
+    }
+  } else {
+    text = `Send any amount of BCH`;
   }
-  const address = to;
 
+  const address = to;
   const prefixedAddress = `bitcoincash:${address.replace(/^.*:/, '')}`;
   const url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
 
@@ -229,12 +271,6 @@ export const Widget: React.FC<WidgetProps> = props => {
     />
   );
 
-  const formattedAmount = cleanAmount
-    ?.toFixed(8)
-    .replace(/\.0*$/, '')
-    .replace(/(\.\d*?)0*$/, '$1');
-  const text = props.text ?? `Send ${formattedAmount ?? 'any amount of'} BCH`;
-
   let cleanGoalAmount: any;
   if (goalAmount) {
     cleanGoalAmount = +goalAmount;
@@ -243,13 +279,6 @@ export const Widget: React.FC<WidgetProps> = props => {
   }
 
   const shouldDisplayGoal: boolean = goalAmount !== undefined;
-
-  useEffect(() => {
-    if (amount && currency) {
-      const obj = getCurrencyObject(cleanAmount, currency);
-      setCurrencyObj(obj);
-    }
-  }, [amount, currency]);
 
   useEffect(() => {
     if (currency === 'BCH') {
@@ -268,8 +297,7 @@ export const Widget: React.FC<WidgetProps> = props => {
       //
     } else {
       (async (): Promise<void> => {
-        const data = await getFiatPrice(currency);
-        const { price } = data;
+        await getPrice();
 
         if (totalSatsReceived !== 0) {
           const receivedVal: number =
@@ -282,7 +310,7 @@ export const Widget: React.FC<WidgetProps> = props => {
         }
       })();
     }
-  }, [totalSatsReceived, currency, cleanGoalAmount]);
+  }, [totalSatsReceived, currency, cleanGoalAmount, getPrice, price]);
 
   return (
     <ThemeProvider value={theme}>
