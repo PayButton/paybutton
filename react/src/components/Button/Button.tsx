@@ -93,7 +93,8 @@ export const Button = (props: ButtonProps): React.ReactElement => {
       if (current !== null) {
         const { style } = current;
         style.width = `${current.clientWidth}px`;
-        style.height = `${current.clientHeight}px`;
+        // +4 is a seemingly magic number but it works.
+        style.height = `${current.clientHeight + 4}px`;
       }
     }
   }, [text, buttonRef]);
