@@ -13,7 +13,7 @@ Simply add the following to your website’s HTML, replacing `YOUR_ADDRESS_HERE`
 <div class="paybutton" to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp"></div>
 
 ```html
-<script src="https://unpkg.com/@paybutton/paybutton@^1.0/dist/paybutton.js"></script>
+<script src="https://unpkg.com/@paybutton/paybutton@^1.1/dist/paybutton.js"></script>
 <div class="paybutton" to="YOUR_ADDRESS_HERE"></div>
 ```
 
@@ -24,7 +24,7 @@ Example using JavaScript to generate a PayButton:
 <div id="advanced-usage-example"></div>
 
 ```html
-<script src="https://unpkg.com/@paybutton/paybutton@^1.0/dist/paybutton.js"></script>
+<script src="https://unpkg.com/@paybutton/paybutton@^1.1/dist/paybutton.js"></script>
 
 <div id="my_button"></div>
 
@@ -168,14 +168,14 @@ You can also create an always-visible PayButton Widget that doesn't require clic
 #### ** HTML **
 
 ```html
-<script src="https://unpkg.com/@paybutton/paybutton@^1.0/dist/paybutton.js"></script>
+<script src="https://unpkg.com/@paybutton/paybutton@^1.1/dist/paybutton.js"></script>
 <div class="paybutton-widget" to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp"></div>
 ```
 
 #### ** JavaScript **
 
 ```javascript
-<script src="https://unpkg.com/@paybutton/paybutton@^1.0/dist/paybutton.js"></script>
+<script src="https://unpkg.com/@paybutton/paybutton@^1.1/dist/paybutton.js"></script>
 
 <div id="my_button"></div>
 
