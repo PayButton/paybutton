@@ -18,7 +18,6 @@ import BarChart from '../BarChart/BarChart';
 
 import {
   satoshisToBch,
-  bchToSatoshis,
   getCurrencyObject,
   currencyObject,
 } from '../../util/satoshis';
@@ -274,27 +273,32 @@ export const Widget: React.FC<WidgetProps> = props => {
   let cleanGoalAmount: any;
   if (goalAmount) {
     cleanGoalAmount = +goalAmount;
-    cleanGoalAmount =
-      currency === 'BCH' ? bchToSatoshis(cleanGoalAmount) : cleanGoalAmount;
   }
 
   const shouldDisplayGoal: boolean = goalAmount !== undefined;
 
   useEffect(() => {
-    if (currency === 'BCH') {
-      setGoalPercent((100 * totalSatsReceived) / cleanGoalAmount);
-      setIsLoading(false);
-      return setGoalText(
-        `${satoshisToBch(totalSatsReceived).toFixed(2)} / ${satoshisToBch(
-          cleanGoalAmount,
-        ).toFixed(2)}`,
-      );
-    } else if (currency === 'SAT') {
-      setGoalPercent((100 * totalSatsReceived) / cleanGoalAmount);
-      setIsLoading(false);
-      return setGoalText(`${totalSatsReceived} / ${cleanGoalAmount}`);
-    } else if (currency === 'bits') {
-      //
+    const inSatoshis = getCurrencyObject(totalSatsReceived, 'SAT');
+    const goal = getCurrencyObject(cleanGoalAmount, currency);
+
+    if (!isFiat) {
+      if (goal !== undefined) {
+        setGoalPercent((100 * inSatoshis.float) / goal.satoshis!);
+        if (currency === 'bits') {
+          const bitstring = getCurrencyObject(
+            parseFloat((inSatoshis.float / 100).toFixed(0)),
+            'bits',
+          );
+          setGoalText(`${bitstring.string} / ${goal.string}`);
+          setIsLoading(false);
+        } else if (currency === 'SAT') {
+          setGoalText(`${inSatoshis.string} / ${goal.string}`);
+          setIsLoading(false);
+        } else {
+          setGoalText(`${inSatoshis.BCHstring} / ${cleanGoalAmount}`);
+          setIsLoading(false);
+        }
+      }
     } else {
       (async (): Promise<void> => {
         await getPrice();
@@ -306,11 +310,11 @@ export const Widget: React.FC<WidgetProps> = props => {
           const goalText: string = formatPrice(cleanGoalAmount, currency);
           setIsLoading(false);
           setGoalPercent(100 * (receivedVal / cleanGoalAmount));
-          return setGoalText(`${receivedText} / ${goalText}`);
+          setGoalText(`${receivedText} / ${goalText}`);
         }
       })();
     }
-  }, [totalSatsReceived, currency, cleanGoalAmount, getPrice, price]);
+  }, [totalSatsReceived, currency, cleanGoalAmount, getPrice, price, isFiat]);
 
   return (
     <ThemeProvider value={theme}>
