@@ -39,10 +39,11 @@ function myTransactionFunction(txid, amount) {
 
 var config = {
   to: 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp',
-  amount: 25,
-  currency: 'EUR',
-  text: 'Purchase (25 EUR)',
-  hoverText: 'Limited Time Only!',
+  amount: 4.5,
+  goalAmount: 300000,
+  currency: 'AUD',
+  text: 'Tip Us a Coffee!',
+  hoverText: 'One BCHinno',
   theme: {
     palette: {
       primary: '#ee8b2b',
@@ -74,10 +75,11 @@ function myTransactionFunction(txid, amount) {
 // render JS button
 render( '#advanced-usage-example', {
   to: 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp',
-  amount: 25,
-  currency: 'EUR',
-  text: 'Purchase (25 EUR)',
-  hoverText: 'Limited Time Only!',
+  amount: 4.5,
+  goalAmount: 300000,
+  currency: 'AUD',
+  text: 'Tip Us a Coffee!',
+  hoverText: 'One BCHinno',
   theme: {
     palette: {
       primary: '#ee8b2b',
