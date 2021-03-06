@@ -15,9 +15,13 @@ import {
   getFiatPrice,
   getTransactionDetails,
 } from '../../util/api-client';
-import format from '../../util/format';
 import { randomizeSatoshis } from '../../util/randomizeSats';
-import { bchToSatoshis, satoshisToBch } from '../../util/satoshis';
+import {
+  bchToSatoshis,
+  satoshisToBch,
+  getCurrencyObject,
+  currencyObject,
+} from '../../util/satoshis';
 import Widget, { WidgetProps } from './Widget';
 
 export type cryptoCurrency = 'BCH' | 'SAT' | 'bits';
@@ -80,6 +84,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
     const { enqueueSnackbar } = useSnackbar();
     const addressDetails = useAddressDetails(address, active && !success);
     const [totalReceived, setTotalReceived] = useState(0);
+    const [currencyObj, setCurrencyObj] = useState<currencyObject>();
     const transformAmount = useMemo(
       () => (randomSatoshis ? randomizeSatoshis : (x: number): number => x),
       [randomSatoshis],
@@ -146,6 +151,14 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
     );
 
     useEffect(() => {
+      if (props.amount && currency) {
+        const obj = getCurrencyObject(props.amount, currency);
+        setAmount(obj.float);
+        return setCurrencyObj(obj);
+      }
+    }, [props.amount, currency]);
+
+    useEffect(() => {
       const txIds = transactionsRef.current;
 
       if (addressDetails) {
@@ -166,48 +179,24 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
     useEffect(() => {
       if (!active) return;
 
-      if (!props.amount || ['BCH', 'SAT'].includes(currency)) {
+      if (!props.amount || ['BCH', 'SAT', 'bits'].includes(currency)) {
         setLoading(false);
-        return;
       }
 
-      setLoading(true);
+      // setLoading(true);
 
-      let cancelled = false;
+      // (async (): Promise<void> => {
+      //   if (props.amount === undefined) return;
 
-      (async (): Promise<void> => {
-        if (props.amount === undefined) return;
+      //   const data = await getFiatPrice(currency as fiatCurrency);
+      //   const bchAmount = props.amount / (data.price / 100);
 
-        const data = await getFiatPrice(currency as fiatCurrency);
-        const bchAmount = props.amount / (data.price / 100);
+      //   if (cancelled) return;
 
-        if (cancelled) return;
-
-        setAmount(transformAmount(bchAmount));
-        setLoading(false);
-      })();
-
-      return (): void => {
-        cancelled = true;
-      };
+      //   setAmount(transformAmount(bchAmount));
+      //   setLoading(false);
+      // })();
     }, [active, props.amount, currency, transformAmount]);
-
-    let formattedAmount = `${format.amount(amount) ?? 'any amount of'} BCH`;
-    if (amount != null) {
-      if (currency !== 'BCH' && currency !== 'SAT')
-        formattedAmount = `${format.amount(
-          props.amount,
-        )} ${currency} = ${formattedAmount}`;
-      if (displayCurrency === 'BCH')
-        formattedAmount = `${format.amount(amount)} BCH`;
-      if (displayCurrency === 'bits') {
-        //
-      }
-      if (displayCurrency === 'SAT')
-        formattedAmount = `${bchToSatoshis(amount)} BCH satoshis`;
-    }
-
-    const text = `Send ${formattedAmount ?? 'any amount of BCH'}`;
 
     return (
       <React.Fragment>
@@ -215,10 +204,10 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
           to={to}
           {...widgetProps}
           amount={amount}
-          text={text}
           totalReceived={totalReceived}
           goalAmount={goalAmount}
           currency={currency}
+          currencyObject={currencyObj}
           loading={loading}
           success={success}
           disabled={disabled}
