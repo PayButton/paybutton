@@ -1,5 +1,5 @@
-import currency from 'currency-formatter';
-import { fiatCurrency } from './api-client';
+import currencyFormat from 'currency-formatter';
+import { currency } from './api-client';
 
 export const amount = (x?: number | null): string | undefined => {
   const clean = +x!;
@@ -12,7 +12,7 @@ export const amount = (x?: number | null): string | undefined => {
 
 export const formatPrice = (
   price: number,
-  currencyType: fiatCurrency,
+  currencyType: currency,
   precision = 0,
 ) => {
   let symbol;
@@ -35,7 +35,7 @@ export const formatPrice = (
       break;
   }
 
-  return currency.format(price, {
+  return currencyFormat.format(price, {
     symbol,
     decimal: '.',
     thousand: ',',
@@ -45,7 +45,7 @@ export const formatPrice = (
 };
 
 export const formatComma = (number: number) => {
-  const formattedString = currency.format(number, {
+  const formattedString = currencyFormat.format(number, {
     symbol: '',
     decimal: '',
     thousand: ',',
@@ -58,7 +58,7 @@ export const formatComma = (number: number) => {
 
 export const formatBCH = (bch: string) => {
   const val = +bch;
-  const formattedString = currency.format(val, {
+  const formattedString = currencyFormat.format(val, {
     symbol: '',
     decimal: '.',
     thousand: ',',
