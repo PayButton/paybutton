@@ -179,7 +179,7 @@ export const Widget: React.FC<WidgetProps> = props => {
     if (to === '') {
       setErrorMsg('Missing Recipient');
     }
-  }, [to, props.disabled]);
+  }, [to]);
 
   const query = [];
   let cleanAmount: any;
