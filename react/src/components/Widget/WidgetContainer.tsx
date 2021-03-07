@@ -91,7 +91,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
 
     const handlePayment = useCallback(
       (txid: string, satoshis: number) => {
-        if (sound) txSound.play().catch(() => {});
+        if (sound && !hideToasts) txSound.play().catch(() => {});
 
         const receivedAmount = satoshisToBch(satoshis);
 
