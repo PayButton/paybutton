@@ -161,7 +161,7 @@ function App() {
 
 您还可以创建一个可视性的PayButton插件，不需要点击按钮即可打开:
 
-<div class="paybutton-widget" to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp"></div>
+<div class="paybutton-widget" to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp" style="max-width:500px"></div>
 
 <!-- tabs:start -->
 
@@ -613,4 +613,4 @@ PayButton是一个社群主导的开放源代码促进会。此项目的成功�
 
 > 所有收到的PayButton捐助都直接用於资助PayButton的开发。
 
-<div class="paybutton-widget" to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp"></div>
+<div class="paybutton-widget" to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp" style="max-width:500px"></div>
