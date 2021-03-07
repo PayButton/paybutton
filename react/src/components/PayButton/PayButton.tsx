@@ -18,7 +18,6 @@ export interface PayButtonProps extends ButtonProps {
   text?: string;
   hoverText?: string;
   successText?: string;
-  displayCurrency?: cryptoCurrency;
   randomSatoshis?: boolean;
   hideToasts?: boolean;
   disabled?: boolean;
@@ -43,7 +42,6 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
     successText,
     animation,
     randomSatoshis,
-    displayCurrency,
     hideToasts,
     onSuccess,
     onTransaction,
@@ -107,7 +105,6 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
           amount={cleanAmount}
           currency={currency}
           randomSatoshis={randomSatoshis}
-          displayCurrency={displayCurrency}
           hideToasts={hideToasts}
           onSuccess={handleSuccess}
           onTransaction={onTransaction}
