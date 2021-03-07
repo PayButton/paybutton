@@ -285,6 +285,9 @@ export const Widget: React.FC<WidgetProps> = props => {
   const shouldDisplayGoal: boolean = goalAmount !== undefined;
 
   useEffect(() => {
+    if (!cleanGoalAmount) {
+      return;
+    }
     setIsLoading(true);
 
     const inSatoshis = getCurrencyObject(totalSatsReceived, 'SAT');
@@ -325,7 +328,7 @@ export const Widget: React.FC<WidgetProps> = props => {
       })();
       setIsLoading(false);
     }
-  }, [totalSatsReceived, currency, cleanGoalAmount, getPrice, price, isFiat]);
+  }, [totalSatsReceived, currency, cleanGoalAmount, isFiat]);
 
   return (
     <ThemeProvider value={theme}>
