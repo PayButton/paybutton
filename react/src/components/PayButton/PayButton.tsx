@@ -3,11 +3,7 @@ import React, { useState, useEffect } from 'react';
 
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
 import Button, { ButtonProps } from '../Button/Button';
-import {
-  WidgetContainer,
-  cryptoCurrency,
-  currency,
-} from '../Widget/WidgetContainer';
+import { WidgetContainer, currency } from '../Widget/WidgetContainer';
 import { validateCashAddress } from '../../util/address';
 
 export interface PayButtonProps extends ButtonProps {

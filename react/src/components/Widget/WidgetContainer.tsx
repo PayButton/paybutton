@@ -11,7 +11,6 @@ import React, {
 import successSound from '../../assets/success.mp3.json';
 import { useAddressDetails } from '../../hooks/useAddressDetails';
 import { fiatCurrency, getTransactionDetails } from '../../util/api-client';
-import { randomizeSatoshis } from '../../util/randomizeSats';
 import {
   bchToSatoshis,
   satoshisToBch,
@@ -81,22 +80,9 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
     const addressDetails = useAddressDetails(address, active && !success);
     const [totalReceived, setTotalReceived] = useState(0);
     const [currencyObj, setCurrencyObj] = useState<currencyObject>();
-    const transformAmount = useMemo(
-      () => (randomSatoshis ? randomizeSatoshis : (x: number): number => x),
-      [randomSatoshis],
-    );
 
     const [loading, setLoading] = useState(false);
-    const [amount, setAmount] = useState(() => {
-      if (props.amount == null) return null;
-
-      if (currency === 'BCH') return transformAmount(props.amount);
-
-      if (currency === 'SAT')
-        return transformAmount(satoshisToBch(props.amount));
-
-      return null;
-    });
+    const [amount, setAmount] = useState(0);
 
     const txSound = useMemo(
       (): HTMLAudioElement => new Audio(successSound.base64),
@@ -178,21 +164,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
       if (!props.amount || ['BCH', 'SAT', 'bits'].includes(currency)) {
         setLoading(false);
       }
-
-      // setLoading(true);
-
-      // (async (): Promise<void> => {
-      //   if (props.amount === undefined) return;
-
-      //   const data = await getFiatPrice(currency as fiatCurrency);
-      //   const bchAmount = props.amount / (data.price / 100);
-
-      //   if (cancelled) return;
-
-      //   setAmount(transformAmount(bchAmount));
-      //   setLoading(false);
-      // })();
-    }, [active, props.amount, currency, transformAmount]);
+    }, [active, props.amount, currency]);
 
     return (
       <React.Fragment>
@@ -205,6 +177,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
           currency={currency}
           currencyObject={currencyObj}
           loading={loading}
+          randomSatoshis={randomSatoshis}
           success={success}
           disabled={disabled}
         />

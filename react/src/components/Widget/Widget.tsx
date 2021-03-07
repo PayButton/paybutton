@@ -23,6 +23,7 @@ import {
 } from '../../util/satoshis';
 import { useAddressDetails } from '../../hooks/useAddressDetails';
 import { fiatCurrency, getFiatPrice } from '../../util/api-client';
+import { randomizeSatoshis } from '../../util/randomizeSats';
 
 type QRCodeProps = BaseQRCodeProps & { renderAs: 'svg' };
 
@@ -44,6 +45,7 @@ export interface WidgetProps {
   goalAmount?: number | string | null;
   currency?: currency;
   currencyObject?: currencyObject | undefined;
+  randomSatoshis?: boolean;
 }
 
 interface StyleProps {
@@ -118,6 +120,7 @@ export const Widget: React.FC<WidgetProps> = props => {
     amount,
     ButtonComponent = Button,
     currency = 'BCH',
+    randomSatoshis = true,
     currencyObject,
   } = Object.assign({}, Widget.defaultProps, props);
 
@@ -136,6 +139,10 @@ export const Widget: React.FC<WidgetProps> = props => {
     currencyObject!,
   );
   const [price, setPrice] = useState(0);
+  const transformAmount = useMemo(
+    () => (randomSatoshis ? randomizeSatoshis : (x: number): number => x),
+    [randomSatoshis],
+  );
 
   const blurCSS = disabled ? { filter: 'blur(5px)' } : {};
 
@@ -206,14 +213,14 @@ export const Widget: React.FC<WidgetProps> = props => {
     if (amount) {
       cleanAmount = +amount;
       if (currencyObj === undefined) {
-        const obj = getCurrencyObject(cleanAmount, currency);
+        const obj = getCurrencyObject(transformAmount(cleanAmount), currency);
         setCurrencyObj(obj);
       }
-      if (isFiat) {
+      if (isFiat && !price) {
         getPrice();
       }
     }
-  }, [amount, currency, currencyObj, getPrice, isFiat]);
+  }, [amount, currency]);
 
   let text = '';
   if (currencyObj) {
@@ -278,9 +285,10 @@ export const Widget: React.FC<WidgetProps> = props => {
   const shouldDisplayGoal: boolean = goalAmount !== undefined;
 
   useEffect(() => {
+    setIsLoading(true);
+
     const inSatoshis = getCurrencyObject(totalSatsReceived, 'SAT');
     const goal = getCurrencyObject(cleanGoalAmount, currency);
-
     if (!isFiat) {
       if (goal !== undefined) {
         setGoalPercent((100 * inSatoshis.float) / goal.satoshis!);
@@ -301,18 +309,21 @@ export const Widget: React.FC<WidgetProps> = props => {
       }
     } else {
       (async (): Promise<void> => {
-        await getPrice();
+        if (!price) {
+          await getPrice();
 
-        if (totalSatsReceived !== 0) {
-          const receivedVal: number =
-            satoshisToBch(totalSatsReceived) * (price / 100);
-          const receivedText: string = formatPrice(receivedVal, currency);
-          const goalText: string = formatPrice(cleanGoalAmount, currency);
-          setIsLoading(false);
-          setGoalPercent(100 * (receivedVal / cleanGoalAmount));
-          setGoalText(`${receivedText} / ${goalText}`);
+          if (totalSatsReceived !== 0) {
+            const receivedVal: number =
+              satoshisToBch(totalSatsReceived) * (price / 100);
+            const receivedText: string = formatPrice(receivedVal, currency);
+            const goalText: string = formatPrice(cleanGoalAmount, currency);
+            setIsLoading(false);
+            setGoalPercent(100 * (receivedVal / cleanGoalAmount));
+            setGoalText(`${receivedText} / ${goalText}`);
+          }
         }
       })();
+      setIsLoading(false);
     }
   }, [totalSatsReceived, currency, cleanGoalAmount, getPrice, price, isFiat]);
 
