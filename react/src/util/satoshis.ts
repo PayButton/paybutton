@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { formatPrice, formatComma, formatBCH } from './format';
+import { formatPrice, formatComma, formatBCH, formatBits } from './format';
 import { fiatCurrency } from './api-client';
 
 const BCHdecimals = 8;
@@ -33,7 +33,6 @@ export const getCurrencyObject = (
   const inBCH = new BigNumber(amount)
     .dividedBy(10 ** BCHdecimals)
     .toFixed(BCHdecimals);
-  const satoshis = new BigNumber(`${amount}e+${BCHdecimals}`);
 
   const { c } = bchObj;
   // coefficient
@@ -47,6 +46,8 @@ export const getCurrencyObject = (
       BCHval = inBCH;
       satoshiVal = float;
     } else if (currencyType === 'BCH') {
+      const satoshis = new BigNumber(`${amount}e+${BCHdecimals}`);
+
       if (satoshis !== null && satoshis.c !== null) {
         float = toBCH(satoshis.c[0]);
         string = new BigNumber(`${satoshis.c[0]}e-8`).toPrecision();
@@ -55,11 +56,15 @@ export const getCurrencyObject = (
         satoshiVal = satoshis.c[0];
       }
     } else if (currencyType === 'bits') {
-      float = c[0];
-      string = formatComma(c[0]);
+      const inBits = new BigNumber(amount).decimalPlaces(2).toFixed(2);
+
+      float = parseFloat(inBits);
+      string = formatBits(float);
       BCHval = bchObj.dividedBy(1000000).toFixed(BCHdecimals);
       const sat = bchObj.times(100);
-      satoshiVal = sat.c !== null ? sat.c[0] : 0;
+      if (sat.c !== null) {
+        satoshiVal = sat.c[0];
+      }
     } else {
       float = amount;
       string = formatPrice(amount, currencyType, 2);
