@@ -46,6 +46,7 @@ export interface WidgetProps {
   currency?: currency;
   currencyObject?: currencyObject | undefined;
   randomSatoshis?: boolean;
+  price?: number;
 }
 
 interface StyleProps {
@@ -138,7 +139,7 @@ export const Widget: React.FC<WidgetProps> = props => {
   const [currencyObj, setCurrencyObj] = useState<currencyObject>(
     currencyObject!,
   );
-  const [price, setPrice] = useState(0);
+  const [price, setPrice] = useState(props.price);
   const transformAmount = useMemo(
     () => (randomSatoshis ? randomizeSatoshis : (x: number): number => x),
     [randomSatoshis],
@@ -216,7 +217,7 @@ export const Widget: React.FC<WidgetProps> = props => {
         const obj = getCurrencyObject(transformAmount(cleanAmount), currency);
         setCurrencyObj(obj);
       }
-      if (isFiat && !price) {
+      if (isFiat && price === 0) {
         getPrice();
       }
     }

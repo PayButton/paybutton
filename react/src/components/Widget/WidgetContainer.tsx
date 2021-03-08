@@ -10,7 +10,11 @@ import React, {
 
 import successSound from '../../assets/success.mp3.json';
 import { useAddressDetails } from '../../hooks/useAddressDetails';
-import { fiatCurrency, getTransactionDetails } from '../../util/api-client';
+import {
+  fiatCurrency,
+  getTransactionDetails,
+  getFiatPrice,
+} from '../../util/api-client';
 import {
   bchToSatoshis,
   satoshisToBch,
@@ -81,8 +85,23 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
     const [totalReceived, setTotalReceived] = useState(0);
     const [currencyObj, setCurrencyObj] = useState<currencyObject>();
 
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [amount, setAmount] = useState(0);
+    const [price, setPrice] = useState(0);
+
+    const isFiat: boolean =
+      currency !== 'SAT' && currency !== 'BCH' && currency !== 'bits';
+
+    const getPrice = useCallback(async (): Promise<void> => {
+      try {
+        const data = await getFiatPrice(currency);
+        const { price } = data;
+        setLoading(false);
+        setPrice(price);
+      } catch (error) {
+        console.log('err', error);
+      }
+    }, [currency]);
 
     const txSound = useMemo(
       (): HTMLAudioElement => new Audio(successSound.base64),
@@ -136,7 +155,11 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
       if (props.amount && currency) {
         const obj = getCurrencyObject(props.amount, currency);
         setAmount(obj.float);
-        return setCurrencyObj(obj);
+        setCurrencyObj(obj);
+      }
+
+      if (isFiat && price === 0) {
+        getPrice();
       }
     }, [props.amount, currency]);
 
@@ -178,6 +201,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
           currencyObject={currencyObj}
           loading={loading}
           randomSatoshis={randomSatoshis}
+          price={price}
           success={success}
           disabled={disabled}
         />
