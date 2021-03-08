@@ -335,7 +335,6 @@ export const Widget: React.FC<WidgetProps> = props => {
       })();
     }
   }, [totalSatsReceived, currency, goalAmount, price]);
-  console.log('hrmm', goalText);
 
   return (
     <ThemeProvider value={theme}>
