@@ -176,6 +176,9 @@ export const Widget: React.FC<WidgetProps> = props => {
   const addressDetails = useAddressDetails(to, isMissingWidgetContainer);
 
   const getPrice = useCallback(async (): Promise<void> => {
+    if (props.price !== undefined && props.price > 0) {
+      return;
+    }
     const data = await getFiatPrice(currency);
     const { price } = data;
     setPrice(price);
@@ -183,6 +186,7 @@ export const Widget: React.FC<WidgetProps> = props => {
 
   const isFiat: boolean =
     currency !== 'SAT' && currency !== 'BCH' && currency !== 'bits';
+  const hasPrice: boolean = price !== undefined && price > 0;
 
   useEffect(() => {
     if (totalReceived) {
@@ -224,7 +228,7 @@ export const Widget: React.FC<WidgetProps> = props => {
   }, [amount, currency]);
 
   let text = '';
-  if (currencyObj) {
+  if (currencyObj && hasPrice) {
     const bchAmount = getCurrencyObject(
       currencyObj.float / (price / 100),
       'BCH',
@@ -286,15 +290,15 @@ export const Widget: React.FC<WidgetProps> = props => {
   const shouldDisplayGoal: boolean = goalAmount !== undefined;
 
   useEffect(() => {
-    if (!cleanGoalAmount) {
+    if (loading) {
       return;
     }
-    setIsLoading(true);
 
     const inSatoshis = getCurrencyObject(totalSatsReceived, 'SAT');
+
     const goal = getCurrencyObject(cleanGoalAmount, currency);
     if (!isFiat) {
-      if (goal !== undefined) {
+      if (goal !== undefined && inSatoshis.float > 0) {
         setGoalPercent((100 * inSatoshis.float) / goal.satoshis!);
         if (currency === 'bits') {
           const bitstring = getCurrencyObject(
@@ -307,29 +311,31 @@ export const Widget: React.FC<WidgetProps> = props => {
           setGoalText(`${inSatoshis.string} / ${goal.string}`);
           setIsLoading(false);
         } else {
-          setGoalText(`${inSatoshis.BCHstring} / ${cleanGoalAmount}`);
+          const string = inSatoshis.BCHstring!;
+          const truncated = parseFloat(string).toFixed(2);
+          setGoalText(`${truncated} / ${cleanGoalAmount}`);
           setIsLoading(false);
         }
       }
     } else {
       (async (): Promise<void> => {
-        if (!price) {
+        if (price === 0) {
           await getPrice();
+        }
 
-          if (totalSatsReceived !== 0) {
-            const receivedVal: number =
-              satoshisToBch(totalSatsReceived) * (price / 100);
-            const receivedText: string = formatPrice(receivedVal, currency);
-            const goalText: string = formatPrice(cleanGoalAmount, currency);
-            setIsLoading(false);
-            setGoalPercent(100 * (receivedVal / cleanGoalAmount));
-            setGoalText(`${receivedText} / ${goalText}`);
-          }
+        if (totalSatsReceived !== 0 && hasPrice) {
+          const receivedVal: number =
+            satoshisToBch(totalSatsReceived) * (price / 100);
+          const receivedText: string = formatPrice(receivedVal, currency);
+          const goalText: string = formatPrice(cleanGoalAmount, currency);
+          setIsLoading(false);
+          setGoalPercent(100 * (receivedVal / cleanGoalAmount));
+          setGoalText(`${receivedText} / ${goalText}`);
         }
       })();
-      setIsLoading(false);
     }
-  }, [totalSatsReceived, currency, cleanGoalAmount, isFiat]);
+  }, [totalSatsReceived, currency, goalAmount, price]);
+  console.log('hrmm', goalText);
 
   return (
     <ThemeProvider value={theme}>
