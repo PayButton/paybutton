@@ -230,7 +230,7 @@ export const Widget: React.FC<WidgetProps> = props => {
   let text = '';
   if (currencyObj && hasPrice) {
     const bchAmount = getCurrencyObject(
-      currencyObj.float / (price / 100),
+      currencyObj.float / (price! / 100),
       'BCH',
     );
 
@@ -290,10 +290,6 @@ export const Widget: React.FC<WidgetProps> = props => {
   const shouldDisplayGoal: boolean = goalAmount !== undefined;
 
   useEffect(() => {
-    if (loading) {
-      return;
-    }
-
     const inSatoshis = getCurrencyObject(totalSatsReceived, 'SAT');
 
     const goal = getCurrencyObject(cleanGoalAmount, currency);
@@ -325,7 +321,7 @@ export const Widget: React.FC<WidgetProps> = props => {
 
         if (totalSatsReceived !== 0 && hasPrice) {
           const receivedVal: number =
-            satoshisToBch(totalSatsReceived) * (price / 100);
+            satoshisToBch(totalSatsReceived) * (price! / 100);
           const receivedText: string = formatPrice(receivedVal, currency);
           const goalText: string = formatPrice(cleanGoalAmount, currency);
           setIsLoading(false);
