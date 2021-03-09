@@ -140,6 +140,8 @@ export const Widget: React.FC<WidgetProps> = props => {
     currencyObject!,
   );
   const [price, setPrice] = useState(props.price);
+  const [url, setUrl] = useState('');
+  const [text, setText] = useState('Send any amount of BCH');
   const transformAmount = useMemo(
     () => (randomSatoshis ? randomizeSatoshis : (x: number): number => x),
     [randomSatoshis],
@@ -187,6 +189,7 @@ export const Widget: React.FC<WidgetProps> = props => {
   const isFiat: boolean =
     currency !== 'SAT' && currency !== 'BCH' && currency !== 'bits';
   const hasPrice: boolean = price !== undefined && price > 0;
+  let prefixedAddress: string;
 
   useEffect(() => {
     if (totalReceived) {
@@ -219,37 +222,46 @@ export const Widget: React.FC<WidgetProps> = props => {
       cleanAmount = +amount;
       if (currencyObj === undefined) {
         const obj = getCurrencyObject(transformAmount(cleanAmount), currency);
+
         setCurrencyObj(obj);
       }
-      if (isFiat && price === 0) {
+      if ((isFiat && price === 0) || price === undefined) {
         getPrice();
       }
     }
   }, [amount, currency]);
 
-  let text = '';
-  if (currencyObj && hasPrice) {
-    const bchAmount = getCurrencyObject(
-      currencyObj.float / (price! / 100),
-      'BCH',
-    );
+  useEffect(() => {
+    const address = to;
+    prefixedAddress = `bitcoincash:${address.replace(/^.*:/, '')}`;
+    let url;
+    if (currencyObj && hasPrice) {
+      const bchAmount = getCurrencyObject(
+        currencyObj.float / (price! / 100),
+        'BCH',
+      );
 
-    if (!isFiat) {
-      const bchType: string =
-        currency === 'SAT' ? 'satoshis' : currencyObj.currency;
-      text = `Send ${currencyObj.string} ${bchType}`;
-      query.push(`amount=${currencyObj.BCHstring}`);
+      if (!isFiat) {
+        const bchType: string =
+          currency === 'SAT' ? 'satoshis' : currencyObj.currency;
+        setText(`Send ${currencyObj.string} ${bchType}`);
+        query.push(`amount=${currencyObj.BCHstring}`);
+        url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
+        setUrl(url);
+      } else {
+        setText(
+          `Send ${currencyObj.string} ${currencyObj.currency} = ${bchAmount.BCHstring} BCH`,
+        );
+        query.push(`amount=${bchAmount.float}`);
+        url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
+        setUrl(url);
+      }
     } else {
-      text = `Send ${currencyObj.string} ${currencyObj.currency} = ${bchAmount.BCHstring} BCH`;
-      query.push(`amount=${bchAmount.float}`);
+      setText(`Send any amount of BCH`);
+      url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
+      setUrl(url);
     }
-  } else {
-    text = `Send any amount of BCH`;
-  }
-
-  const address = to;
-  const prefixedAddress = `bitcoincash:${address.replace(/^.*:/, '')}`;
-  const url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
+  }, [currencyObj, price]);
 
   const handleButtonClick = (): void => {
     window.location.href = url;
@@ -395,7 +407,7 @@ export const Widget: React.FC<WidgetProps> = props => {
             className={classes.qrCode}
             onClick={handleQrCodeClick}
           >
-            <Fade in={!loading}>
+            <Fade in={!loading && url !== ''}>
               <React.Fragment>
                 {qrCode}
                 <Box position="absolute" bottom={0} right={0}>
