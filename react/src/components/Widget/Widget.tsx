@@ -181,9 +181,12 @@ export const Widget: React.FC<WidgetProps> = props => {
     if (props.price !== undefined && props.price > 0) {
       return;
     }
-    const data = await getFiatPrice(currency);
-    const { price } = data;
-    setPrice(price);
+
+    if (isFiat) {
+      const data = await getFiatPrice(currency);
+      const { price } = data;
+      setPrice(price);
+    }
   }, [currency]);
 
   const isFiat: boolean =
@@ -215,6 +218,12 @@ export const Widget: React.FC<WidgetProps> = props => {
       setErrorMsg('Missing Recipient');
     }
   }, [to, props.disabled]);
+
+  useEffect(() => {
+    if (isFiat && props.price === 0) {
+      getPrice();
+    }
+  }, []);
 
   useEffect(() => {
     let cleanAmount: any;

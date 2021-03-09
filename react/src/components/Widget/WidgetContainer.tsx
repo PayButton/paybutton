@@ -94,10 +94,12 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
 
     const getPrice = useCallback(async (): Promise<void> => {
       try {
-        const data = await getFiatPrice(currency);
-        const { price } = data;
-        setLoading(false);
-        setPrice(price);
+        if (isFiat) {
+          const data = await getFiatPrice(currency);
+          const { price } = data;
+          setLoading(false);
+          setPrice(price);
+        }
       } catch (error) {
         console.log('err', error);
       }
@@ -161,7 +163,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
       if (isFiat && price === 0) {
         getPrice();
       }
-    }, [props.amount, currency]);
+    }, []);
 
     useEffect(() => {
       const txIds = transactionsRef.current;
