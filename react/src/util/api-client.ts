@@ -7,9 +7,7 @@ export const getAddressDetails = async (
   return await res.json();
 };
 
-export const getFiatPrice = async (
-  currency: fiatCurrency,
-): Promise<PriceData> => {
+export const getFiatPrice = async (currency: currency): Promise<PriceData> => {
   const res = await fetch(
     `https://index-api.bitcoin.com/api/v0/cash/price/${currency}`,
   );
@@ -32,6 +30,8 @@ export default {
 };
 
 export type fiatCurrency = 'USD' | 'CAD' | 'EUR' | 'GBP' | 'AUD';
+export type cryptoCurrency = 'BCH' | 'SAT' | 'bits';
+export type currency = cryptoCurrency | fiatCurrency;
 
 export interface AddressDetails {
   balance: number;

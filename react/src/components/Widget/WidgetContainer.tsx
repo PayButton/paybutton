@@ -12,15 +12,18 @@ import successSound from '../../assets/success.mp3.json';
 import { useAddressDetails } from '../../hooks/useAddressDetails';
 import {
   fiatCurrency,
-  getFiatPrice,
   getTransactionDetails,
+  getFiatPrice,
 } from '../../util/api-client';
-import format from '../../util/format';
-import { randomizeSatoshis } from '../../util/randomizeSats';
-import { bchToSatoshis, satoshisToBch } from '../../util/satoshis';
+import {
+  bchToSatoshis,
+  satoshisToBch,
+  getCurrencyObject,
+  currencyObject,
+} from '../../util/satoshis';
 import Widget, { WidgetProps } from './Widget';
 
-export type cryptoCurrency = 'BCH' | 'SAT';
+export type cryptoCurrency = 'BCH' | 'SAT' | 'bits';
 export type currency = cryptoCurrency | fiatCurrency;
 
 export interface WidgetContainerProps
@@ -80,22 +83,27 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
     const { enqueueSnackbar } = useSnackbar();
     const addressDetails = useAddressDetails(address, active && !success);
     const [totalReceived, setTotalReceived] = useState(0);
-    const transformAmount = useMemo(
-      () => (randomSatoshis ? randomizeSatoshis : (x: number): number => x),
-      [randomSatoshis],
-    );
+    const [currencyObj, setCurrencyObj] = useState<currencyObject>();
 
-    const [loading, setLoading] = useState(false);
-    const [amount, setAmount] = useState(() => {
-      if (props.amount == null) return null;
+    const [loading, setLoading] = useState(true);
+    const [amount, setAmount] = useState(0);
+    const [price, setPrice] = useState(0);
 
-      if (currency === 'BCH') return transformAmount(props.amount);
+    const isFiat: boolean =
+      currency !== 'SAT' && currency !== 'BCH' && currency !== 'bits';
 
-      if (currency === 'SAT')
-        return transformAmount(satoshisToBch(props.amount));
-
-      return null;
-    });
+    const getPrice = useCallback(async (): Promise<void> => {
+      try {
+        if (isFiat) {
+          const data = await getFiatPrice(currency);
+          const { price } = data;
+          setLoading(false);
+          setPrice(price);
+        }
+      } catch (error) {
+        console.log('err', error);
+      }
+    }, [currency]);
 
     const txSound = useMemo(
       (): HTMLAudioElement => new Audio(successSound.base64),
@@ -146,6 +154,18 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
     );
 
     useEffect(() => {
+      if (props.amount && currency) {
+        const obj = getCurrencyObject(props.amount, currency);
+        setAmount(obj.float);
+        setCurrencyObj(obj);
+      }
+
+      if (isFiat && price === 0) {
+        getPrice();
+      }
+    }, []);
+
+    useEffect(() => {
       const txIds = transactionsRef.current;
 
       if (addressDetails) {
@@ -166,45 +186,10 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
     useEffect(() => {
       if (!active) return;
 
-      if (!props.amount || ['BCH', 'SAT'].includes(currency)) {
+      if (!props.amount || ['BCH', 'SAT', 'bits'].includes(currency)) {
         setLoading(false);
-        return;
       }
-
-      setLoading(true);
-
-      let cancelled = false;
-
-      (async (): Promise<void> => {
-        if (props.amount === undefined) return;
-
-        const data = await getFiatPrice(currency as fiatCurrency);
-        const bchAmount = props.amount / (data.price / 100);
-
-        if (cancelled) return;
-
-        setAmount(transformAmount(bchAmount));
-        setLoading(false);
-      })();
-
-      return (): void => {
-        cancelled = true;
-      };
-    }, [active, props.amount, currency, transformAmount]);
-
-    let formattedAmount = `${format.amount(amount) ?? 'any amount of'} BCH`;
-    if (amount != null) {
-      if (currency !== 'BCH' && currency !== 'SAT')
-        formattedAmount = `${format.amount(
-          props.amount,
-        )} ${currency} = ${formattedAmount}`;
-      if (displayCurrency === 'BCH')
-        formattedAmount = `${format.amount(amount)} BCH`;
-      if (displayCurrency === 'SAT')
-        formattedAmount = `${bchToSatoshis(amount)} BCH satoshis`;
-    }
-
-    const text = `Send ${formattedAmount ?? 'any amount of BCH'}`;
+    }, [active, props.amount, currency]);
 
     return (
       <React.Fragment>
@@ -212,11 +197,13 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
           to={to}
           {...widgetProps}
           amount={amount}
-          text={text}
           totalReceived={totalReceived}
           goalAmount={goalAmount}
           currency={currency}
+          currencyObject={currencyObj}
           loading={loading}
+          randomSatoshis={randomSatoshis}
+          price={price}
           success={success}
           disabled={disabled}
         />

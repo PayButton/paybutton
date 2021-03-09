@@ -3,11 +3,7 @@ import React, { useState, useEffect } from 'react';
 
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
 import Button, { ButtonProps } from '../Button/Button';
-import {
-  WidgetContainer,
-  cryptoCurrency,
-  currency,
-} from '../Widget/WidgetContainer';
+import { WidgetContainer, currency } from '../Widget/WidgetContainer';
 import { validateCashAddress } from '../../util/address';
 
 export interface PayButtonProps extends ButtonProps {
@@ -18,7 +14,6 @@ export interface PayButtonProps extends ButtonProps {
   text?: string;
   hoverText?: string;
   successText?: string;
-  displayCurrency?: cryptoCurrency;
   randomSatoshis?: boolean;
   hideToasts?: boolean;
   disabled?: boolean;
@@ -43,7 +38,6 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
     successText,
     animation,
     randomSatoshis,
-    displayCurrency,
     hideToasts,
     onSuccess,
     onTransaction,
@@ -107,7 +101,6 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
           amount={cleanAmount}
           currency={currency}
           randomSatoshis={randomSatoshis}
-          displayCurrency={displayCurrency}
           hideToasts={hideToasts}
           onSuccess={handleSuccess}
           onTransaction={onTransaction}

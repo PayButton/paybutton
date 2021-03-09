@@ -1,5 +1,5 @@
-import currency from 'currency-formatter';
-import { fiatCurrency } from './api-client';
+import currencyFormat from 'currency-formatter';
+import { currency } from './api-client';
 
 export const amount = (x?: number | null): string | undefined => {
   const clean = +x!;
@@ -10,7 +10,11 @@ export const amount = (x?: number | null): string | undefined => {
     .replace(/(\.\d*?)0*$/, '$1');
 };
 
-export const formatPrice = (price: number, currencyType: fiatCurrency) => {
+export const formatPrice = (
+  price: number,
+  currencyType: currency,
+  precision = 0,
+) => {
   let symbol;
 
   switch (currencyType) {
@@ -31,16 +35,57 @@ export const formatPrice = (price: number, currencyType: fiatCurrency) => {
       break;
   }
 
-  return currency.format(price, {
+  return currencyFormat.format(price, {
     symbol,
     decimal: '.',
     thousand: ',',
-    precision: 0,
+    precision: precision,
     format: '%s%v',
   });
+};
+
+export const formatComma = (number: number) => {
+  const formattedString = currencyFormat.format(number, {
+    symbol: '',
+    decimal: '',
+    thousand: ',',
+    precision: 0,
+    format: '%v',
+  });
+
+  return formattedString;
+};
+
+export const formatBCH = (bch: string) => {
+  const val = +bch;
+  const formattedString = currencyFormat.format(val, {
+    symbol: '',
+    decimal: '.',
+    thousand: ',',
+    precision: 8,
+    format: '%v',
+  });
+
+  return formattedString;
+};
+
+export const formatBits = (bits: string | number) => {
+  const val = +bits;
+  const formattedString = currencyFormat.format(val, {
+    symbol: '',
+    decimal: '.',
+    thousand: ',',
+    precision: 2,
+    format: '%v',
+  });
+
+  return formattedString;
 };
 
 export default {
   amount,
   formatPrice,
+  formatComma,
+  formatBCH,
+  formatBits,
 };
