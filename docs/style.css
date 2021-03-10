@@ -109,3 +109,7 @@ a.app-name-link,
 .sidebar ul li a {
   color: var(--docsify_dark_mode_btn) !important;
 }
+
+.app-nav li {
+  color: var(--docsify_dark_mode_header) !important;
+}
