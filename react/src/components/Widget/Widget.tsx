@@ -250,7 +250,14 @@ export const Widget: React.FC<WidgetProps> = props => {
         'BCH',
       );
 
-      if (!isFiat) {
+      setText(
+        `Send ${currencyObj.string} ${currencyObj.currency} = ${bchAmount.BCHstring} BCH`,
+      );
+      query.push(`amount=${bchAmount.float}`);
+      url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
+      setUrl(url);
+    } else {
+      if (!isFiat && currencyObj) {
         const bchType: string =
           currency === 'SAT' ? 'satoshis' : currencyObj.currency;
         setText(`Send ${currencyObj.string} ${bchType}`);
@@ -258,19 +265,12 @@ export const Widget: React.FC<WidgetProps> = props => {
         url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
         setUrl(url);
       } else {
-        setText(
-          `Send ${currencyObj.string} ${currencyObj.currency} = ${bchAmount.BCHstring} BCH`,
-        );
-        query.push(`amount=${bchAmount.float}`);
+        setText(`Send any amount of BCH`);
         url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
         setUrl(url);
       }
-    } else {
-      setText(`Send any amount of BCH`);
-      url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
-      setUrl(url);
     }
-  }, [currencyObj, price]);
+  }, [currencyObj, price, amount]);
 
   const handleButtonClick = (): void => {
     window.location.href = url;
