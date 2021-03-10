@@ -56,14 +56,16 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
   };
 
   useEffect(() => {
-    if (validateCashAddress(to)) {
-      setDisabled(!!props.disabled);
-      setErrorMsg('');
-    } else {
+    if (to !== undefined) {
+      if (validateCashAddress(to)) {
+        setDisabled(!!props.disabled);
+        setErrorMsg('');
+      } else {
+        setDisabled(true);
+        setErrorMsg('Invalid Recipient');
+      }
+    } else if (to === '' || to === undefined) {
       setDisabled(true);
-      setErrorMsg('Invalid Recipient');
-    }
-    if (to === '') {
       setErrorMsg('Missing Recipient');
     }
   }, [to]);
