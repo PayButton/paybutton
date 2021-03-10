@@ -4,7 +4,7 @@ import { h } from 'preact';
 import { render } from 'preact/compat';
 
 declare global {
-  interface Window { 
+  interface Window {
     WebKitMutationObserver: any;
   }
 }
@@ -23,7 +23,7 @@ function init ( ) {
 
   const MutationObserver = window.MutationObserver ?? window.WebKitMutationObserver;
   const observer = new MutationObserver( render );
-  observer.observe( document, { 
+  observer.observe( document, {
     subtree: true,
     childList: true,
     attributes: true,
@@ -66,13 +66,13 @@ function findAndRender <T>( className: string, Component: React.ComponentType<an
     .forEach( el => {
 
       const attributes = el.getAttributeNames( )
-        .reduce( 
+        .reduce(
           (attributes: Record<string,string>, name: string) => {
             const prop = camelcase( name );
-            if ( allowedProps.includes( prop ) ) 
+            if ( allowedProps.includes( prop ) )
               attributes[ prop ] = el.getAttribute( name )!;
             return attributes;
-          }, { } 
+          }, { }
         )
       ;
 
@@ -95,7 +95,7 @@ function findAndRender <T>( className: string, Component: React.ComponentType<an
       }
 
       if ( attributes.theme ) {
-        try { 
+        try {
           props.theme = JSON.parse( attributes.theme )
         } catch {
           // Keep the original string assignment
@@ -104,7 +104,7 @@ function findAndRender <T>( className: string, Component: React.ComponentType<an
 
       if ( ! requiredProps.every( name => name in attributes ) ) {
         console.error( 'PayButton: missing required attribute: ' + JSON.stringify( requiredProps.filter( name => ! ( name in attributes ) ) ) );
-        return;
+        // return;
       }
 
       el.classList.remove( className );
