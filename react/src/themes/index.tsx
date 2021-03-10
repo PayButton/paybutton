@@ -24,11 +24,12 @@ const ThemeContext = React.createContext<Theme | undefined>(undefined);
 export const ThemeProvider = ThemeContext.Provider;
 
 const checkHash = (name: string): string => {
-  const textColor = new RegExp(/^[A-Za-z]+$/, 'i');
-  if (name.startsWith('#') || textColor.test(name)) {
+  // const textColor = new RegExp(/^[A-Za-z]+$/, 'i');
+  if (name.startsWith('#')) {
     return name;
+  } else {
+    return `#${name}`;
   }
-  return `#${name}`;
 };
 
 const validateColors = (obj: any): Theme => {
