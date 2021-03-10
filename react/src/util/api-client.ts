@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 export const getAddressDetails = async (
   address: string,
 ): Promise<AddressDetails> => {
@@ -8,10 +10,13 @@ export const getAddressDetails = async (
 };
 
 export const getFiatPrice = async (currency: currency): Promise<PriceData> => {
-  const res = await fetch(
-    `https://index-api.bitcoin.com/api/v0/cash/price/${currency}`,
+  const { data } = await axios.get(
+    `https://markets.api.bitcoin.com/rates/convertor?c=BCH&q=${currency}`,
   );
-  return await res.json();
+
+  const { rate } = data[currency];
+  const price: number = Math.round(rate * 100);
+  return { price };
 };
 
 export const getTransactionDetails = async (
