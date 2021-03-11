@@ -242,6 +242,9 @@ export const Widget: React.FC<WidgetProps> = props => {
   }, [amount, currency]);
 
   useEffect(() => {
+    if (to === undefined) {
+      return;
+    }
     const address = to;
     prefixedAddress = `bitcoincash:${address.replace(/^.*:/, '')}`;
     let url;
