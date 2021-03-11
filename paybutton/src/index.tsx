@@ -117,9 +117,10 @@ function findAndRender <T>( className: string, Component: React.ComponentType<an
         }
       }
 
-      if ( ! requiredProps.every( name => name in attributes ) ) {
-        console.error( 'PayButton: missing required attribute: ' + JSON.stringify( requiredProps.filter( name => ! ( name in attributes ) ) ) );
+      if (!requiredProps.every(name => name in attributes)) {
+        /*         console.error('PayButton: missing required attribute: ' + JSON.stringify(requiredProps.filter(name => !(name in attributes)))); */
         // return;
+        console.error('The "to" parameter is missing from your PayButton config. Please check it')
       }
 
       el.classList.remove( className );
