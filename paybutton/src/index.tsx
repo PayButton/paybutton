@@ -13,10 +13,15 @@ if ( typeof window !== 'undefined' ) {
   init();
 }
 
-function init ( ) {
-  function render ( ) {
-    renderButtons();
-    renderWidgets();
+function init() {
+  function render() {
+    //prevent firing multiple times
+    window.onload = () => {
+      const paybuttonExists: boolean = document.getElementsByClassName('paybutton').length > 0
+      const widgetExists: boolean = document.getElementsByClassName('paybutton-widget').length > 0
+      renderButtons(widgetExists, paybuttonExists);
+      renderWidgets(widgetExists, paybuttonExists);
+    }
   }
 
   document.addEventListener( 'DOMContentLoaded', render );
@@ -52,12 +57,22 @@ const requiredProps = [
   'to',
 ];
 
-export function renderButtons ( ): void {
-  findAndRender( 'paybutton', PayButton, allowedProps, requiredProps );
+
+export function renderButtons(widgetExists: boolean, paybuttonExists: boolean): void {
+
+  if (!widgetExists && !paybuttonExists) {
+    console.error('The Paybutton class is either misspelled or missing.')
+  } else {
+    findAndRender('paybutton', PayButton, allowedProps, requiredProps);
+  }
 }
 
-export function renderWidgets ( ): void {
-  findAndRender( 'paybutton-widget', Widget, allowedProps, requiredProps );
+export function renderWidgets(widgetExists: boolean, paybuttonExists: boolean): void {
+  if (!widgetExists && !paybuttonExists) {
+    console.error('The Paybutton-Widget class is either misspelled or missing.')
+  } else {
+    findAndRender('paybutton-widget', Widget, allowedProps, requiredProps);
+  }
 }
 
 function findAndRender <T>( className: string, Component: React.ComponentType<any>, allowedProps: string[], requiredProps: string[] ) {
