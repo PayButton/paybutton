@@ -9,7 +9,7 @@ declare global {
   }
 }
 
-if ( typeof window !== 'undefined' ) {
+if (typeof window !== 'undefined') {
   init();
 }
 
@@ -24,15 +24,15 @@ function init() {
     }
   }
 
-  document.addEventListener( 'DOMContentLoaded', render );
+  document.addEventListener('DOMContentLoaded', render);
 
   const MutationObserver = window.MutationObserver ?? window.WebKitMutationObserver;
-  const observer = new MutationObserver( render );
-  observer.observe( document, {
+  const observer = new MutationObserver(render);
+  observer.observe(document, {
     subtree: true,
     childList: true,
     attributes: true,
-  } );
+  });
 }
 
 const allowedProps = [
@@ -75,43 +75,43 @@ export function renderWidgets(widgetExists: boolean, paybuttonExists: boolean): 
   }
 }
 
-function findAndRender <T>( className: string, Component: React.ComponentType<any>, allowedProps: string[], requiredProps: string[] ) {
+function findAndRender<T>(className: string, Component: React.ComponentType<any>, allowedProps: string[], requiredProps: string[]) {
   Array
-    .from( document.getElementsByClassName( className ) )
-    .forEach( el => {
+    .from(document.getElementsByClassName(className))
+    .forEach(el => {
 
-      const attributes = el.getAttributeNames( )
+      const attributes = el.getAttributeNames()
         .reduce(
-          (attributes: Record<string,string>, name: string) => {
-            const prop = camelcase( name );
-            if ( allowedProps.includes( prop ) )
-              attributes[ prop ] = el.getAttribute( name )!;
+          (attributes: Record<string, string>, name: string) => {
+            const prop = camelcase(name);
+            if (allowedProps.includes(prop))
+              attributes[prop] = el.getAttribute(name)!;
             return attributes;
-          }, { }
+          }, {}
         )
-      ;
+        ;
 
-      const props: Record<string,any>= Object.assign( { }, attributes, { to: attributes.to } );
+      const props: Record<string, any> = Object.assign({}, attributes, { to: attributes.to });
 
-      if ( attributes.amount != null )
+      if (attributes.amount != null)
         props.amount = +attributes.amount;
 
       props.hideToasts = attributes.hideToasts === 'true';
       props.randomSatoshis = attributes.randomSatoshis === 'true';
 
-      if ( attributes.onSuccess ) {
+      if (attributes.onSuccess) {
         const geval = window.eval;
-        props.onSuccess = () => geval( attributes.onSuccess );
+        props.onSuccess = () => geval(attributes.onSuccess);
       }
 
-      if ( attributes.onTransaction ) {
+      if (attributes.onTransaction) {
         const geval = window.eval;
-        props.onTransaction = () => geval( attributes.onTransaction );
+        props.onTransaction = () => geval(attributes.onTransaction);
       }
 
-      if ( attributes.theme ) {
+      if (attributes.theme) {
         try {
-          props.theme = JSON.parse( attributes.theme )
+          props.theme = JSON.parse(attributes.theme)
         } catch {
           // Keep the original string assignment
         }
@@ -123,17 +123,17 @@ function findAndRender <T>( className: string, Component: React.ComponentType<an
         console.error('The "to" parameter is missing from your PayButton config. Please check it')
       }
 
-      el.classList.remove( className );
+      //    el.classList.remove(className);
 
-      render( <Component { ...props } />, el )
-    } );
+      render(<Component {...props} />, el)
+    });
 }
 
 export default {
-  render: ( el: HTMLElement, props: PayButtonProps ) => {
-    render( <PayButton { ...props } />, el )
+  render: (el: HTMLElement, props: PayButtonProps) => {
+    render(<PayButton {...props} />, el)
   },
-  renderWidget: ( el: HTMLElement, props: WidgetProps ) => {
-    render( <Widget { ...props } />, el )
+  renderWidget: (el: HTMLElement, props: WidgetProps) => {
+    render(<Widget {...props} />, el)
   },
 };
