@@ -15,14 +15,38 @@ if (typeof window !== 'undefined') {
 
 function init() {
   function render() {
+    let paybuttonDivID: string = '';
+    let createdInJS: boolean = false;
     //prevent firing multiple times
     window.onload = () => {
-      const paybuttonExists: boolean = document.getElementsByClassName('paybutton').length > 0
-      const widgetExists: boolean = document.getElementsByClassName('paybutton-widget').length > 0
-      renderButtons(widgetExists, paybuttonExists);
-      renderWidgets(widgetExists, paybuttonExists);
+      const yes = document.scripts;
+
+      for (let i = 0; i < yes.length; i++) {
+        const each = yes[i].innerHTML;
+        let split = each.split('PayButton.render(document.getElementById(')
+        if (split.length > 1) {
+          let id: any = split[1].split(`'`)
+          createdInJS = true;
+          paybuttonDivID = id[1]
+        }
+      }
+
+      const javascriptDivExists = document.getElementById(paybuttonDivID);
+
+      if (createdInJS && javascriptDivExists === null) {
+        return console.error(`The Paybutton div#${paybuttonDivID} is either misspelled or missing.`)
+      } else if (createdInJS) {
+        return
+      } else {
+        const paybuttonExists: boolean = document.getElementsByClassName('paybutton').length > 0
+        const widgetExists: boolean = document.getElementsByClassName('paybutton-widget').length > 0
+        renderButtons(widgetExists, paybuttonExists);
+        renderWidgets(widgetExists, paybuttonExists);
+      }
     }
+
   }
+
 
   document.addEventListener('DOMContentLoaded', render);
 
@@ -33,6 +57,7 @@ function init() {
     childList: true,
     attributes: true,
   });
+
 }
 
 const allowedProps = [
@@ -61,7 +86,7 @@ const requiredProps = [
 export function renderButtons(widgetExists: boolean, paybuttonExists: boolean): void {
 
   if (!widgetExists && !paybuttonExists) {
-    console.error('The Paybutton class is either misspelled or missing.')
+    console.error('The "paybutton" class is either misspelled or missing.')
   } else {
     findAndRender('paybutton', PayButton, allowedProps, requiredProps);
   }
@@ -69,7 +94,7 @@ export function renderButtons(widgetExists: boolean, paybuttonExists: boolean): 
 
 export function renderWidgets(widgetExists: boolean, paybuttonExists: boolean): void {
   if (!widgetExists && !paybuttonExists) {
-    console.error('The Paybutton-Widget class is either misspelled or missing.')
+    console.error('The "paybutton-widget" class is either misspelled or missing.')
   } else {
     findAndRender('paybutton-widget', Widget, allowedProps, requiredProps);
   }
@@ -131,9 +156,13 @@ function findAndRender<T>(className: string, Component: React.ComponentType<any>
 
 export default {
   render: (el: HTMLElement, props: PayButtonProps) => {
-    render(<PayButton {...props} />, el)
+    if (el !== null) {
+      render(<PayButton {...props} />, el)
+    }
   },
   renderWidget: (el: HTMLElement, props: WidgetProps) => {
-    render(<Widget {...props} />, el)
-  },
+    if (el !== null) {
+      render(<Widget {...props} />, el)
+    }
+  }
 };
