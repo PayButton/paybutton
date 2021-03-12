@@ -70,6 +70,16 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
     }
   }, [to]);
 
+  useEffect(() => {
+    if (amount !== undefined && isNaN(+amount)) {
+      setErrorMsg('Amount must be a number');
+      setDisabled(true);
+    } else {
+      setErrorMsg('');
+      setDisabled(false);
+    }
+  }, [amount]);
+
   const ButtonComponent: React.FC<ButtonProps> = (
     props: ButtonProps,
   ): React.ReactElement => <Button animation={animation} {...props} />;
