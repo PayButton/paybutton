@@ -118,8 +118,12 @@ function findAndRender<T>(className: string, Component: React.ComponentType<any>
 
       const props: Record<string, any> = Object.assign({}, attributes, { to: attributes.to });
 
-      if (attributes.amount != null)
+      if (attributes.amount != null) {
         props.amount = +attributes.amount;
+        if (isNaN(props.amount)) {
+          console.error('Amount must be a number')
+        }
+      }
 
       props.hideToasts = attributes.hideToasts === 'true';
       props.randomSatoshis = attributes.randomSatoshis === 'true';
@@ -154,14 +158,28 @@ function findAndRender<T>(className: string, Component: React.ComponentType<any>
     });
 }
 
+const validateJSProps = (props: PayButtonProps) => {
+  if (props.amount !== null && props.amount !== undefined) {
+    props.amount = +props.amount
+
+    if (isNaN(props.amount)) {
+      console.error('Amount must be a number')
+    }
+  }
+
+  // validate the rest of the props
+}
+
 export default {
   render: (el: HTMLElement, props: PayButtonProps) => {
     if (el !== null) {
+      validateJSProps(props)
       render(<PayButton {...props} />, el)
     }
   },
   renderWidget: (el: HTMLElement, props: WidgetProps) => {
     if (el !== null) {
+      validateJSProps(props)
       render(<Widget {...props} />, el)
     }
   }

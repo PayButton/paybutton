@@ -242,6 +242,16 @@ export const Widget: React.FC<WidgetProps> = props => {
   }, [amount, currency]);
 
   useEffect(() => {
+    if (amount !== undefined && amount && isNaN(+amount)) {
+      setErrorMsg('Amount must be a number');
+      setDisabled(true);
+    } else {
+      setErrorMsg('');
+      setDisabled(false);
+    }
+  }, [amount]);
+
+  useEffect(() => {
     if (to === undefined) {
       return;
     }
