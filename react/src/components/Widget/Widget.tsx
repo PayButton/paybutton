@@ -175,6 +175,7 @@ export const Widget: React.FC<WidgetProps> = props => {
 
   const query: string[] = [];
   const isMissingWidgetContainer = !totalReceived;
+  const validAddress = to !== undefined && validateCashAddress(to);
   const addressDetails = useAddressDetails(to, isMissingWidgetContainer);
 
   const getPrice = useCallback(async (): Promise<void> => {
@@ -208,16 +209,15 @@ export const Widget: React.FC<WidgetProps> = props => {
   useEffect(() => {
     const invalidAmount = amount !== undefined && amount && isNaN(+amount);
 
-    if (to !== undefined && validateCashAddress(to)) {
+    if (validAddress) {
       setDisabled(!!props.disabled);
       setErrorMsg('');
-    } else if (to === undefined) {
-      console.log('line 67 ');
-      setDisabled(true);
-      setErrorMsg('Invalid Recipient');
     } else if (invalidAmount) {
       setDisabled(true);
       setErrorMsg('Amount should be a number');
+    } else {
+      setDisabled(true);
+      setErrorMsg('Invalid Recipient');
     }
   }, [to, amount]);
 

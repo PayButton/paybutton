@@ -61,13 +61,12 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
     if (to !== undefined && validateCashAddress(to)) {
       setDisabled(!!props.disabled);
       setErrorMsg('');
-    } else if (to === undefined) {
-      console.log('line 67 ');
-      setDisabled(true);
-      setErrorMsg('Invalid Recipient');
     } else if (invalidAmount) {
       setDisabled(true);
       setErrorMsg('Amount should be a number');
+    } else {
+      setDisabled(true);
+      setErrorMsg('Invalid Recipient');
     }
   }, [to, amount]);
 

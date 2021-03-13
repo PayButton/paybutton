@@ -81,13 +81,14 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
     const hasLoadedTransactionsRef = useRef(false);
     const [success, setSuccess] = useState(false);
     const { enqueueSnackbar } = useSnackbar();
-    const addressDetails = useAddressDetails(address, active && !success);
     const [totalReceived, setTotalReceived] = useState(0);
     const [currencyObj, setCurrencyObj] = useState<currencyObject>();
 
     const [loading, setLoading] = useState(true);
     const [amount, setAmount] = useState(0);
     const [price, setPrice] = useState(0);
+
+    const addressDetails = useAddressDetails(address, active && !success);
 
     const isFiat: boolean =
       currency !== 'SAT' && currency !== 'BCH' && currency !== 'bits';

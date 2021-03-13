@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { AddressDetails, getAddressDetails } from '../util/api-client';
+import { validateCashAddress } from '../util/address';
 
 const POLL_DELAY = 100;
 
@@ -13,6 +14,9 @@ export const useAddressDetails = (
   useEffect(() => {
     if (!address || !active) {
       setDetails(undefined);
+      return;
+    }
+    if (!validateCashAddress(address)) {
       return;
     }
 
