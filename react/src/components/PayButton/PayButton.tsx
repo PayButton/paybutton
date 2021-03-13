@@ -56,29 +56,20 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
   };
 
   useEffect(() => {
-    if (to !== undefined) {
-      if (validateCashAddress(to)) {
-        setDisabled(!!props.disabled);
-        setErrorMsg('');
-      } else {
-        setDisabled(true);
-        setErrorMsg('Invalid Recipient');
-      }
-    } else if (to === '' || to === undefined) {
-      setDisabled(true);
-      setErrorMsg('Missing Recipient');
-    }
-  }, [to]);
+    const invalidAmount = amount !== undefined && isNaN(+amount);
 
-  useEffect(() => {
-    if (amount !== undefined && isNaN(+amount)) {
-      setErrorMsg('Amount must be a number');
-      setDisabled(true);
-    } else {
+    if (to !== undefined && validateCashAddress(to)) {
+      setDisabled(!!props.disabled);
       setErrorMsg('');
-      setDisabled(false);
+    } else if (to === undefined) {
+      console.log('line 67 ');
+      setDisabled(true);
+      setErrorMsg('Invalid Recipient');
+    } else if (invalidAmount) {
+      setDisabled(true);
+      setErrorMsg('Amount should be a number');
     }
-  }, [amount]);
+  }, [to, amount]);
 
   const ButtonComponent: React.FC<ButtonProps> = (
     props: ButtonProps,

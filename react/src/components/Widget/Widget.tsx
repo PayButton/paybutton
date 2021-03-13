@@ -206,19 +206,20 @@ export const Widget: React.FC<WidgetProps> = props => {
   }, [addressDetails, totalReceived, totalSatsReceived]);
 
   useEffect(() => {
-    if (to !== undefined) {
-      if (validateCashAddress(to)) {
-        setDisabled(!!props.disabled);
-        setErrorMsg('');
-      } else {
-        setDisabled(true);
-        setErrorMsg('Invalid Recipient');
-      }
-    } else if (to === '' || to === undefined) {
+    const invalidAmount = amount !== undefined && isNaN(+amount);
+
+    if (to !== undefined && validateCashAddress(to)) {
+      setDisabled(!!props.disabled);
+      setErrorMsg('');
+    } else if (to === undefined) {
+      console.log('line 67 ');
       setDisabled(true);
-      setErrorMsg('Missing Recipient');
+      setErrorMsg('Invalid Recipient');
+    } else if (invalidAmount) {
+      setDisabled(true);
+      setErrorMsg('Amount should be a number');
     }
-  }, [to]);
+  }, [to, amount]);
 
   useEffect(() => {
     if (isFiat && props.price === 0) {
@@ -240,16 +241,6 @@ export const Widget: React.FC<WidgetProps> = props => {
       }
     }
   }, [amount, currency]);
-
-  useEffect(() => {
-    if (amount !== undefined && amount && isNaN(+amount)) {
-      setErrorMsg('Amount must be a number');
-      setDisabled(true);
-    } else {
-      setErrorMsg('');
-      setDisabled(false);
-    }
-  }, [amount]);
 
   useEffect(() => {
     if (to === undefined) {
