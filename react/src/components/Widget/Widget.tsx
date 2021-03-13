@@ -206,7 +206,7 @@ export const Widget: React.FC<WidgetProps> = props => {
   }, [addressDetails, totalReceived, totalSatsReceived]);
 
   useEffect(() => {
-    const invalidAmount = amount !== undefined && isNaN(+amount);
+    const invalidAmount = amount !== undefined && amount && isNaN(+amount);
 
     if (to !== undefined && validateCashAddress(to)) {
       setDisabled(!!props.disabled);
