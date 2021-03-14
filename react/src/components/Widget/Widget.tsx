@@ -175,6 +175,7 @@ export const Widget: React.FC<WidgetProps> = props => {
 
   const query: string[] = [];
   const isMissingWidgetContainer = !totalReceived;
+  const validAddress = to !== undefined && validateCashAddress(to);
   const addressDetails = useAddressDetails(to, isMissingWidgetContainer);
 
   const getPrice = useCallback(async (): Promise<void> => {
@@ -206,18 +207,19 @@ export const Widget: React.FC<WidgetProps> = props => {
   }, [addressDetails, totalReceived, totalSatsReceived]);
 
   useEffect(() => {
-    if (validateCashAddress(to)) {
+    const invalidAmount = amount !== undefined && amount && isNaN(+amount);
+
+    if (validAddress) {
       setDisabled(!!props.disabled);
       setErrorMsg('');
+    } else if (invalidAmount) {
+      setDisabled(true);
+      setErrorMsg('Amount should be a number');
     } else {
       setDisabled(true);
       setErrorMsg('Invalid Recipient');
     }
-
-    if (to === '') {
-      setErrorMsg('Missing Recipient');
-    }
-  }, [to]);
+  }, [to, amount]);
 
   useEffect(() => {
     if (isFiat && props.price === 0) {
@@ -241,6 +243,9 @@ export const Widget: React.FC<WidgetProps> = props => {
   }, [amount, currency]);
 
   useEffect(() => {
+    if (to === undefined) {
+      return;
+    }
     const address = to;
     prefixedAddress = `bitcoincash:${address.replace(/^.*:/, '')}`;
     let url;
