@@ -488,7 +488,13 @@ export const Widget: React.FC<WidgetProps> = props => {
           </Box>
 
           {userCanEdit && (
-            <Grid container spacing={2} justify="center" alignItems="flex-end">
+            <Grid
+              container
+              spacing={2}
+              justify="center"
+              alignItems="flex-end"
+              style={{ margin: '6px auto' }}
+            >
               <Grid item xs={6}>
                 <TextField
                   label={currency}
