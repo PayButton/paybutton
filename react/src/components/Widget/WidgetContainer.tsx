@@ -87,7 +87,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
     const [currencyObj, setCurrencyObj] = useState<currencyObject>();
 
     const [loading, setLoading] = useState(true);
-    const [amount, setAmount] = useState(0);
+    const [amount, setAmount] = useState(props.amount);
     const [price, setPrice] = useState(0);
 
     const addressDetails = useAddressDetails(address, active && !success);
