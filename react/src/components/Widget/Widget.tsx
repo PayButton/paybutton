@@ -48,6 +48,7 @@ export interface WidgetProps {
   currencyObject?: currencyObject | undefined;
   randomSatoshis?: boolean;
   price?: number;
+  userCanEdit?: boolean;
 }
 
 interface StyleProps {
@@ -533,6 +534,7 @@ Widget.defaultProps = {
   loading: false,
   success: false,
   successText: 'Thank you!',
+  userCanEdit: false,
 };
 
 export default Widget;
