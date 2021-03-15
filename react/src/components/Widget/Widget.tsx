@@ -124,6 +124,7 @@ export const Widget: React.FC<WidgetProps> = props => {
     currency = 'BCH',
     randomSatoshis = true,
     currencyObject,
+    userCanEdit,
   } = Object.assign({}, Widget.defaultProps, props);
 
   const theme = useTheme(props.theme);
@@ -231,9 +232,22 @@ export const Widget: React.FC<WidgetProps> = props => {
   }, []);
 
   useEffect(() => {
+    const invalidAmount = amount !== undefined && amount && isNaN(+amount);
+
     let cleanAmount: any;
 
-    if (userEditedAmount !== undefined) {
+    if ((isFiat && price === 0) || price === undefined) {
+      getPrice();
+    }
+
+    if (invalidAmount) {
+      setDisabled(true);
+      setErrorMsg('Amount should be a number');
+    } else {
+      setErrorMsg('');
+    }
+
+    if (userEditedAmount !== undefined && amount) {
       const obj = getCurrencyObject(transformAmount(+amount), currency);
       setCurrencyObj(obj);
     } else if (amount) {
@@ -241,9 +255,6 @@ export const Widget: React.FC<WidgetProps> = props => {
       if (currencyObj === undefined) {
         const obj = getCurrencyObject(transformAmount(cleanAmount), currency);
         setCurrencyObj(obj);
-      }
-      if ((isFiat && price === 0) || price === undefined) {
-        getPrice();
       }
     }
   }, [amount, currency, userEditedAmount]);
@@ -323,8 +334,9 @@ export const Widget: React.FC<WidgetProps> = props => {
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const amount = e.target.value;
     const userEdited = getCurrencyObject(+amount, currency);
+
     setUserEditedAmount(userEdited);
-    setAmount(userEdited.float);
+    setAmount(amount);
   };
 
   useEffect(() => {
@@ -473,8 +485,8 @@ export const Widget: React.FC<WidgetProps> = props => {
             )}
           </Box>
 
-          <Box pt={4} flex={1}>
-            <Fade in={!loading && currencyObj !== undefined}>
+          {userCanEdit && (
+            <Box pt={4} flex={1}>
               <TextField
                 label="Amount"
                 value={amount}
@@ -482,8 +494,8 @@ export const Widget: React.FC<WidgetProps> = props => {
                 name="Amount"
                 id="userEditedAmount"
               />
-            </Fade>
-          </Box>
+            </Box>
+          )}
 
           {success || (
             <Box pt={2} flex={1}>
