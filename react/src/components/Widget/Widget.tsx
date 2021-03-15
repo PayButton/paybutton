@@ -5,6 +5,7 @@ import {
   Link,
   Typography,
   makeStyles,
+  TextField,
 } from '@material-ui/core';
 import copy from 'copy-to-clipboard';
 import QRCode, { BaseQRCodeProps } from 'qrcode.react';
@@ -118,7 +119,6 @@ export const Widget: React.FC<WidgetProps> = props => {
     successText,
     totalReceived,
     goalAmount,
-    amount,
     ButtonComponent = Button,
     currency = 'BCH',
     randomSatoshis = true,
@@ -140,7 +140,9 @@ export const Widget: React.FC<WidgetProps> = props => {
     currencyObject!,
   );
   const [price, setPrice] = useState(props.price);
+  const [amount, setAmount] = useState(props.amount);
   const [url, setUrl] = useState('');
+  const [userEditedAmount, setUserEditedAmount] = useState<currencyObject>();
   const [text, setText] = useState('Send any amount of BCH');
   const transformAmount = useMemo(
     () => (randomSatoshis ? randomizeSatoshis : (x: number): number => x),
@@ -229,18 +231,21 @@ export const Widget: React.FC<WidgetProps> = props => {
 
   useEffect(() => {
     let cleanAmount: any;
-    if (amount) {
+
+    if (userEditedAmount !== undefined) {
+      const obj = getCurrencyObject(transformAmount(+amount), currency);
+      setCurrencyObj(obj);
+    } else if (amount) {
       cleanAmount = +amount;
       if (currencyObj === undefined) {
         const obj = getCurrencyObject(transformAmount(cleanAmount), currency);
-
         setCurrencyObj(obj);
       }
       if ((isFiat && price === 0) || price === undefined) {
         getPrice();
       }
     }
-  }, [amount, currency]);
+  }, [amount, currency, userEditedAmount]);
 
   useEffect(() => {
     if (to === undefined) {
@@ -314,6 +319,12 @@ export const Widget: React.FC<WidgetProps> = props => {
   }
 
   const shouldDisplayGoal: boolean = goalAmount !== undefined;
+  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const amount = e.target.value;
+    const userEdited = getCurrencyObject(+amount, currency);
+    setUserEditedAmount(userEdited);
+    setAmount(userEdited.float);
+  };
 
   useEffect(() => {
     const inSatoshis = getCurrencyObject(totalSatsReceived, 'SAT');
@@ -460,6 +471,19 @@ export const Widget: React.FC<WidgetProps> = props => {
               </Box>
             )}
           </Box>
+
+          <Box pt={4} flex={1}>
+            <Fade in={!loading && currencyObj !== undefined}>
+              <TextField
+                label="Amount"
+                value={amount}
+                onChange={handleAmountChange}
+                name="Amount"
+                id="userEditedAmount"
+              />
+            </Fade>
+          </Box>
+
           {success || (
             <Box pt={2} flex={1}>
               <ButtonComponent
