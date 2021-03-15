@@ -6,6 +6,7 @@ import {
   Typography,
   makeStyles,
   TextField,
+  Grid,
 } from '@material-ui/core';
 import copy from 'copy-to-clipboard';
 import QRCode, { BaseQRCodeProps } from 'qrcode.react';
@@ -25,6 +26,7 @@ import {
 import { useAddressDetails } from '../../hooks/useAddressDetails';
 import { fiatCurrency, getFiatPrice } from '../../util/api-client';
 import { randomizeSatoshis } from '../../util/randomizeSats';
+import PencilIcon from '../../assets/edit-pencil';
 
 type QRCodeProps = BaseQRCodeProps & { renderAs: 'svg' };
 
@@ -486,15 +488,20 @@ export const Widget: React.FC<WidgetProps> = props => {
           </Box>
 
           {userCanEdit && (
-            <Box pt={4} flex={1}>
-              <TextField
-                label="Amount"
-                value={amount}
-                onChange={handleAmountChange}
-                name="Amount"
-                id="userEditedAmount"
-              />
-            </Box>
+            <Grid container spacing={2} justify="center" alignItems="flex-end">
+              <Grid item xs={6}>
+                <TextField
+                  label={currency}
+                  value={amount}
+                  onChange={handleAmountChange}
+                  name="Amount"
+                  id="userEditedAmount"
+                />
+              </Grid>
+              <Grid item xs={2}>
+                <PencilIcon width={30} height={30} fill="#333" />
+              </Grid>
+            </Grid>
           )}
 
           {success || (
