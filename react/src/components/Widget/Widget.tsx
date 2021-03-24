@@ -319,6 +319,7 @@ export const Widget: React.FC<WidgetProps> = props => {
     const inSatoshis = getCurrencyObject(totalSatsReceived, 'SAT');
 
     const goal = getCurrencyObject(cleanGoalAmount, currency);
+
     if (!isFiat) {
       if (goal !== undefined && inSatoshis.float > 0) {
         setGoalPercent((100 * inSatoshis.float) / goal.satoshis!);
@@ -353,6 +354,10 @@ export const Widget: React.FC<WidgetProps> = props => {
           setIsLoading(false);
           setGoalPercent(100 * (receivedVal / cleanGoalAmount));
           setGoalText(`${receivedText} / ${goalText}`);
+        }
+        if (shouldDisplayGoal && goal.float !== undefined && goal.float <= 0) {
+          setDisabled(true);
+          setErrorMsg('Goal Value must be a number');
         }
       })();
     }
