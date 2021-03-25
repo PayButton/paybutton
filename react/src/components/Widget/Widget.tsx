@@ -498,7 +498,7 @@ export const Widget: React.FC<WidgetProps> = props => {
               <Grid item xs={6}>
                 <TextField
                   label={currency}
-                  value={amount}
+                  value={amount || 0}
                   onChange={handleAmountChange}
                   name="Amount"
                   id="userEditedAmount"
