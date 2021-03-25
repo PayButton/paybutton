@@ -235,7 +235,8 @@ export const Widget: React.FC<WidgetProps> = props => {
 
   useEffect(() => {
     const invalidAmount = amount !== undefined && amount && isNaN(+amount);
-
+    const isNegativeNumber =
+      typeof amount === 'string' && amount.startsWith('-');
     let cleanAmount: any;
 
     if ((isFiat && price === 0) || price === undefined) {
@@ -245,8 +246,15 @@ export const Widget: React.FC<WidgetProps> = props => {
     if (invalidAmount) {
       setDisabled(true);
       setErrorMsg('Amount should be a number');
+    } else if (isNegativeNumber) {
+      setDisabled(true);
+      setErrorMsg('Amount should be positive');
     } else {
-      setErrorMsg('');
+      if (validAddress) {
+        setErrorMsg('');
+      } else {
+        setErrorMsg('Invalid Recipient');
+      }
     }
 
     if (userEditedAmount !== undefined && amount) {
