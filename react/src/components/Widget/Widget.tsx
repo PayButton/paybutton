@@ -505,7 +505,7 @@ export const Widget: React.FC<WidgetProps> = props => {
                 />
               </Grid>
               <Grid item xs={2}>
-                <PencilIcon width={30} height={30} fill="#333" />
+                <PencilIcon width={20} height={20} fill="#333" />
               </Grid>
             </Grid>
           )}
