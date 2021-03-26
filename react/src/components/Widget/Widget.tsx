@@ -5,6 +5,8 @@ import {
   Link,
   Typography,
   makeStyles,
+  TextField,
+  Grid,
 } from '@material-ui/core';
 import copy from 'copy-to-clipboard';
 import QRCode, { BaseQRCodeProps } from 'qrcode.react';
@@ -24,6 +26,7 @@ import {
 import { useAddressDetails } from '../../hooks/useAddressDetails';
 import { fiatCurrency, getFiatPrice } from '../../util/api-client';
 import { randomizeSatoshis } from '../../util/randomizeSats';
+import PencilIcon from '../../assets/edit-pencil';
 
 type QRCodeProps = BaseQRCodeProps & { renderAs: 'svg' };
 
@@ -47,6 +50,7 @@ export interface WidgetProps {
   currencyObject?: currencyObject | undefined;
   randomSatoshis?: boolean;
   price?: number;
+  editable?: boolean;
 }
 
 interface StyleProps {
@@ -118,11 +122,11 @@ export const Widget: React.FC<WidgetProps> = props => {
     successText,
     totalReceived,
     goalAmount,
-    amount,
     ButtonComponent = Button,
     currency = 'BCH',
     randomSatoshis = true,
     currencyObject,
+    editable,
   } = Object.assign({}, Widget.defaultProps, props);
 
   const theme = useTheme(props.theme);
@@ -140,7 +144,9 @@ export const Widget: React.FC<WidgetProps> = props => {
     currencyObject!,
   );
   const [price, setPrice] = useState(props.price);
+  const [amount, setAmount] = useState(props.amount);
   const [url, setUrl] = useState('');
+  const [userEditedAmount, setUserEditedAmount] = useState<currencyObject>();
   const [text, setText] = useState('Send any amount of BCH');
   const transformAmount = useMemo(
     () => (randomSatoshis ? randomizeSatoshis : (x: number): number => x),
@@ -228,19 +234,40 @@ export const Widget: React.FC<WidgetProps> = props => {
   }, []);
 
   useEffect(() => {
+    const invalidAmount = amount !== undefined && amount && isNaN(+amount);
+    const isNegativeNumber =
+      typeof amount === 'string' && amount.startsWith('-');
     let cleanAmount: any;
-    if (amount) {
+
+    if ((isFiat && price === 0) || price === undefined) {
+      getPrice();
+    }
+
+    if (invalidAmount) {
+      setDisabled(true);
+      setErrorMsg('Amount should be a number');
+    } else if (isNegativeNumber) {
+      setDisabled(true);
+      setErrorMsg('Amount should be positive');
+    } else {
+      if (validAddress) {
+        setErrorMsg('');
+      } else {
+        setErrorMsg('Invalid Recipient');
+      }
+    }
+
+    if (userEditedAmount !== undefined && amount) {
+      const obj = getCurrencyObject(transformAmount(+amount), currency);
+      setCurrencyObj(obj);
+    } else if (amount) {
       cleanAmount = +amount;
       if (currencyObj === undefined) {
         const obj = getCurrencyObject(transformAmount(cleanAmount), currency);
-
         setCurrencyObj(obj);
       }
-      if ((isFiat && price === 0) || price === undefined) {
-        getPrice();
-      }
     }
-  }, [amount, currency]);
+  }, [amount, currency, userEditedAmount]);
 
   useEffect(() => {
     if (to === undefined) {
@@ -262,7 +289,9 @@ export const Widget: React.FC<WidgetProps> = props => {
       url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
       setUrl(url);
     } else {
-      if (!isFiat && currencyObj) {
+      const notZeroValue: boolean =
+        currencyObj?.satoshis !== undefined && currencyObj.satoshis > 0;
+      if (!isFiat && currencyObj && notZeroValue) {
         const bchType: string =
           currency === 'SAT' ? 'satoshis' : currencyObj.currency;
         setText(`Send ${currencyObj.string} ${bchType}`);
@@ -314,6 +343,17 @@ export const Widget: React.FC<WidgetProps> = props => {
   }
 
   const shouldDisplayGoal: boolean = goalAmount !== undefined;
+  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let amount = e.target.value;
+    if (amount === '') {
+      amount = '0';
+    }
+
+    const userEdited = getCurrencyObject(+amount, currency);
+
+    setUserEditedAmount(userEdited);
+    setAmount(amount);
+  };
 
   useEffect(() => {
     const inSatoshis = getCurrencyObject(totalSatsReceived, 'SAT');
@@ -379,9 +419,15 @@ export const Widget: React.FC<WidgetProps> = props => {
           py={1}
           textAlign="center"
         >
-          <Typography className={classes.text}>
-            {loading ? 'Loading...' : success ? successText : text}
-          </Typography>
+          {errorMsg ? (
+            <Typography className={classes.text} style={{ color: '#EB3B3B' }}>
+              {errorMsg}
+            </Typography>
+          ) : (
+            <Typography className={classes.text}>
+              {loading ? 'Loading...' : success ? successText : text}
+            </Typography>
+          )}
         </Box>
         <Box
           display="flex"
@@ -465,6 +511,31 @@ export const Widget: React.FC<WidgetProps> = props => {
               </Box>
             )}
           </Box>
+
+          {editable && (
+            <Grid
+              container
+              spacing={2}
+              justify="center"
+              alignItems="flex-end"
+              style={{ margin: '6px auto' }}
+            >
+              <Grid item xs={6}>
+                <TextField
+                  label={currency}
+                  value={amount || 0}
+                  onChange={handleAmountChange}
+                  inputProps={{ maxlength: '12' }}
+                  name="Amount"
+                  id="userEditedAmount"
+                />
+              </Grid>
+              <Grid item xs={2}>
+                <PencilIcon width={20} height={20} fill="#333" />
+              </Grid>
+            </Grid>
+          )}
+
           {success || (
             <Box pt={2} flex={1}>
               <ButtonComponent
@@ -492,18 +563,6 @@ export const Widget: React.FC<WidgetProps> = props => {
               </Link>
             </Typography>
           </Box>
-          {errorMsg && (
-            <p
-              style={{
-                color: '#EB3B3B',
-                fontSize: '14px',
-                maxWidth: '400px',
-                textAlign: 'center',
-              }}
-            >
-              {errorMsg}
-            </p>
-          )}
         </Box>
       </Box>
     </ThemeProvider>
@@ -514,6 +573,7 @@ Widget.defaultProps = {
   loading: false,
   success: false,
   successText: 'Thank you!',
+  editable: false,
 };
 
 export default Widget;

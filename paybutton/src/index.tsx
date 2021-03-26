@@ -75,7 +75,8 @@ const allowedProps = [
   'text',
   'to',
   'disabled',
-  'goalAmount'
+  'goalAmount',
+  'editable'
 ];
 
 const requiredProps = [
