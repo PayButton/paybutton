@@ -289,7 +289,9 @@ export const Widget: React.FC<WidgetProps> = props => {
       url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
       setUrl(url);
     } else {
-      if (!isFiat && currencyObj) {
+      const notZeroValue: boolean =
+        currencyObj?.satoshis !== undefined && currencyObj.satoshis > 0;
+      if (!isFiat && currencyObj && notZeroValue) {
         const bchType: string =
           currency === 'SAT' ? 'satoshis' : currencyObj.currency;
         setText(`Send ${currencyObj.string} ${bchType}`);
