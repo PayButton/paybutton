@@ -39,7 +39,7 @@ export interface WidgetContainerProps
   sound?: boolean;
   goalAmount?: number | string;
   disabled: boolean;
-  userCanEdit: boolean;
+  editable: boolean;
 }
 
 const snackbarOptions: OptionsObject = {
@@ -73,7 +73,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
       onTransaction,
       goalAmount,
       disabled,
-      userCanEdit,
+      editable,
       ...widgetProps
     } = props;
 
@@ -209,7 +209,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
           price={price}
           success={success}
           disabled={disabled}
-          userCanEdit={userCanEdit}
+          editable={editable}
         />
       </React.Fragment>
     );

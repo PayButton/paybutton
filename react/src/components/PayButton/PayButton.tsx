@@ -19,7 +19,7 @@ export interface PayButtonProps extends ButtonProps {
   disabled?: boolean;
   goalAmount?: number | string;
   disableEnforceFocus?: boolean;
-  userCanEdit?: boolean;
+  editable?: boolean;
   onSuccess?: (txid: string, amount: number) => void;
   onTransaction?: (txid: string, amount: number) => void;
 }
@@ -44,7 +44,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
     onTransaction,
     goalAmount,
     disableEnforceFocus,
-    userCanEdit,
+    editable,
   } = Object.assign({}, PayButton.defaultProps, props);
 
   const handleButtonClick = (): void => setWidgetOpen(true);
@@ -110,7 +110,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
           onTransaction={onTransaction}
           successText={successText}
           disabled={disabled}
-          userCanEdit={userCanEdit}
+          editable={editable}
           goalAmount={goalAmount}
           foot={
             success && (
@@ -147,7 +147,7 @@ PayButton.defaultProps = {
   successText: 'Thank you!',
   disableEnforceFocus: false,
   disabled: false,
-  userCanEdit: false,
+  editable: false,
 };
 
 export default PayButton;

@@ -50,7 +50,7 @@ export interface WidgetProps {
   currencyObject?: currencyObject | undefined;
   randomSatoshis?: boolean;
   price?: number;
-  userCanEdit?: boolean;
+  editable?: boolean;
 }
 
 interface StyleProps {
@@ -126,7 +126,7 @@ export const Widget: React.FC<WidgetProps> = props => {
     currency = 'BCH',
     randomSatoshis = true,
     currencyObject,
-    userCanEdit,
+    editable,
   } = Object.assign({}, Widget.defaultProps, props);
 
   const theme = useTheme(props.theme);
@@ -505,7 +505,7 @@ export const Widget: React.FC<WidgetProps> = props => {
             )}
           </Box>
 
-          {userCanEdit && (
+          {editable && (
             <Grid
               container
               spacing={2}
@@ -566,7 +566,7 @@ Widget.defaultProps = {
   loading: false,
   success: false,
   successText: 'Thank you!',
-  userCanEdit: false,
+  editable: false,
 };
 
 export default Widget;
