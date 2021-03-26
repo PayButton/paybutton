@@ -1,4 +1,7 @@
 export const randomizeSatoshis = (amount: number): number => {
+  if (amount === 0) {
+    return 0;
+  }
   const date = new Date();
 
   // 0-99: 10 second window, resets every 16.5 minutes
