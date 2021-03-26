@@ -342,7 +342,11 @@ export const Widget: React.FC<WidgetProps> = props => {
 
   const shouldDisplayGoal: boolean = goalAmount !== undefined;
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const amount = e.target.value;
+    let amount = e.target.value;
+    if (amount === '') {
+      amount = '0';
+    }
+
     const userEdited = getCurrencyObject(+amount, currency);
 
     setUserEditedAmount(userEdited);
