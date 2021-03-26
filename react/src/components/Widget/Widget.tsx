@@ -514,6 +514,7 @@ export const Widget: React.FC<WidgetProps> = props => {
                   label={currency}
                   value={amount || 0}
                   onChange={handleAmountChange}
+                  inputProps={{ maxlength: '12' }}
                   name="Amount"
                   id="userEditedAmount"
                 />
