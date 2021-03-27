@@ -42,11 +42,20 @@ export const getFiatPrice = async (currency: currency): Promise<PriceData> => {
   return { price };
 };
 
+// export const getTransactionDetails = async (
+//   txid: string,
+// ): Promise<TransactionDetails> => {
+//   const res = await fetch(
+//     `https://rest.bitcoin.com/v2/transaction/details/${txid}`,
+//   );
+//   return await res.json();
+// };
+
 export const getTransactionDetails = async (
   txid: string,
 ): Promise<TransactionDetails> => {
   const res = await fetch(
-    `https://rest.bitcoin.com/v2/transaction/details/${txid}`,
+    `https://api.paybutton.org/transactions/details/${txid}`,
   );
   return await res.json();
 };
@@ -112,8 +121,8 @@ export interface ConfirmedTransaction {
   slpTransactionInfo: {
     slpAction: number;
     validityJudgement: number;
-    parseError: '';
-    tokenId: '';
+    parseError: string;
+    tokenId: string;
     burnFlagsList: [];
   };
 }
@@ -198,35 +207,112 @@ export interface PriceData {
 }
 
 export interface TransactionDetails {
-  txid: string;
-  version: number;
-  locktime: number;
-  vin: {
-    coinbase: string;
-    sequence: number;
-    n: number;
-  }[];
-  vout: {
-    value: string;
-    n: number;
-    scriptPubKey: {
-      hex: string;
-      asm: string;
-      addresses: string[];
-      type: string;
-      cashAddrs: string[];
+  transaction: {
+    hash: string;
+    version: number;
+    inputsList: {
+      index: number;
+      outpoint: {
+        hash: string;
+        index: number;
+      };
+      signatureScript: string;
+      sequence: number;
+      value: number;
+      previousScript: string;
+      address: string;
+      slpToken: {
+        tokenId: string;
+        amount: string;
+        isMintBaton: boolean;
+        address: string;
+        decimals: number;
+        slpAction: number;
+        tokenType: number;
+      };
+    }[];
+    outputsList: {
+      index: number;
+      value: number;
+      pubkeyScript: string;
+      address: string;
+      scriptClass: string;
+      disassembledScript: string;
+      slpToken?: {
+        tokenId: string;
+        amount: string;
+        isMintBaton: boolean;
+        address: string;
+        decimals: number;
+        slpAction: number;
+        tokenType: number;
+      };
+    }[];
+    lockTime: number;
+    size: number;
+    timestamp: number;
+    confirmations: number;
+    blockHeight: number;
+    blockHash: string;
+    slpTransactionInfo: {
+      slpAction: number;
+      validityJudgement: number;
+      parseError: string;
+      tokenId: string;
+      burnFlagsList: [number];
+      v1Nft1ChildGenesis: {
+        name: string;
+        ticker: string;
+        documentUrl: string;
+        documentHash: string;
+        decimals: number;
+        groupTokenId: string;
+      };
     };
-    spentTxId: string | null;
-    spentIndex: number | null;
-    spentHeight: number | null;
-  }[];
-  blockhash: string;
-  blockheight: number;
-  confirmations: number;
-  time: number;
-  blocktime: number;
-  firstSeenTime: number;
-  isCoinBase: boolean;
-  valueOut: number;
-  size: number;
+  };
+  tokenMetadata: {
+    tokenId: string;
+    tokenType: number;
+    v1Nft1Child: {
+      tokenTicker: string;
+      tokenName: string;
+      tokenDocumentUrl: string;
+      tokenDocumentHash: string;
+      groupId: string;
+    };
+  };
 }
+
+// export interface TransactionDetails {
+//   txid: string;
+//   version: number;
+//   locktime: number;
+//   vin: {
+//     coinbase: string;
+//     sequence: number;
+//     n: number;
+//   }[];
+//   vout: {
+//     value: string;
+//     n: number;
+//     scriptPubKey: {
+//       hex: string;
+//       asm: string;
+//       addresses: string[];
+//       type: string;
+//       cashAddrs: string[];
+//     };
+//     spentTxId: string | null;
+//     spentIndex: number | null;
+//     spentHeight: number | null;
+//   }[];
+//   blockhash: string;
+//   blockheight: number;
+//   confirmations: number;
+//   time: number;
+//   blocktime: number;
+//   firstSeenTime: number;
+//   isCoinBase: boolean;
+//   valueOut: number;
+//   size: number;
+// }
