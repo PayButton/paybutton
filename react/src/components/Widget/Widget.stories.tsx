@@ -60,7 +60,7 @@ CustomTheme.args = {
 
 export const WithGoal = Template.bind({});
 WithGoal.args = {
-  goalAmount: 950,
+  goalAmount: 100,
   theme: {
     palette: {
       primary: '#d05050',
