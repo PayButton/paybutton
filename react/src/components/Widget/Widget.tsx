@@ -24,7 +24,11 @@ import {
   currencyObject,
 } from '../../util/satoshis';
 import { useAddressDetails } from '../../hooks/useAddressDetails';
-import { fiatCurrency, getFiatPrice } from '../../util/api-client';
+import {
+  fiatCurrency,
+  getFiatPrice,
+  getSatoshiBalance,
+} from '../../util/api-client';
 import { randomizeSatoshis } from '../../util/randomizeSats';
 import PencilIcon from '../../assets/edit-pencil';
 
@@ -206,10 +210,12 @@ export const Widget: React.FC<WidgetProps> = props => {
       return setTotalSatsReceived(totalReceived);
     }
 
-    if (addressDetails) {
-      const { totalReceivedSat, unconfirmedBalanceSat } = addressDetails;
-      setTotalSatsReceived(totalReceivedSat + unconfirmedBalanceSat);
-    }
+    (async (): Promise<void> => {
+      if (addressDetails) {
+        const { satoshis } = await getSatoshiBalance(to);
+        setTotalSatsReceived(satoshis);
+      }
+    })();
   }, [addressDetails, totalReceived, totalSatsReceived]);
 
   useEffect(() => {
