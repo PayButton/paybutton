@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { AddressDetails, getAddressDetails } from '../util/api-client';
 import { validateCashAddress } from '../util/address';
 
-const POLL_DELAY = 100;
+const POLL_DELAY = 1000;
 
 export const useAddressDetails = (
   address: string,
