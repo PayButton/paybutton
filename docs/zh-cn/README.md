@@ -41,6 +41,7 @@ var config = {
   to: 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp',
   amount: 4.5,
   goalAmount: 300000,
+  canEdit: false,
   currency: 'AUD',
   text: 'Tip Us a Coffee!',
   hoverText: 'One BCHinno',
@@ -77,6 +78,7 @@ render( '#advanced-usage-example', {
   to: 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp',
   amount: 4.5,
   goalAmount: 300000,
+  canEdit: false,
   currency: 'AUD',
   text: 'Tip Us a Coffee!',
   hoverText: 'One BCHinno',
@@ -375,6 +377,35 @@ goalAmount: 10
 
 ```react
 goalAmount = 10
+```
+
+<!-- tabs:end -->
+
+## can-edit
+
+> **The ‘can-edit’ parameter specifies whether to provide an input for the user to be able to change the payment amount.**
+
+?> This parameter is optional. Default value is false. Possible values are true or false.
+
+**例子:**
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+can-edit="true"
+```
+
+#### ** JavaScript **
+
+```javascript
+canEdit: true
+```
+
+#### ** React **
+
+```react
+canEdit = true
 ```
 
 <!-- tabs:end -->
