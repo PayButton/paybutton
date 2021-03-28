@@ -64,6 +64,7 @@ export default {
   getAddressDetails,
   getTransactionDetails,
   getFiatPrice,
+  getSatoshiBalance,
 };
 
 export type fiatCurrency = 'USD' | 'CAD' | 'EUR' | 'GBP' | 'AUD';
