@@ -11,26 +11,25 @@ import axios from 'axios';
 
 export const getAddressDetails = async (
   address: string,
+  rootUrl = `https://api.paybutton.org`,
 ): Promise<AddressDetails> => {
-  const res = await fetch(
-    `https://api.paybutton.org/address/transactions/${address}`,
-  );
+  const res = await fetch(`${rootUrl}/address/transactions/${address}`);
   return await res.json();
 };
 
 export const getSatoshiBalance = async (
   address: string,
-  rootUrl = `https://api.paybutton.org/`,
+  rootUrl = `https://api.paybutton.org`,
 ): Promise<{ satoshis: number }> => {
-  const res = await fetch(`${rootUrl}address/balance/${address}`);
+  const res = await fetch(`${rootUrl}/address/balance/${address}`);
   return await res.json();
 };
 
 export const getUTXOs = async (
   address: string,
-  rootUrl = `https://api.paybutton.org/`,
+  rootUrl = `https://api.paybutton.org`,
 ): Promise<UtxoDetails> => {
-  const res = await fetch(`${rootUrl}address/utxo/${address}`);
+  const res = await fetch(`${rootUrl}/address/utxo/${address}`);
   return await res.json();
 };
 
@@ -55,9 +54,9 @@ export const getFiatPrice = async (currency: currency): Promise<PriceData> => {
 
 export const getTransactionDetails = async (
   txid: string,
-  rootUrl = `https://api.paybutton.org/`,
+  rootUrl = `https://api.paybutton.org`,
 ): Promise<TransactionDetails> => {
-  const res = await fetch(`${rootUrl}transactions/details/${txid}`);
+  const res = await fetch(`${rootUrl}/transactions/details/${txid}`);
   return await res.json();
 };
 
