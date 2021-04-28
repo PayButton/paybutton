@@ -1,19 +1,13 @@
-import sumBy from 'lodash/sumBy';
 import { OptionsObject, SnackbarProvider, useSnackbar } from 'notistack';
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import successSound from '../../assets/success.mp3.json';
 import { useAddressDetails } from '../../hooks/useAddressDetails';
 import {
   fiatCurrency,
-  getTransactionDetails,
   getFiatPrice,
+  getSatoshiBalance,
+  UnconfirmedTransaction,
 } from '../../util/api-client';
 import {
   bchToSatoshis,
@@ -51,6 +45,15 @@ const snackbarOptions: OptionsObject = {
   },
 };
 
+export interface Output {
+  index: number;
+  value: number;
+  pubkeyScript: string;
+  address: string;
+  scriptClass: string;
+  disassembledScript: string;
+}
+
 const withSnackbar = <T extends object>(
   Component: React.ComponentType<T>,
 ): React.FC<T> => (props): React.ReactElement => (
@@ -79,8 +82,6 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
 
     const address = to;
 
-    const transactionsRef = useRef<Set<string>>(new Set());
-    const hasLoadedTransactionsRef = useRef(false);
     const [success, setSuccess] = useState(false);
     const { enqueueSnackbar } = useSnackbar();
     const [totalReceived, setTotalReceived] = useState(0);
@@ -114,7 +115,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
     );
 
     const handlePayment = useCallback(
-      (txid: string, satoshis: number) => {
+      (transaction: any, satoshis: number) => {
         if (sound && !hideToasts) txSound.play().catch(() => {});
 
         const receivedAmount = satoshisToBch(satoshis);
@@ -122,11 +123,11 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
         if (!hideToasts)
           enqueueSnackbar(`Received ${receivedAmount} BCH`, snackbarOptions);
 
-        onTransaction?.(txid, receivedAmount);
+        onTransaction?.(transaction, receivedAmount);
 
         if (amount && satoshis === bchToSatoshis(amount)) {
           setSuccess(true);
-          onSuccess?.(txid, receivedAmount);
+          onSuccess?.(transaction, receivedAmount);
         }
       },
       [
@@ -139,18 +140,30 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
         txSound,
       ],
     );
+    const prefixAddress = (string: string): string => {
+      const split = string.split(':')[1];
+
+      if (split === undefined) {
+        string = `bitcoincash:${string}`;
+      }
+      return string;
+    };
 
     const handleNewTransaction = useCallback(
-      async (txid: string) => {
-        const details = await getTransactionDetails(txid);
-        const satoshis = sumBy(details.vout, output => {
-          if (output.scriptPubKey?.cashAddrs?.length !== 1) return 0;
-          if (output.scriptPubKey?.cashAddrs[0] !== address) return 0;
-          return bchToSatoshis(+output.value);
+      (unconfirmed: UnconfirmedTransaction) => {
+        let satoshis = 0;
+        const {
+          transaction: { outputsList },
+        } = unconfirmed;
+        outputsList.map((x: Output) => {
+          const prefixedAddr = prefixAddress(x.address);
+          if (prefixedAddr === prefixAddress(address)) {
+            satoshis += x.value;
+          }
         });
 
         if (satoshis > 0) {
-          handlePayment(txid, satoshis);
+          handlePayment(unconfirmed.transaction, satoshis);
         }
       },
       [handlePayment, address],
@@ -169,21 +182,16 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
     }, []);
 
     useEffect(() => {
-      const txIds = transactionsRef.current;
-
-      if (addressDetails) {
-        const { totalReceivedSat, unconfirmedBalanceSat } = addressDetails;
-        setTotalReceived(totalReceivedSat + unconfirmedBalanceSat);
-      }
-
-      addressDetails?.transactions?.map(txid => {
-        if (!txIds.has(txid)) {
-          txIds.add(txid);
-          if (hasLoadedTransactionsRef.current) handleNewTransaction(txid);
+      (async (): Promise<void> => {
+        if (addressDetails) {
+          const { satoshis } = await getSatoshiBalance(address);
+          setTotalReceived(satoshis);
         }
-      });
+      })();
 
-      if (addressDetails?.transactions) hasLoadedTransactionsRef.current = true;
+      addressDetails?.unconfirmedTransactionsList?.map(unconfirmed => {
+        handleNewTransaction(unconfirmed);
+      });
     }, [addressDetails, handleNewTransaction]);
 
     useEffect(() => {
