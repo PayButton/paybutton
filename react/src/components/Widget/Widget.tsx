@@ -320,7 +320,6 @@ export const Widget: React.FC<WidgetProps> = props => {
     const address = to;
     prefixedAddress = `bitcoincash:${address.replace(/^.*:/, '')}`;
     if (!copy(prefixedAddress)) return;
-    copy(prefixedAddress);
     setCopied(true);
     setRecentlyCopied(true);
   };
