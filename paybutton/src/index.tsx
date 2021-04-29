@@ -1,5 +1,5 @@
 import camelcase from 'camelcase';
-import { PayButton, PayButtonProps, Widget, WidgetProps } from 'paybutton';
+import { PayButton, PayButtonProps, PaymentDialog, PaymentDialogProps, Widget, WidgetProps } from 'paybutton';
 import { h } from 'preact';
 import { render } from 'preact/compat';
 
@@ -67,6 +67,7 @@ const allowedProps = [
   'displayCurrency',
   'hideToasts',
   'hoverText',
+  'onClose',
   'onSuccess',
   'onTransaction',
   'randomSatoshis',
@@ -83,6 +84,11 @@ const requiredProps = [
   'to',
 ];
 
+export function openDialog(props: PaymentDialogProps): void {
+  const container = document.createElement('div');
+  document.body.appendChild(container);
+  render(<PaymentDialog onClose={() => container.remove()} {...props} />, container)
+}
 
 export function renderButtons(widgetExists: boolean, paybuttonExists: boolean): void {
 
@@ -183,5 +189,6 @@ export default {
       validateJSProps(props)
       render(<Widget {...props} />, el)
     }
-  }
+  },
+  openDialog: (props: PaymentDialogProps) => openDialog(props)
 };
