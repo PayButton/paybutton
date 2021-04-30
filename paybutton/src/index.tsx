@@ -40,6 +40,8 @@ function init() {
       } else {
         const paybuttonExists: boolean = document.getElementsByClassName('paybutton').length > 0
         const widgetExists: boolean = document.getElementsByClassName('paybutton-widget').length > 0
+        const dialogbuttonExists: boolean = document.getElementsByClassName('dialogbutton').length > 0
+        renderDialogButton(dialogbuttonExists)
         renderButtons(widgetExists, paybuttonExists);
         renderWidgets(widgetExists, paybuttonExists);
       }
@@ -83,6 +85,17 @@ const allowedProps = [
 const requiredProps = [
   'to',
 ];
+
+export function renderDialogButton(dialogbuttonExists: boolean): void {
+  const content = document.getElementById('content');
+  if (dialogbuttonExists && content) {
+      Array
+      .from(document.getElementsByClassName('dialogbutton'))
+      .forEach(el => {
+        content.appendChild(el);
+      })    
+  }
+}
 
 export function openDialog(props: PaymentDialogProps): void {
   const container = document.createElement('div');
