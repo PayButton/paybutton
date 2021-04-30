@@ -316,7 +316,9 @@ export const Widget: React.FC<WidgetProps> = props => {
     window.location.href = url;
   };
   const handleQrCodeClick = (): void => {
-    if (disabled) return;
+    if (disabled || to === undefined) return;
+    const address = to;
+    prefixedAddress = `bitcoincash:${address.replace(/^.*:/, '')}`;
     if (!copy(prefixedAddress)) return;
     setCopied(true);
     setRecentlyCopied(true);
