@@ -14,10 +14,13 @@ export interface PaymentDialogProps extends ButtonProps {
   successText?: string;
   randomSatoshis?: boolean;
   hideToasts?: boolean;
-  disabled?: boolean;
   goalAmount?: number | string;
   disableEnforceFocus?: boolean;
   editable?: boolean;
+  dialogOpen: boolean;
+  disableScrollLock?: boolean;
+  active?: boolean;
+  container?: HTMLElement;
   onClose?: () => void;
   onSuccess?: (txid: string, amount: number) => void;
   onTransaction?: (txid: string, amount: number) => void;
@@ -26,10 +29,8 @@ export interface PaymentDialogProps extends ButtonProps {
 export const PaymentDialog = (
   props: PaymentDialogProps,
 ): React.ReactElement => {
-  const [widgetOpen, setWidgetOpen] = useState(true);
   const [success, setSuccess] = useState(false);
   const [disabled, setDisabled] = useState(false);
-  const [errorMsg, setErrorMsg] = useState('');
 
   const {
     to,
@@ -45,10 +46,11 @@ export const PaymentDialog = (
     goalAmount,
     disableEnforceFocus,
     editable,
+    dialogOpen,
+    container,
   } = Object.assign({}, PaymentDialog.defaultProps, props);
 
   const handleWidgetClose = (): void => {
-    setWidgetOpen(false);
     setSuccess(false);
     if (onClose) onClose();
   };
@@ -62,13 +64,10 @@ export const PaymentDialog = (
 
     if (to !== undefined && validateCashAddress(to)) {
       setDisabled(!!props.disabled);
-      setErrorMsg('');
     } else if (invalidAmount) {
       setDisabled(true);
-      setErrorMsg('Amount should be a number');
     } else {
       setDisabled(true);
-      setErrorMsg('Invalid Recipient');
     }
   }, [to, amount]);
 
@@ -87,14 +86,15 @@ export const PaymentDialog = (
   return (
     <ThemeProvider value={theme}>
       <Dialog
-        open={widgetOpen}
+        container={container}
+        open={dialogOpen}
         onClose={handleWidgetClose}
         disableEnforceFocus={disableEnforceFocus}
         disableScrollLock
       >
         <WidgetContainer
           ButtonComponent={ButtonComponent}
-          active={widgetOpen}
+          active={dialogOpen}
           to={to}
           amount={cleanAmount}
           currency={currency}
@@ -118,18 +118,6 @@ export const PaymentDialog = (
           }
         />
       </Dialog>
-      {errorMsg && (
-        <p
-          style={{
-            color: '#EB3B3B',
-            fontSize: '14px',
-            maxWidth: '190px',
-            textAlign: 'center',
-          }}
-        >
-          {errorMsg}
-        </p>
-      )}
     </ThemeProvider>
   );
 };
@@ -142,6 +130,7 @@ PaymentDialog.defaultProps = {
   disableEnforceFocus: false,
   disabled: false,
   editable: false,
+  dialogOpen: true,
 };
 
 export default PaymentDialog;
