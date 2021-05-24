@@ -1,5 +1,5 @@
 import camelcase from 'camelcase';
-import { PayButton, PayButtonProps, Widget, WidgetProps } from 'paybutton';
+import { PayButton, PayButtonProps, PaymentDialog, PaymentDialogProps, Widget, WidgetProps } from 'paybutton';
 import { h } from 'preact';
 import { render } from 'preact/compat';
 
@@ -40,6 +40,8 @@ function init() {
       } else {
         const paybuttonExists: boolean = document.getElementsByClassName('paybutton').length > 0
         const widgetExists: boolean = document.getElementsByClassName('paybutton-widget').length > 0
+        const dialogbuttonExists: boolean = document.getElementsByClassName('dialogbutton').length > 0
+        renderDialogButton(dialogbuttonExists)
         renderButtons(widgetExists, paybuttonExists);
         renderWidgets(widgetExists, paybuttonExists);
       }
@@ -67,6 +69,7 @@ const allowedProps = [
   'displayCurrency',
   'hideToasts',
   'hoverText',
+  'onClose',
   'onSuccess',
   'onTransaction',
   'randomSatoshis',
@@ -83,6 +86,22 @@ const requiredProps = [
   'to',
 ];
 
+export function renderDialogButton(dialogbuttonExists: boolean): void {
+  const content = document.getElementById('content');
+  if (dialogbuttonExists && content) {
+      Array
+      .from(document.getElementsByClassName('dialogbutton'))
+      .forEach(el => {
+        content.appendChild(el);
+      })    
+  }
+}
+
+export function openDialog(props: PaymentDialogProps): void {
+  const container = document.createElement('div');
+  document.body.appendChild(container);
+  render(<PaymentDialog container={container} onClose={() => container.remove()} {...props} />, container)
+}
 
 export function renderButtons(widgetExists: boolean, paybuttonExists: boolean): void {
 
@@ -183,5 +202,6 @@ export default {
       validateJSProps(props)
       render(<Widget {...props} />, el)
     }
-  }
+  },
+  openDialog: (props: PaymentDialogProps) => openDialog(props)
 };
