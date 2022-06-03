@@ -239,10 +239,6 @@ export const Widget: React.FC<WidgetProps> = props => {
       typeof amount === 'string' && amount.startsWith('-');
     let cleanAmount: any;
 
-    if ((isFiat && price === 0) || price === undefined) {
-      getPrice();
-    }
-
     if (invalidAmount) {
       setDisabled(true);
       setErrorMsg('Amount should be a number');
