@@ -10,7 +10,7 @@ import {
 } from '@material-ui/core';
 import copy from 'copy-to-clipboard';
 import QRCode, { BaseQRCodeProps } from 'qrcode.react';
-import React, { useEffect, useMemo, useState, useCallback } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
 import { validateCashAddress } from '../../util/address';
@@ -24,11 +24,7 @@ import {
   currencyObject,
 } from '../../util/satoshis';
 import { useAddressDetails } from '../../hooks/useAddressDetails';
-import {
-  fiatCurrency,
-  getFiatPrice,
-  getSatoshiBalance,
-} from '../../util/api-client';
+import { fiatCurrency, getSatoshiBalance } from '../../util/api-client';
 import { randomizeSatoshis } from '../../util/randomizeSats';
 import PencilIcon from '../../assets/edit-pencil';
 
@@ -147,7 +143,7 @@ export const Widget: React.FC<WidgetProps> = props => {
   const [currencyObj, setCurrencyObj] = useState<currencyObject>(
     currencyObject!,
   );
-  const [price, setPrice] = useState(props.price);
+  const price = props.price;
   const [amount, setAmount] = useState(props.amount);
   const [url, setUrl] = useState('');
   const [userEditedAmount, setUserEditedAmount] = useState<currencyObject>();
@@ -187,19 +183,6 @@ export const Widget: React.FC<WidgetProps> = props => {
   const isMissingWidgetContainer = !totalReceived;
   const validAddress = to !== undefined && validateCashAddress(to);
   const addressDetails = useAddressDetails(to, isMissingWidgetContainer);
-
-  const getPrice = useCallback(async (): Promise<void> => {
-    if (props.price !== undefined && props.price > 0) {
-      return;
-    }
-
-    if (isFiat) {
-      const data = await getFiatPrice(currency);
-      const { price } = data;
-      setPrice(price);
-    }
-  }, [currency]);
-
   const isFiat: boolean =
     currency !== 'SAT' && currency !== 'BCH' && currency !== 'bits';
   const hasPrice: boolean = price !== undefined && price > 0;
@@ -379,25 +362,19 @@ export const Widget: React.FC<WidgetProps> = props => {
         }
       }
     } else {
-      (async (): Promise<void> => {
-        if (price === 0) {
-          await getPrice();
-        }
-
-        if (totalSatsReceived !== 0 && hasPrice) {
-          const receivedVal: number =
-            satoshisToBch(totalSatsReceived) * (price! / 100);
-          const receivedText: string = formatPrice(receivedVal, currency);
-          const goalText: string = formatPrice(cleanGoalAmount, currency);
-          setIsLoading(false);
-          setGoalPercent(100 * (receivedVal / cleanGoalAmount));
-          setGoalText(`${receivedText} / ${goalText}`);
-        }
-        if (shouldDisplayGoal && goal.float !== undefined && goal.float <= 0) {
-          setDisabled(true);
-          setErrorMsg('Goal Value must be a number');
-        }
-      })();
+      if (totalSatsReceived !== 0 && hasPrice) {
+        const receivedVal: number =
+          satoshisToBch(totalSatsReceived) * (price! / 100);
+        const receivedText: string = formatPrice(receivedVal, currency);
+        const goalText: string = formatPrice(cleanGoalAmount, currency);
+        setIsLoading(false);
+        setGoalPercent(100 * (receivedVal / cleanGoalAmount));
+        setGoalText(`${receivedText} / ${goalText}`);
+      }
+      if (shouldDisplayGoal && goal.float !== undefined && goal.float <= 0) {
+        setDisabled(true);
+        setErrorMsg('Goal Value must be a number');
+      }
     }
   }, [totalSatsReceived, currency, goalAmount, price]);
 
