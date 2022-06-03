@@ -234,12 +234,6 @@ export const Widget: React.FC<WidgetProps> = props => {
   }, [to, amount]);
 
   useEffect(() => {
-    if (isFiat && props.price === 0) {
-      getPrice();
-    }
-  }, []);
-
-  useEffect(() => {
     const invalidAmount = amount !== undefined && amount && isNaN(+amount);
     const isNegativeNumber =
       typeof amount === 'string' && amount.startsWith('-');
