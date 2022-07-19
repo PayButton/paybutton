@@ -6,6 +6,7 @@ import replace from '@rollup/plugin-replace';
 import resolve from '@rollup/plugin-node-resolve';
 import svg from 'rollup-plugin-svg';
 import typescript from '@rollup/plugin-typescript';
+import json from "@rollup/plugin-json";
 import { terser } from 'rollup-plugin-terser';
 
 export default ( env ) => ({
@@ -30,7 +31,8 @@ export default ( env ) => ({
     resolve( { browser: true, extensions: [ '.js', '.jsx', '.ts', '.tsx', '.svg' ] } ),
     commonJS( { extensions: [ '.js', '.jsx', '.ts', '.tsx', '.svg' ], transformMixedEsModules: true } ),
     image(),
-    typescript( ),
+    typescript(),
+    json(),
     terser( {
       mangle: true,
     }),
