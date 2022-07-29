@@ -8,10 +8,9 @@ import axios from 'axios';
 //   );
 //   return await res.json();
 // };
-
 export const getAddressDetails = async (
   address: string,
-  rootUrl = `https://api.paybutton.org`,
+  rootUrl = `{process.env.REACT_APP_API_URL}`,
 ): Promise<AddressDetails> => {
   const res = await fetch(`${rootUrl}/address/transactions/${address}`);
   return await res.json();
@@ -19,7 +18,7 @@ export const getAddressDetails = async (
 
 export const getSatoshiBalance = async (
   address: string,
-  rootUrl = `https://api.paybutton.org`,
+  rootUrl = `{process.env.REACT_APP_API_URL}`,
 ): Promise<{ satoshis: number }> => {
   const res = await fetch(`${rootUrl}/address/balance/${address}`);
   return await res.json();
@@ -27,7 +26,7 @@ export const getSatoshiBalance = async (
 
 export const getUTXOs = async (
   address: string,
-  rootUrl = `https://api.paybutton.org`,
+  rootUrl = `{process.env.REACT_APP_API_URL}`,
 ): Promise<UtxoDetails> => {
   const res = await fetch(`${rootUrl}/address/utxo/${address}`);
   return await res.json();
