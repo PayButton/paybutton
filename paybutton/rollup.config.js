@@ -8,6 +8,7 @@ import svg from 'rollup-plugin-svg';
 import typescript from '@rollup/plugin-typescript';
 import json from "@rollup/plugin-json";
 import { terser } from 'rollup-plugin-terser';
+import dotenv from "rollup-plugin-dotenv";
 
 export default ( env ) => ({
   input: 'src/index.tsx',
@@ -33,6 +34,9 @@ export default ( env ) => ({
     image(),
     typescript(),
     json(),
+    dotenv({
+      cwd: "../react"
+    }),
     terser( {
       mangle: true,
     }),
