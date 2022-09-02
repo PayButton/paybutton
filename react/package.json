@@ -22,10 +22,6 @@
     "storybook": "start-storybook -p 6006",
     "watch": "microbundle watch --jsx React.createElement --no-compress --format modern,cjs"
   },
-  "peerDependencies": {
-    "react": "16.14.0",
-    "react-dom": "16.14.0"
-  },
   "devDependencies": {
     "@babel/core": "7.18.9",
     "@popperjs/core": "2.11.5",
@@ -68,7 +64,9 @@
     "prettier": "2.7.1",
     "react-is": "16.13.1",
     "react-scripts": "3.4.4",
-    "typescript": "3.9.10"
+    "typescript": "3.9.10",
+    "react": "16.14.0",
+    "react-dom": "16.14.0"
   },
   "files": [
     "dist"
