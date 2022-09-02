@@ -7,7 +7,7 @@
     "docsify-cli": "^4.4.2"
   },
   "scripts": {
-    "serve": "npx docsify serve"
+    "serve": "npx docsify serve --port 3001"
   },
   "author": "",
   "license": "MIT"
