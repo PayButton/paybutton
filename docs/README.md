@@ -698,7 +698,7 @@ PayButton is a community-driven open-source initiative. Contributions from the c
 
 1. `cd docs && npm i`
 2. `npm run serve`
-3. Site will be running on `localhost:3000`.
+3. Site will be running on `localhost:3001`.
 
 ## Donate
 
