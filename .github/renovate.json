@@ -1,0 +1,9 @@
+{
+    "packageRules": [
+      {
+        "matchUpdateTypes": ["patch"],
+        "automerge": false,
+      }
+    ],
+    "prConcurrentLimit": 2
+  }
