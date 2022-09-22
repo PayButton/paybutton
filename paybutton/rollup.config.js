@@ -16,6 +16,7 @@ export default ( env ) => ({
     file: 'dist/paybutton.js',
     name: 'PayButton',
     format: 'umd',
+    exports: 'named',
   },
   plugins: [
     alias({
@@ -25,6 +26,7 @@ export default ( env ) => ({
       ]
     }),
     replace({
+      'preventAssignment': true,
       'process.env.NODE_ENV': JSON.stringify(env),
     }),
     image(),
@@ -35,6 +37,7 @@ export default ( env ) => ({
     typescript(),
     json(),
     dotenv({
+      'preventAssignment': true,
       cwd: "../react"
     }),
     terser( {
