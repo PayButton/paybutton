@@ -37,5 +37,8 @@
   "files": [
     "dist"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "node": "18.10.0"
+  }
 }
