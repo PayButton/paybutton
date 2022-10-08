@@ -685,7 +685,7 @@ PayButton is a community-driven open-source initiative. Contributions from the c
 ### Starting Storybook
 
 1. `docker-compose up`
-2. Wait for storybook to initialize
+2. Wait for storybook to initialize.
 3. Open `http://localhost:6006`.
 
 ### Starting Rollup
