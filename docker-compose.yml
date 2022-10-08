@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  react:
+    build: ./react
+    restart: always
+    volumes:
+      - ./react:/app
+      - react-deps:/app/node_modules
+    ports:
+      - 6006:6006
+
+volumes:
+  react-deps:
