@@ -684,9 +684,9 @@ PayButton is a community-driven open-source initiative. Contributions from the c
 
 ### Starting Storybook
 
-1. `cd react && npm i`
-2. `npm start`
-3. If site does not open automatically, it will be running on `localhost:6006`.
+1. `docker-compose up`
+2. Wait for storybook to initialize
+3. Open `http://localhost:6006`.
 
 ### Starting Rollup
 
