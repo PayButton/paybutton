@@ -10,5 +10,14 @@ services:
     ports:
       - 6006:6006
 
+  paybutton:
+    build: ./paybutton
+    restart: always
+    volumes:
+      - ./paybutton:/app
+      - ./react:/react
+      - paybutton-deps:/app/node_modules
+
 volumes:
   react-deps:
+  paybutton-deps:
