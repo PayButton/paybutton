@@ -2,6 +2,7 @@ import alias from '@rollup/plugin-alias';
 import cleanup from 'rollup-plugin-cleanup';
 import commonJS from '@rollup/plugin-commonjs';
 import image from '@rollup/plugin-image';
+import nodePolyfills from 'rollup-plugin-node-polyfills';
 import replace from '@rollup/plugin-replace';
 import resolve from '@rollup/plugin-node-resolve';
 import svg from 'rollup-plugin-svg';
@@ -32,6 +33,7 @@ export default ( env ) => ({
     resolve( { browser: true, extensions: [ '.js', '.jsx', '.ts', '.tsx', '.svg' ] } ),
     commonJS( { extensions: [ '.js', '.jsx', '.ts', '.tsx', '.svg' ], transformMixedEsModules: true } ),
     image(),
+    nodePolyfills(),
     typescript(),
     json(),
     dotenv({
