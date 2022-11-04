@@ -1,15 +1,7 @@
-import {
-  cashAddressToLockingBytecode,
-  decodeCashAddressFormatWithoutPrefix,
-} from '@bitauth/libauth';
+import * as xecaddr from 'xecaddrjs';
 
 export const validateCashAddress = (to: string): boolean => {
-  const withPrefix = cashAddressToLockingBytecode(to);
-  const withoutPrefix = decodeCashAddressFormatWithoutPrefix(to);
-
-  const isValid =
-    typeof withPrefix === 'object' || typeof withoutPrefix === 'object';
-  return isValid;
+  return xecaddr.isCashAddress(to);
 };
 
 export default {
