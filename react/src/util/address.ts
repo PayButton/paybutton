@@ -1,25 +1,28 @@
 import * as xecaddr from 'xecaddrjs';
 
-export const validateCashAddress = (to: string): boolean => {
-  console.log('hello 3');
+export const isValidCashAddress = (address: string): boolean => {
+  if (!address) return false;
   try {
-    return xecaddr.isCashAddress(to);
+    // This should always work, but the xecaddrjs docs warn that some libraries
+    // it depends on can return InvalidAddressError
+    return xecaddr.isCashAddress(address);
   } catch (err) {
-    console.log('hello 1');
     return false;
   }
 };
 
-export const validateXecAddress = (to: string): boolean => {
+export const isValidXecAddress = (address: string): boolean => {
+  if (!address) return false;
   try {
-    return xecaddr.isXecAddress(to);
+    // This should always work, but the xecaddrjs docs warn that some libraries
+    // it depends on can return InvalidAddressError
+    return xecaddr.isXecAddress(address);
   } catch (err) {
-    console.log('hello 2');
     return false;
   }
 };
 
 export default {
-  validateCashAddress,
-  validateXecAddress,
+  isValidCashAddress,
+  isValidXecAddress,
 };

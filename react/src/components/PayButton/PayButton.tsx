@@ -4,7 +4,7 @@ import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
 import Button, { ButtonProps } from '../Button/Button';
 import { currency } from '../Widget/WidgetContainer';
 import { PaymentDialog } from '../PaymentDialog/PaymentDialog';
-import { validateCashAddress, validateXecAddress } from '../../util/address';
+import { isValidCashAddress, isValidXecAddress } from '../../util/address';
 
 export interface PayButtonProps extends ButtonProps {
   to: string;
@@ -68,15 +68,15 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
 
   useEffect(() => {
     console.log('to', to);
-    console.log('test validat', validateCashAddress('asdf'));
+    console.log('test validat', isValidCashAddress('asdf'));
     if (!to) {
       setHoverText(hoverTextDefault);
       setErrorMsg('');
-    } else if (validateCashAddress(to)) {
+    } else if (isValidCashAddress(to)) {
       console.log('checkpoint 1');
       setHoverText('Send BCH');
       setErrorMsg('');
-    } else if (validateXecAddress(to)) {
+    } else if (isValidXecAddress(to)) {
       setHoverText('Send XEC');
       setErrorMsg('');
     } else {

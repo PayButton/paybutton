@@ -13,7 +13,7 @@ import QRCode, { BaseQRCodeProps } from 'qrcode.react';
 import React, { useEffect, useMemo, useState } from 'react';
 
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
-import { validateCashAddress, validateXecAddress } from '../../util/address';
+import { isValidCashAddress, isValidXecAddress } from '../../util/address';
 import { formatPrice } from '../../util/format';
 import Button from '../Button/Button';
 import BarChart from '../BarChart/BarChart';
@@ -262,12 +262,12 @@ export const Widget: React.FC<WidgetProps> = props => {
         'BCH',
       );
 
-      if (validateCashAddress(address)) {
+      if (isValidCashAddress(address)) {
         prefixedAddress = `bitcoincash:${address.replace(/^.*:/, '')}`;
         setText(
           `Send ${currencyObj.string} ${currencyObj.currency} = ${bchAmount.BCHstring} BCH`,
         );
-      } else if (validateXecAddress(address)) {
+      } else if (isValidXecAddress(address)) {
         prefixedAddress = `ecash:${address.replace(/^.*:/, '')}`;
         setText(
           `Send ${currencyObj.string} ${currencyObj.currency} = ${bchAmount.BCHstring} XEC`,
@@ -287,8 +287,8 @@ export const Widget: React.FC<WidgetProps> = props => {
         url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
         setUrl(url);
       } else {
-        if (validateCashAddress(address)) setText(`Send any amount of BCH`);
-        else if (validateXecAddress(address)) setText(`Send any amount of XEC`);
+        if (isValidCashAddress(address)) setText(`Send any amount of BCH`);
+        else if (isValidXecAddress(address)) setText(`Send any amount of XEC`);
         url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
         setUrl(url);
       }
