@@ -13,7 +13,7 @@ import QRCode, { BaseQRCodeProps } from 'qrcode.react';
 import React, { useEffect, useMemo, useState } from 'react';
 
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
-import { validateCashAddress } from '../../util/address';
+import { validateCashAddress, validateXecAddress } from '../../util/address';
 import { formatPrice } from '../../util/format';
 import Button from '../Button/Button';
 import BarChart from '../BarChart/BarChart';
@@ -181,7 +181,7 @@ export const Widget: React.FC<WidgetProps> = props => {
 
   const query: string[] = [];
   const isMissingWidgetContainer = !totalReceived;
-  const validAddress = to !== undefined && validateCashAddress(to);
+  const validAddress = true;
   const addressDetails = useAddressDetails(to, isMissingWidgetContainer);
   const isFiat: boolean =
     currency !== 'SAT' && currency !== 'BCH' && currency !== 'bits';
@@ -212,6 +212,7 @@ export const Widget: React.FC<WidgetProps> = props => {
       setErrorMsg('Amount should be a number');
     } else {
       setDisabled(true);
+      console.log(invalidAmount);
       setErrorMsg('Invalid Recipient');
     }
   }, [to, amount]);
@@ -232,6 +233,7 @@ export const Widget: React.FC<WidgetProps> = props => {
       if (validAddress) {
         setErrorMsg('');
       } else {
+        console.log('invalidAmount', invalidAmount);
         setErrorMsg('Invalid Recipient');
       }
     }
@@ -253,7 +255,6 @@ export const Widget: React.FC<WidgetProps> = props => {
       return;
     }
     const address = to;
-    prefixedAddress = `bitcoincash:${address.replace(/^.*:/, '')}`;
     let url;
     if (currencyObj && hasPrice) {
       const bchAmount = getCurrencyObject(
@@ -261,9 +262,17 @@ export const Widget: React.FC<WidgetProps> = props => {
         'BCH',
       );
 
-      setText(
-        `Send ${currencyObj.string} ${currencyObj.currency} = ${bchAmount.BCHstring} BCH`,
-      );
+      if (validateCashAddress(address)) {
+        prefixedAddress = `bitcoincash:${address.replace(/^.*:/, '')}`;
+        setText(
+          `Send ${currencyObj.string} ${currencyObj.currency} = ${bchAmount.BCHstring} BCH`,
+        );
+      } else if (validateXecAddress(address)) {
+        prefixedAddress = `ecash:${address.replace(/^.*:/, '')}`;
+        setText(
+          `Send ${currencyObj.string} ${currencyObj.currency} = ${bchAmount.BCHstring} XEC`,
+        );
+      }
       query.push(`amount=${bchAmount.float}`);
       url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
       setUrl(url);
@@ -278,7 +287,8 @@ export const Widget: React.FC<WidgetProps> = props => {
         url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
         setUrl(url);
       } else {
-        setText(`Send any amount of BCH`);
+        if (validateCashAddress(address)) setText(`Send any amount of BCH`);
+        else if (validateXecAddress(address)) setText(`Send any amount of XEC`);
         url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
         setUrl(url);
       }
