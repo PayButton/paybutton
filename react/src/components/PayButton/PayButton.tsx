@@ -67,21 +67,18 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
   }, [to, amount]);
 
   useEffect(() => {
-    console.log('to', to);
-    console.log('test validat', isValidCashAddress('asdf'));
     if (!to) {
       setHoverText(hoverTextDefault);
-      setErrorMsg('');
+      setErrorMsg('Enter an address');
     } else if (isValidCashAddress(to)) {
-      console.log('checkpoint 1');
       setHoverText('Send BCH');
       setErrorMsg('');
     } else if (isValidXecAddress(to)) {
       setHoverText('Send XEC');
       setErrorMsg('');
     } else {
-      setHoverText('your address is wrong, idiot');
-      setErrorMsg('your address is wrong, idiot');
+      setHoverText(hoverTextDefault);
+      setErrorMsg('Not a valid address');
     }
   }, [to]);
 
