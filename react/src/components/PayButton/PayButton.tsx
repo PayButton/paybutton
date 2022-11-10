@@ -78,7 +78,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
       setErrorMsg('');
     } else {
       setHoverText(hoverTextDefault);
-      setErrorMsg('Not a valid address');
+      setErrorMsg('Invalid Recipient');
     }
   }, [to]);
 
