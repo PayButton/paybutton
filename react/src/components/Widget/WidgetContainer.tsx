@@ -17,7 +17,7 @@ import {
 } from '../../util/satoshis';
 import Widget, { WidgetProps } from './Widget';
 
-export type cryptoCurrency = 'BCH' | 'SAT' | 'bits';
+export type cryptoCurrency = 'BCH' | 'SAT' | 'bits' | 'XEC';
 export type currency = cryptoCurrency | fiatCurrency;
 
 export interface WidgetContainerProps
@@ -54,13 +54,14 @@ export interface Output {
   disassembledScript: string;
 }
 
-const withSnackbar = <T extends object>(
-  Component: React.ComponentType<T>,
-): React.FC<T> => (props): React.ReactElement => (
-  <SnackbarProvider>
-    <Component {...props} />
-  </SnackbarProvider>
-);
+const withSnackbar =
+  <T extends object>(Component: React.ComponentType<T>): React.FC<T> =>
+  (props): React.ReactElement =>
+    (
+      <SnackbarProvider>
+        <Component {...props} />
+      </SnackbarProvider>
+    );
 
 export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
   (props): React.ReactElement => {
@@ -94,7 +95,10 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
     const addressDetails = useAddressDetails(address, active && !success);
 
     const isFiat: boolean =
-      currency !== 'SAT' && currency !== 'BCH' && currency !== 'bits';
+      currency !== 'SAT' &&
+      currency !== 'BCH' &&
+      currency !== 'bits' &&
+      currency !== 'XEC';
 
     const getPrice = useCallback(async (): Promise<void> => {
       try {

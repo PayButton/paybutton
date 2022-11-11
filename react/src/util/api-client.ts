@@ -67,7 +67,7 @@ export default {
 };
 
 export type fiatCurrency = 'USD' | 'CAD' | 'EUR' | 'GBP' | 'AUD';
-export type cryptoCurrency = 'BCH' | 'SAT' | 'bits';
+export type cryptoCurrency = 'BCH' | 'SAT' | 'bits' | 'XEC';
 export type currency = cryptoCurrency | fiatCurrency;
 
 // export interface AddressDetails {
