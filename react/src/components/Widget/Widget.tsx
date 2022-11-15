@@ -148,8 +148,9 @@ export const Widget: React.FC<WidgetProps> = props => {
   const [url, setUrl] = useState('');
   const [userEditedAmount, setUserEditedAmount] = useState<currencyObject>();
   const [text, setText] = useState('Send any amount of BCH');
-  const [widgetButtonText, setWidgetButtonText] =
-    useState('Send any amount of');
+  const [widgetButtonText, setWidgetButtonText] = useState(
+    'Send any amount of Crypto',
+  );
   const transformAmount = useMemo(
     () => (randomSatoshis ? randomizeSatoshis : (x: number): number => x),
     [randomSatoshis],
@@ -165,7 +166,6 @@ export const Widget: React.FC<WidgetProps> = props => {
   }, [theme]);
 
   const xecSvg = useMemo((): string => {
-    const color = theme.palette.logo ?? theme.palette.primary;
     return `data:image/svg+xml,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%0A%3Csvg%20version%3D%221.1%22%20viewBox%3D%220%200%20256%20256%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Cpath%20fill%3D%22%23fff%22%20class%3D%22cls-1%22%20d%3D%22M145.1%2C99.82l-31.71%2C18.26a2.61%2C2.61%2C0%2C0%2C0-1.31%2C2.29v15.32a2.48%2C2.48%2C0%2C0%2C0%2C1.31%2C2.21l13.28%2C7.66a2.36%2C2.36%2C0%2C0%2C0%2C2.53%2C0L184%2C114c9.3-5.38%2C9.3-20.88%2C0-26.26L134.75%2C59.38a13.17%2C13.17%2C0%2C0%2C0-13.62%2C0L71.88%2C87.75A13.46%2C13.46%2C0%2C0%2C0%2C65%2C99.58c0%2C19%2C.08%2C37.91%2C0%2C56.82a13.46%2C13.46%2C0%2C0%2C0%2C6.84%2C11.83l49.25%2C28.45a13.54%2C13.54%2C0%2C0%2C0%2C13.62%2C0L184%2C168.23a13.31%2C13.31%2C0%2C0%2C0%2C6.77-11.83V131.7l-58.62%2C33.92a8.31%2C8.31%2C0%2C0%2C1-8.48%2C0L97.49%2C150.45a8.3%2C8.3%2C0%2C0%2C1-4.24-7.34V112.87a8.36%2C8.36%2C0%2C0%2C1%2C4.15-7.26c8.73-5.06%2C17.53-10.11%2C26.26-15.17a8.36%2C8.36%2C0%2C0%2C1%2C8.48%2C0l13%2C7.42A1.15%2C1.15%2C0%2C0%2C1%2C145.1%2C99.82Z%22%2F%3E%0A%3Cpath%20fill%3D%22%230074c2%22%20class%3D%22cls-2%22%20d%3D%22M128%2C0A128%2C128%2C0%2C1%2C0%2C256%2C128%2C128%2C128%2C0%2C0%2C0%2C128%2C0Zm17.1%2C97.86-13-7.42a8.36%2C8.36%2C0%2C0%2C0-8.48%2C0c-8.73%2C5.06-17.53%2C10.11-26.26%2C15.17a8.36%2C8.36%2C0%2C0%2C0-4.15%2C7.26v30.24a8.3%2C8.3%2C0%2C0%2C0%2C4.24%2C7.34l26.17%2C15.17a8.31%2C8.31%2C0%2C0%2C0%2C8.48%2C0l58.62-33.92v24.7A13.31%2C13.31%2C0%2C0%2C1%2C184%2C168.23l-49.24%2C28.45a13.54%2C13.54%2C0%2C0%2C1-13.62%2C0L71.88%2C168.23A13.46%2C13.46%2C0%2C0%2C1%2C65%2C156.4c.08-18.91%2C0-37.83%2C0-56.82a13.46%2C13.46%2C0%2C0%2C1%2C6.84-11.83l49.25-28.37a13.17%2C13.17%2C0%2C0%2C1%2C13.62%2C0L184%2C87.75c9.3%2C5.38%2C9.3%2C20.88%2C0%2C26.26L129.2%2C145.56a2.36%2C2.36%2C0%2C0%2C1-2.53%2C0l-13.28-7.66a2.48%2C2.48%2C0%2C0%2C1-1.31-2.21V120.37a2.61%2C2.61%2C0%2C0%2C1%2C1.31-2.29L145.1%2C99.82A1.15%2C1.15%2C0%2C0%2C0%2C145.1%2C97.86Z%22%2F%3E%0A%3C%2Fsvg%3E`;
   }, [theme]);
 
@@ -228,7 +228,6 @@ export const Widget: React.FC<WidgetProps> = props => {
       setErrorMsg('Amount should be a number');
     } else {
       setDisabled(true);
-      console.log(invalidAmount);
       setErrorMsg('Invalid Recipient');
     }
   }, [to, amount]);
@@ -249,7 +248,6 @@ export const Widget: React.FC<WidgetProps> = props => {
       if (isValidCashAddress(to) || isValidXecAddress(to)) {
         setErrorMsg('');
       } else {
-        console.log('invalidAmount', invalidAmount);
         setErrorMsg('Invalid Recipient');
       }
     }
@@ -272,6 +270,14 @@ export const Widget: React.FC<WidgetProps> = props => {
     }
     const address = to;
     let url;
+
+    if (isValidCashAddress(address)) {
+      prefixedAddress = `bitcoincash:${address.replace(/^.*:/, '')}`;
+    } else if (isValidXecAddress(address)) {
+      prefixedAddress = `ecash:${address.replace(/^.*:/, '')}`;
+    }
+    url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
+
     if (currencyObj && hasPrice) {
       const bchAmount = getCurrencyObject(
         currencyObj.float / (price! / 100),
@@ -279,7 +285,6 @@ export const Widget: React.FC<WidgetProps> = props => {
       );
 
       if (isValidCashAddress(address)) {
-        prefixedAddress = `bitcoincash:${address.replace(/^.*:/, '')}`;
         setText(
           `Send ${currencyObj.string} ${currencyObj.currency} = ${bchAmount.BCHstring} BCH`,
         );
@@ -287,7 +292,6 @@ export const Widget: React.FC<WidgetProps> = props => {
           `Send ${currencyObj.string} ${currencyObj.currency} = ${bchAmount.BCHstring} BCH`,
         );
       } else if (isValidXecAddress(address)) {
-        prefixedAddress = `ecash:${address.replace(/^.*:/, '')}`;
         setText(
           `Send ${currencyObj.string} ${currencyObj.currency} = ${bchAmount.BCHstring} XEC`,
         );
@@ -309,8 +313,13 @@ export const Widget: React.FC<WidgetProps> = props => {
         url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
         setUrl(url);
       } else {
-        if (isValidCashAddress(address)) setText(`Send any amount of BCH`);
-        else if (isValidXecAddress(address)) setText(`Send any amount of XEC`);
+        if (isValidCashAddress(address)) {
+          setText(`Send any amount of BCH`);
+          setWidgetButtonText(`Send any amount of BCH`);
+        } else if (isValidXecAddress(address)) {
+          setText(`Send any amount of XEC`);
+          setWidgetButtonText(`Send any amount of XEC`);
+        }
         url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
         setUrl(url);
       }
@@ -323,7 +332,11 @@ export const Widget: React.FC<WidgetProps> = props => {
   const handleQrCodeClick = (): void => {
     if (disabled || to === undefined) return;
     const address = to;
-    prefixedAddress = `bitcoincash:${address.replace(/^.*:/, '')}`;
+    if (isValidCashAddress(address)) {
+      prefixedAddress = `bitcoincash:${address.replace(/^.*:/, '')}`;
+    } else {
+      prefixedAddress = `ecash:${address.replace(/^.*:/, '')}`;
+    }
     if (!copy(prefixedAddress)) return;
     setCopied(true);
     setRecentlyCopied(true);
