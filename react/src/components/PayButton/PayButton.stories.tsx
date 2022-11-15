@@ -21,7 +21,6 @@ export default {
   },
   args: {
     to: 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp',
-    addressCurrency: 'BCH',
   },
   parameters: {
     jest: ['Button'],
