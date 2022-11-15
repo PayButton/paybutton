@@ -3,7 +3,7 @@ import { formatPrice, formatComma, formatBCH, formatBits } from './format';
 import { fiatCurrency } from './api-client';
 
 const BCHdecimals = 8;
-const XECdecimals = 2;
+// const XECdecimals = 2;
 
 export type cryptoCurrency = 'BCH' | 'SAT' | 'bits' | 'XEC';
 export type currency = cryptoCurrency | fiatCurrency;
