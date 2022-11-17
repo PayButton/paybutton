@@ -148,9 +148,7 @@ export const Widget: React.FC<WidgetProps> = props => {
   const [url, setUrl] = useState('');
   const [userEditedAmount, setUserEditedAmount] = useState<currencyObject>();
   const [text, setText] = useState('Send any amount of BCH');
-  const [widgetButtonText, setWidgetButtonText] = useState(
-    'Send any amount of Crypto',
-  );
+  const [widgetButtonText, setWidgetButtonText] = useState('Send Payment');
   const transformAmount = useMemo(
     () => (randomSatoshis ? randomizeSatoshis : (x: number): number => x),
     [randomSatoshis],

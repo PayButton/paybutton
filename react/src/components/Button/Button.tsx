@@ -134,7 +134,7 @@ export const Button = (props: ButtonProps): React.ReactElement => {
 Button.defaultProps = {
   animation: 'slide',
   text: 'Donate',
-  hoverText: 'Send Crypto',
+  hoverText: 'Send Payment',
   disabled: false,
 };
 
