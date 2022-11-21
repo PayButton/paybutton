@@ -3,8 +3,9 @@ import React, { useContext } from 'react';
 import { Theme } from './Theme';
 import orange from './themes/orange';
 import paybutton from './themes/paybutton';
+import xec from './themes/xec';
 
-export const themes: Record<ThemeName, Theme> = { orange, paybutton };
+export const themes: Record<ThemeName, Theme> = { orange, paybutton, xec };
 
 export * from './Theme';
 export default themes;
@@ -12,6 +13,7 @@ export default themes;
 export enum ThemeName {
   ORANGE = 'orange',
   PAYBUTTON = 'paybutton',
+  XEC = 'xec',
 }
 
 const DEFAULT_THEME = ThemeName.PAYBUTTON;
