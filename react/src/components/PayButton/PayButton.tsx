@@ -4,7 +4,7 @@ import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
 import Button, { ButtonProps } from '../Button/Button';
 import { currency } from '../Widget/WidgetContainer';
 import { PaymentDialog } from '../PaymentDialog/PaymentDialog';
-import { validateCashAddress } from '../../util/address';
+import { isValidCashAddress, isValidXecAddress } from '../../util/address';
 
 export interface PayButtonProps extends ButtonProps {
   to: string;
@@ -34,7 +34,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
     amount,
     currency,
     text,
-    hoverText,
+    hoverText: hoverTextDefault,
     successText,
     animation,
     randomSatoshis,
@@ -46,13 +46,15 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
     editable,
   } = Object.assign({}, PayButton.defaultProps, props);
 
+  const [hoverText, setHoverText] = useState(hoverTextDefault);
+
   const handleButtonClick = (): void => setDialogOpen(true);
   const handleCloseDialog = (): void => setDialogOpen(false);
 
   useEffect(() => {
     const invalidAmount = amount !== undefined && isNaN(+amount);
 
-    if (to !== undefined && validateCashAddress(to)) {
+    if (to !== undefined) {
       setDisabled(!!props.disabled);
       setErrorMsg('');
     } else if (invalidAmount) {
@@ -63,6 +65,22 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
       setErrorMsg('Invalid Recipient');
     }
   }, [to, amount]);
+
+  useEffect(() => {
+    if (!to) {
+      setHoverText(hoverTextDefault);
+      setErrorMsg('Enter an address');
+    } else if (isValidCashAddress(to)) {
+      setHoverText('Send BCH');
+      setErrorMsg('');
+    } else if (isValidXecAddress(to)) {
+      setHoverText('Send XEC');
+      setErrorMsg('');
+    } else {
+      setHoverText(hoverTextDefault);
+      setErrorMsg('Invalid Recipient');
+    }
+  }, [to]);
 
   const ButtonComponent: React.FC<ButtonProps> = (
     props: ButtonProps,
