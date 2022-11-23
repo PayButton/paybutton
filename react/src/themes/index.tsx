@@ -72,9 +72,16 @@ const validateColors = (obj: any): Theme => {
   }
 };
 
-export const useTheme = (defaultTheme?: ThemeName | Theme): Theme => {
+export const useTheme = (
+  defaultTheme?: ThemeName | Theme,
+  isXec?: boolean,
+): Theme => {
   const validated =
-    defaultTheme === 'orange' ? defaultTheme : validateColors(defaultTheme);
+    defaultTheme === undefined && isXec === true
+      ? ThemeName.XEC
+      : defaultTheme === 'orange' || defaultTheme === 'xec'
+      ? defaultTheme
+      : validateColors(defaultTheme);
 
   const theme =
     useContext(ThemeContext) ??

@@ -5,7 +5,6 @@ import Button, { ButtonProps } from '../Button/Button';
 import { currency } from '../Widget/WidgetContainer';
 import { PaymentDialog } from '../PaymentDialog/PaymentDialog';
 import { isValidCashAddress, isValidXecAddress } from '../../util/address';
-import xecTheme from '../../themes/themes/xec';
 
 export interface PayButtonProps extends ButtonProps {
   to: string;
@@ -29,7 +28,6 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [disabled, setDisabled] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
-  const [theme, setTheme] = useState(useTheme(props.theme));
 
   const {
     to,
@@ -76,9 +74,6 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
       setHoverText('Send BCH');
       setErrorMsg('');
     } else if (isValidXecAddress(to)) {
-      if (props.theme === undefined) {
-        setTheme(xecTheme);
-      }
       setHoverText('Send XEC');
       setErrorMsg('');
     } else {
@@ -86,6 +81,8 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
       setErrorMsg('Invalid Recipient');
     }
   }, [to]);
+
+  const theme = useTheme(props.theme, isValidXecAddress(to));
 
   const ButtonComponent: React.FC<ButtonProps> = (
     props: ButtonProps,

@@ -75,7 +75,7 @@ export const PaymentDialog = (
     props: ButtonProps,
   ): React.ReactElement => <Button animation={animation} {...props} />;
 
-  const theme = useTheme(props.theme);
+  const theme = useTheme(props.theme, isValidXecAddress(to));
 
   let cleanAmount: any;
 
