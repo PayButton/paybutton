@@ -4,7 +4,9 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import successSound from '../../assets/success.mp3.json';
 import { useAddressDetails } from '../../hooks/useAddressDetails';
 import {
-  fiatCurrency,
+  cryptoCurrency,
+  cryptoCurrencies,
+  currency,
   getFiatPrice,
   getSatoshiBalance,
   UnconfirmedTransaction,
@@ -16,9 +18,6 @@ import {
   currencyObject,
 } from '../../util/satoshis';
 import Widget, { WidgetProps } from './Widget';
-
-export type cryptoCurrency = 'BCH' | 'SAT' | 'bits' | 'XEC';
-export type currency = cryptoCurrency | fiatCurrency;
 
 export interface WidgetContainerProps
   extends Omit<Omit<WidgetProps, 'loading'>, 'success'> {
@@ -125,6 +124,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
         const receivedAmount = satoshisToBch(satoshis);
 
         if (!hideToasts)
+          // TODO: This assumes only bch
           enqueueSnackbar(`Received ${receivedAmount} BCH`, snackbarOptions);
 
         onTransaction?.(transaction, receivedAmount);
@@ -201,7 +201,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
     useEffect(() => {
       if (!active) return;
 
-      if (!props.amount || ['BCH', 'SAT', 'bits'].includes(currency)) {
+      if (!props.amount || cryptoCurrencies.includes(currency)) {
         setLoading(false);
       }
     }, [active, props.amount, currency]);

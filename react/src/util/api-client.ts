@@ -33,6 +33,7 @@ export const getUTXOs = async (
 };
 
 export const getFiatPrice = async (currency: currency): Promise<PriceData> => {
+  // TODO: rename this. add another function for grabbing xec conversions
   const { data } = await axios.get(
     `https://markets.api.bitcoin.com/rates/convertor?c=BCH&q=${currency}`,
   );
@@ -67,7 +68,9 @@ export default {
 };
 
 export type fiatCurrency = 'USD' | 'CAD' | 'EUR' | 'GBP' | 'AUD';
+export const fiatCurrencies = ['USD', 'CAD', 'EUR', 'GBP', 'AUD'];
 export type cryptoCurrency = 'BCH' | 'SAT' | 'bits' | 'XEC';
+export const cryptoCurrencies = ['BCH', 'SAT', 'bits', 'XEC'];
 export type currency = cryptoCurrency | fiatCurrency;
 
 // export interface AddressDetails {
