@@ -129,7 +129,7 @@ export const Widget: React.FC<WidgetProps> = props => {
     editable,
   } = Object.assign({}, Widget.defaultProps, props);
 
-  const theme = useTheme(props.theme);
+  const theme = useTheme(props.theme, isValidXecAddress(to));
   const classes = useStyles({ success, loading, theme });
 
   const [copied, setCopied] = useState(false);

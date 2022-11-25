@@ -3,8 +3,9 @@ import React, { useContext } from 'react';
 import { Theme } from './Theme';
 import orange from './themes/orange';
 import paybutton from './themes/paybutton';
+import xec from './themes/xec';
 
-export const themes: Record<ThemeName, Theme> = { orange, paybutton };
+export const themes: Record<ThemeName, Theme> = { orange, paybutton, xec };
 
 export * from './Theme';
 export default themes;
@@ -12,6 +13,7 @@ export default themes;
 export enum ThemeName {
   ORANGE = 'orange',
   PAYBUTTON = 'paybutton',
+  XEC = 'xec',
 }
 
 const DEFAULT_THEME = ThemeName.PAYBUTTON;
@@ -70,9 +72,16 @@ const validateColors = (obj: any): Theme => {
   }
 };
 
-export const useTheme = (defaultTheme?: ThemeName | Theme): Theme => {
+export const useTheme = (
+  defaultTheme?: ThemeName | Theme,
+  isXec?: boolean,
+): Theme => {
   const validated =
-    defaultTheme === 'orange' ? defaultTheme : validateColors(defaultTheme);
+    defaultTheme === undefined && isXec === true
+      ? ThemeName.XEC
+      : defaultTheme === 'orange' || defaultTheme === 'xec'
+      ? defaultTheme
+      : validateColors(defaultTheme);
 
   const theme =
     useContext(ThemeContext) ??

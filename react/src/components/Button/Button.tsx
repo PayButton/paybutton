@@ -29,7 +29,7 @@ const useStyles = makeStyles({
     transition: '0.6s',
     ...(props.animation === 'slide'
       ? {
-          background: `linear-gradient(45deg, ${theme.palette.primary} 50%, ${theme.palette.secondary} 50%)`,
+          background: `linear-gradient(45deg, ${theme.palette.primary} 50%, ${theme.palette.secondary} 50%) 100% center / 300%`,
           backgroundSize: '300%',
           backgroundPosition: '100%',
           transition: 'background-position 0.8s, color 0.15s',

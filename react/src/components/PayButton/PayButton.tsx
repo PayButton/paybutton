@@ -82,11 +82,11 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
     }
   }, [to]);
 
+  const theme = useTheme(props.theme, isValidXecAddress(to));
+
   const ButtonComponent: React.FC<ButtonProps> = (
     props: ButtonProps,
   ): React.ReactElement => <Button animation={animation} {...props} />;
-
-  const theme = useTheme(props.theme);
 
   return (
     <ThemeProvider value={theme}>
