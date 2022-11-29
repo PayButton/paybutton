@@ -54,7 +54,7 @@ export const getFiatPrice = async (currency: currency): Promise<PriceData> => {
 
 export const getTransactionDetails = async (
   txid: string,
-  rootUrl = `https://api.paybutton.org`,
+  rootUrl = `https://api.paybutton.org`, // TODO: don't hardcode this url in
 ): Promise<TransactionDetails> => {
   const res = await fetch(`${rootUrl}/transactions/details/${txid}`);
   return await res.json();
