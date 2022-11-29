@@ -4,7 +4,7 @@ import React, { useRef, useState, useEffect } from 'react';
 
 import { Theme, ThemeName, useTheme } from '../../themes';
 
-type animation = 'slide' | 'invert' | 'none';
+export type animation = 'slide' | 'invert' | 'none';
 
 export interface ButtonProps {
   animation?: animation;

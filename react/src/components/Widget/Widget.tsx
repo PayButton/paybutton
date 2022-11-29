@@ -15,7 +15,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
 import { isValidCashAddress, isValidXecAddress } from '../../util/address';
 import { formatPrice } from '../../util/format';
-import Button from '../Button/Button';
+import { Button, animation } from '../Button/Button';
 import BarChart from '../BarChart/BarChart';
 
 import {
@@ -47,6 +47,7 @@ export interface WidgetProps {
   totalReceived?: number | null;
   goalAmount?: number | string | null;
   currency?: currency;
+  animation?: animation;
   currencyObject?: currencyObject | undefined;
   randomSatoshis?: boolean;
   price?: number;
@@ -124,6 +125,7 @@ export const Widget: React.FC<WidgetProps> = props => {
     goalAmount,
     ButtonComponent = Button,
     currency = 'BCH',
+    animation,
     randomSatoshis = true,
     currencyObject,
     editable,
@@ -552,6 +554,7 @@ export const Widget: React.FC<WidgetProps> = props => {
                 text={widgetButtonText}
                 onClick={handleButtonClick}
                 disabled={disabled}
+                animation={animation}
               />
             </Box>
           )}
