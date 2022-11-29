@@ -183,11 +183,7 @@ export const Widget: React.FC<WidgetProps> = props => {
   const query: string[] = [];
   const isMissingWidgetContainer = !totalReceived;
   const addressDetails = useAddressDetails(to, isMissingWidgetContainer);
-  const isFiat: boolean =
-    currency !== 'SAT' &&
-    currency !== 'BCH' &&
-    currency !== 'bits' &&
-    currency !== 'XEC';
+  const isFiat: boolean = currency !== 'BCH' && currency !== 'XEC';
   const hasPrice: boolean = price !== undefined && price > 0;
   let prefixedAddress: string;
 
@@ -293,8 +289,7 @@ export const Widget: React.FC<WidgetProps> = props => {
       const notZeroValue: boolean =
         currencyObj?.satoshis !== undefined && currencyObj.satoshis > 0;
       if (!isFiat && currencyObj && notZeroValue) {
-        const bchType: string =
-          currency === 'SAT' ? 'satoshis' : currencyObj.currency;
+        const bchType: string = currencyObj.currency;
         setText(`Send ${currencyObj.string} ${bchType}`);
         query.push(`amount=${currencyObj.BCHstring}`);
         url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
@@ -369,29 +364,18 @@ export const Widget: React.FC<WidgetProps> = props => {
   };
 
   useEffect(() => {
-    const inSatoshis = getCurrencyObject(totalSatsReceived, 'SAT');
+    // const inSatoshis = getCurrencyObject(totalSatsReceived, 'SAT');
+    const progress = getCurrencyObject(totalSatsReceived, currency);
 
     const goal = getCurrencyObject(cleanGoalAmount, currency);
 
     if (!isFiat) {
-      if (goal !== undefined && inSatoshis.float > 0) {
-        setGoalPercent((100 * inSatoshis.float) / goal.satoshis!);
-        if (currency === 'bits') {
-          const bitstring = getCurrencyObject(
-            parseFloat((inSatoshis.float / 100).toFixed(0)),
-            'bits',
-          );
-          setGoalText(`${bitstring.string} / ${goal.string}`);
-          setIsLoading(false);
-        } else if (currency === 'SAT') {
-          setGoalText(`${inSatoshis.string} / ${goal.string}`);
-          setIsLoading(false);
-        } else {
-          const string = inSatoshis.BCHstring!;
-          const truncated = parseFloat(string).toFixed(2);
-          setGoalText(`${truncated} / ${cleanGoalAmount}`);
-          setIsLoading(false);
-        }
+      if (goal !== undefined && progress.float > 0) {
+        setGoalPercent((100 * progress.float) / goal.float);
+        const string = progress.BCHstring!;
+        const truncated = parseFloat(string).toFixed(2);
+        setGoalText(`${truncated} / ${cleanGoalAmount}`);
+        setIsLoading(false);
       }
     } else {
       if (totalSatsReceived !== 0 && hasPrice) {
