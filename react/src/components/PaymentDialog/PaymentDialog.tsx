@@ -98,6 +98,7 @@ export const PaymentDialog = (
           to={to}
           amount={cleanAmount}
           currency={currency}
+          animation={animation}
           randomSatoshis={randomSatoshis}
           hideToasts={hideToasts}
           onSuccess={handleSuccess}

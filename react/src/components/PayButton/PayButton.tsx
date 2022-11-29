@@ -102,6 +102,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
         to={to}
         amount={amount}
         currency={currency}
+        animation={animation}
         randomSatoshis={randomSatoshis}
         hideToasts={hideToasts}
         onTransaction={onTransaction}
