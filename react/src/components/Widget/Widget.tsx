@@ -18,13 +18,9 @@ import { formatPrice } from '../../util/format';
 import { Button, animation } from '../Button/Button';
 import BarChart from '../BarChart/BarChart';
 
-import {
-  satoshisToBch,
-  getCurrencyObject,
-  currencyObject,
-} from '../../util/satoshis';
+import { getCurrencyObject, currencyObject } from '../../util/satoshis';
 import { useAddressDetails } from '../../hooks/useAddressDetails';
-import { currency, getSatoshiBalance } from '../../util/api-client';
+import { currency, getAddressBalance } from '../../util/api-client';
 import { randomizeSatoshis } from '../../util/randomizeSats';
 import PencilIcon from '../../assets/edit-pencil';
 
@@ -196,8 +192,8 @@ export const Widget: React.FC<WidgetProps> = props => {
 
     (async (): Promise<void> => {
       if (addressDetails) {
-        const { satoshis } = await getSatoshiBalance(to);
-        setTotalSatsReceived(satoshis);
+        const { balance } = await getAddressBalance(to);
+        setTotalSatsReceived(balance);
       }
     })();
   }, [addressDetails, totalReceived, totalSatsReceived]);
@@ -264,32 +260,42 @@ export const Widget: React.FC<WidgetProps> = props => {
     url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
 
     if (currencyObj && hasPrice) {
-      const bchAmount = getCurrencyObject(
-        currencyObj.float / (price! / 100),
-        'BCH',
-      );
+      let addressType: currency = 'AUD';
 
       if (isValidCashAddress(address)) {
-        setText(
-          `Send ${currencyObj.string} ${currencyObj.currency} = ${bchAmount.string} BCH`,
-        );
-        setWidgetButtonText(
-          `Send ${currencyObj.string} ${currencyObj.currency} = ${bchAmount.string} BCH`,
-        );
+        addressType = 'BCH';
       } else if (isValidXecAddress(address)) {
-        setText(
-          `Send ${currencyObj.string} ${currencyObj.currency} = ${bchAmount.string} XEC`,
-        );
-        setWidgetButtonText(
-          `Send ${currencyObj.string} ${currencyObj.currency} = ${bchAmount.string} XEC`,
-        );
+        addressType = 'XEC';
       }
-      query.push(`amount=${bchAmount.float}`);
+
+      const bchAmount = price
+        ? getCurrencyObject(currencyObj.float / price, addressType)
+        : null;
+
+      if (bchAmount) {
+        if (isValidCashAddress(address)) {
+          setText(
+            `Send ${currencyObj.string} ${currencyObj.currency} = ${bchAmount.string} BCH`,
+          );
+          setWidgetButtonText(
+            `Send ${currencyObj.string} ${currencyObj.currency} = ${bchAmount.string} BCH`,
+          );
+        } else if (isValidXecAddress(address)) {
+          setText(
+            `Send ${currencyObj.string} ${currencyObj.currency} = ${bchAmount.string} XEC`,
+          );
+          setWidgetButtonText(
+            `Send ${currencyObj.string} ${currencyObj.currency} = ${bchAmount.string} XEC`,
+          );
+        }
+        query.push(`amount=${bchAmount.float}`);
+      }
+
       url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
       setUrl(url);
     } else {
       const notZeroValue: boolean =
-        currencyObj?.satoshis !== undefined && currencyObj.satoshis > 0;
+        currencyObj?.float !== undefined && currencyObj.float > 0;
       if (!isFiat && currencyObj && notZeroValue) {
         const bchType: string = currencyObj.currency;
         setText(`Send ${currencyObj.string} ${bchType}`);
@@ -381,8 +387,7 @@ export const Widget: React.FC<WidgetProps> = props => {
       }
     } else {
       if (totalSatsReceived !== 0 && hasPrice) {
-        const receivedVal: number =
-          satoshisToBch(totalSatsReceived) * (price! / 100);
+        const receivedVal: number = totalSatsReceived * (price! / 100);
         const receivedText: string = formatPrice(receivedVal, currency);
         const goalText: string = formatPrice(cleanGoalAmount, currency);
         setIsLoading(false);
