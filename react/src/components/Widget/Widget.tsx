@@ -13,7 +13,11 @@ import QRCode, { BaseQRCodeProps } from 'qrcode.react';
 import React, { useEffect, useMemo, useState } from 'react';
 
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
-import { isValidCashAddress, isValidXecAddress } from '../../util/address';
+import {
+  isValidCashAddress,
+  isValidXecAddress,
+  validCurrencyType,
+} from '../../util/address';
 import { formatPrice } from '../../util/format';
 import { Button, animation } from '../Button/Button';
 import BarChart from '../BarChart/BarChart';
@@ -117,8 +121,8 @@ export const Widget: React.FC<WidgetProps> = props => {
     totalReceived,
     goalAmount,
     ButtonComponent = Button,
-    currency = 'BCH',
     animation,
+    currency = validCurrencyType(to),
     randomSatoshis = true,
     currencyObject,
     editable,
@@ -372,7 +376,6 @@ export const Widget: React.FC<WidgetProps> = props => {
   };
 
   useEffect(() => {
-    // const inSatoshis = getCurrencyObject(totalSatsReceived, 'SAT');
     const progress = getCurrencyObject(totalSatsReceived, currency);
 
     const goal = getCurrencyObject(cleanGoalAmount, currency);
