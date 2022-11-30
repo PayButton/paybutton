@@ -271,17 +271,17 @@ export const Widget: React.FC<WidgetProps> = props => {
 
       if (isValidCashAddress(address)) {
         setText(
-          `Send ${currencyObj.string} ${currencyObj.currency} = ${bchAmount.BCHstring} BCH`,
+          `Send ${currencyObj.string} ${currencyObj.currency} = ${bchAmount.string} BCH`,
         );
         setWidgetButtonText(
-          `Send ${currencyObj.string} ${currencyObj.currency} = ${bchAmount.BCHstring} BCH`,
+          `Send ${currencyObj.string} ${currencyObj.currency} = ${bchAmount.string} BCH`,
         );
       } else if (isValidXecAddress(address)) {
         setText(
-          `Send ${currencyObj.string} ${currencyObj.currency} = ${bchAmount.BCHstring} XEC`,
+          `Send ${currencyObj.string} ${currencyObj.currency} = ${bchAmount.string} XEC`,
         );
         setWidgetButtonText(
-          `Send ${currencyObj.string} ${currencyObj.currency} = ${bchAmount.BCHstring} XEC`,
+          `Send ${currencyObj.string} ${currencyObj.currency} = ${bchAmount.string} XEC`,
         );
       }
       query.push(`amount=${bchAmount.float}`);
@@ -293,7 +293,7 @@ export const Widget: React.FC<WidgetProps> = props => {
       if (!isFiat && currencyObj && notZeroValue) {
         const bchType: string = currencyObj.currency;
         setText(`Send ${currencyObj.string} ${bchType}`);
-        query.push(`amount=${currencyObj.BCHstring}`);
+        query.push(`amount=${currencyObj.string}`);
         url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
         setUrl(url);
       } else {
@@ -374,7 +374,7 @@ export const Widget: React.FC<WidgetProps> = props => {
     if (!isFiat) {
       if (goal !== undefined && progress.float > 0) {
         setGoalPercent((100 * progress.float) / goal.float);
-        const string = progress.BCHstring!;
+        const string = progress.string;
         const truncated = parseFloat(string).toFixed(2);
         setGoalText(`${truncated} / ${cleanGoalAmount}`);
         setIsLoading(false);
