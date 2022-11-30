@@ -3,11 +3,13 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import successSound from '../../assets/success.mp3.json';
 import { useAddressDetails } from '../../hooks/useAddressDetails';
+import { isValidCashAddress, isValidXecAddress } from '../../util/address';
 import {
   cryptoCurrency,
   cryptoCurrencies,
   currency,
-  getFiatPrice,
+  getBchFiatPrice,
+  getXecFiatPrice,
   getSatoshiBalance,
   UnconfirmedTransaction,
 } from '../../util/api-client';
@@ -98,8 +100,16 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
 
     const getPrice = useCallback(async (): Promise<void> => {
       try {
-        if (isFiat) {
-          const data = await getFiatPrice(currency);
+        if (isFiat && isValidCashAddress(address)) {
+          const data = await getBchFiatPrice(currency);
+
+          const { price } = data;
+          setLoading(false);
+          setPrice(price);
+        } else if (isFiat && isValidXecAddress(address)) {
+          // TODO: THIS SHOULD POINT TO THE XEC FUNCTION. THIS IS TEMPORARY WHILE WAITING FOR BACKEND
+          const data = await getXecFiatPrice(currency);
+
           const { price } = data;
           setLoading(false);
           setPrice(price);
