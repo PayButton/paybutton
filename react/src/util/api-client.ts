@@ -32,7 +32,9 @@ export const getUTXOs = async (
   return await res.json();
 };
 
-export const getFiatPrice = async (currency: currency): Promise<PriceData> => {
+export const getBchFiatPrice = async (
+  currency: currency,
+): Promise<PriceData> => {
   // TODO: rename this. add another function for grabbing xec conversions
   const { data } = await axios.get(
     `https://markets.api.bitcoin.com/rates/convertor?c=BCH&q=${currency}`,
@@ -40,6 +42,29 @@ export const getFiatPrice = async (currency: currency): Promise<PriceData> => {
 
   const { rate } = data[currency];
   const price: number = Math.round(rate * 100);
+  return { price };
+};
+
+export const getXecFiatPrice = async (
+  currency: currency,
+): Promise<PriceData> => {
+  // TODO: Actually add a xec endpoint to get live data from
+
+  const { data } = await axios.get(
+    `https://markets.api.bitcoin.com/rates/convertor?c=BCH&q=${currency}`,
+  );
+
+  if (!currency) {
+    // this is a do nothing if statement to prevent ts complaining about not using currency
+    console.log(currency);
+    console.log(data);
+  }
+
+  // 0.00002894 xec price in usd on nov 29 2022
+  // const { rate } = data[currency];
+  // const price: number = Math.round(rate * 100);
+  const price = 0.00002894;
+  console.log(price);
   return { price };
 };
 
@@ -63,7 +88,8 @@ export const getTransactionDetails = async (
 export default {
   getAddressDetails,
   getTransactionDetails,
-  getFiatPrice,
+  getBchFiatPrice,
+  getXecFiatPrice,
   getSatoshiBalance,
 };
 
