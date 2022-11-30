@@ -16,10 +16,10 @@ export const getAddressDetails = async (
   return await res.json();
 };
 
-export const getSatoshiBalance = async (
+export const getAddressBalance = async (
   address: string,
   rootUrl = process.env.REACT_APP_API_URL,
-): Promise<{ satoshis: number }> => {
+): Promise<{ balance: number }> => {
   const res = await fetch(`${rootUrl}/address/balance/${address}`);
   return await res.json();
 };
@@ -41,7 +41,7 @@ export const getBchFiatPrice = async (
   );
 
   const { rate } = data[currency];
-  const price: number = Math.round(rate * 100);
+  const price: number = rate;
   return { price };
 };
 
@@ -90,7 +90,7 @@ export default {
   getTransactionDetails,
   getBchFiatPrice,
   getXecFiatPrice,
-  getSatoshiBalance,
+  getAddressBalance,
 };
 
 export type fiatCurrency = 'USD' | 'CAD' | 'EUR' | 'GBP' | 'AUD';
