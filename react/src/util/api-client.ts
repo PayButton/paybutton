@@ -55,6 +55,7 @@ export const getXecFiatPrice = async (
   );
 
   if (!currency) {
+    // TODO: remove this ifstatement. waiting on a way to get xec price
     // this is a do nothing if statement to prevent ts complaining about not using currency
     console.log(currency);
     console.log(data);
@@ -64,7 +65,6 @@ export const getXecFiatPrice = async (
   // const { rate } = data[currency];
   // const price: number = Math.round(rate * 100);
   const price = 0.00002894;
-  console.log(price);
   return { price };
 };
 
