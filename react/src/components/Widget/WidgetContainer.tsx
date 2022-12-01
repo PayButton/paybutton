@@ -6,7 +6,8 @@ import { useAddressDetails } from '../../hooks/useAddressDetails';
 import { isValidCashAddress, isValidXecAddress } from '../../util/address';
 import {
   cryptoCurrency,
-  cryptoCurrencies,
+  isCrypto,
+  isFiat,
   currency,
   getBchFiatPrice,
   getXecFiatPrice,
@@ -91,17 +92,15 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
 
     const addressDetails = useAddressDetails(address, active && !success);
 
-    const isFiat: boolean = currency !== 'BCH' && currency !== 'XEC';
-
     const getPrice = useCallback(async (): Promise<void> => {
       try {
-        if (isFiat && isValidCashAddress(address)) {
+        if (isFiat(currency) && isValidCashAddress(address)) {
           const data = await getBchFiatPrice(currency);
 
           const { price } = data;
           setLoading(false);
           setPrice(price);
-        } else if (isFiat && isValidXecAddress(address)) {
+        } else if (isFiat(currency) && isValidXecAddress(address)) {
           // TODO: THIS SHOULD POINT TO THE XEC FUNCTION. THIS IS TEMPORARY WHILE WAITING FOR BACKEND
           const data = await getXecFiatPrice(currency);
 
@@ -182,7 +181,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
         setCurrencyObj(obj);
       }
 
-      if (isFiat && price === 0) {
+      if (isFiat(currency) && price === 0) {
         getPrice();
       }
     }, []);
@@ -203,7 +202,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
     useEffect(() => {
       if (!active) return;
 
-      if (!props.amount || cryptoCurrencies.includes(currency)) {
+      if (!props.amount || isCrypto(currency)) {
         setLoading(false);
       }
     }, [active, props.amount, currency]);

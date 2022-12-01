@@ -93,11 +93,25 @@ export default {
   getAddressBalance,
 };
 
-export type fiatCurrency = 'USD' | 'CAD' | 'EUR' | 'GBP' | 'AUD';
-export const fiatCurrencies = ['USD', 'CAD', 'EUR', 'GBP', 'AUD'];
-export type cryptoCurrency = 'BCH' | 'XEC';
-export const cryptoCurrencies = ['BCH', 'XEC'];
+export const fiatCurrencies = ['USD', 'CAD', 'EUR', 'GBP', 'AUD'] as const;
+type fiatCurrenciesTuple = typeof fiatCurrencies; // readonly ['USD', 'CAD', 'EUR', 'GBP', 'AUD']
+export type fiatCurrency = fiatCurrenciesTuple[number]; // "USD" | "CAD" | "EUR" | "GBP" | "AUD"
+
+export const cryptoCurrencies = ['BCH', 'XEC'] as const;
+type cryptoCurrenciesTuple = typeof cryptoCurrencies; // readonly ['BCH', 'XEC']
+export type cryptoCurrency = cryptoCurrenciesTuple[number]; // "BCH" | "XEC"
+
 export type currency = cryptoCurrency | fiatCurrency;
+
+export function isFiat(unknownString: string): unknownString is fiatCurrency {
+  return fiatCurrencies.includes(unknownString as fiatCurrency);
+}
+
+export function isCrypto(
+  unknownString: string,
+): unknownString is cryptoCurrency {
+  return cryptoCurrencies.includes(unknownString as cryptoCurrency);
+}
 
 // export interface AddressDetails {
 //   balance: number;

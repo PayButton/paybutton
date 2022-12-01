@@ -24,7 +24,7 @@ import BarChart from '../BarChart/BarChart';
 
 import { getCurrencyObject, currencyObject } from '../../util/satoshis';
 import { useAddressDetails } from '../../hooks/useAddressDetails';
-import { currency, getAddressBalance } from '../../util/api-client';
+import { currency, getAddressBalance, isFiat } from '../../util/api-client';
 import { randomizeSatoshis } from '../../util/randomizeSats';
 import PencilIcon from '../../assets/edit-pencil';
 
@@ -185,7 +185,6 @@ export const Widget: React.FC<WidgetProps> = props => {
   const query: string[] = [];
   const isMissingWidgetContainer = !totalReceived;
   const addressDetails = useAddressDetails(to, isMissingWidgetContainer);
-  const isFiat: boolean = currency !== 'BCH' && currency !== 'XEC';
   const hasPrice: boolean = price !== undefined && price > 0;
   let prefixedAddress: string;
 
@@ -300,7 +299,7 @@ export const Widget: React.FC<WidgetProps> = props => {
     } else {
       const notZeroValue: boolean =
         currencyObj?.float !== undefined && currencyObj.float > 0;
-      if (!isFiat && currencyObj && notZeroValue) {
+      if (!isFiat(currency) && currencyObj && notZeroValue) {
         const bchType: string = currencyObj.currency;
         setText(`Send ${currencyObj.string} ${bchType}`);
         query.push(`amount=${currencyObj.string}`);
@@ -380,7 +379,7 @@ export const Widget: React.FC<WidgetProps> = props => {
 
     const goal = getCurrencyObject(cleanGoalAmount, currency);
 
-    if (!isFiat) {
+    if (!isFiat(currency)) {
       if (goal !== undefined && progress.float > 0) {
         setGoalPercent((100 * progress.float) / goal.float);
         const string = progress.string;
