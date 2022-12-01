@@ -24,14 +24,11 @@ import {
   currencyObject,
 } from '../../util/satoshis';
 import { useAddressDetails } from '../../hooks/useAddressDetails';
-import { fiatCurrency, getSatoshiBalance } from '../../util/api-client';
+import { currency, getSatoshiBalance } from '../../util/api-client';
 import { randomizeSatoshis } from '../../util/randomizeSats';
 import PencilIcon from '../../assets/edit-pencil';
 
 type QRCodeProps = BaseQRCodeProps & { renderAs: 'svg' };
-
-export type cryptoCurrency = 'BCH' | 'SAT' | 'bits' | 'XEC';
-export type currency = cryptoCurrency | fiatCurrency;
 
 export interface WidgetProps {
   to: string;

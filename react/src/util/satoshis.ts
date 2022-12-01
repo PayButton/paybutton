@@ -1,12 +1,9 @@
 import BigNumber from 'bignumber.js';
 import { formatPrice, formatComma, formatBCH, formatBits } from './format';
-import { fiatCurrency } from './api-client';
+import { currency } from './api-client';
 
 const BCHdecimals = 8;
 // const XECdecimals = 2;
-
-export type cryptoCurrency = 'BCH' | 'SAT' | 'bits' | 'XEC';
-export type currency = cryptoCurrency | fiatCurrency;
 
 export const satoshisToBch = (satoshis: number): number =>
   +(satoshis / 100_000_000).toFixed(8);
