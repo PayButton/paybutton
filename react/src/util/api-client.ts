@@ -105,6 +105,7 @@ export type currency = cryptoCurrency | fiatCurrency;
 
 export function isFiat(unknownString: string): unknownString is fiatCurrency {
   return fiatCurrencies.includes(unknownString as fiatCurrency);
+  // this is a comment
 }
 
 export function isCrypto(
