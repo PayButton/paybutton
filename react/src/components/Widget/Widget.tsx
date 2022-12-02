@@ -262,15 +262,17 @@ export const Widget: React.FC<WidgetProps> = props => {
     }
     url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
 
+    let addressType: currency = 'AUD';
+
+    if (isValidCashAddress(address)) {
+      addressType = 'BCH';
+      setWidgetButtonText(`Send with BCH wallet`);
+    } else if (isValidXecAddress(address)) {
+      addressType = 'XEC';
+      setWidgetButtonText(`Send with XEC wallet`);
+    }
+
     if (currencyObj && hasPrice) {
-      let addressType: currency = 'AUD';
-
-      if (isValidCashAddress(address)) {
-        addressType = 'BCH';
-      } else if (isValidXecAddress(address)) {
-        addressType = 'XEC';
-      }
-
       const bchAmount = price
         ? getCurrencyObject(currencyObj.float / price, addressType)
         : null;
@@ -280,14 +282,8 @@ export const Widget: React.FC<WidgetProps> = props => {
           setText(
             `Send ${currencyObj.string} ${currencyObj.currency} = ${bchAmount.string} BCH`,
           );
-          setWidgetButtonText(
-            `Send ${currencyObj.string} ${currencyObj.currency} = ${bchAmount.string} BCH`,
-          );
         } else if (isValidXecAddress(address)) {
           setText(
-            `Send ${currencyObj.string} ${currencyObj.currency} = ${bchAmount.string} XEC`,
-          );
-          setWidgetButtonText(
             `Send ${currencyObj.string} ${currencyObj.currency} = ${bchAmount.string} XEC`,
           );
         }
@@ -308,10 +304,8 @@ export const Widget: React.FC<WidgetProps> = props => {
       } else {
         if (isValidCashAddress(address)) {
           setText(`Send any amount of BCH`);
-          setWidgetButtonText(`Send any amount of BCH`);
         } else if (isValidXecAddress(address)) {
           setText(`Send any amount of XEC`);
-          setWidgetButtonText(`Send any amount of XEC`);
         }
         url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
         setUrl(url);
