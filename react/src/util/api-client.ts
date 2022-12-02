@@ -1,4 +1,5 @@
 import axios from 'axios';
+import _ from 'lodash';
 
 // export const getAddressDetails = async (
 //   address: string,
@@ -34,37 +35,25 @@ export const getUTXOs = async (
 
 export const getBchFiatPrice = async (
   currency: currency,
+  rootUrl = process.env.REACT_APP_API_PRICING_URL,
 ): Promise<PriceData> => {
-  // TODO: rename this. add another function for grabbing xec conversions
   const { data } = await axios.get(
-    `https://markets.api.bitcoin.com/rates/convertor?c=BCH&q=${currency}`,
+    `${rootUrl}/price/bitcoincash/${_.lowerCase(currency)}`,
   );
 
-  const { rate } = data[currency];
-  const price: number = rate;
+  const price: number = data;
   return { price };
 };
 
 export const getXecFiatPrice = async (
   currency: currency,
+  rootUrl = process.env.REACT_APP_API_PRICING_URL,
 ): Promise<PriceData> => {
-  // TODO: Actually add a xec endpoint to get live data from
-
   const { data } = await axios.get(
-    `https://markets.api.bitcoin.com/rates/convertor?c=BCH&q=${currency}`,
+    `${rootUrl}/price/ecash/${_.lowerCase(currency)}`,
   );
 
-  if (!currency) {
-    // TODO: remove this ifstatement. waiting on a way to get xec price
-    // this is a do nothing if statement to prevent ts complaining about not using currency
-    console.log(currency);
-    console.log(data);
-  }
-
-  // 0.00002894 xec price in usd on nov 29 2022
-  // const { rate } = data[currency];
-  // const price: number = Math.round(rate * 100);
-  const price = 0.00002894;
+  const price: number = data;
   return { price };
 };
 
