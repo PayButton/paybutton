@@ -71,10 +71,8 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
       setHoverText(hoverTextDefault);
       setErrorMsg('Enter an address');
     } else if (isValidCashAddress(to)) {
-      setHoverText('Send BCH');
       setErrorMsg('');
     } else if (isValidXecAddress(to)) {
-      setHoverText('Send XEC');
       setErrorMsg('');
     } else {
       setHoverText(hoverTextDefault);
