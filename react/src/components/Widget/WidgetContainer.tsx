@@ -94,11 +94,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
 
     const addressDetails = useAddressDetails(address, active && !success);
 
-    const isFiat: boolean =
-      currency !== 'SAT' &&
-      currency !== 'BCH' &&
-      currency !== 'bits' &&
-      currency !== 'XEC';
+    const isFiat: boolean = currency !== 'BCH' && currency !== 'XEC';
 
     const getPrice = useCallback(async (): Promise<void> => {
       try {
