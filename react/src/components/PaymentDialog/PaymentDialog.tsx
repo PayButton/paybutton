@@ -3,8 +3,9 @@ import React, { useState, useEffect } from 'react';
 
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
 import Button, { ButtonProps } from '../Button/Button';
-import { WidgetContainer, currency } from '../Widget/WidgetContainer';
+import { WidgetContainer } from '../Widget/WidgetContainer';
 import { isValidCashAddress, isValidXecAddress } from '../../util/address';
+import { currency } from '../../util/api-client';
 
 export interface PaymentDialogProps extends ButtonProps {
   to: string;
