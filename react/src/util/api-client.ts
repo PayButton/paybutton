@@ -57,6 +57,33 @@ export const getXecFiatPrice = async (
   return { price };
 };
 
+export const getFiatPrice = async (
+  fiat: fiatCurrency,
+  crypto: cryptoCurrency,
+  rootUrl = process.env.REACT_APP_API_PRICING_URL,
+): Promise<PriceData> => {
+  // TODO: get rid of 'getXecFiatPrice' && 'getBchFiatPrice' and replace
+  // with this function.
+  let url = '';
+
+  switch (crypto) {
+    case 'BCH':
+      url = `${rootUrl}/price/bitcoincash/${_.lowerCase(fiat)}`;
+      break;
+    case 'XEC':
+      url = `${rootUrl}/price/ecash/${_.lowerCase(fiat)}`;
+      break;
+  }
+  if (!url) {
+    throw new Error();
+  } else {
+    const { data } = await axios.get(url);
+
+    const price: number = data;
+    return { price };
+  }
+};
+
 // export const getTransactionDetails = async (
 //   txid: string,
 // ): Promise<TransactionDetails> => {
