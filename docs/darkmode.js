@@ -51,7 +51,7 @@ const plugin = (hook, vm) => {
       toggleBtnBg: '#34495e',
       textColor: '#2c3e50',
       codeBackground: '#f8f8f8',
-      header: '#42b983',
+      header: '#231f20',
     },
   };
 

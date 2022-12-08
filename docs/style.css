@@ -119,3 +119,36 @@ a.app-name-link,
 .app-nav li ul a {
   color: #20202f;
 }
+
+.cover-main img {
+  max-width: 400px;
+}
+
+section.cover .cover-main>p:last-child a {
+  border: 1px solid var(--docsify_dark_mode_header);
+  color: var(--docsify_dark_mode_header);
+  font-weight: 600;
+}
+
+section.cover .cover-main>p:last-child a:last-child {
+  background-color: var(--docsify_dark_mode_header);
+  color: #fff;
+}
+
+section.cover .cover-main>p:last-child a:last-child:hover {
+  background-color: var(--theme-color);
+  border-color: var(--theme-color);
+  color: #fff !important;
+  opacity: 1;
+}
+
+section.cover .cover-main>p:last-child a:first-child:hover {
+  border-color: var(--theme-color);
+  color: var(--theme-color) !important;
+  opacity: 1;
+}
+
+section.cover {
+  min-height: 600px;
+  height: 80vh;
+}
