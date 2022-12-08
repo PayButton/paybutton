@@ -23,18 +23,18 @@ export const isValidXecAddress = (address: string): boolean => {
   }
 };
 
-export const validCurrencyType = (address: string): currency => {
+export const getCurrencyTypeFromAddress = (address: string): currency => {
   if (isValidCashAddress(address)) {
     return 'BCH';
   } else if (isValidXecAddress(address)) {
     return 'XEC';
   } else {
-    return 'GBP';
+    throw new Error();
   }
 };
 
 export default {
   isValidCashAddress,
   isValidXecAddress,
-  validCurrencyType,
+  getCurrencyTypeFromAddress,
 };

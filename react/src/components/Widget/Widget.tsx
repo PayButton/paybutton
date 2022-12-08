@@ -16,7 +16,7 @@ import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
 import {
   isValidCashAddress,
   isValidXecAddress,
-  validCurrencyType,
+  getCurrencyTypeFromAddress,
 } from '../../util/address';
 import { formatPrice } from '../../util/format';
 import { Button, animation } from '../Button/Button';
@@ -121,8 +121,8 @@ export const Widget: React.FC<WidgetProps> = props => {
     totalReceived,
     goalAmount,
     ButtonComponent = Button,
+    currency = getCurrencyTypeFromAddress(to),
     animation,
-    currency = validCurrencyType(to),
     randomSatoshis = true,
     currencyObject,
     editable,
@@ -255,22 +255,18 @@ export const Widget: React.FC<WidgetProps> = props => {
     const address = to;
     let url;
 
-    if (isValidCashAddress(address)) {
-      prefixedAddress = `bitcoincash:${address.replace(/^.*:/, '')}`;
-    } else if (isValidXecAddress(address)) {
-      prefixedAddress = `ecash:${address.replace(/^.*:/, '')}`;
+    const addressType: currency = getCurrencyTypeFromAddress(address);
+    setWidgetButtonText(`Send with ${addressType} wallet`);
+
+    switch (addressType) {
+      case 'BCH':
+        prefixedAddress = `bitcoincash:${address.replace(/^.*:/, '')}`;
+        break;
+      case 'XEC':
+        prefixedAddress = `ecash:${address.replace(/^.*:/, '')}`;
+        break;
     }
     url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
-
-    let addressType: currency = 'AUD';
-
-    if (isValidCashAddress(address)) {
-      addressType = 'BCH';
-      setWidgetButtonText(`Send with BCH wallet`);
-    } else if (isValidXecAddress(address)) {
-      addressType = 'XEC';
-      setWidgetButtonText(`Send with XEC wallet`);
-    }
 
     if (currencyObj && hasPrice) {
       const bchAmount = price
@@ -278,15 +274,9 @@ export const Widget: React.FC<WidgetProps> = props => {
         : null;
 
       if (bchAmount) {
-        if (isValidCashAddress(address)) {
-          setText(
-            `Send ${currencyObj.string} ${currencyObj.currency} = ${bchAmount.string} BCH`,
-          );
-        } else if (isValidXecAddress(address)) {
-          setText(
-            `Send ${currencyObj.string} ${currencyObj.currency} = ${bchAmount.string} XEC`,
-          );
-        }
+        setText(
+          `Send ${currencyObj.string} ${currencyObj.currency} = ${bchAmount.string} ${addressType}`,
+        );
         query.push(`amount=${bchAmount.float}`);
       }
 
@@ -302,11 +292,7 @@ export const Widget: React.FC<WidgetProps> = props => {
         url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
         setUrl(url);
       } else {
-        if (isValidCashAddress(address)) {
-          setText(`Send any amount of BCH`);
-        } else if (isValidXecAddress(address)) {
-          setText(`Send any amount of XEC`);
-        }
+        setText(`Send any amount of ${addressType}`);
         url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
         setUrl(url);
       }
