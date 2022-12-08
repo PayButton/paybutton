@@ -101,7 +101,6 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
           setLoading(false);
           setPrice(price);
         } else if (isFiat(currency) && isValidXecAddress(address)) {
-          // TODO: THIS SHOULD POINT TO THE XEC FUNCTION. THIS IS TEMPORARY WHILE WAITING FOR BACKEND
           const data = await getXecFiatPrice(currency);
 
           const { price } = data;
