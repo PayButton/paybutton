@@ -3,7 +3,11 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import successSound from '../../assets/success.mp3.json';
 import { useAddressDetails } from '../../hooks/useAddressDetails';
-import { isValidCashAddress, isValidXecAddress } from '../../util/address';
+import {
+  isValidCashAddress,
+  isValidXecAddress,
+  getCurrencyTypeFromAddress,
+} from '../../util/address';
 import {
   cryptoCurrency,
   isCrypto,
@@ -123,9 +127,14 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
 
         const receivedAmount = satoshis;
 
+        const currencyTicker = getCurrencyTypeFromAddress(to);
+
         if (!hideToasts)
           // TODO: This assumes only bch
-          enqueueSnackbar(`Received ${receivedAmount} BCH`, snackbarOptions);
+          enqueueSnackbar(
+            `Received ${receivedAmount} ${currencyTicker}`,
+            snackbarOptions,
+          );
 
         onTransaction?.(transaction, receivedAmount);
 
@@ -148,7 +157,15 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
       const split = string.split(':')[1];
 
       if (split === undefined) {
-        string = `bitcoincash:${string}`;
+        const currencyTicker = getCurrencyTypeFromAddress(to);
+        switch (currencyTicker) {
+          case 'BCH':
+            string = `bitcoincash:${string}`;
+            break;
+          case 'XEC':
+            string = `ecash:${string}`;
+            break;
+        }
       }
       return string;
     };
