@@ -75,7 +75,7 @@ export const getFiatPrice = async (
       break;
   }
   if (!url) {
-    throw new Error();
+    throw new Error('No url');
   } else {
     const { data } = await axios.get(url);
 

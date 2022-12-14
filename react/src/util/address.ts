@@ -29,7 +29,7 @@ export const getCurrencyTypeFromAddress = (address: string): currency => {
   } else if (isValidXecAddress(address)) {
     return 'XEC';
   } else {
-    throw new Error();
+    throw new Error('Invalid currency');
   }
 };
 
