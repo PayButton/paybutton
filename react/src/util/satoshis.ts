@@ -1,22 +1,14 @@
 import BigNumber from 'bignumber.js';
-import { formatPrice, formatBCH } from './format';
+import { formatPrice, formatBCH, formatXEC } from './format';
 import { currency } from './api-client';
 
-const BCHdecimals = 8;
-// const XECdecimals = 2;
-
-export const satoshisToBch = (satoshis: number): number =>
-  +(satoshis / 100_000_000).toFixed(8);
-
-export const bchToSatoshis = (bch: number): number =>
-  Math.round(bch * 100_000_000);
+const BCH_DECIMALS = 8;
+const XEC_DECIMALS = 2;
 
 export type currencyObject = {
   float: number;
   string: string;
   currency: string;
-  BCHstring?: string | undefined;
-  satoshis?: number | undefined;
 };
 
 export const getCurrencyObject = (
@@ -25,43 +17,33 @@ export const getCurrencyObject = (
 ): currencyObject => {
   let string = '';
   let float = 0;
-  let BCHval = '';
-  let satoshiVal = 0;
-  const bchObj = new BigNumber(amount).decimalPlaces(BCHdecimals);
 
-  const { c } = bchObj;
-  // coefficient
-  // exponent
-  // sign
+  if (currencyType === 'BCH') {
+    const primaryUnit = new BigNumber(`${amount}`);
 
-  if (bchObj && c) {
-    if (currencyType === 'BCH') {
-      const satoshis = new BigNumber(`${amount}e+${BCHdecimals}`);
-
-      if (satoshis !== null && satoshis.c !== null) {
-        float = toBCH(satoshis.c[0]);
-        string = new BigNumber(`${satoshis.c[0]}e-8`).toPrecision();
-        string = formatBCH(string);
-        BCHval = string;
-        satoshiVal = satoshis.c[0];
-      }
-    } else {
-      float = amount;
-      string = formatPrice(amount, currencyType, 2);
+    if (primaryUnit !== null && primaryUnit.c !== null) {
+      float = parseFloat(new BigNumber(primaryUnit).toFixed(BCH_DECIMALS));
+      string = new BigNumber(`${primaryUnit}`).toFixed(BCH_DECIMALS);
+      string = formatBCH(string);
     }
+  } else if (currencyType === 'XEC') {
+    const primaryUnit = new BigNumber(`${amount}`);
+
+    if (primaryUnit !== null && primaryUnit.c !== null) {
+      float = parseFloat(new BigNumber(primaryUnit).toFixed(XEC_DECIMALS));
+      string = new BigNumber(`${primaryUnit}`).toFixed(XEC_DECIMALS);
+      string = formatXEC(string);
+    }
+  } else {
+    float = amount;
+    string = formatPrice(amount, currencyType, 2);
   }
+
   return {
     float: float,
     string,
     currency: currencyType,
-    BCHstring: BCHval,
-    satoshis: satoshiVal,
   };
-};
-
-const toBCH = (amount: number) => {
-  const num = new BigNumber(amount).dividedBy(10 ** 8).toFixed(8);
-  return parseFloat(num);
 };
 
 // future token functions
@@ -83,7 +65,5 @@ const toBCH = (amount: number) => {
 // };
 
 export default {
-  satoshisToBch,
-  bchToSatoshis,
   getCurrencyObject,
 };

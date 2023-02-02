@@ -69,8 +69,8 @@ export const formatBCH = (bch: string) => {
   return formattedString;
 };
 
-export const formatBits = (bits: string | number) => {
-  const val = +bits;
+export const formatXEC = (xec: string) => {
+  const val = +xec;
   const formattedString = currencyFormat.format(val, {
     symbol: '',
     decimal: '.',
@@ -87,5 +87,5 @@ export default {
   formatPrice,
   formatComma,
   formatBCH,
-  formatBits,
+  formatXEC,
 };

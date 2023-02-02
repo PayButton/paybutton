@@ -13,18 +13,18 @@ import QRCode, { BaseQRCodeProps } from 'qrcode.react';
 import React, { useEffect, useMemo, useState } from 'react';
 
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
-import { isValidCashAddress, isValidXecAddress } from '../../util/address';
+import {
+  isValidCashAddress,
+  isValidXecAddress,
+  getCurrencyTypeFromAddress,
+} from '../../util/address';
 import { formatPrice } from '../../util/format';
 import { Button, animation } from '../Button/Button';
 import BarChart from '../BarChart/BarChart';
 
-import {
-  satoshisToBch,
-  getCurrencyObject,
-  currencyObject,
-} from '../../util/satoshis';
+import { getCurrencyObject, currencyObject } from '../../util/satoshis';
 import { useAddressDetails } from '../../hooks/useAddressDetails';
-import { currency, getSatoshiBalance } from '../../util/api-client';
+import { currency, getAddressBalance, isFiat } from '../../util/api-client';
 import { randomizeSatoshis } from '../../util/randomizeSats';
 import PencilIcon from '../../assets/edit-pencil';
 
@@ -121,7 +121,7 @@ export const Widget: React.FC<WidgetProps> = props => {
     totalReceived,
     goalAmount,
     ButtonComponent = Button,
-    currency = 'BCH',
+    currency = getCurrencyTypeFromAddress(to),
     animation,
     randomSatoshis = true,
     currencyObject,
@@ -185,7 +185,6 @@ export const Widget: React.FC<WidgetProps> = props => {
   const query: string[] = [];
   const isMissingWidgetContainer = !totalReceived;
   const addressDetails = useAddressDetails(to, isMissingWidgetContainer);
-  const isFiat: boolean = currency !== 'BCH' && currency !== 'XEC';
   const hasPrice: boolean = price !== undefined && price > 0;
   let prefixedAddress: string;
 
@@ -196,8 +195,8 @@ export const Widget: React.FC<WidgetProps> = props => {
 
     (async (): Promise<void> => {
       if (addressDetails) {
-        const { satoshis } = await getSatoshiBalance(to);
-        setTotalSatsReceived(satoshis);
+        const { balance } = await getAddressBalance(to);
+        setTotalSatsReceived(balance);
       }
     })();
   }, [addressDetails, totalReceived, totalSatsReceived]);
@@ -256,54 +255,44 @@ export const Widget: React.FC<WidgetProps> = props => {
     const address = to;
     let url;
 
-    if (isValidCashAddress(address)) {
-      prefixedAddress = `bitcoincash:${address.replace(/^.*:/, '')}`;
-    } else if (isValidXecAddress(address)) {
-      prefixedAddress = `ecash:${address.replace(/^.*:/, '')}`;
+    const addressType: currency = getCurrencyTypeFromAddress(address);
+    setWidgetButtonText(`Send with ${addressType} wallet`);
+
+    switch (addressType) {
+      case 'BCH':
+        prefixedAddress = `bitcoincash:${address.replace(/^.*:/, '')}`;
+        break;
+      case 'XEC':
+        prefixedAddress = `ecash:${address.replace(/^.*:/, '')}`;
+        break;
     }
     url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
 
     if (currencyObj && hasPrice) {
-      const bchAmount = getCurrencyObject(
-        currencyObj.float / (price! / 100),
-        'BCH',
-      );
+      const bchAmount = price
+        ? getCurrencyObject(currencyObj.float / price, addressType)
+        : null;
 
-      if (isValidCashAddress(address)) {
+      if (bchAmount) {
         setText(
-          `Send ${currencyObj.string} ${currencyObj.currency} = ${bchAmount.BCHstring} BCH`,
+          `Send ${currencyObj.string} ${currencyObj.currency} = ${bchAmount.string} ${addressType}`,
         );
-        setWidgetButtonText(
-          `Send ${currencyObj.string} ${currencyObj.currency} = ${bchAmount.BCHstring} BCH`,
-        );
-      } else if (isValidXecAddress(address)) {
-        setText(
-          `Send ${currencyObj.string} ${currencyObj.currency} = ${bchAmount.BCHstring} XEC`,
-        );
-        setWidgetButtonText(
-          `Send ${currencyObj.string} ${currencyObj.currency} = ${bchAmount.BCHstring} XEC`,
-        );
+        query.push(`amount=${bchAmount.float}`);
       }
-      query.push(`amount=${bchAmount.float}`);
+
       url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
       setUrl(url);
     } else {
       const notZeroValue: boolean =
-        currencyObj?.satoshis !== undefined && currencyObj.satoshis > 0;
-      if (!isFiat && currencyObj && notZeroValue) {
+        currencyObj?.float !== undefined && currencyObj.float > 0;
+      if (!isFiat(currency) && currencyObj && notZeroValue) {
         const bchType: string = currencyObj.currency;
         setText(`Send ${currencyObj.string} ${bchType}`);
-        query.push(`amount=${currencyObj.BCHstring}`);
+        query.push(`amount=${currencyObj.string}`);
         url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
         setUrl(url);
       } else {
-        if (isValidCashAddress(address)) {
-          setText(`Send any amount of BCH`);
-          setWidgetButtonText(`Send any amount of BCH`);
-        } else if (isValidXecAddress(address)) {
-          setText(`Send any amount of XEC`);
-          setWidgetButtonText(`Send any amount of XEC`);
-        }
+        setText(`Send any amount of ${addressType}`);
         url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
         setUrl(url);
       }
@@ -366,23 +355,21 @@ export const Widget: React.FC<WidgetProps> = props => {
   };
 
   useEffect(() => {
-    // const inSatoshis = getCurrencyObject(totalSatsReceived, 'SAT');
     const progress = getCurrencyObject(totalSatsReceived, currency);
 
     const goal = getCurrencyObject(cleanGoalAmount, currency);
 
-    if (!isFiat) {
+    if (!isFiat(currency)) {
       if (goal !== undefined && progress.float > 0) {
         setGoalPercent((100 * progress.float) / goal.float);
-        const string = progress.BCHstring!;
+        const string = progress.string;
         const truncated = parseFloat(string).toFixed(2);
         setGoalText(`${truncated} / ${cleanGoalAmount}`);
         setIsLoading(false);
       }
     } else {
       if (totalSatsReceived !== 0 && hasPrice) {
-        const receivedVal: number =
-          satoshisToBch(totalSatsReceived) * (price! / 100);
+        const receivedVal: number = totalSatsReceived * (price! / 100);
         const receivedText: string = formatPrice(receivedVal, currency);
         const goalText: string = formatPrice(cleanGoalAmount, currency);
         setIsLoading(false);

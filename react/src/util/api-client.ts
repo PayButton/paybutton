@@ -1,4 +1,5 @@
 import axios from 'axios';
+import _ from 'lodash';
 
 // export const getAddressDetails = async (
 //   address: string,
@@ -16,10 +17,10 @@ export const getAddressDetails = async (
   return await res.json();
 };
 
-export const getSatoshiBalance = async (
+export const getAddressBalance = async (
   address: string,
   rootUrl = process.env.REACT_APP_API_URL,
-): Promise<{ satoshis: number }> => {
+): Promise<{ balance: number }> => {
   const res = await fetch(`${rootUrl}/address/balance/${address}`);
   return await res.json();
 };
@@ -32,15 +33,55 @@ export const getUTXOs = async (
   return await res.json();
 };
 
-export const getFiatPrice = async (currency: currency): Promise<PriceData> => {
-  // TODO: rename this. add another function for grabbing xec conversions
+export const getBchFiatPrice = async (
+  currency: currency,
+  rootUrl = process.env.REACT_APP_API_PRICING_URL,
+): Promise<PriceData> => {
   const { data } = await axios.get(
-    `https://markets.api.bitcoin.com/rates/convertor?c=BCH&q=${currency}`,
+    `${rootUrl}/price/bitcoincash/${_.lowerCase(currency)}`,
   );
 
-  const { rate } = data[currency];
-  const price: number = Math.round(rate * 100);
+  const price: number = data;
   return { price };
+};
+
+export const getXecFiatPrice = async (
+  currency: currency,
+  rootUrl = process.env.REACT_APP_API_PRICING_URL,
+): Promise<PriceData> => {
+  const { data } = await axios.get(
+    `${rootUrl}/price/ecash/${_.lowerCase(currency)}`,
+  );
+
+  const price: number = data;
+  return { price };
+};
+
+export const getFiatPrice = async (
+  fiat: fiatCurrency,
+  crypto: cryptoCurrency,
+  rootUrl = process.env.REACT_APP_API_PRICING_URL,
+): Promise<PriceData> => {
+  // TODO: get rid of 'getXecFiatPrice' && 'getBchFiatPrice' and replace
+  // with this function.
+  let url = '';
+
+  switch (crypto) {
+    case 'BCH':
+      url = `${rootUrl}/price/bitcoincash/${_.lowerCase(fiat)}`;
+      break;
+    case 'XEC':
+      url = `${rootUrl}/price/ecash/${_.lowerCase(fiat)}`;
+      break;
+  }
+  if (!url) {
+    throw new Error('No url');
+  } else {
+    const { data } = await axios.get(url);
+
+    const price: number = data;
+    return { price };
+  }
 };
 
 // export const getTransactionDetails = async (
@@ -63,15 +104,30 @@ export const getTransactionDetails = async (
 export default {
   getAddressDetails,
   getTransactionDetails,
-  getFiatPrice,
-  getSatoshiBalance,
+  getBchFiatPrice,
+  getXecFiatPrice,
+  getAddressBalance,
 };
 
-export type fiatCurrency = 'USD' | 'CAD' | 'EUR' | 'GBP' | 'AUD';
-export const fiatCurrencies = ['USD', 'CAD', 'EUR', 'GBP', 'AUD'];
-export type cryptoCurrency = 'BCH' | 'XEC';
-export const cryptoCurrencies = ['BCH', 'XEC'];
+export const fiatCurrencies = ['USD', 'CAD', 'EUR', 'GBP', 'AUD'] as const;
+type fiatCurrenciesTuple = typeof fiatCurrencies; // readonly ['USD', 'CAD', 'EUR', 'GBP', 'AUD']
+export type fiatCurrency = fiatCurrenciesTuple[number]; // "USD" | "CAD" | "EUR" | "GBP" | "AUD"
+
+export const cryptoCurrencies = ['BCH', 'XEC'] as const;
+type cryptoCurrenciesTuple = typeof cryptoCurrencies; // readonly ['BCH', 'XEC']
+export type cryptoCurrency = cryptoCurrenciesTuple[number]; // "BCH" | "XEC"
+
 export type currency = cryptoCurrency | fiatCurrency;
+
+export function isFiat(unknownString: string): unknownString is fiatCurrency {
+  return fiatCurrencies.includes(unknownString as fiatCurrency);
+}
+
+export function isCrypto(
+  unknownString: string,
+): unknownString is cryptoCurrency {
+  return cryptoCurrencies.includes(unknownString as cryptoCurrency);
+}
 
 // export interface AddressDetails {
 //   balance: number;

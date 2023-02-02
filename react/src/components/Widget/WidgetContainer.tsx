@@ -4,19 +4,21 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import successSound from '../../assets/success.mp3.json';
 import { useAddressDetails } from '../../hooks/useAddressDetails';
 import {
+  isValidCashAddress,
+  isValidXecAddress,
+  getCurrencyTypeFromAddress,
+} from '../../util/address';
+import {
   cryptoCurrency,
-  cryptoCurrencies,
+  isCrypto,
+  isFiat,
   currency,
-  getFiatPrice,
-  getSatoshiBalance,
+  getBchFiatPrice,
+  getXecFiatPrice,
+  getAddressBalance,
   UnconfirmedTransaction,
 } from '../../util/api-client';
-import {
-  bchToSatoshis,
-  satoshisToBch,
-  getCurrencyObject,
-  currencyObject,
-} from '../../util/satoshis';
+import { getCurrencyObject, currencyObject } from '../../util/satoshis';
 import Widget, { WidgetProps } from './Widget';
 
 export interface WidgetContainerProps
@@ -94,12 +96,17 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
 
     const addressDetails = useAddressDetails(address, active && !success);
 
-    const isFiat: boolean = currency !== 'BCH' && currency !== 'XEC';
-
     const getPrice = useCallback(async (): Promise<void> => {
       try {
-        if (isFiat) {
-          const data = await getFiatPrice(currency);
+        if (isFiat(currency) && isValidCashAddress(address)) {
+          const data = await getBchFiatPrice(currency);
+
+          const { price } = data;
+          setLoading(false);
+          setPrice(price);
+        } else if (isFiat(currency) && isValidXecAddress(address)) {
+          const data = await getXecFiatPrice(currency);
+
           const { price } = data;
           setLoading(false);
           setPrice(price);
@@ -118,15 +125,20 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
       (transaction: any, satoshis: number) => {
         if (sound && !hideToasts) txSound.play().catch(() => {});
 
-        const receivedAmount = satoshisToBch(satoshis);
+        const receivedAmount = satoshis;
+
+        const currencyTicker = getCurrencyTypeFromAddress(to);
 
         if (!hideToasts)
           // TODO: This assumes only bch
-          enqueueSnackbar(`Received ${receivedAmount} BCH`, snackbarOptions);
+          enqueueSnackbar(
+            `Received ${receivedAmount} ${currencyTicker}`,
+            snackbarOptions,
+          );
 
         onTransaction?.(transaction, receivedAmount);
 
-        if (amount && satoshis === bchToSatoshis(amount)) {
+        if (amount && satoshis === amount) {
           setSuccess(true);
           onSuccess?.(transaction, receivedAmount);
         }
@@ -145,7 +157,15 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
       const split = string.split(':')[1];
 
       if (split === undefined) {
-        string = `bitcoincash:${string}`;
+        const currencyTicker = getCurrencyTypeFromAddress(to);
+        switch (currencyTicker) {
+          case 'BCH':
+            string = `bitcoincash:${string}`;
+            break;
+          case 'XEC':
+            string = `ecash:${string}`;
+            break;
+        }
       }
       return string;
     };
@@ -177,7 +197,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
         setCurrencyObj(obj);
       }
 
-      if (isFiat && price === 0) {
+      if (isFiat(currency) && price === 0) {
         getPrice();
       }
     }, []);
@@ -185,8 +205,8 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
     useEffect(() => {
       (async (): Promise<void> => {
         if (addressDetails) {
-          const { satoshis } = await getSatoshiBalance(address);
-          setTotalReceived(satoshis);
+          const { balance } = await getAddressBalance(address);
+          setTotalReceived(balance);
         }
       })();
 
@@ -198,7 +218,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
     useEffect(() => {
       if (!active) return;
 
-      if (!props.amount || cryptoCurrencies.includes(currency)) {
+      if (!props.amount || isCrypto(currency)) {
         setLoading(false);
       }
     }, [active, props.amount, currency]);
