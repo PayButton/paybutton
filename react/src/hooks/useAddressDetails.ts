@@ -16,7 +16,7 @@ export const useAddressDetails = (
       setDetails(undefined);
       return;
     }
-    if (!isValidCashAddress(address) || !isValidXecAddress(address)) {
+    if (!isValidCashAddress(address) && !isValidXecAddress(address)) {
       return;
     }
 
