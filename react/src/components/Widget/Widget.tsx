@@ -49,6 +49,7 @@ export interface WidgetProps {
   randomSatoshis?: boolean;
   price?: number;
   editable?: boolean;
+  setAddressDetails?: any; // function parent WidgetContainer passes down to be updated
 }
 
 interface StyleProps {
@@ -126,6 +127,7 @@ export const Widget: React.FC<WidgetProps> = props => {
     randomSatoshis = true,
     currencyObject,
     editable,
+    setAddressDetails,
   } = Object.assign({}, Widget.defaultProps, props);
 
   const theme = useTheme(props.theme, isValidXecAddress(to));
@@ -195,6 +197,7 @@ export const Widget: React.FC<WidgetProps> = props => {
 
     (async (): Promise<void> => {
       if (addressDetails) {
+        if (setAddressDetails) setAddressDetails(addressDetails); // update parent component
         const { balance } = await getAddressBalance(to);
         setTotalSatsReceived(balance);
       }

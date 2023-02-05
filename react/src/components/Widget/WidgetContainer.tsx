@@ -94,7 +94,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
     const [amount, setAmount] = useState(props.amount);
     const [price, setPrice] = useState(0);
 
-    const addressDetails = useAddressDetails(address, active && !success);
+    const [addressDetails, setAddressDetails] = useState(null);
 
     const getPrice = useCallback(async (): Promise<void> => {
       try {
@@ -240,6 +240,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
           success={success}
           disabled={disabled}
           editable={editable}
+          setAddressDetails={setAddressDetails}
         />
       </React.Fragment>
     );
