@@ -8,6 +8,7 @@ import {
   getCurrencyTypeFromAddress,
 } from '../../util/address';
 import {
+  AddressDetails,
   cryptoCurrency,
   isCrypto,
   isFiat,
@@ -93,7 +94,9 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
     const [amount, setAmount] = useState(props.amount);
     const [price, setPrice] = useState(0);
 
-    const [addressDetails, setAddressDetails] = useState(null);
+    const [addressDetails, setAddressDetails] = useState<
+      AddressDetails | undefined
+    >();
 
     const getPrice = useCallback(async (): Promise<void> => {
       try {
