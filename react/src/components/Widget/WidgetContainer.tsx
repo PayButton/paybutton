@@ -2,7 +2,6 @@ import { OptionsObject, SnackbarProvider, useSnackbar } from 'notistack';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import successSound from '../../assets/success.mp3.json';
-import { useAddressDetails } from '../../hooks/useAddressDetails';
 import {
   isValidCashAddress,
   isValidXecAddress,
