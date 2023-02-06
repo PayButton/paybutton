@@ -32,13 +32,13 @@ function init() {
       }
 
       const javascriptDivExists = document.getElementById(paybuttonDivID);
+      const paybuttonExists: boolean = document.getElementsByClassName('paybutton').length > 0
 
       if (createdInJS && javascriptDivExists === null) {
-        return console.error(`The Paybutton div#${paybuttonDivID} is either misspelled or missing.`)
-      } else if (createdInJS) {
-        return
-      } else {
-        const paybuttonExists: boolean = document.getElementsByClassName('paybutton').length > 0
+        console.error(`The Paybutton div#${paybuttonDivID} is either misspelled or missing.`)
+      } 
+      
+      if(paybuttonExists) {
         const widgetExists: boolean = document.getElementsByClassName('paybutton-widget').length > 0
         const dialogbuttonExists: boolean = document.getElementsByClassName('dialogbutton').length > 0
         renderDialogButton(dialogbuttonExists)
