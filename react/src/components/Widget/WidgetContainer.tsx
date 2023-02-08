@@ -15,7 +15,6 @@ import {
   currency,
   getBchFiatPrice,
   getXecFiatPrice,
-  getAddressBalance,
   UnconfirmedTransaction,
 } from '../../util/api-client';
 import { getCurrencyObject, currencyObject } from '../../util/satoshis';
@@ -87,7 +86,6 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
 
     const [success, setSuccess] = useState(false);
     const { enqueueSnackbar } = useSnackbar();
-    const [totalReceived, setTotalReceived] = useState(0);
     const [currencyObj, setCurrencyObj] = useState<currencyObject>();
 
     const [loading, setLoading] = useState(true);
@@ -205,13 +203,6 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
     }, []);
 
     useEffect(() => {
-      (async (): Promise<void> => {
-        if (addressDetails) {
-          const { balance } = await getAddressBalance(address);
-          setTotalReceived(balance);
-        }
-      })();
-
       addressDetails?.unconfirmedTransactionsList?.map(unconfirmed => {
         handleNewTransaction(unconfirmed);
       });
@@ -231,7 +222,6 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
           to={to}
           {...widgetProps}
           amount={amount}
-          totalReceived={totalReceived}
           goalAmount={goalAmount}
           currency={currency}
           animation={animation}
