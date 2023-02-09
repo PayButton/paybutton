@@ -7,22 +7,22 @@ import _ from 'lodash';
 //   const res = await fetch(
 //     `https://rest.bitcoin.com/v2/address/details/${address}`,
 //   );
-//   return await res.json();
+//   return res.json();
 // };
 export const getAddressDetails = async (
   address: string,
   rootUrl = process.env.REACT_APP_API_URL,
 ): Promise<AddressDetails> => {
   const res = await fetch(`${rootUrl}/address/transactions/${address}`);
-  return await res.json();
+  return res.json();
 };
 
 export const getAddressBalance = async (
   address: string,
   rootUrl = process.env.REACT_APP_API_URL,
-): Promise<{ balance: number }> => {
-  const res = await fetch(`${rootUrl}/address/balance/${address}`);
-  return await res.json();
+): Promise<number> => {
+  const res = await axios.get(`${rootUrl}/address/balance/${address}`);
+  return isNaN(res.data) ? null : res.data;
 };
 
 export const getUTXOs = async (
@@ -30,7 +30,7 @@ export const getUTXOs = async (
   rootUrl = process.env.REACT_APP_API_URL,
 ): Promise<UtxoDetails> => {
   const res = await fetch(`${rootUrl}/address/utxo/${address}`);
-  return await res.json();
+  return res.json();
 };
 
 export const getBchFiatPrice = async (
@@ -90,15 +90,15 @@ export const getFiatPrice = async (
 //   const res = await fetch(
 //     `https://rest.bitcoin.com/v2/transaction/details/${txid}`,
 //   );
-//   return await res.json();
+//   return res.json();
 // };
 
 export const getTransactionDetails = async (
   txid: string,
-  rootUrl = `https://api.paybutton.org`, // TODO: don't hardcode this url in
+  rootUrl = process.env.REACT_APP_API_URL,
 ): Promise<TransactionDetails> => {
   const res = await fetch(`${rootUrl}/transactions/details/${txid}`);
-  return await res.json();
+  return res.json();
 };
 
 export default {

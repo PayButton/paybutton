@@ -2,20 +2,19 @@ import { OptionsObject, SnackbarProvider, useSnackbar } from 'notistack';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import successSound from '../../assets/success.mp3.json';
-import { useAddressDetails } from '../../hooks/useAddressDetails';
 import {
   isValidCashAddress,
   isValidXecAddress,
   getCurrencyTypeFromAddress,
 } from '../../util/address';
 import {
+  AddressDetails,
   cryptoCurrency,
   isCrypto,
   isFiat,
   currency,
   getBchFiatPrice,
   getXecFiatPrice,
-  getAddressBalance,
   UnconfirmedTransaction,
 } from '../../util/api-client';
 import { getCurrencyObject, currencyObject } from '../../util/satoshis';
@@ -87,14 +86,15 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
 
     const [success, setSuccess] = useState(false);
     const { enqueueSnackbar } = useSnackbar();
-    const [totalReceived, setTotalReceived] = useState(0);
     const [currencyObj, setCurrencyObj] = useState<currencyObject>();
 
     const [loading, setLoading] = useState(true);
     const [amount, setAmount] = useState(props.amount);
     const [price, setPrice] = useState(0);
 
-    const addressDetails = useAddressDetails(address, active && !success);
+    const [addressDetails, setAddressDetails] = useState<
+      AddressDetails | undefined
+    >();
 
     const getPrice = useCallback(async (): Promise<void> => {
       try {
@@ -203,13 +203,6 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
     }, []);
 
     useEffect(() => {
-      (async (): Promise<void> => {
-        if (addressDetails) {
-          const { balance } = await getAddressBalance(address);
-          setTotalReceived(balance);
-        }
-      })();
-
       addressDetails?.unconfirmedTransactionsList?.map(unconfirmed => {
         handleNewTransaction(unconfirmed);
       });
@@ -229,7 +222,6 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
           to={to}
           {...widgetProps}
           amount={amount}
-          totalReceived={totalReceived}
           goalAmount={goalAmount}
           currency={currency}
           animation={animation}
@@ -240,6 +232,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
           success={success}
           disabled={disabled}
           editable={editable}
+          setAddressDetails={setAddressDetails}
         />
       </React.Fragment>
     );

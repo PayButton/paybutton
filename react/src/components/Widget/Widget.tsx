@@ -41,7 +41,6 @@ export interface WidgetProps {
   theme?: ThemeName | Theme;
   foot?: React.ReactNode;
   disabled: boolean;
-  totalReceived?: number | null;
   goalAmount?: number | string | null;
   currency?: currency;
   animation?: animation;
@@ -49,6 +48,7 @@ export interface WidgetProps {
   randomSatoshis?: boolean;
   price?: number;
   editable?: boolean;
+  setAddressDetails?: any; // function parent WidgetContainer passes down to be updated
 }
 
 interface StyleProps {
@@ -118,7 +118,6 @@ export const Widget: React.FC<WidgetProps> = props => {
     loading,
     success,
     successText,
-    totalReceived,
     goalAmount,
     ButtonComponent = Button,
     currency = getCurrencyTypeFromAddress(to),
@@ -126,6 +125,7 @@ export const Widget: React.FC<WidgetProps> = props => {
     randomSatoshis = true,
     currencyObject,
     editable,
+    setAddressDetails,
   } = Object.assign({}, Widget.defaultProps, props);
 
   const theme = useTheme(props.theme, isValidXecAddress(to));
@@ -183,23 +183,19 @@ export const Widget: React.FC<WidgetProps> = props => {
   }, [recentlyCopied]);
 
   const query: string[] = [];
-  const isMissingWidgetContainer = !totalReceived;
-  const addressDetails = useAddressDetails(to, isMissingWidgetContainer);
+  const addressDetails = useAddressDetails(to);
   const hasPrice: boolean = price !== undefined && price > 0;
   let prefixedAddress: string;
 
   useEffect(() => {
-    if (totalReceived) {
-      return setTotalSatsReceived(totalReceived);
-    }
-
     (async (): Promise<void> => {
       if (addressDetails) {
-        const { balance } = await getAddressBalance(to);
-        setTotalSatsReceived(balance);
+        if (setAddressDetails) setAddressDetails(addressDetails); // update parent component
+        const balance = await getAddressBalance(to);
+        if (balance) setTotalSatsReceived(balance);
       }
     })();
-  }, [addressDetails, totalReceived, totalSatsReceived]);
+  }, [addressDetails]);
 
   useEffect(() => {
     const invalidAmount = amount !== undefined && amount && isNaN(+amount);
