@@ -615,7 +615,7 @@ disabled = true
 
 ## disable-enforce-focus
 
-> **The ‘disable-enforce-focus’ parameter is passed to the Dialog material UI component. The ‘disable-enforce-focus’ parameter is passed to the Dialog material UI component. Setting it to false can help with accessibility with technology such as screen readers but may throw errors on sites running Material UI.**
+> **The ‘disable-enforce-focus’ parameter is passed to the Dialog material UI component. Setting it to false can help with accessibility with technology such as screen readers but may throw errors on sites running Material UI.**
 
 ?> This parameter is optional. Default value is true. Possible values are true or false.
 
