@@ -354,9 +354,9 @@ hoverText = "Send Bitcoin Cash"
 
 ## goal-amount
 
-> **The ‘goal-amount’ parameter specifies how much in donations/contributions is required for funding to be considered complete, indicated by a progress bar.**
+> **'goal-amount' 參數指定了需要多少捐款/貢獻才能認為資金籌集已完成，由一個進度條指示。**
 
-?> This parameter is optional. Default value is 0 (none). Possible values are any number.
+?> 此參數是可選的。預設值為0（無）。可能的值是任何數字。
 
 **例子:**
 <!-- tabs:start -->
@@ -383,9 +383,9 @@ goalAmount = 10
 
 ## can-edit
 
-> **The ‘can-edit’ parameter specifies whether to provide an input for the user to be able to change the payment amount.**
+> **'can-edit' 參數指定是否提供一個輸入框，以供用戶能夠改變付款金額。**
 
-?> This parameter is optional. Default value is false. Possible values are true or false.
+?> 此參數是可選用的。默認值為false。有效值為true或false 。
 
 **例子:**
 <!-- tabs:start -->
@@ -586,7 +586,7 @@ randomSatoshis = true
 
 ## hide-toasts
 
-> **The ‘hide-toasts’ parameter specifies whether to let the application take full control of what happens when a payment is detected.**
+> **'hide-toasts' 參數指定是否讓應用程式完全控制在檢測到付款時發生的情況。**
 
 ?> 此參數是可選用的。默認值為false。有效值為true或false 。
 
@@ -615,7 +615,7 @@ disabled = true
 
 ## disable-enforce-focus
 
-> **The ‘disable-enforce-focus’ parameter is passed to the Dialog material UI component. The ‘disable-enforce-focus’ parameter is passed to the Dialog material UI component. Setting it to false can help with accessibility with technology such as screen readers but may throw errors on sites running Material UI.**
+> **'disable-enforce-focus' 參數被傳遞給 Dialog material UI 組件。將其設定為 false 可以幫助提高如螢幕閱讀器等技術的可訪問性，但可能會在運行 Material UI 的網站上引發錯誤。**
 
 ?> 此參數是可選用的。默認值為true。有效值為true或false 。
 
@@ -644,7 +644,7 @@ disableEnforceFocus = false
 
 ## disabled
 
-> **The ‘disabled’ parameter specifies whether to lock out the button/widget to prevent it from being used.**
+> **'disabled' 參數指定是否鎖定按鈕/小工具以防止其被使用。**
 
 ?> 此參數是可選用的。默認值為false。有效值為true或false 。
 
