@@ -18,7 +18,7 @@ import {
   isValidXecAddress,
   getCurrencyTypeFromAddress,
 } from '../../util/address';
-import { formatPrice } from '../../util/format';
+import { formatPrice, FIAT_DECIMALS } from '../../util/format';
 import { Button, animation } from '../Button/Button';
 import BarChart from '../BarChart/BarChart';
 
@@ -133,7 +133,7 @@ export const Widget: React.FC<WidgetProps> = props => {
 
   const [copied, setCopied] = useState(false);
   const [recentlyCopied, setRecentlyCopied] = useState(false);
-  const [totalSatsReceived, setTotalSatsReceived] = useState(0);
+  const [totalReceived, setTotalReceived] = useState(0);
   const [isLoading, setIsLoading] = useState(!!goalAmount);
   const [disabled, setDisabled] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
@@ -192,7 +192,7 @@ export const Widget: React.FC<WidgetProps> = props => {
       if (addressDetails) {
         if (setAddressDetails) setAddressDetails(addressDetails); // update parent component
         const balance = await getAddressBalance(to);
-        if (balance) setTotalSatsReceived(balance);
+        if (balance) setTotalReceived(balance);
       }
     })();
   }, [addressDetails]);
@@ -351,7 +351,7 @@ export const Widget: React.FC<WidgetProps> = props => {
   };
 
   useEffect(() => {
-    const progress = getCurrencyObject(totalSatsReceived, currency);
+    const progress = getCurrencyObject(totalReceived, currency);
 
     const goal = getCurrencyObject(cleanGoalAmount, currency);
 
@@ -364,20 +364,31 @@ export const Widget: React.FC<WidgetProps> = props => {
         setIsLoading(false);
       }
     } else {
-      if (totalSatsReceived !== 0 && hasPrice) {
-        const receivedVal: number = totalSatsReceived * (price! / 100);
-        const receivedText: string = formatPrice(receivedVal, currency);
-        const goalText: string = formatPrice(cleanGoalAmount, currency);
+      if (totalReceived !== 0 && hasPrice) {
+        const receivedVal: number = totalReceived * price!;
+        const receivedText: string = formatPrice(
+          receivedVal,
+          currency,
+          FIAT_DECIMALS,
+        );
+        const goalText: string = formatPrice(
+          cleanGoalAmount,
+          currency,
+          FIAT_DECIMALS,
+        );
+        const receivedRatio = `${receivedText} / ${goalText}`;
+        const receivedPercentage: number =
+          100 * (receivedVal / cleanGoalAmount);
         setIsLoading(false);
-        setGoalPercent(100 * (receivedVal / cleanGoalAmount));
-        setGoalText(`${receivedText} / ${goalText}`);
+        setGoalPercent(receivedPercentage);
+        setGoalText(receivedRatio);
       }
       if (shouldDisplayGoal && goal.float !== undefined && goal.float <= 0) {
         setDisabled(true);
         setErrorMsg('Goal Value must be a number');
       }
     }
-  }, [totalSatsReceived, currency, goalAmount, price]);
+  }, [totalReceived, currency, goalAmount, price]);
 
   return (
     <ThemeProvider value={theme}>

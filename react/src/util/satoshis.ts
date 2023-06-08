@@ -1,9 +1,13 @@
 import BigNumber from 'bignumber.js';
-import { formatPrice, formatBCH, formatXEC } from './format';
+import {
+  formatPrice,
+  formatBCH,
+  formatXEC,
+  BCH_DECIMALS,
+  XEC_DECIMALS,
+  FIAT_DECIMALS,
+} from './format';
 import { currency } from './api-client';
-
-const BCH_DECIMALS = 8;
-const XEC_DECIMALS = 2;
 
 export type currencyObject = {
   float: number;
@@ -36,7 +40,7 @@ export const getCurrencyObject = (
     }
   } else {
     float = amount;
-    string = formatPrice(amount, currencyType, 2);
+    string = formatPrice(amount, currencyType, FIAT_DECIMALS);
   }
 
   return {
