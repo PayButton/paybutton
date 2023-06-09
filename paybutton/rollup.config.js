@@ -1,5 +1,4 @@
 import alias from '@rollup/plugin-alias';
-import cleanup from 'rollup-plugin-cleanup';
 import commonJS from '@rollup/plugin-commonjs';
 import image from '@rollup/plugin-image';
 import nodePolyfills from 'rollup-plugin-node-polyfills';
@@ -8,7 +7,6 @@ import resolve from '@rollup/plugin-node-resolve';
 import svg from 'rollup-plugin-svg';
 import typescript from '@rollup/plugin-typescript';
 import json from "@rollup/plugin-json";
-import { terser } from 'rollup-plugin-terser';
 import dotenv from "rollup-plugin-dotenv";
 
 export default ( env ) => ({
@@ -39,10 +37,6 @@ export default ( env ) => ({
     dotenv({
       cwd: "../react"
     }),
-    terser( {
-      mangle: true,
-    }),
-    cleanup({ comments: 'none' }),
   ],
   external: ['@types/currency-formatter', 'currency-formatter'],
 });
