@@ -39,10 +39,6 @@ export default ( env ) => ({
     dotenv({
       cwd: "../react"
     }),
-    terser( {
-      mangle: true,
-    }),
-    cleanup({ comments: 'none' }),
   ],
   external: ['@types/currency-formatter', 'currency-formatter'],
 });
