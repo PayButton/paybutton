@@ -1,6 +1,12 @@
 import currencyFormat from 'currency-formatter';
 import { currency } from './api-client';
 
+export const DECIMALS = {
+  BCH: 8,
+  XEC: 2,
+  FIAT: 2,
+};
+
 export const amount = (x?: number | null): string | undefined => {
   const clean = +x!;
   if (clean === 0) return;
@@ -13,35 +19,14 @@ export const amount = (x?: number | null): string | undefined => {
 export const formatPrice = (
   price: number,
   currencyType: currency,
-  precision = 0,
+  precision = DECIMALS.FIAT,
 ) => {
-  let symbol;
-
-  switch (currencyType) {
-    case 'EUR':
-      symbol = '€';
-      break;
-    case 'USD':
-      symbol = '$';
-      break;
-    case 'AUD':
-      symbol = '$';
-      break;
-    case 'CAD':
-      symbol = '$';
-      break;
-    case 'GBP':
-      symbol = '£';
-      break;
-  }
-
-  return currencyFormat.format(price, {
-    symbol,
-    decimal: '.',
-    thousand: ',',
-    precision: precision,
-    format: '%s%v',
-  });
+  return Intl.NumberFormat(undefined, {
+    style: 'currency',
+    currency: currencyType,
+    minimumFractionDigits: precision,
+    maximumFractionDigits: precision,
+  }).format(price);
 };
 
 export const formatComma = (number: number) => {

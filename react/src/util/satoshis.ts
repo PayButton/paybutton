@@ -1,9 +1,6 @@
 import BigNumber from 'bignumber.js';
-import { formatPrice, formatBCH, formatXEC } from './format';
+import { formatPrice, formatBCH, formatXEC, DECIMALS } from './format';
 import { currency } from './api-client';
-
-const BCH_DECIMALS = 8;
-const XEC_DECIMALS = 2;
 
 export type currencyObject = {
   float: number;
@@ -22,21 +19,21 @@ export const getCurrencyObject = (
     const primaryUnit = new BigNumber(`${amount}`);
 
     if (primaryUnit !== null && primaryUnit.c !== null) {
-      float = parseFloat(new BigNumber(primaryUnit).toFixed(BCH_DECIMALS));
-      string = new BigNumber(`${primaryUnit}`).toFixed(BCH_DECIMALS);
+      float = parseFloat(new BigNumber(primaryUnit).toFixed(DECIMALS.BCH));
+      string = new BigNumber(`${primaryUnit}`).toFixed(DECIMALS.BCH);
       string = formatBCH(string);
     }
   } else if (currencyType === 'XEC') {
     const primaryUnit = new BigNumber(`${amount}`);
 
     if (primaryUnit !== null && primaryUnit.c !== null) {
-      float = parseFloat(new BigNumber(primaryUnit).toFixed(XEC_DECIMALS));
-      string = new BigNumber(`${primaryUnit}`).toFixed(XEC_DECIMALS);
+      float = parseFloat(new BigNumber(primaryUnit).toFixed(DECIMALS.XEC));
+      string = new BigNumber(`${primaryUnit}`).toFixed(DECIMALS.XEC);
       string = formatXEC(string);
     }
   } else {
     float = amount;
-    string = formatPrice(amount, currencyType, 2);
+    string = formatPrice(amount, currencyType, DECIMALS.FIAT);
   }
 
   return {
