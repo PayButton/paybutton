@@ -1,6 +1,6 @@
 import { Button as MuiButton, makeStyles } from '@material-ui/core';
 import { CreateCSSProperties } from '@material-ui/styles';
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useLayoutEffect } from 'react';
 
 import { Theme, ThemeName, useTheme } from '../../themes';
 
@@ -87,7 +87,7 @@ export const Button = (props: ButtonProps): React.ReactElement => {
   const styleProps: StyleProps = { animation, theme };
   const classes = useStyles(styleProps);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (buttonRef !== null && text) {
       const { current } = buttonRef;
       if (current !== null) {
