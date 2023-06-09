@@ -18,7 +18,7 @@ import {
   isValidXecAddress,
   getCurrencyTypeFromAddress,
 } from '../../util/address';
-import { formatPrice, FIAT_DECIMALS } from '../../util/format';
+import { formatPrice, DECIMALS } from '../../util/format';
 import { Button, animation } from '../Button/Button';
 import BarChart from '../BarChart/BarChart';
 
@@ -369,12 +369,12 @@ export const Widget: React.FC<WidgetProps> = props => {
         const receivedText: string = formatPrice(
           receivedVal,
           currency,
-          FIAT_DECIMALS,
+          DECIMALS.FIAT,
         );
         const goalText: string = formatPrice(
           cleanGoalAmount,
           currency,
-          FIAT_DECIMALS,
+          DECIMALS.FIAT,
         );
         const receivedRatio = `${receivedText} / ${goalText}`;
         const receivedPercentage: number =
