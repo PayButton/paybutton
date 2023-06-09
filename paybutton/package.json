@@ -27,7 +27,7 @@
     "typescript": "3.9.10"
   },
   "scripts": {
-    "start": "rollup -c rollup.dev.js -w",
+    "dev": "rollup -c rollup.dev.js -w",
     "build": "npm ci && rollup -c rollup.prod.js"
   },
   "author": "",
