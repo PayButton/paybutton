@@ -358,9 +358,7 @@ export const Widget: React.FC<WidgetProps> = props => {
     if (!isFiat(currency)) {
       if (goal !== undefined && progress.float > 0) {
         setGoalPercent((100 * progress.float) / goal.float);
-        const string = progress.string;
-        const truncated = parseFloat(string).toFixed(2);
-        setGoalText(`${truncated} / ${cleanGoalAmount}`);
+        setGoalText(`${progress.float} / ${cleanGoalAmount}`);
         setIsLoading(false);
       }
     } else {
