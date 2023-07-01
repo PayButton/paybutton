@@ -157,7 +157,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
 
     const handleNewTransaction = useCallback(
       (tx: Transaction) => {
-        if (new BigNumber(tx.amount) > zero) {
+        if (tx.confirmed === false && new BigNumber(tx.amount) > zero) {
           handlePayment(tx);
         }
       },
