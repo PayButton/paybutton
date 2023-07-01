@@ -139,7 +139,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
 
         onTransaction?.(transaction.id, receivedAmount);
 
-        if (amount && receivedAmount === new BigNumber(amount)) {
+        if (amount && receivedAmount.isEqualTo(new BigNumber(amount))) {
           setSuccess(true);
           onSuccess?.(transaction.id, receivedAmount);
         }
@@ -157,7 +157,10 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
 
     const handleNewTransaction = useCallback(
       (tx: Transaction) => {
-        if (tx.confirmed === false && new BigNumber(tx.amount) > zero) {
+        if (
+          tx.confirmed === false &&
+          zero.isLessThan(new BigNumber(tx.amount))
+        ) {
           handlePayment(tx);
         }
       },
