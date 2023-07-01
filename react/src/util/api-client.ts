@@ -12,7 +12,7 @@ import _ from 'lodash';
 export const getAddressDetails = async (
   address: string,
   rootUrl = process.env.REACT_APP_API_URL,
-): Promise<AddressDetails> => {
+): Promise<Transaction[]> => {
   const res = await fetch(`${rootUrl}/address/transactions/${address}`);
   return res.json();
 };
@@ -144,6 +144,45 @@ export function isCrypto(
 //   legacyAddress: string;
 //   cashAddress: string;
 // }
+
+export interface Transaction {
+  id: string;
+  hash: string;
+  amount: string;
+  confirmed: boolean;
+  timestamp: number;
+  addressId: string;
+  createdAt: string;
+  updatedAt: string;
+  address: {
+    id: string;
+    address: string;
+    createdAt: string;
+    updatedAt: string;
+    networkId: number;
+    lastSynced: string;
+  };
+  prices: [
+    {
+      priceId: number;
+      transactionId: string;
+      createdAt: string;
+      updatedAt: string;
+      price: {
+        id: number;
+        value: string;
+        createdAt: string;
+        updatedAt: string;
+        timestamp: number;
+        networkId: 1;
+        quoteId: 1;
+      };
+    },
+  ];
+}
+
+// This below is old, it referred to the GRPC implementation
+/*
 export interface AddressDetails {
   confirmedTransactionsList: [ConfirmedTransaction];
   unconfirmedTransactionsList: [UnconfirmedTransaction];
@@ -230,6 +269,7 @@ export interface UnconfirmedTransaction {
   feePerKb: number;
   startingPriority: number;
 }
+*/
 
 export interface UtxoDetails {
   outputsList: [Output];

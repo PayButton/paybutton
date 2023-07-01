@@ -8,17 +8,17 @@ import {
   getCurrencyTypeFromAddress,
 } from '../../util/address';
 import {
-  AddressDetails,
+  Transaction,
   cryptoCurrency,
   isCrypto,
   isFiat,
   currency,
   getBchFiatPrice,
   getXecFiatPrice,
-  UnconfirmedTransaction,
 } from '../../util/api-client';
 import { getCurrencyObject, currencyObject } from '../../util/satoshis';
 import Widget, { WidgetProps } from './Widget';
+import BigNumber from 'bignumber.js';
 
 export interface WidgetContainerProps
   extends Omit<Omit<WidgetProps, 'loading'>, 'success'> {
@@ -54,6 +54,7 @@ export interface Output {
   disassembledScript: string;
 }
 
+const zero = new BigNumber(0);
 const withSnackbar =
   <T extends object>(Component: React.ComponentType<T>): React.FC<T> =>
   (props): React.ReactElement =>
@@ -93,7 +94,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
     const [price, setPrice] = useState(0);
 
     const [addressDetails, setAddressDetails] = useState<
-      AddressDetails | undefined
+      Transaction[] | undefined
     >();
 
     const getPrice = useCallback(async (): Promise<void> => {
@@ -122,10 +123,10 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
     );
 
     const handlePayment = useCallback(
-      (transaction: any, satoshis: number) => {
+      (transaction: any) => {
         if (sound && !hideToasts) txSound.play().catch(() => {});
 
-        const receivedAmount = satoshis;
+        const receivedAmount = transaction.amount;
 
         const currencyTicker = getCurrencyTypeFromAddress(to);
 
@@ -138,7 +139,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
 
         onTransaction?.(transaction, receivedAmount);
 
-        if (amount && satoshis === amount) {
+        if (amount && transaction.amount === amount) {
           setSuccess(true);
           onSuccess?.(transaction, receivedAmount);
         }
@@ -153,38 +154,11 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
         txSound,
       ],
     );
-    const prefixAddress = (string: string): string => {
-      const split = string.split(':')[1];
-
-      if (split === undefined) {
-        const currencyTicker = getCurrencyTypeFromAddress(to);
-        switch (currencyTicker) {
-          case 'BCH':
-            string = `bitcoincash:${string}`;
-            break;
-          case 'XEC':
-            string = `ecash:${string}`;
-            break;
-        }
-      }
-      return string;
-    };
 
     const handleNewTransaction = useCallback(
-      (unconfirmed: UnconfirmedTransaction) => {
-        let satoshis = 0;
-        const {
-          transaction: { outputsList },
-        } = unconfirmed;
-        outputsList.map((x: Output) => {
-          const prefixedAddr = prefixAddress(x.address);
-          if (prefixedAddr === prefixAddress(address)) {
-            satoshis += x.value;
-          }
-        });
-
-        if (satoshis > 0) {
-          handlePayment(unconfirmed.transaction, satoshis);
+      (tx: Transaction) => {
+        if (new BigNumber(tx.amount) > zero) {
+          handlePayment(tx);
         }
       },
       [handlePayment, address],
@@ -203,8 +177,8 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
     }, []);
 
     useEffect(() => {
-      addressDetails?.unconfirmedTransactionsList?.map(unconfirmed => {
-        handleNewTransaction(unconfirmed);
+      addressDetails?.map(tx => {
+        handleNewTransaction(tx);
       });
     }, [addressDetails, handleNewTransaction]);
 
