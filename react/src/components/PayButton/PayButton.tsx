@@ -5,6 +5,7 @@ import Button, { ButtonProps } from '../Button/Button';
 import { currency } from '../../util/api-client';
 import { PaymentDialog } from '../PaymentDialog/PaymentDialog';
 import { isValidCashAddress, isValidXecAddress } from '../../util/address';
+import BigNumber from 'bignumber.js';
 
 export interface PayButtonProps extends ButtonProps {
   to: string;
@@ -20,8 +21,8 @@ export interface PayButtonProps extends ButtonProps {
   goalAmount?: number | string;
   disableEnforceFocus?: boolean;
   editable?: boolean;
-  onSuccess?: (txid: string, amount: number) => void;
-  onTransaction?: (txid: string, amount: number) => void;
+  onSuccess?: (txid: string, amount: BigNumber) => void;
+  onTransaction?: (txid: string, amount: BigNumber) => void;
 }
 
 export const PayButton = (props: PayButtonProps): React.ReactElement => {
