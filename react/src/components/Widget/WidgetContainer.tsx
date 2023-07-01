@@ -28,8 +28,8 @@ export interface WidgetContainerProps
   randomSatoshis?: boolean;
   displayCurrency?: cryptoCurrency;
   hideToasts?: boolean;
-  onSuccess?: (txid: string, amount: number) => void;
-  onTransaction?: (txid: string, amount: number) => void;
+  onSuccess?: (txid: string, amount: BigNumber) => void;
+  onTransaction?: (txid: string, amount: BigNumber) => void;
   sound?: boolean;
   goalAmount?: number | string;
   disabled: boolean;
@@ -123,10 +123,10 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
     );
 
     const handlePayment = useCallback(
-      (transaction: any) => {
+      (transaction: Transaction) => {
         if (sound && !hideToasts) txSound.play().catch(() => {});
 
-        const receivedAmount = transaction.amount;
+        const receivedAmount = new BigNumber(transaction.amount);
 
         const currencyTicker = getCurrencyTypeFromAddress(to);
 
@@ -137,11 +137,11 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
             snackbarOptions,
           );
 
-        onTransaction?.(transaction, receivedAmount);
+        onTransaction?.(transaction.id, receivedAmount);
 
-        if (amount && transaction.amount === amount) {
+        if (amount && receivedAmount === new BigNumber(amount)) {
           setSuccess(true);
-          onSuccess?.(transaction, receivedAmount);
+          onSuccess?.(transaction.id, receivedAmount);
         }
       },
       [
