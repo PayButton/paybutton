@@ -6,6 +6,7 @@ import Button, { ButtonProps } from '../Button/Button';
 import { WidgetContainer } from '../Widget/WidgetContainer';
 import { isValidCashAddress, isValidXecAddress } from '../../util/address';
 import { currency } from '../../util/api-client';
+import BigNumber from 'bignumber.js';
 
 export interface PaymentDialogProps extends ButtonProps {
   to: string;
@@ -23,8 +24,8 @@ export interface PaymentDialogProps extends ButtonProps {
   active?: boolean;
   container?: HTMLElement;
   onClose?: () => void;
-  onSuccess?: (txid: string, amount: number) => void;
-  onTransaction?: (txid: string, amount: number) => void;
+  onSuccess?: (txid: string, amount: BigNumber) => void;
+  onTransaction?: (txid: string, amount: BigNumber) => void;
 }
 
 export const PaymentDialog = (
@@ -55,7 +56,7 @@ export const PaymentDialog = (
     setSuccess(false);
     if (onClose) onClose();
   };
-  const handleSuccess = (txid: string, amount: number): void => {
+  const handleSuccess = (txid: string, amount: BigNumber): void => {
     setSuccess(true);
     onSuccess?.(txid, amount);
   };

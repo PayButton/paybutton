@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { AddressDetails, getAddressDetails } from '../util/api-client';
+import { Transaction, getAddressDetails } from '../util/api-client';
 import { isValidCashAddress, isValidXecAddress } from '../util/address';
 
 const POLL_DELAY = 1000;
@@ -8,8 +8,8 @@ const POLL_DELAY = 1000;
 export const useAddressDetails = (
   address: string,
   active = true,
-): AddressDetails | undefined => {
-  const [details, setDetails] = useState<AddressDetails>();
+): Transaction[] | undefined => {
+  const [details, setDetails] = useState<Transaction[]>();
 
   useEffect(() => {
     if (!address || !active) {
