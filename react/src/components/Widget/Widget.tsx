@@ -23,8 +23,7 @@ import { Button, animation } from '../Button/Button';
 import BarChart from '../BarChart/BarChart';
 
 import { getCurrencyObject, currencyObject } from '../../util/satoshis';
-import { useAddressDetails } from '../../hooks/useAddressDetails';
-import { currency, getAddressBalance, isFiat } from '../../util/api-client';
+import { currency, getAddressBalance, getAddressDetails, isFiat, setListener, Transaction } from '../../util/api-client';
 import { randomizeSatoshis } from '../../util/randomizeSats';
 import PencilIcon from '../../assets/edit-pencil';
 
@@ -48,7 +47,8 @@ export interface WidgetProps {
   randomSatoshis?: boolean;
   price?: number;
   editable?: boolean;
-  setAddressDetails?: any; // function parent WidgetContainer passes down to be updated
+  setNewTxs: Function; // function parent WidgetContainer passes down to be updated
+  newTxs?: Transaction[]; // function parent WidgetContainer passes down to be updated
 }
 
 interface StyleProps {
@@ -125,7 +125,8 @@ export const Widget: React.FC<WidgetProps> = props => {
     randomSatoshis = true,
     currencyObject,
     editable,
-    setAddressDetails,
+    setNewTxs,
+    newTxs,
   } = Object.assign({}, Widget.defaultProps, props);
 
   const theme = useTheme(props.theme, isValidXecAddress(to));
@@ -183,19 +184,22 @@ export const Widget: React.FC<WidgetProps> = props => {
   }, [recentlyCopied]);
 
   const query: string[] = [];
-  const addressDetails = useAddressDetails(to);
   const hasPrice: boolean = price !== undefined && price > 0;
   let prefixedAddress: string;
 
   useEffect(() => {
     (async (): Promise<void> => {
-      if (addressDetails) {
-        if (setAddressDetails) setAddressDetails(addressDetails); // update parent component
-        const balance = await getAddressBalance(to);
-        if (balance) setTotalReceived(balance);
-      }
+      void await getAddressDetails(to);
+      setListener(to, setNewTxs)
     })();
-  }, [addressDetails]);
+  }, [])
+
+  useEffect(() => {
+    (async (): Promise<void> => {
+      const balance = await getAddressBalance(to);
+      if (balance) setTotalReceived(balance);
+    })();
+  }, [newTxs]);
 
   useEffect(() => {
     const invalidAmount = amount !== undefined && amount && isNaN(+amount);

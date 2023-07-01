@@ -17,6 +17,26 @@ export const getAddressDetails = async (
   return res.json();
 };
 
+type TxBroadcast = 'NewTx' | 'OldTx'
+export interface BroadcastTxData {
+  address: string
+  txs: Transaction[]
+  messageType: TxBroadcast
+}
+
+export const setListener = async (address: string, setNewTxs: Function): Promise<void> => {
+  const urlQuery = `address=${address}`
+  const es = new EventSource(`${process.env.SSE_SERVER_URL}/events?${urlQuery}`)
+  es.addEventListener('message',
+    (event: MessageEvent) => {
+      const broadcastedTxData: BroadcastTxData = JSON.parse(event.data)
+      if (broadcastedTxData.messageType === 'NewTx') {
+        setNewTxs(broadcastedTxData.txs)
+      }
+    })
+}
+
+
 export const getAddressBalance = async (
   address: string,
   rootUrl = process.env.REACT_APP_API_URL,
