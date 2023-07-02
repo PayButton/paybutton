@@ -134,7 +134,7 @@ export const Widget: React.FC<WidgetProps> = props => {
 
   const [copied, setCopied] = useState(false);
   const [recentlyCopied, setRecentlyCopied] = useState(false);
-  const [totalReceived, setTotalReceived] = useState(0);
+  const [totalReceived, setTotalReceived] = useState<number | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(!!goalAmount);
   const [disabled, setDisabled] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
@@ -197,7 +197,7 @@ export const Widget: React.FC<WidgetProps> = props => {
   useEffect(() => {
     (async (): Promise<void> => {
       const balance = await getAddressBalance(to);
-      if (balance) setTotalReceived(balance);
+      setTotalReceived(balance);
     })();
   }, [newTxs]);
 
@@ -355,35 +355,36 @@ export const Widget: React.FC<WidgetProps> = props => {
   };
 
   useEffect(() => {
-    const progress = getCurrencyObject(totalReceived, currency);
+    if (totalReceived !== undefined) {
+      const progress = getCurrencyObject(totalReceived, currency);
 
-    const goal = getCurrencyObject(cleanGoalAmount, currency);
-
-    if (!isFiat(currency)) {
-      if (goal !== undefined) {
-        setGoalPercent((100 * progress.float) / goal.float);
-        setGoalText(`${progress.float} / ${cleanGoalAmount}`);
-        setIsLoading(false);
-      }
-    } else {
-      if (totalReceived !== 0 && hasPrice) {
-        const receivedVal: number = totalReceived * price!;
-        const receivedText: string = formatPrice(
-          receivedVal,
-          currency,
-          DECIMALS.FIAT,
-        );
-        const goalText: string = formatPrice(
-          cleanGoalAmount,
-          currency,
-          DECIMALS.FIAT,
-        );
-        const receivedRatio = `${receivedText} / ${goalText}`;
-        const receivedPercentage: number =
-          100 * (receivedVal / cleanGoalAmount);
-        setIsLoading(false);
-        setGoalPercent(receivedPercentage);
-        setGoalText(receivedRatio);
+      const goal = getCurrencyObject(cleanGoalAmount, currency);
+      if (!isFiat(currency)) {
+        if (goal !== undefined) {
+          setGoalPercent((100 * progress.float) / goal.float);
+          setGoalText(`${progress.float} / ${cleanGoalAmount}`);
+          setIsLoading(false);
+        }
+      } else {
+        if (hasPrice) {
+          const receivedVal: number = totalReceived * price!;
+          const receivedText: string = formatPrice(
+            receivedVal,
+            currency,
+            DECIMALS.FIAT,
+          );
+          const goalText: string = formatPrice(
+            cleanGoalAmount,
+            currency,
+            DECIMALS.FIAT,
+          );
+          const receivedRatio = `${receivedText} / ${goalText}`;
+          const receivedPercentage: number =
+            100 * (receivedVal / cleanGoalAmount);
+          setIsLoading(false);
+          setGoalPercent(receivedPercentage);
+          setGoalText(receivedRatio);
+        }
       }
       if (shouldDisplayGoal && goal.float !== undefined && goal.float <= 0) {
         setDisabled(true);
