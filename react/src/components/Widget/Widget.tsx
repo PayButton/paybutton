@@ -360,7 +360,7 @@ export const Widget: React.FC<WidgetProps> = props => {
     const goal = getCurrencyObject(cleanGoalAmount, currency);
 
     if (!isFiat(currency)) {
-      if (goal !== undefined && progress.float > 0) {
+      if (goal !== undefined) {
         setGoalPercent((100 * progress.float) / goal.float);
         setGoalText(`${progress.float} / ${cleanGoalAmount}`);
         setIsLoading(false);
