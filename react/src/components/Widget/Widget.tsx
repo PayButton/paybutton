@@ -11,6 +11,7 @@ import {
 import copy from 'copy-to-clipboard';
 import QRCode, { BaseQRCodeProps } from 'qrcode.react';
 import React, { useEffect, useMemo, useState } from 'react';
+import config from '../../../../paybutton-config.json'
 
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
 import {
@@ -190,7 +191,9 @@ export const Widget: React.FC<WidgetProps> = props => {
   useEffect(() => {
     (async (): Promise<void> => {
       void await getAddressDetails(to);
-      setListener(to, setNewTxs)
+      const urlQuery = `address=${to}`
+      const es = new EventSource(`${config.SSEServerURL}/events?${urlQuery}`)
+      setListener(es, setNewTxs)
     })();
   }, [])
 

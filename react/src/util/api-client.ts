@@ -24,9 +24,7 @@ export interface BroadcastTxData {
   messageType: TxBroadcast
 }
 
-export const setListener = async (address: string, setNewTxs: Function): Promise<void> => {
-  const urlQuery = `address=${address}`
-  const es = new EventSource(`${process.env.SSE_SERVER_URL}/events?${urlQuery}`)
+export const setListener = async (es: EventSource, setNewTxs: Function): Promise<void> => {
   es.addEventListener('message',
     (event: MessageEvent) => {
       const broadcastedTxData: BroadcastTxData = JSON.parse(event.data)
