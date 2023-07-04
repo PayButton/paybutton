@@ -1,5 +1,6 @@
 import axios from 'axios';
 import _ from 'lodash';
+import { Socket } from 'socket.io-client'
 
 // export const getAddressDetails = async (
 //   address: string,
@@ -24,14 +25,12 @@ export interface BroadcastTxData {
   messageType: TxBroadcast
 }
 
-export const setListener = async (es: EventSource, setNewTxs: Function): Promise<void> => {
-  es.addEventListener('message',
-    (event: MessageEvent) => {
-      const broadcastedTxData: BroadcastTxData = JSON.parse(event.data)
-      if (broadcastedTxData.messageType === 'NewTx') {
-        setNewTxs(broadcastedTxData.txs)
-      }
-    })
+export const setListener = (socket: Socket, setNewTxs: Function): void => {
+  socket.on('incoming-txs', (broadcastedTxData: BroadcastTxData) => {
+    if (broadcastedTxData.messageType === 'NewTx') {
+      setNewTxs(broadcastedTxData.txs)
+    }
+  })
 }
 
 

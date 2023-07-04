@@ -27,6 +27,7 @@ import { getCurrencyObject, currencyObject } from '../../util/satoshis';
 import { currency, getAddressBalance, getAddressDetails, isFiat, setListener, Transaction } from '../../util/api-client';
 import { randomizeSatoshis } from '../../util/randomizeSats';
 import PencilIcon from '../../assets/edit-pencil';
+import io from 'socket.io-client'
 
 type QRCodeProps = BaseQRCodeProps & { renderAs: 'svg' };
 
@@ -191,9 +192,10 @@ export const Widget: React.FC<WidgetProps> = props => {
   useEffect(() => {
     (async (): Promise<void> => {
       void await getAddressDetails(to);
-      const urlQuery = `address=${to}`
-      const es = new EventSource(`${config.SSEServerURL}/events?${urlQuery}`)
-      setListener(es, setNewTxs)
+      const socket = io(`${config.wsBaseURL}/addresses`, {
+        query: { addresses: [to] }
+      })
+      setListener(socket, setNewTxs)
     })();
   }, [])
 
