@@ -84,6 +84,7 @@
     "notistack": "1.0.10",
     "qrcode.react": "1.0.1",
     "react-jss": "10.9.0",
+    "socket.io-client": "^4.7.1",
     "xecaddrjs": "^0.0.1"
   },
   "husky": {
