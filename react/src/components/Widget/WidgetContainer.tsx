@@ -93,7 +93,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
     const [amount, setAmount] = useState(props.amount);
     const [price, setPrice] = useState(0);
 
-    const [addressDetails, setAddressDetails] = useState<
+    const [newTxs, setNewTxs] = useState<
       Transaction[] | undefined
     >();
 
@@ -143,6 +143,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
           setSuccess(true);
           onSuccess?.(transaction.id, receivedAmount);
         }
+        setNewTxs([])
       },
       [
         amount,
@@ -157,6 +158,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
 
     const handleNewTransaction = useCallback(
       (tx: Transaction) => {
+
         if (
           tx.confirmed === false &&
           zero.isLessThan(new BigNumber(tx.amount))
@@ -180,10 +182,10 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
     }, []);
 
     useEffect(() => {
-      addressDetails?.map(tx => {
+      newTxs?.map(tx => {
         handleNewTransaction(tx);
       });
-    }, [addressDetails, handleNewTransaction]);
+    }, [newTxs]);
 
     useEffect(() => {
       if (!active) return;
@@ -209,7 +211,8 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
           success={success}
           disabled={disabled}
           editable={editable}
-          setAddressDetails={setAddressDetails}
+          setNewTxs={setNewTxs}
+          newTxs={newTxs}
         />
       </React.Fragment>
     );

@@ -11,6 +11,7 @@ import {
 import copy from 'copy-to-clipboard';
 import QRCode, { BaseQRCodeProps } from 'qrcode.react';
 import React, { useEffect, useMemo, useState } from 'react';
+import config from '../../../../paybutton-config.json'
 
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
 import {
@@ -23,10 +24,10 @@ import { Button, animation } from '../Button/Button';
 import BarChart from '../BarChart/BarChart';
 
 import { getCurrencyObject, currencyObject } from '../../util/satoshis';
-import { useAddressDetails } from '../../hooks/useAddressDetails';
-import { currency, getAddressBalance, isFiat } from '../../util/api-client';
+import { currency, getAddressBalance, getAddressDetails, isFiat, setListener, Transaction } from '../../util/api-client';
 import { randomizeSatoshis } from '../../util/randomizeSats';
 import PencilIcon from '../../assets/edit-pencil';
+import io from 'socket.io-client'
 
 type QRCodeProps = BaseQRCodeProps & { renderAs: 'svg' };
 
@@ -48,7 +49,8 @@ export interface WidgetProps {
   randomSatoshis?: boolean;
   price?: number;
   editable?: boolean;
-  setAddressDetails?: any; // function parent WidgetContainer passes down to be updated
+  setNewTxs: Function; // function parent WidgetContainer passes down to be updated
+  newTxs?: Transaction[]; // function parent WidgetContainer passes down to be updated
 }
 
 interface StyleProps {
@@ -125,7 +127,8 @@ export const Widget: React.FC<WidgetProps> = props => {
     randomSatoshis = true,
     currencyObject,
     editable,
-    setAddressDetails,
+    setNewTxs,
+    newTxs,
   } = Object.assign({}, Widget.defaultProps, props);
 
   const theme = useTheme(props.theme, isValidXecAddress(to));
@@ -133,7 +136,7 @@ export const Widget: React.FC<WidgetProps> = props => {
 
   const [copied, setCopied] = useState(false);
   const [recentlyCopied, setRecentlyCopied] = useState(false);
-  const [totalReceived, setTotalReceived] = useState(0);
+  const [totalReceived, setTotalReceived] = useState<number | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(!!goalAmount);
   const [disabled, setDisabled] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
@@ -183,19 +186,25 @@ export const Widget: React.FC<WidgetProps> = props => {
   }, [recentlyCopied]);
 
   const query: string[] = [];
-  const addressDetails = useAddressDetails(to);
   const hasPrice: boolean = price !== undefined && price > 0;
   let prefixedAddress: string;
 
   useEffect(() => {
     (async (): Promise<void> => {
-      if (addressDetails) {
-        if (setAddressDetails) setAddressDetails(addressDetails); // update parent component
-        const balance = await getAddressBalance(to);
-        if (balance) setTotalReceived(balance);
-      }
+      void await getAddressDetails(to);
+      const socket = io(`${config.wsBaseURL}/addresses`, {
+        query: { addresses: [to] }
+      })
+      setListener(socket, setNewTxs)
     })();
-  }, [addressDetails]);
+  }, [])
+
+  useEffect(() => {
+    (async (): Promise<void> => {
+      const balance = await getAddressBalance(to);
+      setTotalReceived(balance);
+    })();
+  }, [newTxs]);
 
   useEffect(() => {
     const invalidAmount = amount !== undefined && amount && isNaN(+amount);
@@ -351,35 +360,36 @@ export const Widget: React.FC<WidgetProps> = props => {
   };
 
   useEffect(() => {
-    const progress = getCurrencyObject(totalReceived, currency);
+    if (totalReceived !== undefined) {
+      const progress = getCurrencyObject(totalReceived, currency);
 
-    const goal = getCurrencyObject(cleanGoalAmount, currency);
-
-    if (!isFiat(currency)) {
-      if (goal !== undefined && progress.float > 0) {
-        setGoalPercent((100 * progress.float) / goal.float);
-        setGoalText(`${progress.float} / ${cleanGoalAmount}`);
-        setIsLoading(false);
-      }
-    } else {
-      if (totalReceived !== 0 && hasPrice) {
-        const receivedVal: number = totalReceived * price!;
-        const receivedText: string = formatPrice(
-          receivedVal,
-          currency,
-          DECIMALS.FIAT,
-        );
-        const goalText: string = formatPrice(
-          cleanGoalAmount,
-          currency,
-          DECIMALS.FIAT,
-        );
-        const receivedRatio = `${receivedText} / ${goalText}`;
-        const receivedPercentage: number =
-          100 * (receivedVal / cleanGoalAmount);
-        setIsLoading(false);
-        setGoalPercent(receivedPercentage);
-        setGoalText(receivedRatio);
+      const goal = getCurrencyObject(cleanGoalAmount, currency);
+      if (!isFiat(currency)) {
+        if (goal !== undefined) {
+          setGoalPercent((100 * progress.float) / goal.float);
+          setGoalText(`${progress.float} / ${cleanGoalAmount}`);
+          setIsLoading(false);
+        }
+      } else {
+        if (hasPrice) {
+          const receivedVal: number = totalReceived * price!;
+          const receivedText: string = formatPrice(
+            receivedVal,
+            currency,
+            DECIMALS.FIAT,
+          );
+          const goalText: string = formatPrice(
+            cleanGoalAmount,
+            currency,
+            DECIMALS.FIAT,
+          );
+          const receivedRatio = `${receivedText} / ${goalText}`;
+          const receivedPercentage: number =
+            100 * (receivedVal / cleanGoalAmount);
+          setIsLoading(false);
+          setGoalPercent(receivedPercentage);
+          setGoalText(receivedRatio);
+        }
       }
       if (shouldDisplayGoal && goal.float !== undefined && goal.float <= 0) {
         setDisabled(true);

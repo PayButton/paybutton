@@ -1,5 +1,6 @@
 import axios from 'axios';
 import _ from 'lodash';
+import { Socket } from 'socket.io-client'
 
 // export const getAddressDetails = async (
 //   address: string,
@@ -16,6 +17,22 @@ export const getAddressDetails = async (
   const res = await fetch(`${rootUrl}/address/transactions/${address}`);
   return res.json();
 };
+
+type TxBroadcast = 'NewTx' | 'OldTx'
+export interface BroadcastTxData {
+  address: string
+  txs: Transaction[]
+  messageType: TxBroadcast
+}
+
+export const setListener = (socket: Socket, setNewTxs: Function): void => {
+  socket.on('incoming-txs', (broadcastedTxData: BroadcastTxData) => {
+    if (broadcastedTxData.messageType === 'NewTx') {
+      setNewTxs(broadcastedTxData.txs)
+    }
+  })
+}
+
 
 export const getAddressBalance = async (
   address: string,
