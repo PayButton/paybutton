@@ -150,12 +150,12 @@ function findAndRender<T>(className: string, Component: React.ComponentType<any>
 
       if (attributes.onSuccess) {
         const geval = window.eval;
-        props.onSuccess = () => geval(attributes.onSuccess);
+        props.onSuccess = geval(attributes.onSuccess);
       }
 
       if (attributes.onTransaction) {
         const geval = window.eval;
-        props.onTransaction = () => geval(attributes.onTransaction);
+        props.onTransaction = geval(attributes.onTransaction);
       }
 
       if (attributes.theme) {
