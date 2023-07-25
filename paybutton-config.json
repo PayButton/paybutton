@@ -1,3 +1,5 @@
 {
-  "wsBaseURL": "ws://localhost:5000"
+  "wsBaseURL": "https://sse.paybutton.org",
+  "apiBaseURL": "https://api.paybutton.org",
+  "apiPriceBaseURL": "https://api.paybutton.org"
 }
