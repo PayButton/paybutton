@@ -15,6 +15,7 @@ import {
   currency,
   getBchFiatPrice,
   getXecFiatPrice,
+  isValidCurrency,
 } from '../../util/api-client';
 import { getCurrencyObject, currencyObject } from '../../util/satoshis';
 import Widget, { WidgetProps } from './Widget';
@@ -66,10 +67,10 @@ const withSnackbar =
 
 export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
   (props): React.ReactElement => {
-    const {
+    let {
       active = true,
       to,
-      currency = 'BCH',
+      currency="" as currency,
       animation,
       randomSatoshis = true,
       displayCurrency,
@@ -96,6 +97,13 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
     const [newTxs, setNewTxs] = useState<
       Transaction[] | undefined
     >();
+    const addrType = getCurrencyTypeFromAddress(to)
+    if (
+      !isValidCurrency(currency)
+      || (isCrypto(currency) && addrType != currency)
+    ) {
+      currency = addrType
+    }
 
     const getPrice = useCallback(async (): Promise<void> => {
       try {

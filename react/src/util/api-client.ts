@@ -144,7 +144,13 @@ export function isFiat(unknownString: string): unknownString is fiatCurrency {
 export function isCrypto(
   unknownString: string,
 ): unknownString is cryptoCurrency {
-  return cryptoCurrencies.includes(unknownString as cryptoCurrency);
+  return cryptoCurrencies.includes(unknownString as cryptoCurrency)
+}
+
+export function isValidCurrency(
+  unknownString: string,
+): unknownString is cryptoCurrency {
+  return isFiat(unknownString) || isCrypto(unknownString)
 }
 
 // export interface AddressDetails {
