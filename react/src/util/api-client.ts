@@ -153,6 +153,12 @@ export function isCrypto(
   )
 }
 
+export function isValidCurrency(
+  unknownString: string,
+): unknownString is cryptoCurrency {
+  return isFiat(unknownString) || isCrypto(unknownString)
+}
+
 // export interface AddressDetails {
 //   balance: number;
 //   balanceSat: number;
