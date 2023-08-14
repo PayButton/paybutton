@@ -97,8 +97,12 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
     const [newTxs, setNewTxs] = useState<
       Transaction[] | undefined
     >();
-    if (!isValidCurrency(currency)) {
-      currency =  getCurrencyTypeFromAddress(to)
+    const addrType = getCurrencyTypeFromAddress(to)
+    if (
+      !isValidCurrency(currency)
+      || (isCrypto(currency) && addrType != currency)
+    ) {
+      currency = addrType
     }
 
     const getPrice = useCallback(async (): Promise<void> => {
