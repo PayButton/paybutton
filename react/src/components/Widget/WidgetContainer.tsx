@@ -70,7 +70,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
     let {
       active = true,
       to,
-      currency="",
+      currency="" as currency,
       animation,
       randomSatoshis = true,
       displayCurrency,
@@ -175,8 +175,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
 
     useEffect(() => {
       if (props.amount && currency) {
-        const currencyTicker = getCurrencyTypeFromAddress(to);
-        const obj = getCurrencyObject(props.amount, currencyTicker);
+        const obj = getCurrencyObject(props.amount, currency);
         setAmount(obj.float);
         setCurrencyObj(obj);
       }
@@ -207,7 +206,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
           {...widgetProps}
           amount={amount}
           goalAmount={goalAmount}
-          currency={currency as currency}
+          currency={currency}
           animation={animation}
           currencyObject={currencyObj}
           loading={loading}

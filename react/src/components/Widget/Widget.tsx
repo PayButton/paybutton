@@ -260,7 +260,7 @@ export const Widget: React.FC<WidgetProps> = props => {
     const address = to;
     let url;
 
-    const addressType = getCurrencyTypeFromAddress(address)
+    const addressType: currency = getCurrencyTypeFromAddress(address);
     setWidgetButtonText(`Send with ${addressType} wallet`);
 
     switch (addressType) {
@@ -275,7 +275,7 @@ export const Widget: React.FC<WidgetProps> = props => {
 
     if (currencyObj && hasPrice) {
       const bchAmount = price
-        ? getCurrencyObject(currencyObj.float / price, currency)
+        ? getCurrencyObject(currencyObj.float / price, addressType)
         : null;
 
       if (bchAmount) {
@@ -297,7 +297,7 @@ export const Widget: React.FC<WidgetProps> = props => {
         url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
         setUrl(url);
       } else {
-        setText(`Send any amount of ${currency}`);
+        setText(`Send any amount of ${addressType}`);
         url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
         setUrl(url);
       }
@@ -354,6 +354,7 @@ export const Widget: React.FC<WidgetProps> = props => {
     }
 
     const userEdited = getCurrencyObject(+amount, currency);
+
     setUserEditedAmount(userEdited);
     setAmount(amount);
   };
