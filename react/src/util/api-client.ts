@@ -135,9 +135,6 @@ export const cryptoCurrencies = ['BCH', 'XEC'] as const;
 type cryptoCurrenciesTuple = typeof cryptoCurrencies; // readonly ['BCH', 'XEC']
 export type cryptoCurrency = cryptoCurrenciesTuple[number]; // "BCH" | "XEC"
 
-export const genericCryptoString = "crypto"
-export type genericCrypto = typeof genericCryptoString
-
 export type currency = cryptoCurrency | fiatCurrency;
 
 export function isFiat(unknownString: string): unknownString is fiatCurrency {
@@ -147,10 +144,7 @@ export function isFiat(unknownString: string): unknownString is fiatCurrency {
 export function isCrypto(
   unknownString: string,
 ): unknownString is cryptoCurrency {
-  return (
-    cryptoCurrencies.includes(unknownString as cryptoCurrency)
-    || unknownString === genericCryptoString
-  )
+  return cryptoCurrencies.includes(unknownString as cryptoCurrency)
 }
 
 export function isValidCurrency(

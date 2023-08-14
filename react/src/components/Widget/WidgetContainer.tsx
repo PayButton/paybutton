@@ -15,8 +15,6 @@ import {
   currency,
   getBchFiatPrice,
   getXecFiatPrice,
-  genericCrypto,
-  genericCryptoString,
   isValidCurrency,
 } from '../../util/api-client';
 import { getCurrencyObject, currencyObject } from '../../util/satoshis';
@@ -27,7 +25,7 @@ export interface WidgetContainerProps
   extends Omit<Omit<WidgetProps, 'loading'>, 'success'> {
   active?: boolean;
   amount?: number;
-  currency?: currency | genericCrypto;
+  currency?: currency;
   randomSatoshis?: boolean;
   displayCurrency?: cryptoCurrency;
   hideToasts?: boolean;
@@ -72,7 +70,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
     let {
       active = true,
       to,
-      currency = genericCryptoString,
+      currency="",
       animation,
       randomSatoshis = true,
       displayCurrency,
@@ -99,9 +97,8 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
     const [newTxs, setNewTxs] = useState<
       Transaction[] | undefined
     >();
-
     if (!isValidCurrency(currency)) {
-      currency = genericCryptoString
+      currency =  getCurrencyTypeFromAddress(to)
     }
 
     const getPrice = useCallback(async (): Promise<void> => {
@@ -210,7 +207,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
           {...widgetProps}
           amount={amount}
           goalAmount={goalAmount}
-          currency={currency}
+          currency={currency as currency}
           animation={animation}
           currencyObject={currencyObj}
           loading={loading}
