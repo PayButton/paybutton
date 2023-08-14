@@ -24,7 +24,7 @@ import { Button, animation } from '../Button/Button';
 import BarChart from '../BarChart/BarChart';
 
 import { getCurrencyObject, currencyObject } from '../../util/satoshis';
-import { currency, getAddressBalance, getAddressDetails, isFiat, setListener, Transaction } from '../../util/api-client';
+import { currency, getAddressBalance, getAddressDetails, isFiat, setListener, Transaction, genericCrypto } from '../../util/api-client';
 import { randomizeSatoshis } from '../../util/randomizeSats';
 import PencilIcon from '../../assets/edit-pencil';
 import io from 'socket.io-client'
@@ -43,7 +43,7 @@ export interface WidgetProps {
   foot?: React.ReactNode;
   disabled: boolean;
   goalAmount?: number | string | null;
-  currency?: currency;
+  currency?: currency | genericCrypto;
   animation?: animation;
   currencyObject?: currencyObject | undefined;
   randomSatoshis?: boolean;
@@ -141,6 +141,7 @@ export const Widget: React.FC<WidgetProps> = props => {
   const [disabled, setDisabled] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [goalText, setGoalText] = useState('');
+  const [addressType, setAddressType] = useState<currency|undefined>();
   const [goalPercent, setGoalPercent] = useState(0);
   const [currencyObj, setCurrencyObj] = useState<currencyObject>(
     currencyObject!,
@@ -241,17 +242,19 @@ export const Widget: React.FC<WidgetProps> = props => {
       }
     }
 
-    if (userEditedAmount !== undefined && amount) {
-      const obj = getCurrencyObject(transformAmount(+amount), currency);
-      setCurrencyObj(obj);
-    } else if (amount) {
-      cleanAmount = +amount;
-      if (currencyObj === undefined) {
-        const obj = getCurrencyObject(transformAmount(cleanAmount), currency);
+    if (addressType !== undefined) {
+      if (userEditedAmount !== undefined && amount) {
+        const obj = getCurrencyObject(transformAmount(+amount), addressType);
         setCurrencyObj(obj);
+      } else if (amount) {
+        cleanAmount = +amount;
+        if (currencyObj === undefined) {
+          const obj = getCurrencyObject(transformAmount(cleanAmount), addressType);
+          setCurrencyObj(obj);
+        }
       }
     }
-  }, [amount, currency, userEditedAmount]);
+  }, [amount, addressType, userEditedAmount]);
 
   useEffect(() => {
     if (to === undefined) {
@@ -260,10 +263,11 @@ export const Widget: React.FC<WidgetProps> = props => {
     const address = to;
     let url;
 
-    const addressType: currency = getCurrencyTypeFromAddress(address);
-    setWidgetButtonText(`Send with ${addressType} wallet`);
+    const addrType = getCurrencyTypeFromAddress(address)
+    setAddressType(addrType);
+    setWidgetButtonText(`Send with ${addrType} wallet`);
 
-    switch (addressType) {
+    switch (addrType) {
       case 'BCH':
         prefixedAddress = `bitcoincash:${address.replace(/^.*:/, '')}`;
         break;
@@ -275,12 +279,12 @@ export const Widget: React.FC<WidgetProps> = props => {
 
     if (currencyObj && hasPrice) {
       const bchAmount = price
-        ? getCurrencyObject(currencyObj.float / price, addressType)
+        ? getCurrencyObject(currencyObj.float / price, addrType)
         : null;
 
       if (bchAmount) {
         setText(
-          `Send ${currencyObj.string} ${currencyObj.currency} = ${bchAmount.string} ${addressType}`,
+          `Send ${currencyObj.string} ${currencyObj.currency} = ${bchAmount.string} ${addrType}`,
         );
         query.push(`amount=${bchAmount.float}`);
       }
@@ -297,7 +301,7 @@ export const Widget: React.FC<WidgetProps> = props => {
         url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
         setUrl(url);
       } else {
-        setText(`Send any amount of ${addressType}`);
+        setText(`Send any amount of ${addrType}`);
         url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
         setUrl(url);
       }
@@ -353,17 +357,19 @@ export const Widget: React.FC<WidgetProps> = props => {
       amount = '0';
     }
 
-    const userEdited = getCurrencyObject(+amount, currency);
+    if (addressType !== undefined) {
+      const userEdited = getCurrencyObject(+amount, addressType);
+      setUserEditedAmount(userEdited);
+    }
 
-    setUserEditedAmount(userEdited);
     setAmount(amount);
   };
 
   useEffect(() => {
-    if (totalReceived !== undefined) {
-      const progress = getCurrencyObject(totalReceived, currency);
+    if (totalReceived !== undefined && addressType !== undefined) {
+      const progress = getCurrencyObject(totalReceived, addressType);
 
-      const goal = getCurrencyObject(cleanGoalAmount, currency);
+      const goal = getCurrencyObject(cleanGoalAmount, addressType);
       if (!isFiat(currency)) {
         if (goal !== undefined) {
           setGoalPercent((100 * progress.float) / goal.float);
@@ -375,12 +381,12 @@ export const Widget: React.FC<WidgetProps> = props => {
           const receivedVal: number = totalReceived * price!;
           const receivedText: string = formatPrice(
             receivedVal,
-            currency,
+            addressType,
             DECIMALS.FIAT,
           );
           const goalText: string = formatPrice(
             cleanGoalAmount,
-            currency,
+            addressType,
             DECIMALS.FIAT,
           );
           const receivedRatio = `${receivedText} / ${goalText}`;
@@ -396,7 +402,7 @@ export const Widget: React.FC<WidgetProps> = props => {
         setErrorMsg('Goal Value must be a number');
       }
     }
-  }, [totalReceived, currency, goalAmount, price]);
+  }, [totalReceived, currency, addressType, goalAmount, price]);
 
   return (
     <ThemeProvider value={theme}>
@@ -451,7 +457,7 @@ export const Widget: React.FC<WidgetProps> = props => {
                     style={{ marginBottom: '0.61rem' }}
                   >
                     {goalText}
-                    <strong>&nbsp;{currency}</strong>
+                    <strong>&nbsp;{addressType}</strong>
                   </Typography>
                   <BarChart
                     color={theme.palette.primary}

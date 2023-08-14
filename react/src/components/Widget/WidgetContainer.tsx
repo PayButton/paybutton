@@ -15,6 +15,8 @@ import {
   currency,
   getBchFiatPrice,
   getXecFiatPrice,
+  genericCrypto,
+  genericCryptoString,
 } from '../../util/api-client';
 import { getCurrencyObject, currencyObject } from '../../util/satoshis';
 import Widget, { WidgetProps } from './Widget';
@@ -24,7 +26,7 @@ export interface WidgetContainerProps
   extends Omit<Omit<WidgetProps, 'loading'>, 'success'> {
   active?: boolean;
   amount?: number;
-  currency?: currency;
+  currency?: currency | genericCrypto;
   randomSatoshis?: boolean;
   displayCurrency?: cryptoCurrency;
   hideToasts?: boolean;
@@ -69,7 +71,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
     const {
       active = true,
       to,
-      currency = 'BCH',
+      currency = genericCryptoString,
       animation,
       randomSatoshis = true,
       displayCurrency,
@@ -171,7 +173,8 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
 
     useEffect(() => {
       if (props.amount && currency) {
-        const obj = getCurrencyObject(props.amount, currency);
+        const currencyTicker = getCurrencyTypeFromAddress(to);
+        const obj = getCurrencyObject(props.amount, currencyTicker);
         setAmount(obj.float);
         setCurrencyObj(obj);
       }
