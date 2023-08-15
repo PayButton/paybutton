@@ -24,7 +24,7 @@ import { Button, animation } from '../Button/Button';
 import BarChart from '../BarChart/BarChart';
 
 import { getCurrencyObject, currencyObject } from '../../util/satoshis';
-import { currency, getAddressBalance, getAddressDetails, isFiat, setListener, Transaction, getCashtabProviderStatus } from '../../util/api-client';
+import { currency, getAddressBalance, getAddressDetails, isFiat, setListener, Transaction, getCashtabProviderStatus, cryptoCurrency } from '../../util/api-client';
 import { randomizeSatoshis } from '../../util/randomizeSats';
 import PencilIcon from '../../assets/edit-pencil';
 import io from 'socket.io-client'
@@ -142,6 +142,7 @@ export const Widget: React.FC<WidgetProps> = props => {
   const [errorMsg, setErrorMsg] = useState('');
   const [goalText, setGoalText] = useState('');
   const [goalPercent, setGoalPercent] = useState(0);
+  const [addressType, setAddressType] = useState<cryptoCurrency>();
   const [currencyObj, setCurrencyObj] = useState<currencyObject>(
     currencyObject!,
   );
@@ -262,6 +263,7 @@ export const Widget: React.FC<WidgetProps> = props => {
     let url;
 
     const addressType: currency = getCurrencyTypeFromAddress(address);
+    setAddressType(addressType)
     setWidgetButtonText(`Send with ${addressType} wallet`);
 
     switch (addressType) {
@@ -307,28 +309,32 @@ export const Widget: React.FC<WidgetProps> = props => {
   }, [currencyObj, price, amount]);
 
   const handleButtonClick = () => {
-    const hasExtension = getCashtabProviderStatus()
-    const thisAmount = convertedCurrencyObj ? convertedCurrencyObj.float : amount
-    if (!hasExtension) {
-      window.location.href = url;
-      const isMobile = window.matchMedia("(pointer:coarse)").matches;
-      if (isMobile) {
-        window.location.href = `https://cashtab.com/#/send?address=${to}&value=${thisAmount}`
-      } else {
+    if (addressType === 'XEC'){
+      const hasExtension = getCashtabProviderStatus()
+      const thisAmount = convertedCurrencyObj ? convertedCurrencyObj.float : amount
+      if (!hasExtension) {
         window.location.href = url;
+        const isMobile = window.matchMedia("(pointer:coarse)").matches;
+        if (isMobile) {
+          window.location.href = `https://cashtab.com/#/send?address=${to}&value=${thisAmount}`
+        } else {
+          window.location.href = url;
+        }
+      } else {
+        return window.postMessage(
+          {
+            type: 'FROM_PAGE',
+            text: 'Cashtab',
+            txInfo: {
+              address: to,
+              value: thisAmount
+            },
+          },
+          '*',
+        );
       }
     } else {
-      return window.postMessage(
-        {
-          type: 'FROM_PAGE',
-          text: 'Cashtab',
-          txInfo: {
-            address: to,
-            value: thisAmount
-          },
-        },
-        '*',
-      );
+      window.location.href = url;
     }
   }
 
