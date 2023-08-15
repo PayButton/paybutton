@@ -169,6 +169,15 @@ export function isValidCurrency(
 //   cashAddress: string;
 // }
 
+export const getCashtabProviderStatus = () => {
+  const windowAny = window as any
+  console.log(windowAny.bitcoinAbc);
+  if (window && windowAny.bitcoinAbc && windowAny.bitcoinAbc === 'cashtab') {
+    return true;
+  }
+  return false;
+};
+
 export interface Transaction {
   id: string;
   hash: string;

@@ -1,5 +1,5 @@
 import * as xecaddr from 'xecaddrjs';
-import { currency } from '../util/api-client';
+import { cryptoCurrency } from '../util/api-client';
 
 export const isValidCashAddress = (address: string): boolean => {
   if (!address) return false;
@@ -23,7 +23,7 @@ export const isValidXecAddress = (address: string): boolean => {
   }
 };
 
-export const getCurrencyTypeFromAddress = (address: string): currency => {
+export const getCurrencyTypeFromAddress = (address: string): cryptoCurrency => {
   if (isValidCashAddress(address)) {
     return 'BCH';
   } else if (isValidXecAddress(address)) {

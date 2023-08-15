@@ -24,7 +24,7 @@ import { Button, animation } from '../Button/Button';
 import BarChart from '../BarChart/BarChart';
 
 import { getCurrencyObject, currencyObject } from '../../util/satoshis';
-import { currency, getAddressBalance, getAddressDetails, isFiat, setListener, Transaction } from '../../util/api-client';
+import { currency, getAddressBalance, getAddressDetails, isFiat, setListener, Transaction, getCashtabProviderStatus, cryptoCurrency } from '../../util/api-client';
 import { randomizeSatoshis } from '../../util/randomizeSats';
 import PencilIcon from '../../assets/edit-pencil';
 import io from 'socket.io-client'
@@ -142,9 +142,11 @@ export const Widget: React.FC<WidgetProps> = props => {
   const [errorMsg, setErrorMsg] = useState('');
   const [goalText, setGoalText] = useState('');
   const [goalPercent, setGoalPercent] = useState(0);
+  const [addressType, setAddressType] = useState<cryptoCurrency>();
   const [currencyObj, setCurrencyObj] = useState<currencyObject>(
     currencyObject!,
   );
+  const [convertedCurrencyObj, setConvertedCurrencyObj] = useState<currencyObject|null>();
   const price = props.price;
   const [amount, setAmount] = useState(props.amount);
   const [url, setUrl] = useState('');
@@ -261,6 +263,7 @@ export const Widget: React.FC<WidgetProps> = props => {
     let url;
 
     const addressType: currency = getCurrencyTypeFromAddress(address);
+    setAddressType(addressType)
     setWidgetButtonText(`Send with ${addressType} wallet`);
 
     switch (addressType) {
@@ -274,15 +277,16 @@ export const Widget: React.FC<WidgetProps> = props => {
     url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
 
     if (currencyObj && hasPrice) {
-      const bchAmount = price
+      const convertedObj = price
         ? getCurrencyObject(currencyObj.float / price, addressType)
         : null;
 
-      if (bchAmount) {
+      if (convertedObj) {
+        setConvertedCurrencyObj(convertedObj)
         setText(
-          `Send ${currencyObj.string} ${currencyObj.currency} = ${bchAmount.string} ${addressType}`,
+          `Send ${currencyObj.string} ${currencyObj.currency} = ${convertedObj.string} ${addressType}`,
         );
-        query.push(`amount=${bchAmount.float}`);
+        query.push(`amount=${convertedObj.float}`);
       }
 
       url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
@@ -304,9 +308,36 @@ export const Widget: React.FC<WidgetProps> = props => {
     }
   }, [currencyObj, price, amount]);
 
-  const handleButtonClick = (): void => {
-    window.location.href = url;
-  };
+  const handleButtonClick = () => {
+    if (addressType === 'XEC'){
+      const hasExtension = getCashtabProviderStatus()
+      const thisAmount = convertedCurrencyObj ? convertedCurrencyObj.float : amount
+      if (!hasExtension) {
+        window.location.href = url;
+        const isMobile = window.matchMedia("(pointer:coarse)").matches;
+        if (isMobile) {
+          window.location.href = `https://cashtab.com/#/send?address=${to}&value=${thisAmount}`
+        } else {
+          window.location.href = url;
+        }
+      } else {
+        return window.postMessage(
+          {
+            type: 'FROM_PAGE',
+            text: 'Cashtab',
+            txInfo: {
+              address: to,
+              value: thisAmount
+            },
+          },
+          '*',
+        );
+      }
+    } else {
+      window.location.href = url;
+    }
+  }
+
   const handleQrCodeClick = (): void => {
     if (disabled || to === undefined) return;
     const address = to;
