@@ -683,7 +683,7 @@ disabled = true
 #### ** HTML **
 
 ```html
-wsBaseUrl="https://mydomain.com".
+ws-base-url="https://mydomain.com".
 ```
 
 #### ** JavaScript **
@@ -713,7 +713,7 @@ wsBaseUrl = "https://mydomain.com"
 #### ** HTML **
 
 ```html
-apiBaseUrl="https://mydomain.com".
+api-base-url="https://mydomain.com".
 ```
 
 #### ** JavaScript **
