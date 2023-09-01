@@ -112,13 +112,13 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
     const getPrice = useCallback(async (): Promise<void> => {
       try {
         if (isFiat(currency) && isValidCashAddress(address)) {
-          const data = await getBchFiatPrice(currency);
+          const data = await getBchFiatPrice(currency, apiBaseURL);
 
           const { price } = data;
           setLoading(false);
           setPrice(price);
         } else if (isFiat(currency) && isValidXecAddress(address)) {
-          const data = await getXecFiatPrice(currency);
+          const data = await getXecFiatPrice(currency, apiBaseURL);
 
           const { price } = data;
           setLoading(false);
