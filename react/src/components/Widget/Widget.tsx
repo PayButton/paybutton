@@ -327,7 +327,7 @@ export const Widget: React.FC<WidgetProps> = props => {
             text: 'Cashtab',
             txInfo: {
               address: to,
-              value: thisAmount
+              value: thisAmount ?? null
             },
           },
           '*',
