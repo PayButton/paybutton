@@ -26,6 +26,8 @@ export interface PaymentDialogProps extends ButtonProps {
   onClose?: () => void;
   onSuccess?: (txid: string, amount: BigNumber) => void;
   onTransaction?: (txid: string, amount: BigNumber) => void;
+  wsBaseURL?: string;
+  apiBaseURL?: string;
 }
 
 export const PaymentDialog = (
@@ -50,6 +52,8 @@ export const PaymentDialog = (
     editable,
     dialogOpen,
     container,
+    wsBaseURL,
+    apiBaseURL
   } = Object.assign({}, PaymentDialog.defaultProps, props);
 
   const handleWidgetClose = (): void => {
@@ -109,6 +113,8 @@ export const PaymentDialog = (
           disabled={disabled}
           editable={editable}
           goalAmount={goalAmount}
+          wsBaseURL={wsBaseURL}
+          apiBaseURL={apiBaseURL}
           foot={
             success && (
               <ButtonComponent

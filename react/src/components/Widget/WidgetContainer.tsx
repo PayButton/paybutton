@@ -35,6 +35,8 @@ export interface WidgetContainerProps
   goalAmount?: number | string;
   disabled: boolean;
   editable: boolean;
+  wsBaseURL?: string;
+  apiBaseURL?: string;
 }
 
 const snackbarOptions: OptionsObject = {
@@ -81,6 +83,8 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
       goalAmount,
       disabled,
       editable,
+      wsBaseURL,
+      apiBaseURL,
       ...widgetProps
     } = props;
 
@@ -221,6 +225,8 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
           editable={editable}
           setNewTxs={setNewTxs}
           newTxs={newTxs}
+          wsBaseURL={wsBaseURL}
+          apiBaseURL={apiBaseURL}
         />
       </React.Fragment>
     );
