@@ -53,7 +53,7 @@ export const getUTXOs = async (
 
 export const getBchFiatPrice = async (
   currency: currency,
-  rootUrl = config.apiPriceBaseURL,
+  rootUrl = config.apiBaseURL,
 ): Promise<PriceData> => {
   const { data } = await axios.get(
     `${rootUrl}/price/bitcoincash/${_.lowerCase(currency)}`,
@@ -65,7 +65,7 @@ export const getBchFiatPrice = async (
 
 export const getXecFiatPrice = async (
   currency: currency,
-  rootUrl = config.apiPriceBaseURL,
+  rootUrl = config.apiBaseURL,
 ): Promise<PriceData> => {
   const { data } = await axios.get(
     `${rootUrl}/price/ecash/${_.lowerCase(currency)}`,
@@ -78,7 +78,7 @@ export const getXecFiatPrice = async (
 export const getFiatPrice = async (
   fiat: fiatCurrency,
   crypto: cryptoCurrency,
-  rootUrl = config.apiPriceBaseURL,
+  rootUrl = config.apiBaseURL,
 ): Promise<PriceData> => {
   // TODO: get rid of 'getXecFiatPrice' && 'getBchFiatPrice' and replace
   // with this function.
