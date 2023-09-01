@@ -131,7 +131,8 @@ export const Widget: React.FC<WidgetProps> = props => {
     editable,
     setNewTxs,
     newTxs,
-    apiBaseURL
+    apiBaseURL,
+    wsBaseURL
   } = Object.assign({}, Widget.defaultProps, props);
 
   const theme = useTheme(props.theme, isValidXecAddress(to));
@@ -197,7 +198,7 @@ export const Widget: React.FC<WidgetProps> = props => {
   useEffect(() => {
     (async (): Promise<void> => {
       void await getAddressDetails(to, apiBaseURL);
-      const socket = io(`${config.wsBaseURL}/addresses`, {
+      const socket = io(`${wsBaseURL ?? config.wsBaseURL}/addresses`, {
         query: { addresses: [to] }
       })
       setListener(socket, setNewTxs)
