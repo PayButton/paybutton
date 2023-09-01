@@ -671,9 +671,9 @@ disabled = true
 
 <!-- tabs:end -->
 
-## wsBaseURL
+## wsBaseUrl
 
-> **The ‘wsBaseURL’ parameter specifies the URL for the websocket where the information about new transactions should come.
+> **The ‘wsBaseUrl’ parameter specifies the URL for the websocket where the information about new transactions should come.
 
 ?> This parameter is optional. Default value is ‘https://socket.paybutton.org’. Possible values are any string defining an URL.
 
@@ -683,27 +683,27 @@ disabled = true
 #### ** HTML **
 
 ```html
-wsBaseURL="https://mydomain.com".
+wsBaseUrl="https://mydomain.com".
 ```
 
 #### ** JavaScript **
 
 ```javascript
-wsBaseURL: 'https://mydomain.com'
+wsBaseUrl: 'https://mydomain.com'
 ```
 
 #### ** React **
 
 ```react
-wsBaseURL = "https://mydomain.com"
+wsBaseUrl = "https://mydomain.com"
 ```
 
 <!-- tabs:end -->
 
 
-## apiBaseURL
+## apiBaseUrl
 
-> **The ‘apiBaseURL’ parameter specifies the URL for the  API where info about transactions, prices and addresses should come
+> **The ‘apiBaseUrl’ parameter specifies the URL for the  API where info about transactions, prices and addresses should come
 
 ?> This parameter is optional. Default value is ‘https://api.paybutton.org’. Possible values are any string defining an URL.
 
@@ -713,19 +713,19 @@ wsBaseURL = "https://mydomain.com"
 #### ** HTML **
 
 ```html
-apiBaseURL="https://mydomain.com".
+apiBaseUrl="https://mydomain.com".
 ```
 
 #### ** JavaScript **
 
 ```javascript
-apiBaseURL: 'https://mydomain.com'
+apiBaseUrl: 'https://mydomain.com'
 ```
 
 #### ** React **
 
 ```react
-apiBaseURL = "https://mydomain.com"
+apiBaseUrl = "https://mydomain.com"
 ```
 
 <!-- tabs:end -->

@@ -35,8 +35,8 @@ export interface WidgetContainerProps
   goalAmount?: number | string;
   disabled: boolean;
   editable: boolean;
-  wsBaseURL?: string;
-  apiBaseURL?: string;
+  wsBaseUrl?: string;
+  apiBaseUrl?: string;
 }
 
 const snackbarOptions: OptionsObject = {
@@ -83,8 +83,8 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
       goalAmount,
       disabled,
       editable,
-      wsBaseURL,
-      apiBaseURL,
+      wsBaseUrl,
+      apiBaseUrl,
       ...widgetProps
     } = props;
 
@@ -112,13 +112,13 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
     const getPrice = useCallback(async (): Promise<void> => {
       try {
         if (isFiat(currency) && isValidCashAddress(address)) {
-          const data = await getBchFiatPrice(currency, apiBaseURL);
+          const data = await getBchFiatPrice(currency, apiBaseUrl);
 
           const { price } = data;
           setLoading(false);
           setPrice(price);
         } else if (isFiat(currency) && isValidXecAddress(address)) {
-          const data = await getXecFiatPrice(currency, apiBaseURL);
+          const data = await getXecFiatPrice(currency, apiBaseUrl);
 
           const { price } = data;
           setLoading(false);
@@ -225,8 +225,8 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
           editable={editable}
           setNewTxs={setNewTxs}
           newTxs={newTxs}
-          wsBaseURL={wsBaseURL}
-          apiBaseURL={apiBaseURL}
+          wsBaseUrl={wsBaseUrl}
+          apiBaseUrl={apiBaseUrl}
         />
       </React.Fragment>
     );
