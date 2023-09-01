@@ -1,19 +1,13 @@
 import axios from 'axios';
 import _ from 'lodash';
 import { Socket } from 'socket.io-client'
-import config from '../../../paybutton-config.json'
 
-// export const getAddressDetails = async (
-//   address: string,
-// ): Promise<AddressDetails> => {
-//   const res = await fetch(
-//     `https://rest.bitcoin.com/v2/address/details/${address}`,
-//   );
-//   return res.json();
-// };
+export const DEFAULT_WS_URL = "https://socket.paybutton.org"
+export const DEFAULT_API_URL = "https://api.paybutton.org"
+
 export const getAddressDetails = async (
   address: string,
-  rootUrl = config.apiBaseUrl,
+  rootUrl = DEFAULT_API_URL,
 ): Promise<Transaction[]> => {
   const res = await fetch(`${rootUrl}/address/transactions/${address}`);
   return res.json();
@@ -37,7 +31,7 @@ export const setListener = (socket: Socket, setNewTxs: Function): void => {
 
 export const getAddressBalance = async (
   address: string,
-  rootUrl = config.apiBaseUrl,
+  rootUrl = DEFAULT_API_URL,
 ): Promise<number> => {
   const res = await axios.get(`${rootUrl}/address/balance/${address}`);
   return isNaN(res.data) ? null : res.data;
@@ -45,7 +39,7 @@ export const getAddressBalance = async (
 
 export const getUTXOs = async (
   address: string,
-  rootUrl = config.apiBaseUrl,
+  rootUrl = DEFAULT_API_URL,
 ): Promise<UtxoDetails> => {
   const res = await fetch(`${rootUrl}/address/utxo/${address}`);
   return res.json();
@@ -53,7 +47,7 @@ export const getUTXOs = async (
 
 export const getBchFiatPrice = async (
   currency: currency,
-  rootUrl = config.apiBaseUrl,
+  rootUrl = DEFAULT_API_URL,
 ): Promise<PriceData> => {
   const { data } = await axios.get(
     `${rootUrl}/price/bitcoincash/${_.lowerCase(currency)}`,
@@ -65,7 +59,7 @@ export const getBchFiatPrice = async (
 
 export const getXecFiatPrice = async (
   currency: currency,
-  rootUrl = config.apiBaseUrl,
+  rootUrl = DEFAULT_API_URL,
 ): Promise<PriceData> => {
   const { data } = await axios.get(
     `${rootUrl}/price/ecash/${_.lowerCase(currency)}`,
@@ -78,7 +72,7 @@ export const getXecFiatPrice = async (
 export const getFiatPrice = async (
   fiat: fiatCurrency,
   crypto: cryptoCurrency,
-  rootUrl = config.apiBaseUrl,
+  rootUrl = DEFAULT_API_URL,
 ): Promise<PriceData> => {
   // TODO: get rid of 'getXecFiatPrice' && 'getBchFiatPrice' and replace
   // with this function.
@@ -113,7 +107,7 @@ export const getFiatPrice = async (
 
 export const getTransactionDetails = async (
   txid: string,
-  rootUrl = config.apiBaseUrl,
+  rootUrl = DEFAULT_API_URL,
 ): Promise<TransactionDetails> => {
   const res = await fetch(`${rootUrl}/transactions/details/${txid}`);
   return res.json();
