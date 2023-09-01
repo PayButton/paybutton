@@ -5,6 +5,7 @@ import { isValidCashAddress, isValidXecAddress } from '../util/address';
 
 const POLL_DELAY = 1000;
 
+// DEPRECATED this was used before websockets
 export const useAddressDetails = (
   address: string,
   active = true,
