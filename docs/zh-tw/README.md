@@ -675,7 +675,7 @@ disabled = true
 
 > **‘wsBaseUrl’ 參數指定了用於 websocket 的 URL，新交易的資訊將從這裡獲取。**
 
-?> 該參數是可選的。預設值是「https://socket.paybutton.org」。可能的值是任何有效的 URL。
+?> 該參數是可選的。預設值是‘https://socket.paybutton.org’。可能的值是任何有效的 URL。
 
 **Example:**
 <!-- tabs:start -->
