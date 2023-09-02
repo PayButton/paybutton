@@ -673,9 +673,9 @@ disabled = true
 
 ## wsBaseUrl
 
-> **The ‘wsBaseUrl’ parameter specifies the URL for the websocket where the information about new transactions should come.
+> **The ‘wsBaseUrl’ parameter specifies the URL for the websocket where information about new transactions will come from.**
 
-?> This parameter is optional. Default value is ‘https://socket.paybutton.org’. Possible values are any string defining an URL.
+?> This parameter is optional. Default value is ‘https://socket.paybutton.org’. Possible values are any valid URL.
 
 **Example:**
 <!-- tabs:start -->
@@ -683,19 +683,19 @@ disabled = true
 #### ** HTML **
 
 ```html
-ws-base-url="https://mydomain.com".
+ws-base-url="https://socket.paybutton.org".
 ```
 
 #### ** JavaScript **
 
 ```javascript
-wsBaseUrl: 'https://mydomain.com'
+wsBaseUrl: 'https://socket.paybutton.org'
 ```
 
 #### ** React **
 
 ```react
-wsBaseUrl = "https://mydomain.com"
+wsBaseUrl = "https://socket.paybutton.org"
 ```
 
 <!-- tabs:end -->
@@ -703,9 +703,9 @@ wsBaseUrl = "https://mydomain.com"
 
 ## apiBaseUrl
 
-> **The ‘apiBaseUrl’ parameter specifies the URL for the  API where info about transactions, prices and addresses should come
+> **The ‘apiBaseUrl’ parameter specifies the URL for the API where information about new transactions, prices, and addresses will come from.**
 
-?> This parameter is optional. Default value is ‘https://api.paybutton.org’. Possible values are any string defining an URL.
+?> This parameter is optional. Default value is ‘https://api.paybutton.org’. Possible values are any valid URL.
 
 **Example:**
 <!-- tabs:start -->
@@ -713,19 +713,19 @@ wsBaseUrl = "https://mydomain.com"
 #### ** HTML **
 
 ```html
-api-base-url="https://mydomain.com".
+api-base-url="https://api.paybutton.org".
 ```
 
 #### ** JavaScript **
 
 ```javascript
-apiBaseUrl: 'https://mydomain.com'
+apiBaseUrl: 'https://api.paybutton.org'
 ```
 
 #### ** React **
 
 ```react
-apiBaseUrl = "https://mydomain.com"
+apiBaseUrl = "https://api.paybutton.org"
 ```
 
 <!-- tabs:end -->
