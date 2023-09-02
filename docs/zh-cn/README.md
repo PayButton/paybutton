@@ -385,7 +385,7 @@ goalAmount = 10
 
 > **'can-edit' 参数指定是否提供一个输入框，以供用户能够改变付款金额。**
 
-?> 此参数是可选用的。默认值为false。有效值为true或false 。
+?> 此参数是可选用的。默认值为false。有效值为true或false。
 
 **例子:**
 <!-- tabs:start -->
@@ -559,7 +559,7 @@ onTransaction = transactionCallback
 
 > **参数"random-satoshis"用来定义是否将付款金额的最后几位随机化，因此当一个人进行付款时不太可能触发回调 onSuccess的同时另一个人正打开付款屏幕。**
 
-?> 此参数是可选用的。默认值为false。有效值为true或false 。
+?> 此参数是可选用的。默认值为false。有效值为true或false。
 
 **例子:**
 <!-- tabs:start -->
@@ -586,7 +586,7 @@ randomSatoshis = true
 
 > **'hide-toasts' 参数指定是否让应用程序完全控制在检测到付款时发生的情况。**
 
-?> 此参数是可选用的。默认值为false。有效值为true或false 。
+?> 此参数是可选用的。默认值为false。有效值为true或false。
 
 **例子:**
 <!-- tabs:start -->
@@ -617,7 +617,7 @@ disabled = true
 
 > **'disable-enforce-focus' 参数被传递给 Dialog material UI 组件。设置它为 false 可以帮助提高如屏幕阅读器等技术的可访问性，但可能会在运行 Material UI 的网站上引发错误。**
 
-?> 此参数是可选用的。默认值为true。有效值为true或false 。
+?> 此参数是可选用的。默认值为true。有效值为true或false。
 
 **例子:**
 <!-- tabs:start -->
@@ -646,7 +646,7 @@ disableEnforceFocus = false
 
 > **'disabled' 参数指定是否锁定按钮/小工具以防止其被使用。**
 
-?> 此参数是可选用的。默认值为false。有效值为true或false 。
+?> 此参数是可选用的。默认值为false。有效值为true或false。
 
 **例子:**
 <!-- tabs:start -->
@@ -667,6 +667,65 @@ disabled: true
 
 ```react
 disabled = true
+```
+
+<!-- tabs:end -->
+
+## wsBaseUrl
+
+> **‘wsBaseUrl’ 参数指定了用于 websocket 的 URL，新交易的信息将从这里获取。**
+
+?> 该参数是可选的。默认值是 ‘https://socket.paybutton.org’。可能的值是任何有效的 URL。
+
+**Example:**
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+ws-base-url="https://socket.paybutton.org".
+```
+
+#### ** JavaScript **
+
+```javascript
+wsBaseUrl: 'https://socket.paybutton.org'
+```
+
+#### ** React **
+
+```react
+wsBaseUrl = "https://socket.paybutton.org"
+```
+
+<!-- tabs:end -->
+
+
+## apiBaseUrl
+
+> **‘apiBaseUrl’ 参数指定了 API 的 URL，新交易、价格和地址的信息将从这里获取。**
+
+?> 该参数是可选的。默认值是 ‘https://api.paybutton.org’。可能的值是任何有效的 URL。
+
+**Example:**
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+api-base-url="https://api.paybutton.org".
+```
+
+#### ** JavaScript **
+
+```javascript
+apiBaseUrl: 'https://api.paybutton.org'
+```
+
+#### ** React **
+
+```react
+apiBaseUrl = "https://api.paybutton.org"
 ```
 
 <!-- tabs:end -->
