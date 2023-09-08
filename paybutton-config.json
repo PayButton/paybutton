@@ -1,5 +1,5 @@
 {
   "wsBaseURL": "https://socket.paybutton.org",
-  "apiBaseURL": "https://api.paybutton.org",
-  "apiPriceBaseURL": "https://api.paybutton.org"
+  "apiBaseURL": "https://paybutton.org",
+  "apiPriceBaseURL": "https://paybutton.org"
 }
