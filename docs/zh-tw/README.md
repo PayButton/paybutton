@@ -1,20 +1,20 @@
 # 什麼是PayButton?
 
-> PayButton可以通過在您的網站上添加捐款或購買的按鈕，來接收比特幣現金。<br />首先PayButton需要您先設置一個比特幣現金錢包，這樣才能開始進行收款。如果您還沒有錢包，[目前有很多方案供您選擇](https://bitcoincash.org/zh-tw/#wallets-section)。
+> PayButton可以通過在您的網站上添加捐款或購買的按鈕，來接收eCash。<br />首先PayButton需要您先設置一個eCash錢包，這樣才能開始進行收款。如果您還沒有錢包，[目前有很多方案供您選擇](https://e.cash/wallets)。
 
-<div class="paybutton" to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp" theme='{ "palette": { "primary": "#42b983", "secondary": "#ffffff", "tertiary": "#333333"} }'></div>
+<div class="paybutton" to="ecash:qrmm7ed0px8tydrlhgvu3putwpwzlfyr0uzfc0slxp" theme='{ "palette": { "primary": "#42b983", "secondary": "#ffffff", "tertiary": "#333333"} }'></div>
 
 >
 
 # 基礎用法
 
-只需將以下內容添加到您網站的HTML中，用您的比特幣現金錢包中的地址替換YOUR_ADDRESS_HERE:
+只需將以下內容添加到您網站的HTML中，用您的eCash錢包中的地址替換YOUR_ADDRESS_HERE:
 
-<div class="paybutton" to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp"></div>
+<div class="paybutton" to="ecash:qrmm7ed0px8tydrlhgvu3putwpwzlfyr0uzfc0slxp"></div>
 
 ```html
-<script src="https://unpkg.com/@paybutton/paybutton@^1.1/dist/paybutton.js"></script>
-<div class="paybutton" to="bch_address_here"></div>
+<script src="https://unpkg.com/@paybutton/paybutton/dist/paybutton.js"></script>
+<div class="paybutton" to="YOUR_ADDRESS"></div>
 ```
 
 # 進階用法
@@ -24,7 +24,7 @@
 <div id="advanced-usage-example"></div>
 
 ```html
-<script src="https://unpkg.com/@paybutton/paybutton@^1.1/dist/paybutton.js"></script>
+<script src="https://unpkg.com/@paybutton/paybutton/dist/paybutton.js"></script>
 
 <div id="my_button"></div>
 
@@ -38,13 +38,13 @@ function myTransactionFunction(txid, amount) {
 }
 
 var config = {
-  to: 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp',
+  to: 'ecash:qrmm7ed0px8tydrlhgvu3putwpwzlfyr0uzfc0slxp',
   amount: 4.5,
   goalAmount: 300000,
   canEdit: false,
   currency: 'AUD',
   text: 'Tip Us a Coffee!',
-  hoverText: 'One BCHinno',
+  hoverText: 'One cofee',
   theme: {
     palette: {
       primary: '#ee8b2b',
@@ -75,13 +75,13 @@ function myTransactionFunction(txid, amount) {
 
 // render JS button
 render( '#advanced-usage-example', {
-  to: 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp',
+  to: 'ecash:qrmm7ed0px8tydrlhgvu3putwpwzlfyr0uzfc0slxp',
   amount: 4.5,
   goalAmount: 300000,
   canEdit: false,
   currency: 'AUD',
   text: 'Tip Us a Coffee!',
-  hoverText: 'One BCHinno',
+  hoverText: 'One coffee',
   theme: {
     palette: {
       primary: '#ee8b2b',
@@ -102,7 +102,7 @@ render( '#react-usage-example', {
   hoverText: 'Fee: $12',
   currency: 'USD',
   amount: 12,
-  to: 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp',
+  to: 'ecash:qrmm7ed0px8tydrlhgvu3putwpwzlfyr0uzfc0slxp',
   theme: {
     palette: {
       primary: '#b94283',
@@ -135,7 +135,7 @@ function App() {
     console.log("Success!")
   }
 
-  const to = 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp'
+  const to = 'ecash:qrmm7ed0px8tydrlhgvu3putwpwzlfyr0uzfc0slxp'
   const amount = 12
   const currency = 'USD'
   const text = 'Join the Cause'
@@ -165,26 +165,26 @@ function App() {
 
 您還可以創建一個可視性的PayButton插件，不需要點擊按鈕即可打開:
 
-<div class="paybutton-widget" to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp" style="max-width:500px"></div>
+<div class="paybutton-widget" to="ecash:qrmm7ed0px8tydrlhgvu3putwpwzlfyr0uzfc0slxp" style="max-width:500px"></div>
 
 <!-- tabs:start -->
 
 #### ** HTML **
 
 ```html
-<script src="https://unpkg.com/@paybutton/paybutton@^1.1/dist/paybutton.js"></script>
-<div class="paybutton-widget" to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp"></div>
+<script src="https://unpkg.com/@paybutton/paybutton/dist/paybutton.js"></script>
+<div class="paybutton-widget" to="ecash:qrmm7ed0px8tydrlhgvu3putwpwzlfyr0uzfc0slxp"></div>
 ```
 
 #### ** JavaScript **
 
 ```javascript
-<script src="https://unpkg.com/@paybutton/paybutton@^1.1/dist/paybutton.js"></script>
+<script src="https://unpkg.com/@paybutton/paybutton/dist/paybutton.js"></script>
 
 <div id="my_button"></div>
 
 <script>
-PayButton.renderWidget(document.getElementById('my_button'), { to: 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp' });
+PayButton.renderWidget(document.getElementById('my_button'), { to: 'ecash:qrmm7ed0px8tydrlhgvu3putwpwzlfyr0uzfc0slxp' });
 </script>
 ```
 
@@ -195,7 +195,7 @@ import { Widget as PayButtonWidget } from '@paybutton/react'
 
 function App() {
   return <PayButtonWidget
-    to='bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp'
+    to='ecash:qrmm7ed0px8tydrlhgvu3putwpwzlfyr0uzfc0slxp'
   />
 }
 export default App;
@@ -211,7 +211,7 @@ export default App;
 
 > **參數"to"用來定義匯款去向。**
 
-!> 此參數是必需使用的。可用值是一切有效的比特幣現金地址。
+!> 此參數是必需使用的。可用值是一切有效的eCash地址。
 
 **例子:**
 <!-- tabs:start -->
@@ -219,19 +219,19 @@ export default App;
 #### ** HTML **
 
 ```html
-to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp"
+to="ecash:qrmm7ed0px8tydrlhgvu3putwpwzlfyr0uzfc0slxp"
 ```
 
 #### ** JavaScript **
 
 ```javascript
-to: 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp'
+to: 'ecash:qrmm7ed0px8tydrlhgvu3putwpwzlfyr0uzfc0slxp'
 ```
 
 #### ** React **
 
 ```react
-to = "bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp"
+to = "ecash:qrmm7ed0px8tydrlhgvu3putwpwzlfyr0uzfc0slxp"
 ```
 
 <!-- tabs:end -->
@@ -269,7 +269,7 @@ amount = 100
 
 > **參數"currency"用來定義幣種。將此參數與可選用的參數"currency"結合使用，可以指定以其他貨幣來顯示特定的金額。**
 
-?> 此參數是可選用的。替代貨幣為"BCH"。可用幣種如下：BCH、SAT、美元、加幣、歐元、英鎊、澳元。
+?> 此參數是可選用的。替代貨幣為"XEC"。可用幣種如下：XEC、BCH、美元、加幣、歐元、英鎊、澳元。
 
 **例子:**
 <!-- tabs:start -->
@@ -327,7 +327,7 @@ text = "Purchase"
 
 > **參數"hover-text"用來定義當滑鼠懸停留時所顯示的文字。**
 
-?> 此參數是可選用的。默認文字為"Click to send BCH"。可用內容為任何文字符號。
+?> 此參數是可選用的。默認文字為"Click to send XEC"。可用內容為任何文字符號。
 
 **例子:**
 <!-- tabs:start -->
@@ -704,4 +704,4 @@ PayButton是一個社區主導的開放源代碼促進會。此項目的成功�
 
 > 所有收到的PayButton捐款都直接用於資助PayButton的開發。
 
-<div class="paybutton-widget" to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp" style="max-width:500px"></div>
+<div class="paybutton-widget" to="ecash:qrmm7ed0px8tydrlhgvu3putwpwzlfyr0uzfc0slxp" style="max-width:500px"></div>
