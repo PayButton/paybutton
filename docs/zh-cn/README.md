@@ -705,7 +705,7 @@ wsBaseUrl = "https://socket.paybutton.org"
 
 > **‘apiBaseUrl’ 参数指定了 API 的 URL，新交易、价格和地址的信息将从这里获取。**
 
-?> 该参数是可选的。默认值是 ‘https://api.paybutton.org’。可能的值是任何有效的 URL。
+?> 该参数是可选的。默认值是 ‘https://paybutton.org’。可能的值是任何有效的 URL。
 
 **Example:**
 <!-- tabs:start -->
@@ -713,19 +713,19 @@ wsBaseUrl = "https://socket.paybutton.org"
 #### ** HTML **
 
 ```html
-api-base-url="https://api.paybutton.org".
+api-base-url="https://paybutton.org".
 ```
 
 #### ** JavaScript **
 
 ```javascript
-apiBaseUrl: 'https://api.paybutton.org'
+apiBaseUrl: 'https://paybutton.org'
 ```
 
 #### ** React **
 
 ```react
-apiBaseUrl = "https://api.paybutton.org"
+apiBaseUrl = "https://paybutton.org"
 ```
 
 <!-- tabs:end -->

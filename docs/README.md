@@ -705,7 +705,7 @@ wsBaseUrl = "https://socket.paybutton.org"
 
 > **The ‘apiBaseUrl’ parameter specifies the URL for the API where information about new transactions, prices, and addresses will come from.**
 
-?> This parameter is optional. Default value is ‘https://api.paybutton.org’. Possible values are any valid URL.
+?> This parameter is optional. Default value is ‘https://paybutton.org’. Possible values are any valid URL.
 
 **Example:**
 <!-- tabs:start -->
@@ -713,19 +713,19 @@ wsBaseUrl = "https://socket.paybutton.org"
 #### ** HTML **
 
 ```html
-api-base-url="https://api.paybutton.org".
+api-base-url="https://paybutton.org".
 ```
 
 #### ** JavaScript **
 
 ```javascript
-apiBaseUrl: 'https://api.paybutton.org'
+apiBaseUrl: 'https://paybutton.org'
 ```
 
 #### ** React **
 
 ```react
-apiBaseUrl = "https://api.paybutton.org"
+apiBaseUrl = "https://paybutton.org"
 ```
 
 <!-- tabs:end -->
