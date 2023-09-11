@@ -3,14 +3,6 @@ import _ from 'lodash';
 import { Socket } from 'socket.io-client'
 import config from '../../../paybutton-config.json'
 
-// export const getAddressDetails = async (
-//   address: string,
-// ): Promise<AddressDetails> => {
-//   const res = await fetch(
-//     `https://rest.bitcoin.com/v2/address/details/${address}`,
-//   );
-//   return res.json();
-// };
 export const getAddressDetails = async (
   address: string,
   rootUrl = config.apiBaseUrl,
