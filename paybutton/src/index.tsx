@@ -148,7 +148,7 @@ function findAndRender<T>(className: string, Component: React.ComponentType<any>
       }
 
       props.hideToasts = attributes.hideToasts === 'true';
-      props.randomSatoshis = attributes.randomSatoshis === 'true';
+      props.randomSatoshis = attributes.randomSatoshis === 'false' ? false : true;
 
       if (attributes.onSuccess) {
         const geval = window.eval;

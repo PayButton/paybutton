@@ -183,7 +183,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
 
     useEffect(() => {
       if (props.amount && currency) {
-        const obj = getCurrencyObject(props.amount, currency);
+        const obj = getCurrencyObject(props.amount, currency, randomSatoshis);
         setAmount(obj.float);
         setCurrencyObj(obj);
       }

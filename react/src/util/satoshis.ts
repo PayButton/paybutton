@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js';
 import { formatPrice, formatBCH, formatXEC, DECIMALS } from './format';
 import { currency } from './api-client';
+import { randomizeSatoshis } from './randomizeSats';
 
 export type currencyObject = {
   float: number;
@@ -11,25 +12,25 @@ export type currencyObject = {
 export const getCurrencyObject = (
   amount: number,
   currencyType: currency,
+  randomSatoshis: boolean
 ): currencyObject => {
   let string = '';
   let float = 0;
 
-  if (currencyType === 'BCH') {
-    const primaryUnit = new BigNumber(`${amount}`);
-
-    if (primaryUnit !== null && primaryUnit.c !== null) {
-      float = parseFloat(new BigNumber(primaryUnit).toFixed(DECIMALS.BCH));
-      string = new BigNumber(`${primaryUnit}`).toFixed(DECIMALS.BCH);
-      string = formatBCH(string);
+  if (currencyType === 'BCH' || currencyType === 'XEC') {
+    let newAmount = amount
+    if (randomSatoshis) {
+      newAmount = randomizeSatoshis(amount, currencyType)
     }
-  } else if (currencyType === 'XEC') {
-    const primaryUnit = new BigNumber(`${amount}`);
-
+    let primaryUnit = new BigNumber(`${newAmount}`);
     if (primaryUnit !== null && primaryUnit.c !== null) {
-      float = parseFloat(new BigNumber(primaryUnit).toFixed(DECIMALS.XEC));
-      string = new BigNumber(`${primaryUnit}`).toFixed(DECIMALS.XEC);
-      string = formatXEC(string);
+      float = parseFloat(new BigNumber(primaryUnit).toFixed(DECIMALS[currencyType]));
+      string = new BigNumber(`${primaryUnit}`).toFixed(DECIMALS[currencyType]);
+      if (currencyType === 'BCH') {
+        string = formatBCH(string);
+      } else if (currencyType === 'XEC') {
+        string = formatXEC(string);
+      }
     }
   } else {
     float = amount;

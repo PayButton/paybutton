@@ -25,7 +25,6 @@ import BarChart from '../BarChart/BarChart';
 
 import { getCurrencyObject, currencyObject } from '../../util/satoshis';
 import { currency, getAddressBalance, getAddressDetails, isFiat, setListener, Transaction, getCashtabProviderStatus, cryptoCurrency } from '../../util/api-client';
-import { randomizeSatoshis } from '../../util/randomizeSats';
 import PencilIcon from '../../assets/edit-pencil';
 import io from 'socket.io-client'
 
@@ -157,10 +156,6 @@ export const Widget: React.FC<WidgetProps> = props => {
   const [userEditedAmount, setUserEditedAmount] = useState<currencyObject>();
   const [text, setText] = useState('Send any amount of BCH');
   const [widgetButtonText, setWidgetButtonText] = useState('Send Payment');
-  const transformAmount = useMemo(
-    () => (randomSatoshis ? randomizeSatoshis : (x: number): number => x),
-    [randomSatoshis],
-  );
 
   const blurCSS = disabled ? { filter: 'blur(5px)' } : {};
 
@@ -247,17 +242,17 @@ export const Widget: React.FC<WidgetProps> = props => {
       }
     }
 
-    if (userEditedAmount !== undefined && amount) {
-      const obj = getCurrencyObject(transformAmount(+amount), currency);
+    if (userEditedAmount !== undefined && amount && addressType) {
+      const obj = getCurrencyObject(+amount, currency, randomSatoshis);
       setCurrencyObj(obj);
-    } else if (amount) {
+    } else if (amount && addressType) {
       cleanAmount = +amount;
       if (currencyObj === undefined) {
-        const obj = getCurrencyObject(transformAmount(cleanAmount), currency);
+        const obj = getCurrencyObject(cleanAmount, currency, randomSatoshis);
         setCurrencyObj(obj);
       }
     }
-  }, [amount, currency, userEditedAmount]);
+  }, [amount, currency, userEditedAmount, addressType]);
 
   useEffect(() => {
     if (to === undefined) {
@@ -282,7 +277,7 @@ export const Widget: React.FC<WidgetProps> = props => {
 
     if (currencyObj && hasPrice) {
       const convertedObj = price
-        ? getCurrencyObject(currencyObj.float / price, addressType)
+        ? getCurrencyObject(currencyObj.float / price, addressType, randomSatoshis)
         : null;
 
       if (convertedObj) {
@@ -388,7 +383,7 @@ export const Widget: React.FC<WidgetProps> = props => {
       amount = '0';
     }
 
-    const userEdited = getCurrencyObject(+amount, currency);
+    const userEdited = getCurrencyObject(+amount, currency, randomSatoshis);
 
     setUserEditedAmount(userEdited);
     setAmount(amount);
@@ -396,9 +391,9 @@ export const Widget: React.FC<WidgetProps> = props => {
 
   useEffect(() => {
     if (totalReceived !== undefined) {
-      const progress = getCurrencyObject(totalReceived, currency);
+      const progress = getCurrencyObject(totalReceived, currency, false);
 
-      const goal = getCurrencyObject(cleanGoalAmount, currency);
+      const goal = getCurrencyObject(cleanGoalAmount, currency, false);
       if (!isFiat(currency)) {
         if (goal !== undefined) {
           setGoalPercent((100 * progress.float) / goal.float);
