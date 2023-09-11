@@ -2,7 +2,7 @@
 
 ![logo](_media/pbLogoNoBorder.png)
 
-> The easiest way to accept Bitcoin Cash online.
+> The easiest way to accept eCash online.
 
 [GitHub](https://github.com/paybutton/paybutton/)
 [Get Started](#what-is-paybutton)

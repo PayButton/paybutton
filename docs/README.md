@@ -1,16 +1,16 @@
 # What Is PayButton?
 
-> PayButton makes it easy to accept Bitcoin Cash by adding a donation or buy button to your website.<br />To get started, you'll have to set up a Bitcoin Cash wallet so you can begin receiving money. If you don’t have one yet, there are [plenty to choose from](https://bitcoincash.org/#wallets-section).
+> PayButton makes it easy to accept eCash by adding a donation or buy button to your website.<br />To get started, you'll have to set up a eCash wallet so you can begin receiving money. If you don’t have one yet, there are [plenty to choose from](https://e.cash/wallets).
 
-<div class="paybutton" to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp" theme='{ "palette": { "primary": "#42b983", "secondary": "#ffffff", "tertiary": "#333333"} }'></div>
+<div class="paybutton" to="ecash:qrmm7ed0px8tydrlhgvu3putwpwzlfyr0uzfc0slxp" theme='{ "palette": { "primary": "#42b983", "secondary": "#ffffff", "tertiary": "#333333"} }'></div>
 
 >
 
 # Basic Usage
 
-Simply add the following to your website’s HTML, replacing `YOUR_ADDRESS_HERE` with an address from your Bitcoin Cash wallet:
+Simply add the following to your website’s HTML, replacing `YOUR_ADDRESS_HERE` with an address from your eCash wallet:
 
-<div class="paybutton" to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp"></div>
+<div class="paybutton" to="ecash:qrmm7ed0px8tydrlhgvu3putwpwzlfyr0uzfc0slxp"></div>
 
 ```html
 <script src="https://unpkg.com/@paybutton/paybutton/dist/paybutton.js"></script>
@@ -38,13 +38,13 @@ function myTransactionFunction(txid, amount) {
 }
 
 var config = {
-  to: 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp',
+  to: 'ecash:qrmm7ed0px8tydrlhgvu3putwpwzlfyr0uzfc0slxp',
   amount: 4.5,
   goalAmount: 300000,
   canEdit: false,
   currency: 'AUD',
   text: 'Tip Us a Coffee!',
-  hoverText: 'One BCHinno',
+  hoverText: 'One coffee',
   theme: {
     palette: {
       primary: '#ee8b2b',
@@ -75,13 +75,13 @@ function myTransactionFunction(txid, amount) {
 
 // render JS button
 render( '#advanced-usage-example', {
-  to: 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp',
+  to: 'ecash:qrmm7ed0px8tydrlhgvu3putwpwzlfyr0uzfc0slxp',
   amount: 4.5,
   goalAmount: 300000,
   canEdit: false,
   currency: 'AUD',
   text: 'Tip Us a Coffee!',
-  hoverText: 'One BCHinno',
+  hoverText: 'One coffee',
   theme: {
     palette: {
       primary: '#ee8b2b',
@@ -102,7 +102,7 @@ render( '#react-usage-example', {
   hoverText: 'Fee: $12',
   currency: 'USD',
   amount: 12,
-  to: 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp',
+  to: 'ecash:qrmm7ed0px8tydrlhgvu3putwpwzlfyr0uzfc0slxp',
   theme: {
     palette: {
       primary: '#b94283',
@@ -135,7 +135,7 @@ function App() {
     console.log("Success!")
   }
 
-  const to = 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp'
+  const to = 'ecash:qrmm7ed0px8tydrlhgvu3putwpwzlfyr0uzfc0slxp'
   const amount = 12
   const currency = 'USD'
   const text = 'Join the Cause'
@@ -165,7 +165,7 @@ function App() {
 
 You can also create an always-visible PayButton Widget that doesn't require clicking a button to open:
 
-<div class="paybutton-widget" to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp" style="max-width:500px"></div>
+<div class="paybutton-widget" to="ecash:qrmm7ed0px8tydrlhgvu3putwpwzlfyr0uzfc0slxp" style="max-width:500px"></div>
 
 <!-- tabs:start -->
 
@@ -173,7 +173,7 @@ You can also create an always-visible PayButton Widget that doesn't require clic
 
 ```html
 <script src="https://unpkg.com/@paybutton/paybutton/dist/paybutton.js"></script>
-<div class="paybutton-widget" to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp"></div>
+<div class="paybutton-widget" to="ecash:qrmm7ed0px8tydrlhgvu3putwpwzlfyr0uzfc0slxp"></div>
 ```
 
 #### ** JavaScript **
@@ -184,7 +184,7 @@ You can also create an always-visible PayButton Widget that doesn't require clic
 <div id="my_button"></div>
 
 <script>
-PayButton.renderWidget(document.getElementById('my_button'), { to: 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp' });
+PayButton.renderWidget(document.getElementById('my_button'), { to: 'ecash:qrmm7ed0px8tydrlhgvu3putwpwzlfyr0uzfc0slxp' });
 </script>
 ```
 
@@ -195,7 +195,7 @@ import { Widget as PayButtonWidget } from '@paybutton/react'
 
 function App() {
   return <PayButtonWidget
-    to='bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp'
+    to='ecash:qrmm7ed0px8tydrlhgvu3putwpwzlfyr0uzfc0slxp'
   />
 }
 export default App;
@@ -211,7 +211,7 @@ Customize your PayButton with the following available options:
 
 > **The ‘to’ parameter specifies where the money will be sent to.**
 
-!> This parameter is required. Possible values are any valid Bitcoin Cash address.
+!> This parameter is required. Possible values are any valid eCash address.
 
 **Example:**
 <!-- tabs:start -->
@@ -219,19 +219,19 @@ Customize your PayButton with the following available options:
 #### ** HTML **
 
 ```html
-to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp"
+to="ecash:qrmm7ed0px8tydrlhgvu3putwpwzlfyr0uzfc0slxp"
 ```
 
 #### ** JavaScript **
 
 ```javascript
-to: 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp'
+to: 'ecash:qrmm7ed0px8tydrlhgvu3putwpwzlfyr0uzfc0slxp'
 ```
 
 #### ** React **
 
 ```react
-to = "bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp"
+to = "ecash:qrmm7ed0px8tydrlhgvu3putwpwzlfyr0uzfc0slxp"
 ```
 
 <!-- tabs:end -->
@@ -269,7 +269,7 @@ amount = 100
 
 > **The ‘currency’ parameter specifies what currency the amount will be denominated in. Use this in conjunction with the optional ‘amount’ paramter to specify an specific amount in a different currency.**
 
-?> This parameter is optional. Default value is ‘BCH’. Possible values are ‘BCH’, ‘SAT’, ‘USD’, ‘CAD’, ‘EUR’, ‘GBP’, and ‘AUD’.
+?> This parameter is optional. Default value is ‘XEC’. Possible values are ‘XEC’, ‘BCH’, ‘USD’, ‘CAD’, ‘EUR’, ‘GBP’, and ‘AUD’.
 
 **Example:**
 <!-- tabs:start -->
@@ -327,7 +327,7 @@ text = "Purchase"
 
 > **The ‘hover-text’ parameter specifies the text displayed on the button on hover.**
 
-?> This parameter is optional. Default value is ‘Click to send BCH’. Possible values are any string.
+?> This parameter is optional. Default value is ‘Click to send XEC’. Possible values are any string.
 
 **Example:**
 <!-- tabs:start -->
@@ -335,19 +335,19 @@ text = "Purchase"
 #### ** HTML **
 
 ```html
-hover-text="Send Bitcoin Cash"
+hover-text="Send eCash"
 ```
 
 #### ** JavaScript **
 
 ```javascript
-hoverText: 'Send Bitcoin Cash'
+hoverText: 'Send eCash'
 ```
 
 #### ** React **
 
 ```react
-hoverText = "Send Bitcoin Cash"
+hoverText = "Send eCash"
 ```
 
 <!-- tabs:end -->
@@ -559,7 +559,7 @@ onTransaction = transactionCallback
 
 > **The ‘random-satoshis’ parameter specifies whether to randomize the last few digits of the payment amount so that it’s unlikely that a payment made by one person will trigger the onSuccess callback of another who has the payment screen open at the same time.**
 
-?> This parameter is optional. Default value is false. Possible values are true or false.
+?> This parameter is optional. Default value is true. Possible values are true or false.
 
 **Example:**
 <!-- tabs:start -->
@@ -704,4 +704,4 @@ PayButton is a community-driven open-source initiative. Contributions from the c
 
 > All PayButton donations received are used to directly fund PayButton development.
 
-<div class="paybutton-widget" to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp" style="max-width:500px"></div>
+<div class="paybutton-widget" to="ecash:qrmm7ed0px8tydrlhgvu3putwpwzlfyr0uzfc0slxp" style="max-width:500px"></div>
