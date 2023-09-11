@@ -6,7 +6,7 @@ export const randomizeSatoshis = (amount: number): number => {
 
   // 0-99: 10 second window, resets every 16.5 minutes
   const window =
-    Math.floor((date.getUTCMinutes() * 60 + date.getUTCSeconds()) / 10) % 90;
+    Math.floor((date.getUTCMinutes() * 60 + date.getUTCSeconds()) / 10) % 100;
   // 0-99: random
   const random = Math.floor(Math.random() * 100);
 
