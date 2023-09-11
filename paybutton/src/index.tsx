@@ -79,7 +79,9 @@ const allowedProps = [
   'to',
   'disabled',
   'goalAmount',
-  'editable'
+  'editable',
+  'wsBaseUrl',
+  'apiBaseUrl'
 ];
 
 const requiredProps = [

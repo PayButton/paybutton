@@ -23,6 +23,8 @@ export interface PayButtonProps extends ButtonProps {
   editable?: boolean;
   onSuccess?: (txid: string, amount: BigNumber) => void;
   onTransaction?: (txid: string, amount: BigNumber) => void;
+  wsBaseUrl?: string;
+  apiBaseUrl?: string;
 }
 
 export const PayButton = (props: PayButtonProps): React.ReactElement => {
@@ -45,6 +47,8 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
     goalAmount,
     disableEnforceFocus,
     editable,
+    wsBaseUrl,
+    apiBaseUrl
   } = Object.assign({}, PayButton.defaultProps, props);
 
   const [hoverText, setHoverText] = useState(hoverTextDefault);
@@ -112,6 +116,8 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
         goalAmount={goalAmount}
         dialogOpen={dialogOpen}
         onClose={handleCloseDialog}
+        wsBaseUrl={wsBaseUrl}
+        apiBaseUrl={apiBaseUrl}
       />
       {errorMsg && (
         <p

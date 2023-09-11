@@ -51,6 +51,8 @@ export interface WidgetProps {
   editable?: boolean;
   setNewTxs: Function; // function parent WidgetContainer passes down to be updated
   newTxs?: Transaction[]; // function parent WidgetContainer passes down to be updated
+  wsBaseUrl?: string;
+  apiBaseUrl?: string;
 }
 
 interface StyleProps {
@@ -129,6 +131,8 @@ export const Widget: React.FC<WidgetProps> = props => {
     editable,
     setNewTxs,
     newTxs,
+    apiBaseUrl,
+    wsBaseUrl
   } = Object.assign({}, Widget.defaultProps, props);
 
   const theme = useTheme(props.theme, isValidXecAddress(to));
@@ -193,8 +197,8 @@ export const Widget: React.FC<WidgetProps> = props => {
 
   useEffect(() => {
     (async (): Promise<void> => {
-      void await getAddressDetails(to);
-      const socket = io(`${config.wsBaseURL}/addresses`, {
+      void await getAddressDetails(to, apiBaseUrl);
+      const socket = io(`${wsBaseUrl ?? config.wsBaseUrl}/addresses`, {
         query: { addresses: [to] }
       })
       setListener(socket, setNewTxs)
@@ -203,7 +207,7 @@ export const Widget: React.FC<WidgetProps> = props => {
 
   useEffect(() => {
     (async (): Promise<void> => {
-      const balance = await getAddressBalance(to);
+      const balance = await getAddressBalance(to, apiBaseUrl);
       setTotalReceived(balance);
     })();
   }, [newTxs]);

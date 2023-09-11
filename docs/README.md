@@ -671,6 +671,66 @@ disabled = true
 
 <!-- tabs:end -->
 
+## wsBaseUrl
+
+> **The ‘wsBaseUrl’ parameter specifies the URL for the websocket where information about new transactions will come from.**
+
+?> This parameter is optional. Default value is ‘https://socket.paybutton.org’. Possible values are any valid URL.
+
+**Example:**
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+ws-base-url="https://socket.paybutton.org".
+```
+
+#### ** JavaScript **
+
+```javascript
+wsBaseUrl: 'https://socket.paybutton.org'
+```
+
+#### ** React **
+
+```react
+wsBaseUrl = "https://socket.paybutton.org"
+```
+
+<!-- tabs:end -->
+
+
+## apiBaseUrl
+
+> **The ‘apiBaseUrl’ parameter specifies the URL for the API where information about new transactions, prices, and addresses will come from.**
+
+?> This parameter is optional. Default value is ‘https://paybutton.org’. Possible values are any valid URL.
+
+**Example:**
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+api-base-url="https://paybutton.org".
+```
+
+#### ** JavaScript **
+
+```javascript
+apiBaseUrl: 'https://paybutton.org'
+```
+
+#### ** React **
+
+```react
+apiBaseUrl = "https://paybutton.org"
+```
+
+<!-- tabs:end -->
+
+
 # Contribute
 
 PayButton is a community-driven open-source initiative. Contributions from the community are _crucial_ to the success of the project.
