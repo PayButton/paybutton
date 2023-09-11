@@ -11,6 +11,7 @@ import {
 import copy from 'copy-to-clipboard';
 import QRCode, { BaseQRCodeProps } from 'qrcode.react';
 import React, { useEffect, useMemo, useState } from 'react';
+import config from '../../../../paybutton-config.json'
 
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
 import {
@@ -23,7 +24,7 @@ import { Button, animation } from '../Button/Button';
 import BarChart from '../BarChart/BarChart';
 
 import { getCurrencyObject, currencyObject } from '../../util/satoshis';
-import { currency, getAddressBalance, getAddressDetails, isFiat, setListener, Transaction, getCashtabProviderStatus, cryptoCurrency, DEFAULT_WS_URL } from '../../util/api-client';
+import { currency, getAddressBalance, getAddressDetails, isFiat, setListener, Transaction, getCashtabProviderStatus, cryptoCurrency } from '../../util/api-client';
 import { randomizeSatoshis } from '../../util/randomizeSats';
 import PencilIcon from '../../assets/edit-pencil';
 import io from 'socket.io-client'
@@ -197,7 +198,7 @@ export const Widget: React.FC<WidgetProps> = props => {
   useEffect(() => {
     (async (): Promise<void> => {
       void await getAddressDetails(to, apiBaseUrl);
-      const socket = io(`${wsBaseUrl ?? DEFAULT_WS_URL}/addresses`, {
+      const socket = io(`${wsBaseUrl ?? config.wsBaseUrl}/addresses`, {
         query: { addresses: [to] }
       })
       setListener(socket, setNewTxs)
