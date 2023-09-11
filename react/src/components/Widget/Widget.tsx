@@ -154,7 +154,7 @@ export const Widget: React.FC<WidgetProps> = props => {
   const [text, setText] = useState('Send any amount of BCH');
   const [widgetButtonText, setWidgetButtonText] = useState('Send Payment');
   const transformAmount = useMemo(
-    () => (randomSatoshis ? randomizeSatoshis : (x: number): number => x),
+    () => (randomSatoshis ? randomizeSatoshis : (x: number, _: string): number => x),
     [randomSatoshis],
   );
 
@@ -243,17 +243,17 @@ export const Widget: React.FC<WidgetProps> = props => {
       }
     }
 
-    if (userEditedAmount !== undefined && amount) {
-      const obj = getCurrencyObject(transformAmount(+amount), currency);
+    if (userEditedAmount !== undefined && amount && addressType) {
+      const obj = getCurrencyObject(transformAmount(+amount, addressType), currency);
       setCurrencyObj(obj);
-    } else if (amount) {
+    } else if (amount && addressType) {
       cleanAmount = +amount;
       if (currencyObj === undefined) {
-        const obj = getCurrencyObject(transformAmount(cleanAmount), currency);
+        const obj = getCurrencyObject(transformAmount(cleanAmount, addressType), currency);
         setCurrencyObj(obj);
       }
     }
-  }, [amount, currency, userEditedAmount]);
+  }, [amount, currency, userEditedAmount, addressType]);
 
   useEffect(() => {
     if (to === undefined) {
