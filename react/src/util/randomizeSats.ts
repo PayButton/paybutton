@@ -26,7 +26,7 @@ export const randomizeSatoshis = (amount: number, addressType: cryptoCurrency): 
       randomToAdd = random * 1 + // Two random digits
         window * 1e-2; // Two digits for the time window
       randomizedAmount =
-        Math.max(0, +(amount/100).toFixed(0)) + // zero out the 4 least-significant digits
+        Math.max(0, +(Math.floor(amount/100) * 100)) + // zero out the 4 least-significant digits
         randomToAdd
       ret = +randomizedAmount.toFixed(2);
       break
