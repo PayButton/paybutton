@@ -62,24 +62,24 @@ interface StyleProps {
 
 const useStyles = makeStyles({
   root: {
-    minWidth: 240,
-    background: '#f5f5f7',
+    minWidth: '240px !important',
+    background: '#f5f5f7 !important',
   },
   qrCode: ({ success, loading, theme }: StyleProps) => ({
-    background: '#fff',
-    border: '1px solid #eee',
-    borderRadius: 4,
-    outline: 'none',
-    lineHeight: 0,
-    maxWidth: '28vh',
-    maxHeight: '28vh',
+    background: '#fff !important',
+    border: '1px solid #eee !important',
+    borderRadius: '4px !important',
+    outline: 'none !important',
+    lineHeight: '0 !important',
+    maxWidth: '28vh !important',
+    maxHeight: '28vh !important',
     position: 'relative',
-    padding: '1rem',
-    cursor: 'pointer',
+    padding: '1rem !important',
+    cursor: 'pointer !important',
     userSelect: 'none',
     '&:active': {
-      borderWidth: 2,
-      margin: -1,
+      borderWidth: '2px !important',
+      margin: '-1px !important',
     },
     '& path': {
       opacity: loading ? 0 : success ? 0.35 : 1,
@@ -90,27 +90,27 @@ const useStyles = makeStyles({
     },
   }),
   copyTextContainer: ({ loading }: StyleProps) => ({
-    display: loading ? 'none' : 'block',
-    background: '#ffffffcc',
-    padding: '0 0.15rem 0.15rem 0',
+    display: loading ? 'none !important' : 'block !important',
+    background: '#ffffffcc !important',
+    padding: '0 0.15rem 0.15rem 0 !important',
   }),
   copyText: ({ theme }: StyleProps) => ({
-    lineHeight: '1.2em',
-    fontSize: '0.7em',
-    color: theme.palette.tertiary,
+    lineHeight: '1.2em !important',
+    fontSize: '0.7em !important',
+    color: `${theme.palette.tertiary} !important`,
     textShadow:
-      '#fff -2px 0 1px, #fff 0 -2px 1px, #fff 0 2px 1px, #fff 2px 0 1px',
+      '#fff -2px 0 1px, #fff 0 -2px 1px, #fff 0 2px 1px, #fff 2px 0 1px !important',
   }),
   text: ({ theme }: StyleProps) => ({
-    fontSize: '0.9rem',
-    color: theme.palette.tertiary,
+    fontSize: '0.9rem !important',
+    color: `${theme.palette.tertiary} !important`,
   }),
   spinner: ({ theme }: StyleProps) => ({
-    color: theme.palette.primary,
+    color: `${theme.palette.primary} !important`,
   }),
   footer: ({ theme }: StyleProps) => ({
-    fontSize: '0.6rem',
-    color: theme.palette.tertiary,
+    fontSize: '0.6rem !important',
+    color: `${theme.palette.tertiary} !important`,
   }),
 });
 

@@ -22,51 +22,51 @@ interface StyleProps {
 
 const useStyles = makeStyles({
   container: {
-    fontSize: '0.8rem',
+    fontSize: '0.8rem !important',
   },
   button: ({ theme, ...props }: StyleProps): CreateCSSProperties => ({
-    background: theme.palette.secondary,
-    transition: '0.6s',
+    background: `${theme.palette.secondary} !important`,
+    transition: '0.6s !important',
     ...(props.animation === 'slide'
       ? {
-          background: `linear-gradient(45deg, ${theme.palette.primary} 50%, ${theme.palette.secondary} 50%) 100% center / 300%`,
-          backgroundSize: '300%',
-          backgroundPosition: '100%',
-          transition: 'background-position 0.8s, color 0.15s',
+          background: `linear-gradient(45deg, ${theme.palette.primary} 50%, ${theme.palette.secondary} 50%) 100% center / 300% !important`,
+          backgroundSize: '300% !important',
+          backgroundPosition: '100% !important',
+          transition: 'background-position 0.8s, color 0.15s !important',
         }
       : {}),
-    color: theme.palette.primary,
-    minWidth: '14em',
-    padding: '0.618em 1.618em',
-    margin: 'auto',
-    boxShadow: '3px 3px 3px rgba(0, 0, 0, 0.08)',
-    border: `2px solid ${theme.palette.primary}`,
-    borderRadius: 10,
-    fontSize: '1em',
+    color: `${theme.palette.primary} !important`,
+    minWidth: '14em !important',
+    padding: '0.618em 1.618em !important',
+    margin: 'auto !important',
+    boxShadow: '3px 3px 3px rgba(0, 0, 0, 0.08) !important',
+    border: `2px solid ${theme.palette.primary} !important`,
+    borderRadius: '10px !important',
+    fontSize: '1em !important',
     textTransform: 'none',
     '&:hover': {
       ...(props.animation === 'slide'
         ? {
-            backgroundPosition: 0,
-            color: theme.palette.secondary,
+            backgroundPosition: '0 !important',
+            color: `${theme.palette.secondary} !important`,
           }
         : {}),
       ...(props.animation === 'invert'
         ? {
-            background: theme.palette.primary,
-            color: theme.palette.secondary,
+            background: `${theme.palette.primary} !important`,
+            color: `${theme.palette.secondary} !important`,
           }
         : {}),
       ...(props.animation === 'none'
         ? {
-            background: theme.palette.secondary,
-            color: theme.palette.primary,
+            background: `${theme.palette.secondary} !important`,
+            color: `${theme.palette.primary} !important`,
           }
         : {}),
     },
     '& .MuiTouchRipple-root': {
       margin: -2,
-      color: '#00000044',
+      color: '#00000044 !important',
     },
   }),
 });
