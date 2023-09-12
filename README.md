@@ -1,5 +1,5 @@
 # PayButton
-The easiest way to accept Bitcoin Cash online.
+The easiest way to accept eCash online.
 
 https://paybutton.org
 
