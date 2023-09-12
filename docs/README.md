@@ -42,7 +42,7 @@ var config = {
   amount: 4.5,
   goalAmount: 300000,
   canEdit: false,
-  currency: 'AUD',
+  currency: 'USD',
   text: 'Tip Us a Coffee!',
   hoverText: 'One coffee',
   theme: {
@@ -79,7 +79,7 @@ render( '#advanced-usage-example', {
   amount: 4.5,
   goalAmount: 300000,
   canEdit: false,
-  currency: 'AUD',
+  currency: 'USD',
   text: 'Tip Us a Coffee!',
   hoverText: 'One coffee',
   theme: {
@@ -269,7 +269,7 @@ amount = 100
 
 > **The ‘currency’ parameter specifies what currency the amount will be denominated in. Use this in conjunction with the optional ‘amount’ paramter to specify an specific amount in a different currency.**
 
-?> This parameter is optional. Default value is ‘XEC’. Possible values are ‘XEC’, ‘BCH’, ‘USD’, ‘CAD’, ‘EUR’, ‘GBP’, and ‘AUD’.
+?> This parameter is optional. Default value is ‘XEC’. Possible values are ‘XEC’, ‘BCH’, ‘USD’ and ‘CAD’.
 
 **Example:**
 <!-- tabs:start -->

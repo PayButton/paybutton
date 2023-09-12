@@ -42,7 +42,7 @@ var config = {
   amount: 4.5,
   goalAmount: 300000,
   canEdit: false,
-  currency: 'AUD',
+  currency: 'USD',
   text: 'Tip Us a Coffee!',
   hoverText: 'One cofee',
   theme: {
@@ -79,7 +79,7 @@ render( '#advanced-usage-example', {
   amount: 4.5,
   goalAmount: 300000,
   canEdit: false,
-  currency: 'AUD',
+  currency: 'USD',
   text: 'Tip Us a Coffee!',
   hoverText: 'One coffee',
   theme: {
@@ -269,7 +269,7 @@ amount = 100
 
 > **參數"currency"用來定義幣種。將此參數與可選用的參數"currency"結合使用，可以指定以其他貨幣來顯示特定的金額。**
 
-?> 此參數是可選用的。替代貨幣為"XEC"。可用幣種如下：XEC、BCH、美元、加幣、歐元、英鎊、澳元。
+?> 此參數是可選用的。替代貨幣為"XEC"。可用幣種如下：XEC、BCH、美元、加幣。
 
 **例子:**
 <!-- tabs:start -->
