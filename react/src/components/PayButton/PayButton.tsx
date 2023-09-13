@@ -37,7 +37,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
     amount,
     currency,
     text,
-    hoverText: hoverTextDefault,
+    hoverText,
     successText,
     animation,
     randomSatoshis,
@@ -50,8 +50,6 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
     wsBaseUrl,
     apiBaseUrl
   } = Object.assign({}, PayButton.defaultProps, props);
-
-  const [hoverText, setHoverText] = useState(hoverTextDefault);
 
   const handleButtonClick = (): void => setDialogOpen(true);
   const handleCloseDialog = (): void => setDialogOpen(false);
@@ -73,14 +71,12 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
 
   useEffect(() => {
     if (!to) {
-      setHoverText(hoverTextDefault);
       setErrorMsg('Enter an address');
     } else if (isValidCashAddress(to)) {
       setErrorMsg('');
     } else if (isValidXecAddress(to)) {
       setErrorMsg('');
     } else {
-      setHoverText(hoverTextDefault);
       setErrorMsg('Invalid Recipient');
     }
   }, [to]);
