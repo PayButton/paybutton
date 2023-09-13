@@ -33,17 +33,21 @@ function init() {
 
       const javascriptDivExists = document.getElementById(paybuttonDivID);
       const paybuttonExists: boolean = document.getElementsByClassName('paybutton').length > 0
+      const widgetExists: boolean = document.getElementsByClassName('paybutton-widget').length > 0
+      const dialogbuttonExists: boolean = document.getElementsByClassName('dialogbutton').length > 0
 
       if (createdInJS && javascriptDivExists === null) {
         console.error(`The Paybutton div#${paybuttonDivID} is either misspelled or missing.`)
       } 
       
       if(paybuttonExists) {
-        const widgetExists: boolean = document.getElementsByClassName('paybutton-widget').length > 0
-        const dialogbuttonExists: boolean = document.getElementsByClassName('dialogbutton').length > 0
+        renderButtons(paybuttonExists);
+      }
+      if(widgetExists) {
+        renderWidgets(widgetExists);
+      }
+      if(dialogbuttonExists) {
         renderDialogButton(dialogbuttonExists)
-        renderButtons(widgetExists, paybuttonExists);
-        renderWidgets(widgetExists, paybuttonExists);
       }
     }
 
@@ -105,17 +109,17 @@ export function openDialog(props: PaymentDialogProps): void {
   render(<PaymentDialog container={container} onClose={() => container.remove()} {...props} />, container)
 }
 
-export function renderButtons(widgetExists: boolean, paybuttonExists: boolean): void {
+export function renderButtons(paybuttonExists: boolean): void {
 
-  if (!widgetExists && !paybuttonExists) {
+  if (!paybuttonExists) {
     console.error('The "paybutton" class is either misspelled or missing.')
   } else {
     findAndRender('paybutton', PayButton, allowedProps, requiredProps);
   }
 }
 
-export function renderWidgets(widgetExists: boolean, paybuttonExists: boolean): void {
-  if (!widgetExists && !paybuttonExists) {
+export function renderWidgets(widgetExists: boolean): void {
+  if (!widgetExists) {
     console.error('The "paybutton-widget" class is either misspelled or missing.')
   } else {
     findAndRender('paybutton-widget', Widget, allowedProps, requiredProps);
