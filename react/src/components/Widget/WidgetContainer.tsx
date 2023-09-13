@@ -37,6 +37,7 @@ export interface WidgetContainerProps
   editable: boolean;
   wsBaseUrl?: string;
   apiBaseUrl?: string;
+  successText?: string;
 }
 
 const snackbarOptions: OptionsObject = {
@@ -85,6 +86,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
       editable,
       wsBaseUrl,
       apiBaseUrl,
+      successText,
       ...widgetProps
     } = props;
 
@@ -145,7 +147,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
         if (!hideToasts)
           // TODO: This assumes only bch
           enqueueSnackbar(
-            `Received ${receivedAmount} ${currencyTicker}`,
+            `${successText} | Received ${receivedAmount} ${currencyTicker}`,
             snackbarOptions,
           );
 
@@ -227,6 +229,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
           newTxs={newTxs}
           wsBaseUrl={wsBaseUrl}
           apiBaseUrl={apiBaseUrl}
+          successText={successText}
         />
       </React.Fragment>
     );
