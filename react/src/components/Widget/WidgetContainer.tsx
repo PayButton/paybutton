@@ -219,6 +219,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
           currency={currency}
           animation={animation}
           currencyObject={currencyObj}
+          setCurrencyObject={setCurrencyObj}
           loading={loading}
           randomSatoshis={randomSatoshis}
           price={price}
