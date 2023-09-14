@@ -151,11 +151,11 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
             snackbarOptions,
           );
 
-        onTransaction?.(transaction.id, receivedAmount);
-
         if (amount && receivedAmount.isEqualTo(new BigNumber(amount))) {
           setSuccess(true);
           onSuccess?.(transaction.id, receivedAmount);
+        } else {
+          onTransaction?.(transaction.id, receivedAmount);
         }
         setNewTxs([])
       },
