@@ -310,7 +310,7 @@ export const Widget: React.FC<WidgetProps> = props => {
   const handleButtonClick = () => {
     if (addressType === 'XEC'){
       const hasExtension = getCashtabProviderStatus()
-      const thisAmount = convertedCurrencyObj ? convertedCurrencyObj.float : amount
+      const thisAmount = (convertedCurrencyObj ? convertedCurrencyObj.float : currencyObj.float)
       if (!hasExtension) {
         window.location.href = url;
         const isMobile = window.matchMedia("(pointer:coarse)").matches;
