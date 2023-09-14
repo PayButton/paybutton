@@ -296,7 +296,7 @@ export const Widget: React.FC<WidgetProps> = props => {
       if (!isFiat(currency) && currencyObj && notZeroValue) {
         const bchType: string = currencyObj.currency;
         setText(`Send ${currencyObj.string} ${bchType}`);
-        query.push(`amount=${currencyObj.string}`);
+        query.push(`amount=${currencyObj.float}`);
         url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
         setUrl(url);
       } else {
