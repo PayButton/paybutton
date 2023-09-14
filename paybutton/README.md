@@ -1,6 +1,6 @@
 # @paybutton/paybutton
 
-> The easiest way to accept Bitcoin Cash online
+> The easiest way to accept eCash online
 
 [![NPM](https://img.shields.io/npm/v/@paybutton/paybutton.svg)](https://www.npmjs.com/package/@paybutton/paybutton)
 
