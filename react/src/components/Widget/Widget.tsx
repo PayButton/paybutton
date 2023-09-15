@@ -244,7 +244,7 @@ export const Widget: React.FC<WidgetProps> = props => {
     }
 
     if (userEditedAmount !== undefined && amount && addressType) {
-      const obj = getCurrencyObject(+amount, currency, randomSatoshis);
+      const obj = getCurrencyObject(+amount, currency, false);
       setCurrencyObject(obj);
     } else if (amount && addressType) {
       cleanAmount = +amount;
@@ -389,7 +389,7 @@ export const Widget: React.FC<WidgetProps> = props => {
       amount = '0';
     }
 
-    const userEdited = getCurrencyObject(+amount, currency, randomSatoshis);
+    const userEdited = getCurrencyObject(+amount, currency, false);
 
     setUserEditedAmount(userEdited);
     setAmount(amount);
