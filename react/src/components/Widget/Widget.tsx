@@ -33,6 +33,7 @@ type QRCodeProps = BaseQRCodeProps & { renderAs: 'svg' };
 export interface WidgetProps {
   to: string;
   amount?: number | null | string;
+  setAmount: Function;
   text?: string;
   ButtonComponent?: React.ComponentType;
   loading: boolean;
@@ -45,6 +46,7 @@ export interface WidgetProps {
   currency?: currency;
   animation?: animation;
   currencyObject?: currencyObject | undefined;
+  setCurrencyObject: Function;
   randomSatoshis?: boolean;
   price?: number;
   editable?: boolean;
@@ -117,6 +119,8 @@ const useStyles = makeStyles({
 export const Widget: React.FC<WidgetProps> = props => {
   const {
     to,
+    amount,
+    setAmount,
     foot,
     loading,
     success,
@@ -127,6 +131,7 @@ export const Widget: React.FC<WidgetProps> = props => {
     animation,
     randomSatoshis = true,
     currencyObject,
+    setCurrencyObject,
     editable,
     setNewTxs,
     newTxs,
@@ -146,12 +151,8 @@ export const Widget: React.FC<WidgetProps> = props => {
   const [goalText, setGoalText] = useState('');
   const [goalPercent, setGoalPercent] = useState(0);
   const [addressType, setAddressType] = useState<cryptoCurrency>();
-  const [currencyObj, setCurrencyObj] = useState<currencyObject>(
-    currencyObject!,
-  );
   const [convertedCurrencyObj, setConvertedCurrencyObj] = useState<currencyObject|null>();
   const price = props.price;
-  const [amount, setAmount] = useState(props.amount);
   const [url, setUrl] = useState('');
   const [userEditedAmount, setUserEditedAmount] = useState<currencyObject>();
   const [text, setText] = useState('Send any amount of BCH');
@@ -243,13 +244,13 @@ export const Widget: React.FC<WidgetProps> = props => {
     }
 
     if (userEditedAmount !== undefined && amount && addressType) {
-      const obj = getCurrencyObject(+amount, currency, randomSatoshis);
-      setCurrencyObj(obj);
+      const obj = getCurrencyObject(+amount, currency, false);
+      setCurrencyObject(obj);
     } else if (amount && addressType) {
       cleanAmount = +amount;
-      if (currencyObj === undefined) {
+      if (currencyObject === undefined) {
         const obj = getCurrencyObject(cleanAmount, currency, randomSatoshis);
-        setCurrencyObj(obj);
+        setCurrencyObject(obj);
       }
     }
   }, [amount, currency, userEditedAmount, addressType]);
@@ -275,15 +276,15 @@ export const Widget: React.FC<WidgetProps> = props => {
     }
     url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
 
-    if (currencyObj && hasPrice) {
+    if (currencyObject && hasPrice) {
       const convertedObj = price
-        ? getCurrencyObject(currencyObj.float / price, addressType, randomSatoshis)
+        ? getCurrencyObject(currencyObject.float / price, addressType, randomSatoshis)
         : null;
 
       if (convertedObj) {
         setConvertedCurrencyObj(convertedObj)
         setText(
-          `Send ${currencyObj.string} ${currencyObj.currency} = ${convertedObj.string} ${addressType}`,
+          `Send ${currencyObject.string} ${currencyObject.currency} = ${convertedObj.string} ${addressType}`,
         );
         query.push(`amount=${convertedObj.float}`);
       }
@@ -292,11 +293,11 @@ export const Widget: React.FC<WidgetProps> = props => {
       setUrl(url);
     } else {
       const notZeroValue: boolean =
-        currencyObj?.float !== undefined && currencyObj.float > 0;
-      if (!isFiat(currency) && currencyObj && notZeroValue) {
-        const bchType: string = currencyObj.currency;
-        setText(`Send ${currencyObj.string} ${bchType}`);
-        query.push(`amount=${currencyObj.float}`);
+        currencyObject?.float !== undefined && currencyObject.float > 0;
+      if (!isFiat(currency) && currencyObject && notZeroValue) {
+        const bchType: string = currencyObject.currency;
+        setText(`Send ${currencyObject.string} ${bchType}`);
+        query.push(`amount=${currencyObject.float}`);
         url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
         setUrl(url);
       } else {
@@ -305,7 +306,7 @@ export const Widget: React.FC<WidgetProps> = props => {
         setUrl(url);
       }
     }
-  }, [currencyObj, price, amount]);
+  }, [currencyObject, price, amount]);
 
   const handleButtonClick = () => {
     if (addressType === 'XEC'){
@@ -314,7 +315,7 @@ export const Widget: React.FC<WidgetProps> = props => {
       if (convertedCurrencyObj) {
         thisAmount = convertedCurrencyObj.float
       } else {
-        thisAmount = (currencyObj ? currencyObj.float : undefined)
+        thisAmount = (currencyObject ? currencyObject.float : undefined)
       }
       if (!hasExtension) {
         window.location.href = url;
@@ -388,7 +389,7 @@ export const Widget: React.FC<WidgetProps> = props => {
       amount = '0';
     }
 
-    const userEdited = getCurrencyObject(+amount, currency, randomSatoshis);
+    const userEdited = getCurrencyObject(+amount, currency, false);
 
     setUserEditedAmount(userEdited);
     setAmount(amount);

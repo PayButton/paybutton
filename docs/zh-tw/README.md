@@ -41,7 +41,7 @@ var config = {
   to: 'ecash:qrmm7ed0px8tydrlhgvu3putwpwzlfyr0uzfc0slxp',
   amount: 4.5,
   goalAmount: 300000,
-  canEdit: false,
+  editable: false,
   currency: 'USD',
   text: 'Tip Us a Coffee!',
   hoverText: 'One cofee',
@@ -78,7 +78,7 @@ render( '#advanced-usage-example', {
   to: 'ecash:qrmm7ed0px8tydrlhgvu3putwpwzlfyr0uzfc0slxp',
   amount: 4.5,
   goalAmount: 300000,
-  canEdit: false,
+  editable: false,
   currency: 'USD',
   text: 'Tip Us a Coffee!',
   hoverText: 'One coffee',
@@ -399,13 +399,13 @@ can-edit="true"
 #### ** JavaScript **
 
 ```javascript
-canEdit: true
+editable: true
 ```
 
 #### ** React **
 
 ```react
-canEdit = true
+editable = true
 ```
 
 <!-- tabs:end -->
