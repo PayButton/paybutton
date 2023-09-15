@@ -83,7 +83,7 @@ const allowedProps = [
   'to',
   'disabled',
   'goalAmount',
-  'canEdit',
+  'editable',
   'wsBaseUrl',
   'apiBaseUrl'
 ];
