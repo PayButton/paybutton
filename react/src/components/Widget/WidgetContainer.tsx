@@ -22,7 +22,7 @@ import Widget, { WidgetProps } from './Widget';
 import BigNumber from 'bignumber.js';
 
 export interface WidgetContainerProps
-  extends Omit<WidgetProps, 'loading'|'success'|'setNewTxs'> {
+  extends Omit<WidgetProps, 'loading'|'success'|'setNewTxs'|'setCurrencyObject'> {
   active?: boolean;
   amount?: number;
   currency?: currency;
