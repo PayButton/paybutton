@@ -22,7 +22,7 @@ import Widget, { WidgetProps } from './Widget';
 import BigNumber from 'bignumber.js';
 
 export interface WidgetContainerProps
-  extends Omit<WidgetProps, 'loading'|'success'|'setNewTxs'> {
+  extends Omit<WidgetProps, 'loading'|'success'|'setNewTxs'|'setCurrencyObject'|'setAmount'> {
   active?: boolean;
   amount?: number;
   currency?: currency;
@@ -151,11 +151,11 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
             snackbarOptions,
           );
 
-        onTransaction?.(transaction.id, receivedAmount);
-
         if (amount && receivedAmount.isEqualTo(new BigNumber(amount))) {
           setSuccess(true);
           onSuccess?.(transaction.id, receivedAmount);
+        } else {
+          onTransaction?.(transaction.id, receivedAmount);
         }
         setNewTxs([])
       },
@@ -215,6 +215,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
           to={to}
           {...widgetProps}
           amount={amount}
+          setAmount={setAmount}
           goalAmount={goalAmount}
           currency={currency}
           animation={animation}

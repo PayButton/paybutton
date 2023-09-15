@@ -33,6 +33,7 @@ type QRCodeProps = BaseQRCodeProps & { renderAs: 'svg' };
 export interface WidgetProps {
   to: string;
   amount?: number | null | string;
+  setAmount: Function;
   text?: string;
   ButtonComponent?: React.ComponentType;
   loading: boolean;
@@ -118,6 +119,8 @@ const useStyles = makeStyles({
 export const Widget: React.FC<WidgetProps> = props => {
   const {
     to,
+    amount,
+    setAmount,
     foot,
     loading,
     success,
@@ -150,7 +153,6 @@ export const Widget: React.FC<WidgetProps> = props => {
   const [addressType, setAddressType] = useState<cryptoCurrency>();
   const [convertedCurrencyObj, setConvertedCurrencyObj] = useState<currencyObject|null>();
   const price = props.price;
-  const [amount, setAmount] = useState(props.amount);
   const [url, setUrl] = useState('');
   const [userEditedAmount, setUserEditedAmount] = useState<currencyObject>();
   const [text, setText] = useState('Send any amount of BCH');
@@ -242,7 +244,7 @@ export const Widget: React.FC<WidgetProps> = props => {
     }
 
     if (userEditedAmount !== undefined && amount && addressType) {
-      const obj = getCurrencyObject(+amount, currency, randomSatoshis);
+      const obj = getCurrencyObject(+amount, currency, false);
       setCurrencyObject(obj);
     } else if (amount && addressType) {
       cleanAmount = +amount;
@@ -387,7 +389,7 @@ export const Widget: React.FC<WidgetProps> = props => {
       amount = '0';
     }
 
-    const userEdited = getCurrencyObject(+amount, currency, randomSatoshis);
+    const userEdited = getCurrencyObject(+amount, currency, false);
 
     setUserEditedAmount(userEdited);
     setAmount(amount);
