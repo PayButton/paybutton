@@ -313,7 +313,7 @@ export const Widget: React.FC<WidgetProps> = props => {
       if (convertedCurrencyObj) {
         thisAmount = convertedCurrencyObj.float
       } else {
-        thisAmount = (currencyObj ? currencyObj.float : undefined)
+        thisAmount = (currencyObject ? currencyObject.float : undefined)
       }
       if (!hasExtension) {
         window.location.href = url;
