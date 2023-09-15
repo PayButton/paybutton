@@ -48,7 +48,7 @@ export interface WidgetProps {
   setCurrencyObject: Function;
   randomSatoshis?: boolean;
   price?: number;
-  editable?: boolean;
+  canEdit?: boolean;
   setNewTxs: Function; // function parent WidgetContainer passes down to be updated
   newTxs?: Transaction[]; // function parent WidgetContainer passes down to be updated
   wsBaseUrl?: string;
@@ -129,7 +129,7 @@ export const Widget: React.FC<WidgetProps> = props => {
     randomSatoshis = true,
     currencyObject,
     setCurrencyObject,
-    editable,
+    canEdit,
     setNewTxs,
     newTxs,
     apiBaseUrl,
@@ -541,7 +541,7 @@ export const Widget: React.FC<WidgetProps> = props => {
             )}
           </Box>
 
-          {editable && (
+          {canEdit && (
             <Grid
               container
               spacing={2}
@@ -603,7 +603,7 @@ Widget.defaultProps = {
   loading: false,
   success: false,
   successText: 'Thank you!',
-  editable: false,
+  canEdit: false,
 };
 
 export default Widget;

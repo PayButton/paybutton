@@ -34,7 +34,7 @@ export interface WidgetContainerProps
   sound?: boolean;
   goalAmount?: number | string;
   disabled: boolean;
-  editable: boolean;
+  canEdit: boolean;
   wsBaseUrl?: string;
   apiBaseUrl?: string;
   successText?: string;
@@ -83,7 +83,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
       onTransaction,
       goalAmount,
       disabled,
-      editable,
+      canEdit,
       wsBaseUrl,
       apiBaseUrl,
       successText,
@@ -225,7 +225,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
           price={price}
           success={success}
           disabled={disabled}
-          editable={editable}
+          canEdit={canEdit}
           setNewTxs={setNewTxs}
           newTxs={newTxs}
           wsBaseUrl={wsBaseUrl}

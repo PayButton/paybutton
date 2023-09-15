@@ -18,7 +18,7 @@ export interface PaymentDialogProps extends ButtonProps {
   hideToasts?: boolean;
   goalAmount?: number | string;
   disableEnforceFocus?: boolean;
-  editable?: boolean;
+  canEdit?: boolean;
   dialogOpen: boolean;
   disableScrollLock?: boolean;
   active?: boolean;
@@ -49,7 +49,7 @@ export const PaymentDialog = (
     onTransaction,
     goalAmount,
     disableEnforceFocus,
-    editable,
+    canEdit,
     dialogOpen,
     container,
     wsBaseUrl,
@@ -111,7 +111,7 @@ export const PaymentDialog = (
           onTransaction={onTransaction}
           successText={successText}
           disabled={disabled}
-          editable={editable}
+          canEdit={canEdit}
           goalAmount={goalAmount}
           wsBaseUrl={wsBaseUrl}
           apiBaseUrl={apiBaseUrl}
@@ -138,7 +138,7 @@ PaymentDialog.defaultProps = {
   successText: 'Thank you!',
   disableEnforceFocus: false,
   disabled: false,
-  editable: false,
+  canEdit: false,
   dialogOpen: true,
 };
 
