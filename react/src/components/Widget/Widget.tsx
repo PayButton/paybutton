@@ -295,7 +295,7 @@ export const Widget: React.FC<WidgetProps> = props => {
       if (!isFiat(currency) && currencyObject && notZeroValue) {
         const bchType: string = currencyObject.currency;
         setText(`Send ${currencyObject.string} ${bchType}`);
-        query.push(`amount=${currencyObject.string}`);
+        query.push(`amount=${currencyObject.float}`);
         url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
         setUrl(url);
       } else {
@@ -309,7 +309,12 @@ export const Widget: React.FC<WidgetProps> = props => {
   const handleButtonClick = () => {
     if (addressType === 'XEC'){
       const hasExtension = getCashtabProviderStatus()
-      const thisAmount = convertedCurrencyObj ? convertedCurrencyObj.float : amount
+      let thisAmount: number | undefined
+      if (convertedCurrencyObj) {
+        thisAmount = convertedCurrencyObj.float
+      } else {
+        thisAmount = (currencyObj ? currencyObj.float : undefined)
+      }
       if (!hasExtension) {
         window.location.href = url;
         const isMobile = window.matchMedia("(pointer:coarse)").matches;

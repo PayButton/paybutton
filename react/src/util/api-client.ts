@@ -20,8 +20,9 @@ export interface BroadcastTxData {
 
 export const setListener = (socket: Socket, setNewTxs: Function): void => {
   socket.on('incoming-txs', (broadcastedTxData: BroadcastTxData) => {
-    if (broadcastedTxData.messageType === 'NewTx') {
-      setNewTxs(broadcastedTxData.txs)
+    const unconfirmedTxs = broadcastedTxData.txs.filter(tx => tx.confirmed === false)
+    if (broadcastedTxData.messageType === 'NewTx' && unconfirmedTxs.length !== 0) {
+      setNewTxs(unconfirmedTxs)
     }
   })
 }
