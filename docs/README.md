@@ -567,19 +567,19 @@ onTransaction = transactionCallback
 #### ** HTML **
 
 ```html
-random-satoshis="true"
+random-satoshis="false"
 ```
 
 #### ** JavaScript **
 
 ```javascript
-randomSatoshis: true
+randomSatoshis: false
 ```
 
 #### ** React **
 
 ```react
-randomSatoshis = true
+randomSatoshis = false
 ```
 
 <!-- tabs:end -->
