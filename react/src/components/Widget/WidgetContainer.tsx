@@ -95,6 +95,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
     const [success, setSuccess] = useState(false);
     const { enqueueSnackbar } = useSnackbar();
     const [currencyObj, setCurrencyObj] = useState<currencyObject>();
+    const [cryptoAmount, setCryptoAmount] = useState<string>();
 
     const [loading, setLoading] = useState(true);
     const [amount, setAmount] = useState(props.amount);
@@ -151,7 +152,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
             snackbarOptions,
           );
 
-        if (amount && receivedAmount.isEqualTo(new BigNumber(amount))) {
+        if (cryptoAmount && receivedAmount.isEqualTo(new BigNumber(cryptoAmount))) {
           setSuccess(true);
           onSuccess?.(transaction.id, receivedAmount);
         } else {
@@ -167,6 +168,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
         hideToasts,
         sound,
         txSound,
+        cryptoAmount
       ],
     );
 
@@ -208,6 +210,16 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
         setLoading(false);
       }
     }, [active, props.amount, currency]);
+
+    useEffect(() => {
+      if (currencyObj && isFiat(currency) && price) {
+        const addressType: currency = getCurrencyTypeFromAddress(to);
+        const convertedObj = getCurrencyObject(currencyObj.float / price, addressType, randomSatoshis)
+        setCryptoAmount(convertedObj.string)
+      } else if (!isFiat(currency)) {
+        setCryptoAmount(amount?.toString())
+      }
+    }, [price, currencyObj])
 
     return (
       <React.Fragment>
