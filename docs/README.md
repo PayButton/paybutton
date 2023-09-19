@@ -381,9 +381,9 @@ goalAmount = 10
 
 <!-- tabs:end -->
 
-## can-edit
+## editable
 
-> **The ‘can-edit’ parameter specifies whether to provide an input for the user to be able to change the payment amount.**
+> **The ‘editable’ parameter specifies whether to provide an input for the user to be able to change the payment amount.**
 
 ?> This parameter is optional. Default value is false. Possible values are true or false.
 
@@ -393,7 +393,7 @@ goalAmount = 10
 #### ** HTML **
 
 ```html
-can-edit="true"
+editable="true"
 ```
 
 #### ** JavaScript **

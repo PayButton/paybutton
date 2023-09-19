@@ -381,9 +381,9 @@ goalAmount = 10
 
 <!-- tabs:end -->
 
-## can-edit
+## editable
 
-> **'can-edit' 參數指定是否提供一個輸入框，以供用戶能夠改變付款金額。**
+> **'editable' 參數指定是否提供一個輸入框，以供用戶能夠改變付款金額。**
 
 ?> 此參數是可選用的。默認值為false。有效值為true或false。
 
@@ -393,7 +393,7 @@ goalAmount = 10
 #### ** HTML **
 
 ```html
-can-edit="true"
+editable="true"
 ```
 
 #### ** JavaScript **
