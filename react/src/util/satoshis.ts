@@ -12,7 +12,7 @@ export type currencyObject = {
 export const getCurrencyObject = (
   amount: number,
   currencyType: currency,
-  randomSatoshis: boolean
+  randomSatoshis: boolean | number
 ): currencyObject => {
   let string = '';
   let float = 0;

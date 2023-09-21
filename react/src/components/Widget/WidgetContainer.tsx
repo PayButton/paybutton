@@ -26,7 +26,7 @@ export interface WidgetContainerProps
   active?: boolean;
   amount?: number;
   currency?: currency;
-  randomSatoshis?: boolean;
+  randomSatoshis?: boolean | number;
   displayCurrency?: cryptoCurrency;
   hideToasts?: boolean;
   onSuccess?: (txid: string, amount: BigNumber) => void;
