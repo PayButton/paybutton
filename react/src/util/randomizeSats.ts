@@ -3,23 +3,24 @@ import { cryptoCurrency } from './api-client';
 const DEFAULT_N = 3
 
 
-export const getNSatoshis = (randomSatoshis: boolean | number): number => {
+export const getNSatoshis = (amount: number, randomSatoshis: boolean | number): number => {
+  const amountDigits = amount.toString().replace('.', '').length;
   if (randomSatoshis === true) {
-    return DEFAULT_N
+    return Math.min(DEFAULT_N, amountDigits)
   } else if (randomSatoshis === false) {
     throw new Error("Trying to randomize satoshis when not allowed.")
   }
   if (randomSatoshis > 8) {
     throw new Error("Can't have more than 8 randomized satoshis.")
   }
-  return randomSatoshis
+  return Math.min(randomSatoshis, amountDigits)
 }
 
 export const randomizeSatoshis = (amount: number, addressType: cryptoCurrency, randomSatoshis: boolean | number): number => {
   if (amount === 0) {
     return 0;
   }
-  const nSatoshis = getNSatoshis(randomSatoshis)
+  const nSatoshis = getNSatoshis(amount, randomSatoshis)
 
   const random = Math.floor(Math.random() * 10 ** nSatoshis);
   let randomToAdd: number
