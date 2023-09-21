@@ -20,7 +20,7 @@ export const getCurrencyObject = (
   if (currencyType === 'BCH' || currencyType === 'XEC') {
     let newAmount = amount
     if (randomSatoshis) {
-      newAmount = randomizeSatoshis(amount, currencyType)
+      newAmount = randomizeSatoshis(amount, currencyType, randomSatoshis)
     }
     let primaryUnit = new BigNumber(`${newAmount}`);
     if (primaryUnit !== null && primaryUnit.c !== null) {

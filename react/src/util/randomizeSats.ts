@@ -1,32 +1,42 @@
 import { cryptoCurrency } from './api-client';
-export const randomizeSatoshis = (amount: number, addressType: cryptoCurrency): number => {
+
+const DEFAULT_N = 3
+
+
+export const getNSatoshis = (randomSatoshis: boolean | number): number => {
+  if (randomSatoshis === true) {
+    return DEFAULT_N
+  } else if (randomSatoshis === false) {
+    throw new Error("Trying to randomize satoshis when not allowed.")
+  }
+  if (randomSatoshis > 8) {
+    throw new Error("Can't have more than 8 randomized satoshis.")
+  }
+  return randomSatoshis
+}
+
+export const randomizeSatoshis = (amount: number, addressType: cryptoCurrency, randomSatoshis: boolean | number): number => {
   if (amount === 0) {
     return 0;
   }
-  const date = new Date();
+  const nSatoshis = getNSatoshis(randomSatoshis)
 
-  // 0-99: 10 second window, resets every 16.5 minutes
-  const window =
-    Math.floor((date.getUTCMinutes() * 60 + date.getUTCSeconds()) / 10) % 100;
-  // 0-99: random
-  const random = Math.floor(Math.random() * 100);
+  const random = Math.floor(Math.random() * 10 ** nSatoshis);
   let randomToAdd: number
   let randomizedAmount: number
   let ret: number
   switch (addressType) {
     case 'BCH':
-      randomToAdd = random * 1e-6 + // Two random digits
-        window * 1e-8; // Two digits for the time window
+      randomToAdd = random * 1e-8
       randomizedAmount =
-        Math.max(0, +amount.toFixed(4)) + // zero out the 4 least-significant digits
+        Math.max(0, +amount.toFixed(nSatoshis)) + // zero out the least-significant digits
         randomToAdd
       ret = +randomizedAmount.toFixed(8);
       break
     case 'XEC':
-      randomToAdd = random * 1 + // Two random digits
-        window * 1e-2; // Two digits for the time window
-      randomizedAmount =
-        Math.max(0, +(Math.floor(amount/100) * 100)) + // zero out the 4 least-significant digits
+      randomToAdd = random * 1e-2;
+        const multiplier = 10 ** (nSatoshis - 2)
+        randomizedAmount = Math.max(0, +(Math.floor(amount / multiplier) * multiplier)) + // zero out the least-significant digits
         randomToAdd
       ret = +randomizedAmount.toFixed(2);
       break
