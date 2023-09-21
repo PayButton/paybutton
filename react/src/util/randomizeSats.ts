@@ -1,17 +1,18 @@
 import { cryptoCurrency } from './api-client';
 
-const DEFAULT_N = 3
+const DEFAULT = 3
+const MAX = 4
 
 
 export const getNSatoshis = (amount: number, randomSatoshis: boolean | number): number => {
   const amountDigits = amount.toString().replace('.', '').length;
   if (randomSatoshis === true) {
-    return Math.min(DEFAULT_N, amountDigits)
+    return Math.min(DEFAULT, amountDigits)
   } else if (randomSatoshis === false) {
     throw new Error("Trying to randomize satoshis when not allowed.")
   }
-  if (randomSatoshis > 8) {
-    throw new Error("Can't have more than 8 randomized satoshis.")
+  if (randomSatoshis > MAX) {
+    randomSatoshis = MAX
   }
   return Math.min(randomSatoshis, amountDigits)
 }

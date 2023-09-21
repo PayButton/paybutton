@@ -164,8 +164,8 @@ function findAndRender<T>(className: string, Component: React.ComponentType<any>
           break
         default:
           props.randomSatoshis = +attributes.randomSatoshis
-          if (isNaN(props.randomSatoshis) || props.randomSatoshis > 8) {
-            console.error('randomSatoshis must be true, false, or a number smaller or equal than 8.')
+          if (isNaN(props.randomSatoshis)) {
+            console.error('randomSatoshis must be true, false, or a number.')
           }
       }
 
