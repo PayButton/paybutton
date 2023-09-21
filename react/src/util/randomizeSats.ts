@@ -4,8 +4,8 @@ const DEFAULT = 3
 const MAX = 4
 
 
-export const getNSatoshis = (amount: number, randomSatoshis: boolean | number): number => {
-  const amountDigits = amount.toString().replace('.', '').length;
+export const getNSatoshis = (amount: number, randomSatoshis: boolean | number, satsPrecision: number): number => {
+  const amountDigits = amount.toFixed(satsPrecision).toString().replace('.', '').length;
   if (randomSatoshis === true) {
     return Math.min(DEFAULT, amountDigits)
   } else if (randomSatoshis === false) {
@@ -21,25 +21,27 @@ export const randomizeSatoshis = (amount: number, addressType: cryptoCurrency, r
   if (amount === 0) {
     return 0;
   }
-  const nSatoshis = getNSatoshis(amount, randomSatoshis)
-
-  const random = Math.floor(Math.random() * 10 ** nSatoshis);
-  let randomToAdd: number
+  let nSatoshis: number
+  let random: number
   let randomizedAmount: number
   let ret: number
   switch (addressType) {
     case 'BCH':
-      randomToAdd = random * 1e-8
+      nSatoshis = getNSatoshis(amount, randomSatoshis, 8)
+      random = Math.floor(Math.random() * 10 ** nSatoshis) * 1e-8
+
       randomizedAmount =
         Math.max(0, +amount.toFixed(nSatoshis)) + // zero out the least-significant digits
-        randomToAdd
+        random
       ret = +randomizedAmount.toFixed(8);
       break
     case 'XEC':
-      randomToAdd = random * 1e-2;
+      nSatoshis = getNSatoshis(amount, randomSatoshis, 2)
+      random = Math.floor(Math.random() * 10 ** nSatoshis) * 1e-2
+
         const multiplier = 10 ** (nSatoshis - 2)
         randomizedAmount = Math.max(0, +(Math.floor(amount / multiplier) * multiplier)) + // zero out the least-significant digits
-        randomToAdd
+        random
       ret = +randomizedAmount.toFixed(2);
       break
     default:
