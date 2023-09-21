@@ -34,7 +34,7 @@ const checkHash = (name: string): string => {
   }
 };
 
-const validateColors = (obj: any): Theme => {
+const validateColors = (obj: any, isXec?: boolean): Theme => {
   const regexp = new RegExp(
     /(#(?:[0-9a-f]{2}){2,4}$|(#[0-9a-f]{3}$)|(rgb|hsl)a?\((-?\d+%?[,\s]+){2,3}\s*[\d\.]+%?\)$|black$|silver$|gray$|whitesmoke$|maroon$|red$|purple$|fuchsia$|green$|lime$|olivedrab$|yellow$|navy$|blue$|teal$|aquamarine$|orange$|aliceblue$|antiquewhite$|aqua$|azure$|beige$|bisque$|blanchedalmond$|blueviolet$|brown$|burlywood$|cadetblue$|chartreuse$|chocolate$|coral$|cornflowerblue$|cornsilk$|crimson$|currentcolor$|darkblue$|darkcyan$|darkgoldenrod$|darkgray$|darkgreen$|darkgrey$|darkkhaki$|darkmagenta$|darkolivegreen$|darkorange$|darkorchid$|darkred$|darksalmon$|darkseagreen$|darkslateblue$|darkslategray$|darkslategrey$|darkturquoise$|darkviolet$|deeppink$|deepskyblue$|dimgray$|dimgrey$|dodgerblue$|firebrick$|floralwhite$|forestgreen$|gainsboro$|ghostwhite$|goldenrod$|gold$|greenyellow$|grey$|honeydew$|hotpink$|indianred$|indigo$|ivory$|khaki$|lavenderblush$|lavender$|lawngreen$|lemonchiffon$|lightblue$|lightcoral$|lightcyan$|lightgoldenrodyellow$|lightgray$|lightgreen$|lightgrey$|lightpink$|lightsalmon$|lightseagreen$|lightskyblue$|lightslategray$|lightslategrey$|lightsteelblue$|lightyellow$|limegreen$|linen$|mediumaquamarine$|mediumblue$|mediumorchid$|mediumpurple$|mediumseagreen$|mediumslateblue$|mediumspringgreen$|mediumturquoise$|mediumvioletred$|midnightblue$|mintcream$|mistyrose$|moccasin$|navajowhite$|oldlace$|olive$|orangered$|orchid$|palegoldenrod$|palegreen$|paleturquoise$|palevioletred$|papayawhip$|peachpuff$|peru$|pink$|plum$|powderblue$|rosybrown$|royalblue$|saddlebrown$|salmon$|sandybrown$|seagreen$|seashell$|sienna$|skyblue$|slateblue$|slategray$|slategrey$|snow$|springgreen$|steelblue$|tan$|thistle$|tomato$|transparent$|turquoise$|violet$|wheat$|white$|yellowgreen$|rebeccapurple$)/,
     'i',
@@ -45,25 +45,25 @@ const validateColors = (obj: any): Theme => {
     let { primary, secondary, tertiary, logo } = obj.palette;
 
     if (primary === undefined || !regexp.test(primary)) {
-      primary = '#4bc846';
+      primary = isXec ? xec.palette.primary : paybutton.palette.primary
     } else {
       primary = checkHash(primary);
     }
 
     if (secondary === undefined || !regexp.test(secondary)) {
-      secondary = '#4bc846';
+      secondary = isXec ? xec.palette.secondary : paybutton.palette.secondary
     } else {
       secondary = checkHash(secondary);
     }
 
     if (tertiary === undefined || !regexp.test(tertiary)) {
-      tertiary = '#4bc846';
+      tertiary = isXec ? xec.palette.tertiary : paybutton.palette.tertiary
     } else {
       tertiary = checkHash(tertiary);
     }
 
     if (logo === undefined || !regexp.test(logo)) {
-      logo = '#4bc846';
+      logo = isXec ? xec.palette.logo : paybutton.palette.logo
     } else {
       logo = checkHash(logo);
     }
@@ -81,7 +81,7 @@ export const useTheme = (
       ? ThemeName.XEC
       : defaultTheme === 'orange' || defaultTheme === 'xec'
       ? defaultTheme
-      : validateColors(defaultTheme);
+      : validateColors(defaultTheme, isXec);
 
   const theme =
     useContext(ThemeContext) ??
