@@ -47,7 +47,7 @@ export interface WidgetProps {
   animation?: animation;
   currencyObject?: currencyObject | undefined;
   setCurrencyObject: Function;
-  randomSatoshis?: boolean;
+  randomSatoshis?: boolean | number;
   price?: number;
   editable?: boolean;
   setNewTxs: Function; // function parent WidgetContainer passes down to be updated

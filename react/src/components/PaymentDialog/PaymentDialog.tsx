@@ -14,7 +14,7 @@ export interface PaymentDialogProps extends ButtonProps {
   currency?: currency;
   theme?: ThemeName | Theme;
   successText?: string;
-  randomSatoshis?: boolean;
+  randomSatoshis?: boolean | number;
   hideToasts?: boolean;
   goalAmount?: number | string;
   disableEnforceFocus?: boolean;

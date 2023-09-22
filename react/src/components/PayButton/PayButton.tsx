@@ -15,7 +15,7 @@ export interface PayButtonProps extends ButtonProps {
   text?: string;
   hoverText?: string;
   successText?: string;
-  randomSatoshis?: boolean;
+  randomSatoshis?: boolean | number;
   hideToasts?: boolean;
   disabled?: boolean;
   goalAmount?: number | string;

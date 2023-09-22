@@ -153,6 +153,21 @@ function findAndRender<T>(className: string, Component: React.ComponentType<any>
 
       props.hideToasts = attributes.hideToasts === 'true';
       props.randomSatoshis = attributes.randomSatoshis === 'false' ? false : true;
+      switch (attributes.randomSatoshis) {
+        case '':
+        case undefined:
+        case 'true':
+          props.randomSatoshis = true
+          break
+        case 'false':
+          props.randomSatoshis = false
+          break
+        default:
+          props.randomSatoshis = +attributes.randomSatoshis
+          if (isNaN(props.randomSatoshis)) {
+            console.error('randomSatoshis must be true, false, or a number.')
+          }
+      }
 
       if (attributes.onSuccess) {
         const geval = window.eval;
