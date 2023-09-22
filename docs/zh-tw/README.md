@@ -559,7 +559,7 @@ onTransaction = transactionCallback
 
 > **參數"random-satoshis"用來定義是否將付款金額的最後幾位隨機化，因此當一個人進行付款時不太可能觸發回呼onSuccess的同時另一個人正打開付款螢幕。**
 
-?> 此參數是可選用的。默認值為false。有效值為true或false。
+?> 此參數是可選用的。默認值為true。有效值為true、false或0到4的整數，該整數指定應隨機化多少個最後的數字。將其設置為true等同於將其設置為3。將其設置為false等同於將其設置為0。
 
 **例子:**
 <!-- tabs:start -->
