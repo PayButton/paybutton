@@ -730,7 +730,6 @@ apiBaseUrl = "https://paybutton.org"
 
 <!-- tabs:end -->
 
-
 # Contribute
 
 PayButton is a community-driven open-source initiative. Contributions from the community are _crucial_ to the success of the project.
