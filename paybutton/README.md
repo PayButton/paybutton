@@ -15,13 +15,12 @@ npm install --save @paybutton/paybutton
 ```
 <script src="https://unpkg.com/@paybutton/paybutton/dist/paybutton.js"></script>
 <div class="paybutton"
-  to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp"
+  to="ecash:qrmm7ed0px8tydrlhgvu3putwpwzlfyr0uzfc0slxp"
   amount="5"
   currency="USD"
-  animation="invert"
   text="Donate $5"
-  hover-text="Send BCH"
-  success-text="Thank you for supporting us"
+  hover-text="Send XEC"
+  success-text="Thanks for your support!"
 ></div>
 ```
 
