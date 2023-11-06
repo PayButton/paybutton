@@ -113,6 +113,7 @@ const useStyles = makeStyles({
   footer: ({ theme }: StyleProps) => ({
     fontSize: '0.6rem !important',
     color: `${theme.palette.tertiary} !important`,
+    fontWeight: 'normal',
   }),
 });
 
@@ -588,8 +589,7 @@ export const Widget: React.FC<WidgetProps> = props => {
                 href="https://paybutton.org"
                 target="_blank"
                 rel="noopener"
-                className="{classes.footer}"
-                style={{ color: '#3f51b566', fontWeight: 'normal', fontSize: '0.6rem' }}
+                className={classes.footer}
               >
                 Powered by PayButton.org
               </Link>
