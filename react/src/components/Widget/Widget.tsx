@@ -113,7 +113,7 @@ const useStyles = makeStyles({
   footer: ({ theme }: StyleProps) => ({
     fontSize: '0.6rem !important',
     color: `${theme.palette.tertiary} !important`,
-    fontWeight: 'normal',
+    fontWeight: 'normal !important',
   }),
 });
 
