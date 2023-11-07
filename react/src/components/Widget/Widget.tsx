@@ -92,7 +92,7 @@ const useStyles = makeStyles({
     },
   }),
   copyTextContainer: ({ loading }: StyleProps) => ({
-    display: loading ? 'none !important' : 'block !important',
+    display: loading ? 'none' : 'block',
     background: '#ffffffcc !important',
     padding: '0 0.15rem 0.15rem 0 !important',
   }),
