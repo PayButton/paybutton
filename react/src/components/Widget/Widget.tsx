@@ -110,9 +110,9 @@ const useStyles = makeStyles({
   spinner: ({ theme }: StyleProps) => ({
     color: `${theme.palette.primary} !important`,
   }),
-  footer: ({ theme }: StyleProps) => ({
+  footer: () => ({
     fontSize: '0.6rem !important',
-    color: `${theme.palette.tertiary} !important`,
+    color: '#3f51b566 !important',
     fontWeight: 'normal',
   }),
 });
@@ -590,7 +590,6 @@ export const Widget: React.FC<WidgetProps> = props => {
                 target="_blank"
                 rel="noopener"
                 className={classes.footer}
-                style={{ fontWeight: 'normal' }}
               >
                 Powered by PayButton.org
               </Link>
