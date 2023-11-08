@@ -92,7 +92,7 @@ const useStyles = makeStyles({
     },
   }),
   copyTextContainer: ({ loading }: StyleProps) => ({
-    display: loading ? 'none !important' : 'block !important',
+    display: loading ? 'none' : 'block',
     background: '#ffffffcc !important',
     padding: '0 0.15rem 0.15rem 0 !important',
   }),
@@ -110,9 +110,10 @@ const useStyles = makeStyles({
   spinner: ({ theme }: StyleProps) => ({
     color: `${theme.palette.primary} !important`,
   }),
-  footer: ({ theme }: StyleProps) => ({
+  footer: () => ({
     fontSize: '0.6rem !important',
-    color: `${theme.palette.tertiary} !important`,
+    color: '#3f51b566 !important',
+    fontWeight: 'normal',
   }),
 });
 
@@ -588,8 +589,7 @@ export const Widget: React.FC<WidgetProps> = props => {
                 href="https://paybutton.org"
                 target="_blank"
                 rel="noopener"
-                className="{classes.footer}"
-                style={{ color: '#3f51b566', fontWeight: 'normal' }}
+                className={classes.footer}
               >
                 Powered by PayButton.org
               </Link>
