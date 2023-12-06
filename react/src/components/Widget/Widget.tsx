@@ -347,10 +347,16 @@ export const Widget: React.FC<WidgetProps> = props => {
   const handleQrCodeClick = (): void => {
     if (disabled || to === undefined) return;
     const address = to;
+    let thisAmount: number | undefined
+    if (convertedCurrencyObj) {
+      thisAmount = convertedCurrencyObj.float
+    } else {
+      thisAmount = (currencyObject ? currencyObject.float : undefined)
+    }
     if (isValidCashAddress(address)) {
       prefixedAddress = `bitcoincash:${address.replace(/^.*:/, '')}`;
     } else {
-      prefixedAddress = `ecash:${address.replace(/^.*:/, '')}`;
+      prefixedAddress = `ecash:${address.replace(/^.*:/, '')}${thisAmount ? `?amount=${thisAmount}` : ''}`;
     }
     if (!copy(prefixedAddress)) return;
     setCopied(true);
