@@ -73,9 +73,10 @@ const allowedProps = [
   'displayCurrency',
   'hideToasts',
   'hoverText',
-  'onClose',
   'onSuccess',
   'onTransaction',
+  'onOpen',
+  'onClose',
   'randomSatoshis',
   'successText',
   'theme',
@@ -106,7 +107,13 @@ export function renderDialogButton(dialogbuttonExists: boolean): void {
 export function openDialog(props: PaymentDialogProps): void {
   const container = document.createElement('div');
   document.body.appendChild(container);
-  render(<PaymentDialog container={container} onClose={() => container.remove()} {...props} />, container)
+  const onClose = () => {
+    if (props.onClose !== undefined) {
+      props.onClose()
+    }
+    container.remove()
+  }
+  render(<PaymentDialog container={container} onClose={onClose} {...props} />, container)
 }
 
 export function renderButtons(paybuttonExists: boolean): void {
@@ -177,6 +184,16 @@ function findAndRender<T>(className: string, Component: React.ComponentType<any>
       if (attributes.onTransaction) {
         const geval = window.eval;
         props.onTransaction = geval(attributes.onTransaction);
+      }
+
+      if (attributes.onOpen) {
+        const geval = window.eval;
+        props.onOpen = geval(attributes.onOpen);
+      }
+
+      if (attributes.onClose) {
+        const geval = window.eval;
+        props.onClose = geval(attributes.onClose);
       }
 
       if (attributes.theme) {

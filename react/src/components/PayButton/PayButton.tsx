@@ -23,6 +23,8 @@ export interface PayButtonProps extends ButtonProps {
   editable?: boolean;
   onSuccess?: (txid: string, amount: BigNumber) => void;
   onTransaction?: (txid: string, amount: BigNumber) => void;
+  onOpen?: () => void;
+  onClose?: () => void;
   wsBaseUrl?: string;
   apiBaseUrl?: string;
 }
@@ -44,15 +46,23 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
     hideToasts,
     onSuccess,
     onTransaction,
+    onOpen,
+    onClose,
     goalAmount,
     disableEnforceFocus,
     editable,
     wsBaseUrl,
-    apiBaseUrl
+    apiBaseUrl,
   } = Object.assign({}, PayButton.defaultProps, props);
 
-  const handleButtonClick = (): void => setDialogOpen(true);
-  const handleCloseDialog = (): void => setDialogOpen(false);
+  const handleButtonClick = (): void => {
+    if (onOpen !== undefined) onOpen();
+    setDialogOpen(true);
+  };
+  const handleCloseDialog = (): void => {
+    if (onClose !== undefined) onClose();
+    setDialogOpen(false);
+  };
 
   useEffect(() => {
     const invalidAmount = amount !== undefined && isNaN(+amount);
