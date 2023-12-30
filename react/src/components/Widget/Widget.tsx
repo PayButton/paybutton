@@ -466,7 +466,7 @@ export const Widget: React.FC<WidgetProps> = props => {
           flexDirection="column"
           alignItems="center"
           px={3}
-          py={2}
+          pt={2}
         >
           {isLoading ? (
             <Typography
