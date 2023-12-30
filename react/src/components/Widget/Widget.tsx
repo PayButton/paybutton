@@ -2,6 +2,7 @@ import {
   Box,
   CircularProgress,
   Fade,
+  Link,
   Typography,
   makeStyles,
   TextField,
@@ -108,6 +109,11 @@ const useStyles = makeStyles({
   }),
   spinner: ({ theme }: StyleProps) => ({
     color: `${theme.palette.primary} !important`,
+  }),
+  footer: () => ({
+    fontSize: '0.6rem !important',
+    color: '#3f51b566 !important',
+    fontWeight: 'normal',
   }),
 });
 
@@ -583,6 +589,18 @@ export const Widget: React.FC<WidgetProps> = props => {
               {foot}
             </Box>
           )}
+          <Box py={0.8}>
+            <Typography className={classes.footer}>
+              <Link
+                href="https://paybutton.org"
+                target="_blank"
+                rel="noopener"
+                className={classes.footer}
+              >
+                Powered by PayButton.org
+              </Link>
+            </Typography>
+          </Box>
         </Box>
       </Box>
     </ThemeProvider>
