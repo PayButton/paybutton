@@ -517,64 +517,6 @@ successText = "Thanks!"
 
 <!-- tabs:end -->
 
-## on-open
-
-> **The ‘on-open’ parameter specifies the callback function that runs when the button is clicked, before the dialog opens.**
-
-?> This parameter is optional. Default value is empty. Possible values are any defined function.
-
-**Example:**
-<!-- tabs:start -->
-
-#### ** HTML **
-
-```html
-on-open="successCallback"
-```
-
-#### ** JavaScript **
-
-```javascript
-onOpen: successCallback
-```
-
-#### ** React **
-
-```react
-onOpen = successCallback
-```
-
-<!-- tabs:end -->
-
-## on-close
-
-> **The ‘on-close’ parameter specifies the callback function that runs when the dialog is closed.**
-
-?> This parameter is optional. Default value is empty. Possible values are any defined function.
-
-**Example:**
-<!-- tabs:start -->
-
-#### ** HTML **
-
-```html
-on-close="successCallback"
-```
-
-#### ** JavaScript **
-
-```javascript
-onClose: successCallback
-```
-
-#### ** React **
-
-```react
-onClose = successCallback
-```
-
-<!-- tabs:end -->
-
 ## on-success
 
 > **The ‘on-success’ parameter specifies the callback function that runs upon successful payment.**
@@ -629,6 +571,64 @@ onTransaction: transactionCallback
 
 ```react
 onTransaction = transactionCallback
+```
+
+<!-- tabs:end -->
+
+## on-open
+
+> **The ‘on-open’ parameter specifies the callback function that runs when the button is clicked, before the dialog opens.**
+
+?> This parameter is optional. Default value is empty. Possible values are any defined function.
+
+**Example:**
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+on-open="successCallback"
+```
+
+#### ** JavaScript **
+
+```javascript
+onOpen: successCallback
+```
+
+#### ** React **
+
+```react
+onOpen = successCallback
+```
+
+<!-- tabs:end -->
+
+## on-close
+
+> **The ‘on-close’ parameter specifies the callback function that runs when the dialog is closed.**
+
+?> This parameter is optional. Default value is empty. Possible values are any defined function.
+
+**Example:**
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+on-close="successCallback"
+```
+
+#### ** JavaScript **
+
+```javascript
+onClose: successCallback
+```
+
+#### ** React **
+
+```react
+onClose = successCallback
 ```
 
 <!-- tabs:end -->
