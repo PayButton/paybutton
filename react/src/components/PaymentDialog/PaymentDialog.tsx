@@ -23,7 +23,7 @@ export interface PaymentDialogProps extends ButtonProps {
   disableScrollLock?: boolean;
   active?: boolean;
   container?: HTMLElement;
-  onClose?: (paid: boolean) => void;
+  onClose?: (success: boolean) => void;
   onSuccess?: (txid: string, amount: BigNumber) => void;
   onTransaction?: (txid: string, amount: BigNumber) => void;
   wsBaseUrl?: string;
