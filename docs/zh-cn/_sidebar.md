@@ -16,6 +16,8 @@
   - [success-text](/zh-cn/?id=success-text)
   - [on-success](/zh-cn/?id=on-success)
   - [on-transaction](/zh-cn/?id=on-transaction)
+  - [on-open](/zh-cn/?id=on-open)
+  - [on-close](/zh-cn/?id=on-close)
   - [random-satoshis](/zh-cn/?id=random-satoshis)
   - [hide-toasts](/zh-cn/?id=hide-toasts)
   - [disable-enforce-focus](/zh-cn/?id=disable-enforce-focus)

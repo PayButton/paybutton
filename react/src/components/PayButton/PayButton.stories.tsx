@@ -17,6 +17,8 @@ export default {
   argTypes: {
     onClick: { table: { disable: true } },
     onSuccess: { table: { disable: true } },
+    onOpen: { table: { disable: true } },
+    onClose: { table: { disable: true } },
     onTransaction: { table: { disable: true } },
   },
   args: {

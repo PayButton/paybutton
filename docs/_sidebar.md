@@ -17,6 +17,8 @@
   - [success-text](/?id=success-text)
   - [on-success](/?id=on-success)
   - [on-transaction](/?id=on-transaction)
+  - [on-open](/?id=on-open)
+  - [on-close](/?id=on-close)
   - [random-satoshis](/?id=random-satoshis)
   - [hide-toasts](/?id=hide-toasts)
   - [disable-enforce-focus](/?id=disable-enforce-focus)

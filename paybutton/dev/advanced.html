@@ -36,6 +36,14 @@
         console.log('Received: ' + amount);
       }
 
+      function myOpenFunction() {
+        console.log('Dialog opened.');
+      }
+
+      function myCloseFunction() {
+        console.log('Dialog closed.');
+      }
+
       var config = {
         to: 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp',
         amount: '25',
@@ -53,6 +61,8 @@
         successText: 'Purchase Complete!',
         onSuccess: mySuccessFunction,
         onTransaction: myTransactionFunction,
+        onOpen: myOpenFunction,
+        onClose: myCloseFunction,
         randomSatoshis: true,
       };
 
