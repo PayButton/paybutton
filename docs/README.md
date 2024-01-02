@@ -41,8 +41,8 @@ function myOpenFunction() {
   console.log('Dialog opened.');
 }
 
-function myCloseFunction(success: boolean) {
-  console.log(`Dialog closed, user ${success ? 'did' : 'did not'} pay.`);
+function myCloseFunction(success) {
+  console.log(`Dialog closed - user ${success ? 'did' : 'did not'} pay.`);
 }
 
 var config = {
@@ -87,8 +87,8 @@ function myOpenFunction() {
   console.log('Dialog opened.');
 }
 
-function myCloseFunction(success: boolean) {
-  console.log(`Dialog closed, user ${success ? 'did' : 'did not'} pay.`);
+function myCloseFunction(success) {
+  console.log(`Dialog closed - user ${success ? 'did' : 'did not'} pay.`);
 }
 
 
