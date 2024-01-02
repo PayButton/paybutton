@@ -37,6 +37,14 @@ function myTransactionFunction(txid, amount) {
   console.log( 'Received: ' + amount );
 }
 
+function myOpenFunction() {
+  console.log('Dialog opened.');
+}
+
+function myCloseFunction(success) {
+  console.log(`Dialog closed - user ${success ? 'did' : 'did not'} pay.`);
+}
+
 var config = {
   to: 'ecash:qrmm7ed0px8tydrlhgvu3putwpwzlfyr0uzfc0slxp',
   amount: 4.5,
@@ -56,6 +64,8 @@ var config = {
   successText: 'Purchase Complete!',
   onSuccess: mySuccessFunction,
   onTransaction: myTransactionFunction,
+  onOpen: myOpenFunction,
+  onClose: myCloseFunction,
   randomSatoshis: true
 };
 
@@ -71,6 +81,14 @@ function mySuccessFunction(txid, amount) {
 
 function myTransactionFunction(txid, amount) {
   console.log( 'Received: ' + amount );
+}
+
+function myOpenFunction() {
+  console.log('Dialog opened.');
+}
+
+function myCloseFunction(success) {
+  console.log(`Dialog closed - user ${success ? 'did' : 'did not'} pay.`);
 }
 
 // render JS button
@@ -93,6 +111,8 @@ render( '#advanced-usage-example', {
   successText: 'Purchase Complete!',
   onSuccess: mySuccessFunction,
   onTransaction: myTransactionFunction,
+  onOpen: myOpenFunction,
+  onClose: myCloseFunction,
   randomSatoshis: true
 })
 
@@ -551,6 +571,64 @@ onTransaction: transactionCallback
 
 ```react
 onTransaction = transactionCallback
+```
+
+<!-- tabs:end -->
+
+## on-open
+
+> **参数"on-open"指定了在按钮被点击、对话框打开之前运行的回调函数。**
+
+?> 这个参数是可选的。默认值为空。可能的值是任何已定义的函数。
+
+**Example:**
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+on-open="successCallback"
+```
+
+#### ** JavaScript **
+
+```javascript
+onOpen: successCallback
+```
+
+#### ** React **
+
+```react
+onOpen = successCallback
+```
+
+<!-- tabs:end -->
+
+## on-close
+
+> **参数"on-close"指定了对话框关闭时运行的回调函数。**
+
+?> 这个参数是可选的。默认值为空。可能的值是任何已定义的函数。
+
+**Example:**
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+on-close="successCallback"
+```
+
+#### ** JavaScript **
+
+```javascript
+onClose: successCallback
+```
+
+#### ** React **
+
+```react
+onClose = successCallback
 ```
 
 <!-- tabs:end -->
