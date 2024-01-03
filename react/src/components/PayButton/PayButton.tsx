@@ -24,7 +24,7 @@ export interface PayButtonProps extends ButtonProps {
   editable?: boolean;
   onSuccess?: (txid: string, amount: BigNumber) => void;
   onTransaction?: (txid: string, amount: BigNumber) => void;
-  onOpen?: (expectedAmount?: number | string) => void;
+  onOpen?: (expectedAmount?: number | string, address?: string) => void;
   onClose?: (success: boolean) => void;
   wsBaseUrl?: string;
   apiBaseUrl?: string;
@@ -58,7 +58,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
   } = Object.assign({}, PayButton.defaultProps, props);
 
   const handleButtonClick = (): void => {
-    if (onOpen !== undefined) onOpen(amount);
+    if (onOpen !== undefined) onOpen(amount, to);
     setDialogOpen(true);
   };
   const handleCloseDialog = (success: boolean): void => {
