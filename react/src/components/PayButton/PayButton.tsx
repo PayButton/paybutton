@@ -5,6 +5,7 @@ import Button, { ButtonProps } from '../Button/Button';
 import { currency } from '../../util/api-client';
 import { PaymentDialog } from '../PaymentDialog/PaymentDialog';
 import { isValidCashAddress, isValidXecAddress } from '../../util/address';
+import { currencyObject, getCurrencyObject } from '../../util/satoshis';
 import BigNumber from 'bignumber.js';
 
 export interface PayButtonProps extends ButtonProps {
@@ -23,7 +24,7 @@ export interface PayButtonProps extends ButtonProps {
   editable?: boolean;
   onSuccess?: (txid: string, amount: BigNumber) => void;
   onTransaction?: (txid: string, amount: BigNumber) => void;
-  onOpen?: () => void;
+  onOpen?: (expectedAmount?: number | string) => void;
   onClose?: (success: boolean) => void;
   wsBaseUrl?: string;
   apiBaseUrl?: string;
@@ -33,10 +34,11 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [disabled, setDisabled] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const [amount, setAmount] = useState(props.amount);
+  const [currencyObj, setCurrencyObj] = useState<currencyObject>();
 
   const {
     to,
-    amount,
     currency,
     text,
     hoverText,
@@ -56,7 +58,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
   } = Object.assign({}, PayButton.defaultProps, props);
 
   const handleButtonClick = (): void => {
-    if (onOpen !== undefined) onOpen();
+    if (onOpen !== undefined) onOpen(amount);
     setDialogOpen(true);
   };
   const handleCloseDialog = (success: boolean): void => {
@@ -65,7 +67,11 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
   };
 
   useEffect(() => {
-    const invalidAmount = amount !== undefined && isNaN(+amount);
+    setAmount(props.amount);
+  }, [props.amount]);
+
+  useEffect(() => {
+    const invalidAmount = props.amount !== undefined && isNaN(+props.amount);
 
     if (to !== undefined) {
       setDisabled(!!props.disabled);
@@ -77,7 +83,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
       setDisabled(true);
       setErrorMsg('Invalid Recipient');
     }
-  }, [to, amount]);
+  }, [to, props.amount, props.disabled]);
 
   useEffect(() => {
     if (!to) {
@@ -90,6 +96,20 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
       setErrorMsg('Invalid Recipient');
     }
   }, [to]);
+
+  useEffect(() => {
+    if (dialogOpen === false && props.amount && currency) {
+      const obj = getCurrencyObject(
+        Number(props.amount),
+        currency,
+        randomSatoshis,
+      );
+      setTimeout(() => {
+        setAmount(obj.float);
+        setCurrencyObj(obj);
+      }, 300);
+    }
+  }, [dialogOpen, props.amount, currency, randomSatoshis]);
 
   const theme = useTheme(props.theme, isValidXecAddress(to));
 
@@ -110,6 +130,9 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
         disableScrollLock
         to={to}
         amount={amount}
+        setAmount={setAmount}
+        currencyObj={currencyObj}
+        setCurrencyObj={setCurrencyObj}
         currency={currency}
         animation={animation}
         randomSatoshis={randomSatoshis}

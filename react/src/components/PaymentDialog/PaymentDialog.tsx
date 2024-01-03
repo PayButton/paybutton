@@ -7,11 +7,15 @@ import { WidgetContainer } from '../Widget/WidgetContainer';
 import { isValidCashAddress, isValidXecAddress } from '../../util/address';
 import { currency } from '../../util/api-client';
 import BigNumber from 'bignumber.js';
+import { currencyObject } from '../../util/satoshis';
 
 export interface PaymentDialogProps extends ButtonProps {
   to: string;
   amount?: number | string;
+  setAmount: Function;
   currency?: currency;
+  currencyObj?: currencyObject;
+  setCurrencyObj: Function;
   theme?: ThemeName | Theme;
   successText?: string;
   randomSatoshis?: boolean | number;
@@ -39,7 +43,10 @@ export const PaymentDialog = (
   const {
     to,
     amount,
+    setAmount,
     currency,
+    currencyObj,
+    setCurrencyObj,
     successText,
     animation,
     randomSatoshis,
@@ -75,7 +82,7 @@ export const PaymentDialog = (
     } else {
       setDisabled(true);
     }
-  }, [to, amount]);
+  }, [to, amount, props.disabled]);
 
   const ButtonComponent: React.FC<ButtonProps> = (
     props: ButtonProps,
@@ -103,6 +110,9 @@ export const PaymentDialog = (
           active={dialogOpen}
           to={to}
           amount={cleanAmount}
+          setAmount={setAmount}
+          currencyObj={currencyObj}
+          setCurrencyObj={setCurrencyObj}
           currency={currency}
           animation={animation}
           randomSatoshis={randomSatoshis}
