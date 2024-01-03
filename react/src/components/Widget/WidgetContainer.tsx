@@ -9,7 +9,6 @@ import {
 } from '../../util/address';
 import {
   Transaction,
-  cryptoCurrency,
   isCrypto,
   isFiat,
   currency,
