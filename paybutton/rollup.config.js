@@ -8,6 +8,7 @@ import svg from 'rollup-plugin-svg';
 import typescript from '@rollup/plugin-typescript';
 import json from "@rollup/plugin-json";
 import dotenv from "rollup-plugin-dotenv";
+import progress from "rollup-plugin-progress";
 
 export default ( env ) => ({
   input: 'src/index.tsx',
@@ -17,6 +18,9 @@ export default ( env ) => ({
     format: 'umd',
   },
   plugins: [
+    progress({
+      clearline: true
+    }),
     alias({
       entries: [
         { find: 'react', replacement: require.resolve( 'preact/compat' ) },
