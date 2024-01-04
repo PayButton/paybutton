@@ -36,6 +36,7 @@ export interface WidgetProps {
   text?: string;
   ButtonComponent?: React.ComponentType;
   loading: boolean;
+  setLoading: Function;
   success: boolean;
   successText?: string;
   theme?: ThemeName | Theme;
@@ -124,6 +125,7 @@ export const Widget: React.FC<WidgetProps> = props => {
     setAmount,
     foot,
     loading,
+    setLoading,
     success,
     successText,
     goalAmount,
@@ -146,7 +148,6 @@ export const Widget: React.FC<WidgetProps> = props => {
   const [copied, setCopied] = useState(false);
   const [recentlyCopied, setRecentlyCopied] = useState(false);
   const [totalReceived, setTotalReceived] = useState<number | undefined>(undefined);
-  const [isLoading, setIsLoading] = useState(!!goalAmount);
   const [disabled, setDisabled] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [goalText, setGoalText] = useState('');
@@ -411,7 +412,7 @@ export const Widget: React.FC<WidgetProps> = props => {
         if (goal !== undefined) {
           setGoalPercent((100 * progress.float) / goal.float);
           setGoalText(`${progress.float} / ${cleanGoalAmount}`);
-          setIsLoading(false);
+          setLoading(false);
         }
       } else {
         if (hasPrice) {
@@ -429,7 +430,7 @@ export const Widget: React.FC<WidgetProps> = props => {
           const receivedRatio = `${receivedText} / ${goalText}`;
           const receivedPercentage: number =
             100 * (receivedVal / cleanGoalAmount);
-          setIsLoading(false);
+          setLoading(false);
           setGoalPercent(receivedPercentage);
           setGoalText(receivedRatio);
         }
@@ -474,7 +475,7 @@ export const Widget: React.FC<WidgetProps> = props => {
           px={3}
           pt={2}
         >
-          {isLoading ? (
+          {loading ? (
             <Typography
               className={classes.text}
               style={{ margin: '10px auto 20px' }}

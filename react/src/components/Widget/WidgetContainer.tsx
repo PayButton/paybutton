@@ -23,7 +23,7 @@ import BigNumber from 'bignumber.js';
 export interface WidgetContainerProps
   extends Omit<
     WidgetProps,
-    'loading' | 'success' | 'setNewTxs' | 'setCurrencyObject'
+    'loading' | 'setLoading' | 'success' | 'setNewTxs' | 'setCurrencyObject'
   > {
   active?: boolean;
   amount?: number;
@@ -238,6 +238,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
           currencyObject={currencyObj}
           setCurrencyObject={setCurrencyObj}
           loading={loading}
+          setLoading={setLoading}
           randomSatoshis={randomSatoshis}
           price={price}
           success={success}
