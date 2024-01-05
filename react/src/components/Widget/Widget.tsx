@@ -32,7 +32,7 @@ type QRCodeProps = BaseQRCodeProps & { renderAs: 'svg' };
 export interface WidgetProps {
   to: string;
   amount?: number | null | string;
-  setAmount: Function;
+  setAmount?: Function;
   text?: string;
   ButtonComponent?: React.ComponentType;
   loading: boolean;
@@ -46,7 +46,7 @@ export interface WidgetProps {
   currency?: currency;
   animation?: animation;
   currencyObject?: currencyObject | undefined;
-  setCurrencyObject: Function;
+  setCurrencyObject?: Function;
   randomSatoshis?: boolean | number;
   price?: number;
   editable?: boolean;
@@ -121,8 +121,6 @@ const useStyles = makeStyles({
 export const Widget: React.FC<WidgetProps> = props => {
   const {
     to,
-    amount,
-    setAmount,
     foot,
     loading,
     setLoading,
@@ -133,8 +131,6 @@ export const Widget: React.FC<WidgetProps> = props => {
     currency = getCurrencyTypeFromAddress(to),
     animation,
     randomSatoshis = true,
-    currencyObject,
-    setCurrencyObject,
     editable,
     setNewTxs,
     newTxs,
@@ -159,6 +155,28 @@ export const Widget: React.FC<WidgetProps> = props => {
   const [userEditedAmount, setUserEditedAmount] = useState<currencyObject>();
   const [text, setText] = useState('Send any amount of BCH');
   const [widgetButtonText, setWidgetButtonText] = useState('Send Payment');
+
+  let amount: number | string | undefined | null
+  let setAmount: Function
+  let currencyObject: currencyObject | undefined
+  let setCurrencyObject: Function
+
+  const [thisAmount, setThisAmount] = useState(props.amount);
+  const [thisCurrencyObject, setThisCurrencyObject] = useState(props.currencyObject);
+  if (props.setAmount !== undefined) {
+    setAmount = props.setAmount
+    amount = props.amount
+  } else {
+    setAmount = setThisAmount
+    amount = thisAmount
+  }
+  if (props.setCurrencyObject !== undefined) {
+    setCurrencyObject = props.setCurrencyObject
+    currencyObject = props.currencyObject
+  } else {
+    setCurrencyObject = setThisCurrencyObject
+    currencyObject = thisCurrencyObject
+  }
 
   const blurCSS = disabled ? { filter: 'blur(5px)' } : {};
 
