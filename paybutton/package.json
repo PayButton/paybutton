@@ -29,7 +29,7 @@
   },
   "scripts": {
     "dev": "rollup -c rollup.dev.js -w",
-    "build": "npm ci && rollup -c rollup.prod.js"
+    "build": "rollup -c rollup.prod.js"
   },
   "author": "",
   "repository": {
