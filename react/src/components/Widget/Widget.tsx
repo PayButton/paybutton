@@ -492,7 +492,7 @@ export const Widget: React.FC<WidgetProps> = props => {
           px={3}
           pt={2}
         >
-          {loading ? (
+          {loading && shouldDisplayGoal ? (
             <Typography
               className={classes.text}
               style={{ margin: '10px auto 20px' }}
