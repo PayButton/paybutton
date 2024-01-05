@@ -1,7 +1,7 @@
 import axios from 'axios';
 import _ from 'lodash';
 import { Socket } from 'socket.io-client'
-import config from '../../../paybutton-config.json'
+import config from '../paybutton-config.json'
 
 export const getAddressDetails = async (
   address: string,
