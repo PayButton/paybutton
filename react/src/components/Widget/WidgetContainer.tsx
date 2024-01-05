@@ -23,7 +23,7 @@ import BigNumber from 'bignumber.js';
 export interface WidgetContainerProps
   extends Omit<
     WidgetProps,
-    'loading' | 'setLoading' | 'success' | 'setNewTxs' | 'setCurrencyObject'
+    'success' | 'setNewTxs' | 'setCurrencyObject'
   > {
   active?: boolean;
   amount?: number;
@@ -102,7 +102,6 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
     const { enqueueSnackbar } = useSnackbar();
     const [cryptoAmount, setCryptoAmount] = useState<string>();
 
-    const [loading, setLoading] = useState(true);
     const [price, setPrice] = useState(0);
 
     const [newTxs, setNewTxs] = useState<Transaction[] | undefined>();
@@ -120,13 +119,11 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
           const data = await getBchFiatPrice(currency, apiBaseUrl);
 
           const { price } = data;
-          setLoading(false);
           setPrice(price);
         } else if (isFiat(currency) && isValidXecAddress(address)) {
           const data = await getXecFiatPrice(currency, apiBaseUrl);
 
           const { price } = data;
-          setLoading(false);
           setPrice(price);
         }
       } catch (error) {
@@ -204,14 +201,6 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
     }, [newTxs, handleNewTransaction]);
 
     useEffect(() => {
-      if (!active) return;
-
-      if (!props.amount || isCrypto(currency)) {
-        setLoading(false);
-      }
-    }, [active, props.amount, currency]);
-
-    useEffect(() => {
       if (currencyObj && isFiat(currency) && price) {
         const addressType: currency = getCurrencyTypeFromAddress(to);
         const convertedObj = getCurrencyObject(
@@ -237,8 +226,6 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
           animation={animation}
           currencyObject={currencyObj}
           setCurrencyObject={setCurrencyObj}
-          loading={loading}
-          setLoading={setLoading}
           randomSatoshis={randomSatoshis}
           price={price}
           success={success}

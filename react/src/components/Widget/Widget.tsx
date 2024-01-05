@@ -35,8 +35,6 @@ export interface WidgetProps {
   setAmount?: Function;
   text?: string;
   ButtonComponent?: React.ComponentType;
-  loading: boolean;
-  setLoading: Function;
   success: boolean;
   successText?: string;
   theme?: ThemeName | Theme;
@@ -122,8 +120,6 @@ export const Widget: React.FC<WidgetProps> = props => {
   const {
     to,
     foot,
-    loading,
-    setLoading,
     success,
     successText,
     goalAmount,
@@ -138,9 +134,9 @@ export const Widget: React.FC<WidgetProps> = props => {
     wsBaseUrl
   } = Object.assign({}, Widget.defaultProps, props);
 
-  const theme = useTheme(props.theme, isValidXecAddress(to));
-  const classes = useStyles({ success, loading, theme });
 
+
+  const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
   const [recentlyCopied, setRecentlyCopied] = useState(false);
   const [totalReceived, setTotalReceived] = useState<number | undefined>(undefined);
@@ -155,6 +151,9 @@ export const Widget: React.FC<WidgetProps> = props => {
   const [userEditedAmount, setUserEditedAmount] = useState<currencyObject>();
   const [text, setText] = useState('Send any amount of BCH');
   const [widgetButtonText, setWidgetButtonText] = useState('Send Payment');
+
+  const theme = useTheme(props.theme, isValidXecAddress(to));
+  const classes = useStyles({ success, loading, theme });
 
   let amount: number | string | undefined | null
   let setAmount: Function
@@ -620,7 +619,6 @@ export const Widget: React.FC<WidgetProps> = props => {
 };
 
 Widget.defaultProps = {
-  loading: false,
   success: false,
   successText: 'Thank you!',
   editable: false,
