@@ -2,6 +2,7 @@ import camelcase from 'camelcase';
 import { PayButton, PayButtonProps, PaymentDialog, PaymentDialogProps, Widget, WidgetProps } from 'paybutton';
 import { h } from 'preact';
 import { render } from 'preact/compat';
+import WidgetContainer from 'paybutton/dist/components/Widget/WidgetContainer';
 
 declare global {
   interface Window {
@@ -238,7 +239,7 @@ export default {
   renderWidget: (el: HTMLElement, props: WidgetProps) => {
     if (el !== null) {
       validateJSProps(props)
-      render(<Widget {...props} />, el)
+      render(<WidgetContainer {...props} />, el)
     }
   },
   openDialog: (props: PaymentDialogProps) => openDialog(props)

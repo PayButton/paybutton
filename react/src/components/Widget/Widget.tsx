@@ -32,10 +32,9 @@ type QRCodeProps = BaseQRCodeProps & { renderAs: 'svg' };
 export interface WidgetProps {
   to: string;
   amount?: number | null | string;
-  setAmount: Function;
+  setAmount?: Function;
   text?: string;
   ButtonComponent?: React.ComponentType;
-  loading: boolean;
   success: boolean;
   successText?: string;
   theme?: ThemeName | Theme;
@@ -45,7 +44,7 @@ export interface WidgetProps {
   currency?: currency;
   animation?: animation;
   currencyObject?: currencyObject | undefined;
-  setCurrencyObject: Function;
+  setCurrencyObject?: Function;
   randomSatoshis?: boolean | number;
   price?: number;
   editable?: boolean;
@@ -120,10 +119,7 @@ const useStyles = makeStyles({
 export const Widget: React.FC<WidgetProps> = props => {
   const {
     to,
-    amount,
-    setAmount,
     foot,
-    loading,
     success,
     successText,
     goalAmount,
@@ -131,8 +127,6 @@ export const Widget: React.FC<WidgetProps> = props => {
     currency = getCurrencyTypeFromAddress(to),
     animation,
     randomSatoshis = true,
-    currencyObject,
-    setCurrencyObject,
     editable,
     setNewTxs,
     newTxs,
@@ -140,13 +134,12 @@ export const Widget: React.FC<WidgetProps> = props => {
     wsBaseUrl
   } = Object.assign({}, Widget.defaultProps, props);
 
-  const theme = useTheme(props.theme, isValidXecAddress(to));
-  const classes = useStyles({ success, loading, theme });
 
+
+  const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
   const [recentlyCopied, setRecentlyCopied] = useState(false);
   const [totalReceived, setTotalReceived] = useState<number | undefined>(undefined);
-  const [isLoading, setIsLoading] = useState(!!goalAmount);
   const [disabled, setDisabled] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [goalText, setGoalText] = useState('');
@@ -158,6 +151,31 @@ export const Widget: React.FC<WidgetProps> = props => {
   const [userEditedAmount, setUserEditedAmount] = useState<currencyObject>();
   const [text, setText] = useState('Send any amount of BCH');
   const [widgetButtonText, setWidgetButtonText] = useState('Send Payment');
+
+  const theme = useTheme(props.theme, isValidXecAddress(to));
+  const classes = useStyles({ success, loading, theme });
+
+  let amount: number | string | undefined | null
+  let setAmount: Function
+  let currencyObject: currencyObject | undefined
+  let setCurrencyObject: Function
+
+  const [thisAmount, setThisAmount] = useState(props.amount);
+  const [thisCurrencyObject, setThisCurrencyObject] = useState(props.currencyObject);
+  if (props.setAmount !== undefined) {
+    setAmount = props.setAmount
+    amount = props.amount
+  } else {
+    setAmount = setThisAmount
+    amount = thisAmount
+  }
+  if (props.setCurrencyObject !== undefined) {
+    setCurrencyObject = props.setCurrencyObject
+    currencyObject = props.currencyObject
+  } else {
+    setCurrencyObject = setThisCurrencyObject
+    currencyObject = thisCurrencyObject
+  }
 
   const blurCSS = disabled ? { filter: 'blur(5px)' } : {};
 
@@ -411,7 +429,7 @@ export const Widget: React.FC<WidgetProps> = props => {
         if (goal !== undefined) {
           setGoalPercent((100 * progress.float) / goal.float);
           setGoalText(`${progress.float} / ${cleanGoalAmount}`);
-          setIsLoading(false);
+          setLoading(false);
         }
       } else {
         if (hasPrice) {
@@ -429,7 +447,7 @@ export const Widget: React.FC<WidgetProps> = props => {
           const receivedRatio = `${receivedText} / ${goalText}`;
           const receivedPercentage: number =
             100 * (receivedVal / cleanGoalAmount);
-          setIsLoading(false);
+          setLoading(false);
           setGoalPercent(receivedPercentage);
           setGoalText(receivedRatio);
         }
@@ -474,7 +492,7 @@ export const Widget: React.FC<WidgetProps> = props => {
           px={3}
           pt={2}
         >
-          {isLoading ? (
+          {loading ? (
             <Typography
               className={classes.text}
               style={{ margin: '10px auto 20px' }}
@@ -601,7 +619,6 @@ export const Widget: React.FC<WidgetProps> = props => {
 };
 
 Widget.defaultProps = {
-  loading: false,
   success: false,
   successText: 'Thank you!',
   editable: false,
