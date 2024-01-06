@@ -10,7 +10,7 @@ import {
 import copy from 'copy-to-clipboard';
 import QRCode, { BaseQRCodeProps } from 'qrcode.react';
 import React, { useEffect, useMemo, useState } from 'react';
-import config from '../../../../paybutton-config.json'
+import config from '../../paybutton-config.json'
 
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
 import {
