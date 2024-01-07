@@ -325,7 +325,7 @@ export const Widget: React.FC<WidgetProps> = props => {
         setUrl(url);
       }
     }
-  }, [currencyObject, price, amount]);
+  }, [to, currencyObject, price, amount]);
 
   const handleButtonClick = () => {
     if (addressType === 'XEC'){
