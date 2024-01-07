@@ -16,7 +16,7 @@
   },
   "scripts": {
     "build": "microbundle --jsx React.createElement --format modern,cjs",
-    "postbuild": "cp -rf dist/react/src/* dist/",
+    "postbuild": "cp -rf dist/react/src/* dist/ || true",
     "lint": "eslint 'src/**/*.{ts,tsx}' --fix",
     "prettier": "prettier --write 'src/**/*.ts'",
     "dev": "concurrently npm:watch npm:storybook",
