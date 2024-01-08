@@ -135,7 +135,6 @@ export const Widget: React.FC<WidgetProps> = props => {
   } = Object.assign({}, Widget.defaultProps, props);
 
 
-
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
   const [recentlyCopied, setRecentlyCopied] = useState(false);
@@ -161,14 +160,19 @@ export const Widget: React.FC<WidgetProps> = props => {
   let setCurrencyObject: Function
 
   const [thisAmount, setThisAmount] = useState(props.amount);
-  const [thisCurrencyObject, setThisCurrencyObject] = useState(props.currencyObject);
   if (props.setAmount !== undefined) {
     setAmount = props.setAmount
     amount = props.amount
   } else {
     setAmount = setThisAmount
     amount = thisAmount
+    if (props.amount !== undefined) setAmount(props.amount)
   }
+  const [thisCurrencyObject, setThisCurrencyObject] = useState(getCurrencyObject(
+    Number(amount),
+    currency,
+    randomSatoshis,
+  ));
   if (props.setCurrencyObject !== undefined) {
     setCurrencyObject = props.setCurrencyObject
     currencyObject = props.currencyObject
@@ -267,10 +271,8 @@ export const Widget: React.FC<WidgetProps> = props => {
       setCurrencyObject(obj);
     } else if (amount && addressType) {
       cleanAmount = +amount;
-      if (currencyObject === undefined) {
-        const obj = getCurrencyObject(cleanAmount, currency, randomSatoshis);
-        setCurrencyObject(obj);
-      }
+      const obj = getCurrencyObject(cleanAmount, currency, randomSatoshis);
+      setCurrencyObject(obj);
     }
   }, [amount, currency, userEditedAmount, addressType]);
 
