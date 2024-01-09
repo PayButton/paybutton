@@ -155,19 +155,10 @@ export const Widget: React.FC<WidgetProps> = props => {
   const classes = useStyles({ success, loading, theme });
 
   let amount: number | string | undefined | null
-  let setAmount: Function
   let currencyObject: currencyObject | undefined
   let setCurrencyObject: Function
 
   const [thisAmount, setThisAmount] = useState(props.amount);
-  if (props.setAmount !== undefined) {
-    setAmount = props.setAmount
-    amount = props.amount
-  } else {
-    setAmount = setThisAmount
-    amount = thisAmount
-    if (props.amount !== undefined) setAmount(props.amount)
-  }
   const [thisCurrencyObject, setThisCurrencyObject] = useState(getCurrencyObject(
     Number(amount),
     currency,
@@ -232,7 +223,7 @@ export const Widget: React.FC<WidgetProps> = props => {
   }, [newTxs]);
 
   useEffect(() => {
-    const invalidAmount = amount !== undefined && amount && isNaN(+amount);
+    const invalidAmount = thisAmount !== undefined && thisAmount && isNaN(+thisAmount);
 
     if (isValidCashAddress(to) || isValidXecAddress(to)) {
       setDisabled(!!props.disabled);
@@ -244,12 +235,12 @@ export const Widget: React.FC<WidgetProps> = props => {
       setDisabled(true);
       setErrorMsg('Invalid Recipient');
     }
-  }, [to, amount]);
+  }, [to, thisAmount]);
 
   useEffect(() => {
-    const invalidAmount = amount !== undefined && amount && isNaN(+amount);
+    const invalidAmount = thisAmount !== undefined && thisAmount && isNaN(+thisAmount);
     const isNegativeNumber =
-      typeof amount === 'string' && amount.startsWith('-');
+      typeof thisAmount === 'string' && thisAmount.startsWith('-');
     let cleanAmount: any;
 
     if (invalidAmount) {
@@ -266,15 +257,15 @@ export const Widget: React.FC<WidgetProps> = props => {
       }
     }
 
-    if (userEditedAmount !== undefined && amount && addressType) {
-      const obj = getCurrencyObject(+amount, currency, false);
+    if (userEditedAmount !== undefined && thisAmount && addressType) {
+      const obj = getCurrencyObject(+thisAmount, currency, false);
       setCurrencyObject(obj);
-    } else if (amount && addressType) {
-      cleanAmount = +amount;
+    } else if (thisAmount && addressType) {
+      cleanAmount = +thisAmount;
       const obj = getCurrencyObject(cleanAmount, currency, randomSatoshis);
       setCurrencyObject(obj);
     }
-  }, [amount, currency, userEditedAmount, addressType]);
+  }, [thisAmount, currency, userEditedAmount, addressType]);
 
   useEffect(() => {
     if (to === undefined) {
@@ -327,7 +318,7 @@ export const Widget: React.FC<WidgetProps> = props => {
         setUrl(url);
       }
     }
-  }, [to, currencyObject, price, amount]);
+  }, [to, currencyObject, price, thisAmount]);
 
   const handleButtonClick = () => {
     if (addressType === 'XEC'){
@@ -419,7 +410,10 @@ export const Widget: React.FC<WidgetProps> = props => {
     const userEdited = getCurrencyObject(+amount, currency, false);
 
     setUserEditedAmount(userEdited);
-    setAmount(amount);
+    setThisAmount(amount);
+    if (props.setAmount) {
+      props.setAmount(amount)
+    }
   };
 
   useEffect(() => {
@@ -581,7 +575,7 @@ export const Widget: React.FC<WidgetProps> = props => {
               <Grid item xs={6}>
                 <TextField
                   label={currency}
-                  value={amount || 0}
+                  value={thisAmount || 0}
                   onChange={handleAmountChange}
                   inputProps={{ maxlength: '12' }}
                   name="Amount"
