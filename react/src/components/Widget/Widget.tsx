@@ -416,6 +416,10 @@ export const Widget: React.FC<WidgetProps> = props => {
     }
   };
 
+  useEffect(() => { 
+    setThisAmount(props.amount);
+  }, [props.amount]);
+
   useEffect(() => {
     if (totalReceived !== undefined) {
       const progress = getCurrencyObject(totalReceived, currency, false);
