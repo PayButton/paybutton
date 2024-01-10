@@ -25,7 +25,7 @@ import BarChart from '../BarChart/BarChart';
 import { getCurrencyObject, currencyObject } from '../../util/satoshis';
 import { currency, getAddressBalance, getAddressDetails, isFiat, setListener, Transaction, getCashtabProviderStatus, cryptoCurrency } from '../../util/api-client';
 import PencilIcon from '../../assets/edit-pencil';
-import io from 'socket.io-client'
+import io, { Socket } from 'socket.io-client'
 
 type QRCodeProps = BaseQRCodeProps & { renderAs: 'svg' };
 
@@ -143,6 +143,7 @@ export const Widget: React.FC<WidgetProps> = props => {
   const [errorMsg, setErrorMsg] = useState('');
   const [goalText, setGoalText] = useState('');
   const [goalPercent, setGoalPercent] = useState(0);
+  const [socket, setSocket] = useState<Socket | undefined>(undefined)
   const [addressType, setAddressType] = useState<cryptoCurrency>();
   const [convertedCurrencyObj, setConvertedCurrencyObj] = useState<currencyObject|null>();
   const price = props.price;
@@ -193,12 +194,16 @@ export const Widget: React.FC<WidgetProps> = props => {
   useEffect(() => {
     (async (): Promise<void> => {
       void await getAddressDetails(to, apiBaseUrl);
-      const socket = io(`${wsBaseUrl ?? config.wsBaseUrl}/addresses`, {
+      const newSocket = io(`${wsBaseUrl ?? config.wsBaseUrl}/addresses`, {
         query: { addresses: [to] }
       })
-      setListener(socket, setNewTxs)
+      if (socket !== undefined) {
+        socket.offAny()
+      }
+      setSocket(newSocket)
+      setListener(newSocket, setNewTxs)
     })();
-  }, [])
+  }, [to])
 
   useEffect(() => {
     (async (): Promise<void> => {
@@ -407,7 +412,7 @@ export const Widget: React.FC<WidgetProps> = props => {
     }
   };
 
-  useEffect(() => { 
+  useEffect(() => {
     setThisAmount(props.amount);
   }, [props.amount]);
 
