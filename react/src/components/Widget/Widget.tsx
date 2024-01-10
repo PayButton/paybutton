@@ -154,23 +154,8 @@ export const Widget: React.FC<WidgetProps> = props => {
   const theme = useTheme(props.theme, isValidXecAddress(to));
   const classes = useStyles({ success, loading, theme });
 
-  let amount: number | string | undefined | null
-  let currencyObject: currencyObject | undefined
-  let setCurrencyObject: Function
-
   const [thisAmount, setThisAmount] = useState(props.amount);
-  const [thisCurrencyObject, setThisCurrencyObject] = useState(getCurrencyObject(
-    Number(amount),
-    currency,
-    randomSatoshis,
-  ));
-  if (props.setCurrencyObject !== undefined) {
-    setCurrencyObject = props.setCurrencyObject
-    currencyObject = props.currencyObject
-  } else {
-    setCurrencyObject = setThisCurrencyObject
-    currencyObject = thisCurrencyObject
-  }
+  const [thisCurrencyObject, setThisCurrencyObject] = useState(props.currencyObject);
 
   const blurCSS = disabled ? { filter: 'blur(5px)' } : {};
 
@@ -259,13 +244,19 @@ export const Widget: React.FC<WidgetProps> = props => {
 
     if (userEditedAmount !== undefined && thisAmount && addressType) {
       const obj = getCurrencyObject(+thisAmount, currency, false);
-      setCurrencyObject(obj);
+      setThisCurrencyObject(obj);
+      if (props.setCurrencyObject) {
+        props.setCurrencyObject(obj)
+      }
     } else if (thisAmount && addressType) {
       cleanAmount = +thisAmount;
       const obj = getCurrencyObject(cleanAmount, currency, randomSatoshis);
-      setCurrencyObject(obj);
+      setThisCurrencyObject(obj);
+      if (props.setCurrencyObject) {
+        props.setCurrencyObject(obj)
+      }
     }
-  }, [thisAmount, currency, userEditedAmount, addressType]);
+  }, [thisAmount, currency, userEditedAmount]);
 
   useEffect(() => {
     if (to === undefined) {
@@ -288,15 +279,15 @@ export const Widget: React.FC<WidgetProps> = props => {
     }
     url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
 
-    if (currencyObject && hasPrice) {
+    if (thisCurrencyObject && hasPrice) {
       const convertedObj = price
-        ? getCurrencyObject(currencyObject.float / price, addressType, randomSatoshis)
+        ? getCurrencyObject(thisCurrencyObject.float / price, addressType, randomSatoshis)
         : null;
 
       if (convertedObj) {
         setConvertedCurrencyObj(convertedObj)
         setText(
-          `Send ${currencyObject.string} ${currencyObject.currency} = ${convertedObj.string} ${addressType}`,
+          `Send ${thisCurrencyObject.string} ${thisCurrencyObject.currency} = ${convertedObj.string} ${addressType}`,
         );
         query.push(`amount=${convertedObj.float}`);
       }
@@ -305,11 +296,11 @@ export const Widget: React.FC<WidgetProps> = props => {
       setUrl(url);
     } else {
       const notZeroValue: boolean =
-        currencyObject?.float !== undefined && currencyObject.float > 0;
-      if (!isFiat(currency) && currencyObject && notZeroValue) {
-        const bchType: string = currencyObject.currency;
-        setText(`Send ${currencyObject.string} ${bchType}`);
-        query.push(`amount=${currencyObject.float}`);
+        thisCurrencyObject?.float !== undefined && thisCurrencyObject.float > 0;
+      if (!isFiat(currency) && thisCurrencyObject && notZeroValue) {
+        const bchType: string = thisCurrencyObject.currency;
+        setText(`Send ${thisCurrencyObject.string} ${bchType}`);
+        query.push(`amount=${thisCurrencyObject.float}`);
         url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
         setUrl(url);
       } else {
@@ -318,7 +309,7 @@ export const Widget: React.FC<WidgetProps> = props => {
         setUrl(url);
       }
     }
-  }, [to, currencyObject, price, thisAmount]);
+  }, [to, thisCurrencyObject, price, thisAmount]);
 
   const handleButtonClick = () => {
     if (addressType === 'XEC'){
@@ -327,7 +318,7 @@ export const Widget: React.FC<WidgetProps> = props => {
       if (convertedCurrencyObj) {
         thisAmount = convertedCurrencyObj.float
       } else {
-        thisAmount = (currencyObject ? currencyObject.float : undefined)
+        thisAmount = (thisCurrencyObject ? thisCurrencyObject.float : undefined)
       }
       if (!hasExtension) {
         window.location.href = url;
@@ -362,7 +353,7 @@ export const Widget: React.FC<WidgetProps> = props => {
     if (convertedCurrencyObj) {
       thisAmount = convertedCurrencyObj.float
     } else {
-      thisAmount = (currencyObject ? currencyObject.float : undefined)
+      thisAmount = (thisCurrencyObject ? thisCurrencyObject.float : undefined)
     }
     if (isValidCashAddress(address)) {
       prefixedAddress = `bitcoincash:${address.replace(/^.*:/, '')}`;
