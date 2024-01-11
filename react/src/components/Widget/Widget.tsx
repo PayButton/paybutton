@@ -199,7 +199,7 @@ export const Widget: React.FC<WidgetProps> = props => {
         query: { addresses: [to] }
       })
       if (socket !== undefined) {
-        const ret = socket.disconnect()
+        socket.disconnect()
       }
       setSocket(newSocket)
       setListener(newSocket, setNewTxs)
