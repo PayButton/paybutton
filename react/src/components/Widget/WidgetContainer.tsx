@@ -147,7 +147,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
         if (!hideToasts)
           // TODO: This assumes only bch
           enqueueSnackbar(
-            `${successText} | Received ${receivedAmount} ${currencyTicker}`,
+            `${successText ? successText + ' | ' : ''}Received ${receivedAmount} ${currencyTicker}`,
             snackbarOptions,
           );
 
