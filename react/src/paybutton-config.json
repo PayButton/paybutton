@@ -1,4 +1,9 @@
 {
   "wsBaseUrl": "https://socket.paybutton.org",
-  "apiBaseUrl": "https://paybutton.org"
+  "apiBaseUrl": "https://paybutton.org",
+  "defaultCurrency": "xec",
+  "defaultWallets": {
+    "xec": "ecash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7quss2vxek",
+    "bch": "bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp"
+  }
 }

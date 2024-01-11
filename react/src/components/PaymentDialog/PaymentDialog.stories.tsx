@@ -4,6 +4,8 @@ import React from 'react';
 import { ThemeName } from '../../themes';
 import PaymentDialog, { PaymentDialogProps } from './PaymentDialog';
 
+import { defaultWallets, defaultCurrency } from '../../paybutton-config.json';
+
 export default {
   title: 'PaymentDialog',
   component: PaymentDialog,
@@ -20,7 +22,7 @@ export default {
     onTransaction: { table: { disable: true } },
   },
   args: {
-    to: 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp',
+    to: defaultWallets[defaultCurrency],
   },
   parameters: {
     jest: ['Button'],
