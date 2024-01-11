@@ -48,14 +48,14 @@ UsdAmount.args = {
   amount: 5,
   currency: 'USD',
   text: '$5',
-  hoverText: 'Pay with BCH',
+  hoverText: 'Pay with XEC',
   animation: 'none',
 };
 
 export const withGoal = Template.bind({});
 withGoal.storyName = 'With Goal';
 withGoal.args = {
-  hoverText: 'Pay with BCH',
+  hoverText: 'Pay with XEC',
   animation: 'none',
   goalAmount: 100,
 };
