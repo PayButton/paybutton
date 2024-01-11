@@ -7,9 +7,9 @@ import {
   TextField,
   Grid,
 } from '@material-ui/core';
+import React, { useEffect, useMemo, useState } from 'react';
 import copy from 'copy-to-clipboard';
 import QRCode, { BaseQRCodeProps } from 'qrcode.react';
-import React, { useEffect, useMemo, useState } from 'react';
 import config from '../../paybutton-config.json'
 
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
@@ -193,12 +193,13 @@ export const Widget: React.FC<WidgetProps> = props => {
 
   useEffect(() => {
     (async (): Promise<void> => {
+      // subscribes address on paybutton server
       void await getAddressDetails(to, apiBaseUrl);
       const newSocket = io(`${wsBaseUrl ?? config.wsBaseUrl}/addresses`, {
         query: { addresses: [to] }
       })
       if (socket !== undefined) {
-        socket.offAny()
+        const ret = socket.disconnect()
       }
       setSocket(newSocket)
       setListener(newSocket, setNewTxs)
