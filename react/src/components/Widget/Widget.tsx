@@ -144,7 +144,7 @@ export const Widget: React.FC<WidgetProps> = props => {
   const [goalText, setGoalText] = useState('');
   const [goalPercent, setGoalPercent] = useState(0);
   const [socket, setSocket] = useState<Socket | undefined>(undefined)
-  const [addressType, setAddressType] = useState<cryptoCurrency>();
+  const [addressType, setAddressType] = useState<cryptoCurrency>(getCurrencyTypeFromAddress(to));
   const [convertedCurrencyObj, setConvertedCurrencyObj] = useState<currencyObject|null>();
   const price = props.price;
   const [url, setUrl] = useState('');
