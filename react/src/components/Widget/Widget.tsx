@@ -33,6 +33,7 @@ export interface WidgetProps {
   to: string;
   amount?: number | null | string;
   setAmount?: Function;
+  opReturn?: string;
   text?: string;
   ButtonComponent?: React.ComponentType;
   success: boolean;
@@ -151,6 +152,7 @@ export const Widget: React.FC<WidgetProps> = props => {
   const [userEditedAmount, setUserEditedAmount] = useState<currencyObject>();
   const [text, setText] = useState('Send any amount of BCH');
   const [widgetButtonText, setWidgetButtonText] = useState('Send Payment');
+  const [opReturn, setOpReturn] = useState(props.opReturn);
 
   const theme = useTheme(props.theme, isValidXecAddress(to));
   const classes = useStyles({ success, loading, theme });
@@ -283,6 +285,11 @@ export const Widget: React.FC<WidgetProps> = props => {
         prefixedAddress = `ecash:${address.replace(/^.*:/, '')}`;
         break;
     }
+
+    if (opReturn !== undefined && opReturn !== '') {
+      query.push(`op_return=paybutton\$${opReturn}`)
+    }
+
     url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
 
     if (thisCurrencyObject && hasPrice) {
@@ -315,7 +322,7 @@ export const Widget: React.FC<WidgetProps> = props => {
         setUrl(url);
       }
     }
-  }, [to, thisCurrencyObject, price, thisAmount]);
+  }, [to, thisCurrencyObject, price, thisAmount, opReturn]);
 
   const handleButtonClick = () => {
     if (addressType === 'XEC'){
@@ -366,6 +373,13 @@ export const Widget: React.FC<WidgetProps> = props => {
     } else {
       prefixedAddress = `ecash:${address.replace(/^.*:/, '')}${thisAmount ? `?amount=${thisAmount}` : ''}`;
     }
+    if (opReturn !== undefined && opReturn !== '') {
+      if (prefixedAddress.includes('?')) {
+        prefixedAddress += `&op_return=paybutton\$${opReturn}`
+      } else {
+        prefixedAddress += `?op_return=paybutton\$${opReturn}`
+      }
+    }
     if (!copy(prefixedAddress)) return;
     setCopied(true);
     setRecentlyCopied(true);
@@ -412,6 +426,10 @@ export const Widget: React.FC<WidgetProps> = props => {
       props.setAmount(amount)
     }
   };
+
+  useEffect(() => {
+    setOpReturn(props.opReturn);
+  }, [props.opReturn]);
 
   useEffect(() => {
     setThisAmount(props.amount);
