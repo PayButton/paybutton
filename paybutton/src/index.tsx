@@ -82,6 +82,7 @@ const allowedProps = [
   'theme',
   'text',
   'to',
+  'opReturn',
   'disabled',
   'goalAmount',
   'editable',

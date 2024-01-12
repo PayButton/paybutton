@@ -633,6 +633,36 @@ onClose = successCallback
 
 <!-- tabs:end -->
 
+
+## op-return
+
+> **‘op-return’参数指定将与交易一起发送的自定义消息。**
+
+?> 此参数是可选的。默认值为空。可能的值为任何最多68字节的字符串。
+
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+op-return=""
+```
+
+#### ** JavaScript **
+
+```javascript
+opReturn: ''
+```
+
+#### ** React **
+
+```react
+opReturn = ""
+```
+
+<!-- tabs:end -->
+
+
 ## random-satoshis
 
 > **参数"random-satoshis"用来定义是否将付款金额的最后几位随机化，因此当一个人进行付款时不太可能触发回调 onSuccess的同时另一个人正打开付款屏幕。**
