@@ -4,7 +4,7 @@ import React from 'react';
 import { ThemeName } from '../../themes';
 import Widget, { WidgetProps } from './Widget';
 
-import { defaultWallets, defaultCurrency } from '../../paybutton-config.json';
+import { to } from '../../../.storybook/default-args';
 
 export default {
   title: 'Widget',
@@ -22,7 +22,7 @@ export default {
     foot: { table: { disable: true } },
   },
   args: {
-    to: defaultWallets[defaultCurrency] ?? null,
+    to,
     loading: false,
     success: false,
   },

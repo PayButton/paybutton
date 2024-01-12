@@ -4,7 +4,7 @@ import React from 'react';
 import { ThemeName } from '../../themes';
 import PaymentDialog, { PaymentDialogProps } from './PaymentDialog';
 
-import { defaultWallets, defaultCurrency } from '../../paybutton-config.json';
+import { defaultCurrency, to } from '../../../.storybook/default-args';
 
 export default {
   title: 'PaymentDialog',
@@ -21,9 +21,7 @@ export default {
     onSuccess: { table: { disable: true } },
     onTransaction: { table: { disable: true } },
   },
-  args: {
-    to: defaultWallets[defaultCurrency],
-  },
+  args: { to },
   parameters: {
     jest: ['Button'],
   },
@@ -48,14 +46,14 @@ UsdAmount.args = {
   amount: 5,
   currency: 'USD',
   text: '$5',
-  hoverText: 'Pay with XEC',
+  hoverText: `Pay with ${defaultCurrency}`,
   animation: 'none',
 };
 
 export const withGoal = Template.bind({});
 withGoal.storyName = 'With Goal';
 withGoal.args = {
-  hoverText: 'Pay with XEC',
+  hoverText: `Pay with ${defaultCurrency}`,
   animation: 'none',
   goalAmount: 100,
 };

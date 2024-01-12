@@ -149,7 +149,7 @@ export const Widget: React.FC<WidgetProps> = props => {
   const price = props.price;
   const [url, setUrl] = useState('');
   const [userEditedAmount, setUserEditedAmount] = useState<currencyObject>();
-  const [text, setText] = useState('Send any amount of XEC');
+  const [text, setText] = useState(`Send any amount of ${addressType}`);
   const [widgetButtonText, setWidgetButtonText] = useState('Send Payment');
 
   const theme = useTheme(props.theme, isValidXecAddress(to));
