@@ -11,6 +11,7 @@ import BigNumber from 'bignumber.js';
 export interface PayButtonProps extends ButtonProps {
   to: string;
   amount?: number | string;
+  opReturn?: string;
   currency?: currency;
   theme?: ThemeName | Theme;
   text?: string;
@@ -39,6 +40,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
 
   const {
     to,
+    opReturn,
     currency,
     text,
     hoverText,
@@ -130,6 +132,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
         disableScrollLock
         to={to}
         amount={amount}
+        opReturn={opReturn}
         setAmount={setAmount}
         currencyObj={currencyObj}
         setCurrencyObj={setCurrencyObj}
