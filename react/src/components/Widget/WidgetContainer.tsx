@@ -21,12 +21,10 @@ import Widget, { WidgetProps } from './Widget';
 import BigNumber from 'bignumber.js';
 
 export interface WidgetContainerProps
-  extends Omit<
-    WidgetProps,
-    'success' | 'setNewTxs' | 'setCurrencyObject'
-  > {
+  extends Omit<WidgetProps, 'success' | 'setNewTxs' | 'setCurrencyObject'> {
   active?: boolean;
   amount?: number;
+  opReturn?: string;
   currency?: currency;
   currencyObj?: currencyObject;
   setCurrencyObj: Function;
@@ -76,6 +74,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
     let {
       active = true,
       to,
+      opReturn,
       amount,
       setAmount,
       setCurrencyObj,
@@ -147,7 +146,9 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
         if (!hideToasts)
           // TODO: This assumes only bch
           enqueueSnackbar(
-            `${successText ? successText + ' | ' : ''}Received ${receivedAmount} ${currencyTicker}`,
+            `${
+              successText ? successText + ' | ' : ''
+            }Received ${receivedAmount} ${currencyTicker}`,
             snackbarOptions,
           );
 
@@ -221,6 +222,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
           {...widgetProps}
           amount={amount}
           setAmount={setAmount}
+          opReturn={opReturn}
           goalAmount={goalAmount}
           currency={currency}
           animation={animation}

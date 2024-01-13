@@ -635,6 +635,35 @@ onClose = successCallback
 
 <!-- tabs:end -->
 
+## op-return
+
+> **The ‘op-return’ parameter specifies the custom message that will be send with the transaction.
+
+?> This parameter is optional. Default value is empty. Possible values are any string with up to 68 bytes.
+
+**Example:**
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+on-close="myCustomMessage"
+```
+
+#### ** JavaScript **
+
+```javascript
+onClose: "myCustomMessage"
+```
+
+#### ** React **
+
+```react
+onClose = "myCustomMessage"
+```
+
+<!-- tabs:end -->
+
 ## random-satoshis
 
 > **The ‘random-satoshis’ parameter specifies whether to randomize the last few digits of the payment amount so that it’s unlikely that a payment made by one person will trigger the onSuccess callback of another who has the payment screen open at the same time.**

@@ -26,6 +26,7 @@ import { getCurrencyObject, currencyObject } from '../../util/satoshis';
 import { currency, getAddressBalance, getAddressDetails, isFiat, setListener, Transaction, getCashtabProviderStatus, cryptoCurrency } from '../../util/api-client';
 import PencilIcon from '../../assets/edit-pencil';
 import io, { Socket } from 'socket.io-client'
+import { parseOpReturn } from '../../util/opReturn';
 
 type QRCodeProps = BaseQRCodeProps & { renderAs: 'svg' };
 
@@ -33,6 +34,7 @@ export interface WidgetProps {
   to: string;
   amount?: number | null | string;
   setAmount?: Function;
+  opReturn?: string;
   text?: string;
   ButtonComponent?: React.ComponentType;
   success: boolean;
@@ -151,6 +153,7 @@ export const Widget: React.FC<WidgetProps> = props => {
   const [userEditedAmount, setUserEditedAmount] = useState<currencyObject>();
   const [text, setText] = useState('Send any amount of BCH');
   const [widgetButtonText, setWidgetButtonText] = useState('Send Payment');
+  const [opReturn, setOpReturn] = useState<string | undefined>();
 
   const theme = useTheme(props.theme, isValidXecAddress(to));
   const classes = useStyles({ success, loading, theme });
@@ -283,6 +286,11 @@ export const Widget: React.FC<WidgetProps> = props => {
         prefixedAddress = `ecash:${address.replace(/^.*:/, '')}`;
         break;
     }
+
+    if (opReturn !== undefined && opReturn !== '') {
+      query.push(`op_return=${opReturn}`)
+    }
+
     url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
 
     if (thisCurrencyObject && hasPrice) {
@@ -315,7 +323,7 @@ export const Widget: React.FC<WidgetProps> = props => {
         setUrl(url);
       }
     }
-  }, [to, thisCurrencyObject, price, thisAmount]);
+  }, [to, thisCurrencyObject, price, thisAmount, opReturn]);
 
   const handleButtonClick = () => {
     if (addressType === 'XEC'){
@@ -366,6 +374,13 @@ export const Widget: React.FC<WidgetProps> = props => {
     } else {
       prefixedAddress = `ecash:${address.replace(/^.*:/, '')}${thisAmount ? `?amount=${thisAmount}` : ''}`;
     }
+    if (opReturn !== undefined && opReturn !== '') {
+      if (prefixedAddress.includes('?')) {
+        prefixedAddress += `&op_return=${opReturn}`
+      } else {
+        prefixedAddress += `?op_return=${opReturn}`
+      }
+    }
     if (!copy(prefixedAddress)) return;
     setCopied(true);
     setRecentlyCopied(true);
@@ -412,6 +427,16 @@ export const Widget: React.FC<WidgetProps> = props => {
       props.setAmount(amount)
     }
   };
+
+  useEffect(() => {
+    try {
+      setOpReturn(
+        parseOpReturn(props.opReturn)
+      );
+    } catch (err) {
+      setErrorMsg(err.message)
+    }
+  }, [props.opReturn]);
 
   useEffect(() => {
     setThisAmount(props.amount);
