@@ -4,6 +4,8 @@ import React from 'react';
 import { ThemeName } from '../../themes';
 import Widget, { WidgetProps } from './Widget';
 
+import { to } from '../../../.storybook/default-args';
+
 export default {
   title: 'Widget',
   component: Widget,
@@ -20,7 +22,7 @@ export default {
     foot: { table: { disable: true } },
   },
   args: {
-    to: 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp',
+    to,
     loading: false,
     success: false,
   },

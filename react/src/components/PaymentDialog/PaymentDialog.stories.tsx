@@ -4,6 +4,8 @@ import React from 'react';
 import { ThemeName } from '../../themes';
 import PaymentDialog, { PaymentDialogProps } from './PaymentDialog';
 
+import { defaultCurrency, to } from '../../../.storybook/default-args';
+
 export default {
   title: 'PaymentDialog',
   component: PaymentDialog,
@@ -19,9 +21,7 @@ export default {
     onSuccess: { table: { disable: true } },
     onTransaction: { table: { disable: true } },
   },
-  args: {
-    to: 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp',
-  },
+  args: { to },
   parameters: {
     jest: ['Button'],
   },
@@ -46,14 +46,14 @@ UsdAmount.args = {
   amount: 5,
   currency: 'USD',
   text: '$5',
-  hoverText: 'Pay with BCH',
+  hoverText: `Pay with ${defaultCurrency}`,
   animation: 'none',
 };
 
 export const withGoal = Template.bind({});
 withGoal.storyName = 'With Goal';
 withGoal.args = {
-  hoverText: 'Pay with BCH',
+  hoverText: `Pay with ${defaultCurrency}`,
   animation: 'none',
   goalAmount: 100,
 };
