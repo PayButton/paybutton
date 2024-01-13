@@ -26,6 +26,7 @@ import { getCurrencyObject, currencyObject } from '../../util/satoshis';
 import { currency, getAddressBalance, getAddressDetails, isFiat, setListener, Transaction, getCashtabProviderStatus, cryptoCurrency } from '../../util/api-client';
 import PencilIcon from '../../assets/edit-pencil';
 import io, { Socket } from 'socket.io-client'
+import { parseOpReturn } from '../../util/opReturn';
 
 type QRCodeProps = BaseQRCodeProps & { renderAs: 'svg' };
 
@@ -152,7 +153,7 @@ export const Widget: React.FC<WidgetProps> = props => {
   const [userEditedAmount, setUserEditedAmount] = useState<currencyObject>();
   const [text, setText] = useState('Send any amount of BCH');
   const [widgetButtonText, setWidgetButtonText] = useState('Send Payment');
-  const [opReturn, setOpReturn] = useState(props.opReturn);
+  const [opReturn, setOpReturn] = useState<string | undefined>();
 
   const theme = useTheme(props.theme, isValidXecAddress(to));
   const classes = useStyles({ success, loading, theme });
@@ -428,7 +429,13 @@ export const Widget: React.FC<WidgetProps> = props => {
   };
 
   useEffect(() => {
-    setOpReturn(props.opReturn);
+    try {
+      setOpReturn(
+        parseOpReturn(props.opReturn)
+      );
+    } catch (err) {
+      setErrorMsg(err.message)
+    }
   }, [props.opReturn]);
 
   useEffect(() => {
