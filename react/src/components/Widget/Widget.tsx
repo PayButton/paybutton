@@ -288,7 +288,7 @@ export const Widget: React.FC<WidgetProps> = props => {
     }
 
     if (opReturn !== undefined && opReturn !== '') {
-      query.push(`op_return=paybutton\$${opReturn}`)
+      query.push(`op_return=${opReturn}`)
     }
 
     url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
@@ -376,9 +376,9 @@ export const Widget: React.FC<WidgetProps> = props => {
     }
     if (opReturn !== undefined && opReturn !== '') {
       if (prefixedAddress.includes('?')) {
-        prefixedAddress += `&op_return=paybutton\$${opReturn}`
+        prefixedAddress += `&op_return=${opReturn}`
       } else {
-        prefixedAddress += `?op_return=paybutton\$${opReturn}`
+        prefixedAddress += `?op_return=${opReturn}`
       }
     }
     if (!copy(prefixedAddress)) return;
