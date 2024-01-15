@@ -26,7 +26,10 @@ export function generateRandom9ByteString(): string {
   // Convert the word array to a Base64 string
   const base64String = enc.Base64.stringify(wordArray);
 
-  // Return it without the always-present single '=' at the end
+  // The result is 12 char long:
+  // ---
+  // a base64 character encodes 6 bits of information (2⁶ = 64);
+  // ... therefore; 9 bytes = 72 bits => 72/6 = 12 base64 chars
   return base64String;
 }
 
