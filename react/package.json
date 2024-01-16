@@ -25,8 +25,8 @@
     "test": "jest"
   },
   "peerDependencies": {
-    "react": "16.14.0",
-    "react-dom": "16.14.0"
+    "react": "17.0.0",
+    "react-dom": "17.0.0"
   },
   "devDependencies": {
     "@babel/core": "7.18.9",
@@ -42,8 +42,8 @@
     "@types/lodash": "4.14.182",
     "@types/node": "12.20.55",
     "@types/qrcode.react": "1.0.2",
-    "@types/react": "16.14.28",
-    "@types/react-dom": "16.9.16",
+    "@types/react": "17.0.0",
+    "@types/react-dom": "17.0.0",
     "@typescript-eslint/eslint-plugin": "2.34.0",
     "@typescript-eslint/parser": "2.34.0",
     "babel-eslint": "10.1.0",
@@ -89,7 +89,7 @@
     "copy-to-clipboard": "3.3.3",
     "lodash": "4.17.21",
     "notistack": "3.0.1",
-    "qrcode.react": "3.1.0",
+    "qrcode.react": "1.0.1",
     "react-jss": "10.10.0",
     "socket.io-client": "4.7.4",
     "xecaddrjs": "^0.0.1"
@@ -104,5 +104,9 @@
       "eslint --fix",
       "prettier --write"
     ]
+  },
+  "resolutions": {
+    "@types/react": "17.0.0",
+    "@types/react-dom": "17.0.0"
   }
 }
