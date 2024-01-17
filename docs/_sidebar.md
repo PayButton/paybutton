@@ -23,6 +23,8 @@
   - [hide-toasts](/?id=hide-toasts)
   - [disable-enforce-focus](/?id=disable-enforce-focus)
   - [disabled](/?id=disabled)
+  - [ws-base-url](/?id=ws-base-url)
+  - [api-base-url](/?id=api-base-url)
 - [Contribute](/?id=contribute)
   - [Developer Quick Start](/?id=developer-quick-start)
     - [Build](/?id=build)

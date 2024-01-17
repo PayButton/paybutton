@@ -779,7 +779,7 @@ disabled = true
 
 <!-- tabs:end -->
 
-## wsBaseUrl
+## ws-base-url
 
 > **‘wsBaseUrl’ 参数指定了用于 websocket 的 URL，新交易的信息将从这里获取。**
 
@@ -809,7 +809,7 @@ wsBaseUrl = "https://socket.paybutton.org"
 <!-- tabs:end -->
 
 
-## apiBaseUrl
+## api-base-url
 
 > **‘apiBaseUrl’ 参数指定了 API 的 URL，新交易、价格和地址的信息将从这里获取。**
 

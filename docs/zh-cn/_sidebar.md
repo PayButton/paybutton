@@ -22,6 +22,8 @@
   - [hide-toasts](/zh-cn/?id=hide-toasts)
   - [disable-enforce-focus](/zh-cn/?id=disable-enforce-focus)
   - [disabled](/zh-cn/?id=disabled)
+  - [ws-base-url](/?id=ws-base-url)
+  - [api-base-url](/?id=api-base-url)
 - [贡献](/zh-cn/?id=贡献)
   - [开发人员快速入门](/zh-cn/?id=开发人员快速入门)
     - [构建](/zh-cn/?id=构建)
