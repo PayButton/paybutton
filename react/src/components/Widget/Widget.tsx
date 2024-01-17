@@ -26,7 +26,7 @@ import { getCurrencyObject, currencyObject } from '../../util/satoshis';
 import { currency, getAddressBalance, getAddressDetails, isFiat, setListener, Transaction, getCashtabProviderStatus, cryptoCurrency } from '../../util/api-client';
 import PencilIcon from '../../assets/edit-pencil';
 import io, { Socket } from 'socket.io-client'
-import { parseOpReturn } from '../../util/opReturn';
+import { parseOpReturnProps } from '../../util/opReturn';
 
 type QRCodeProps = BaseQRCodeProps & { renderAs: 'svg' };
 
@@ -288,7 +288,7 @@ export const Widget: React.FC<WidgetProps> = props => {
     }
 
     if (opReturn !== undefined && opReturn !== '') {
-      query.push(`op_return=${opReturn}`)
+      query.push(`op_return_raw=${opReturn}`)
     }
 
     url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
@@ -376,9 +376,9 @@ export const Widget: React.FC<WidgetProps> = props => {
     }
     if (opReturn !== undefined && opReturn !== '') {
       if (prefixedAddress.includes('?')) {
-        prefixedAddress += `&op_return=${opReturn}`
+        prefixedAddress += `&op_return_raw=${opReturn}`
       } else {
-        prefixedAddress += `?op_return=${opReturn}`
+        prefixedAddress += `?op_return_raw=${opReturn}`
       }
     }
     if (!copy(prefixedAddress)) return;
@@ -431,7 +431,7 @@ export const Widget: React.FC<WidgetProps> = props => {
   useEffect(() => {
     try {
       setOpReturn(
-        parseOpReturn(props.opReturn)
+        parseOpReturnProps(props.opReturn)
       );
     } catch (err) {
       setErrorMsg(err.message)
