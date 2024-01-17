@@ -21,6 +21,18 @@ export const VERSION = '00'; // \x00
 // = 205 available bytes
 export const BYTES_LIMIT = 220 - 5 - 1 - 9; // 205
 
+function prependHexStringWithPushData(hexString: string): string {
+  // 2 hex chars == 1 byte
+  const bytesQuantity = hexString.length / 2;
+  if (bytesQuantity > BYTES_LIMIT) {
+    throw new Error(
+      `Maximum ${BYTES_LIMIT} byte size exceeded: ${bytesQuantity}`,
+    );
+  }
+  const pushData = bytesQuantity.toString(16).padStart(2, '0');
+  return `${pushData}${hexString}`;
+}
+
 function stringToHex(str: string): string {
   return str
     .split('')
@@ -41,7 +53,7 @@ function generatePushDataPrefixed8ByteNonce(): string {
   // ... therefore; 8 bytes = 64 bits => 64/4 = 16 hex chars
   // + 1 byte of push data at the beggining = 2 hex chars
   // = 18 chars
-  return `08${hexString}`;
+  return prependHexStringWithPushData(hexString);
 }
 
 export function parseOpReturnProps(
