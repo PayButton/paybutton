@@ -1,13 +1,13 @@
 import { lib, enc } from 'crypto-js';
 
-//opReturn format is:
-//`04` - Pushdata of the Protocol Identifier, `50415900`
-//`50415900` - PayButton protocol identifier, ascii "PAY"
-//`00` - Version 0, pushed as `OP_0`
-//`09` - pushdata for the data payload, signifying this tx has 9 bytes of data
-//`0102030405060708aa` - data payload
-//`08` - pushdata for the optional nonce payload, signifying this tx has 8 bytes of nonce data
-//`0102030405060708` - The 8-byte nonce
+// opReturn format is:
+// `04` - Pushdata of the Protocol Identifier, `50415900`
+// `50415900` - PayButton protocol identifier, ascii "PAY"
+// `00` - Version 0, pushed as `OP_0`
+// `09` - pushdata for the data payload, signifying this tx has 9 bytes of data
+// `0102030405060708aa` - data payload
+// `08` - pushdata for the optional nonce payload, signifying this tx has 8 bytes of nonce data
+// `0102030405060708` - The 8-byte nonce
 
 // All the below variables are already encoded to HEX
 export const OP_RETURN_PREFIX_PUSH_DATA = '04'; // \x04
@@ -38,7 +38,7 @@ function generatePushDataPrefixed8ByteNonce(): string {
   // The result is 18 char long:
   // ---
   // a hex character encodes 4 bits of information (2⁴ = 16);
-  // ... therefore; 8 bytes = 72 bits => 72/4 = 16 hex chars
+  // ... therefore; 8 bytes = 64 bits => 64/4 = 16 hex chars
   // + 1 byte of push data at the beggining = 2 hex chars
   // = 18 chars
   return `08${hexString}`;
@@ -48,7 +48,7 @@ export function parseOpReturnProps(
   opReturn: string | undefined,
 ): string | undefined {
   if (opReturn === undefined) {
-    opReturn = ''
+    opReturn = '';
   }
   const bytesQuantity = new Blob([opReturn]).size;
 
@@ -57,7 +57,7 @@ export function parseOpReturnProps(
       `Maximum ${BYTES_LIMIT} byte size exceeded: ${bytesQuantity}`,
     );
   }
-  let pushData = bytesQuantity.toString(16).padStart(2, '0')
+  const pushData = bytesQuantity.toString(16).padStart(2, '0');
   return (
     OP_RETURN_PREFIX_PUSH_DATA +
     OP_RETURN_PREFIX +
@@ -65,5 +65,5 @@ export function parseOpReturnProps(
     pushData +
     stringToHex(opReturn) +
     generatePushDataPrefixed8ByteNonce()
-  )
+  );
 }
