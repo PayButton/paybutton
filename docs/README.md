@@ -637,7 +637,7 @@ onClose = successCallback
 
 ## op-return
 
-> **The ‘op-return’ parameter specifies the custom message that will be send with the transaction.
+> **The ‘op-return’ parameter specifies the custom message that will be send with the transaction.**
 
 ?> This parameter is optional. Default value is empty. Possible values are any string with up to 68 bytes.
 
@@ -780,7 +780,7 @@ disabled = true
 
 <!-- tabs:end -->
 
-## wsBaseUrl
+## ws-base-url
 
 > **The ‘wsBaseUrl’ parameter specifies the URL for the websocket where information about new transactions will come from.**
 
@@ -810,7 +810,7 @@ wsBaseUrl = "https://socket.paybutton.org"
 <!-- tabs:end -->
 
 
-## apiBaseUrl
+## api-base-url
 
 > **The ‘apiBaseUrl’ parameter specifies the URL for the API where information about new transactions, prices, and addresses will come from.**
 
