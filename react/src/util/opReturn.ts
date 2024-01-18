@@ -19,7 +19,7 @@ export const VERSION = '00'; // \x00
 // - 1 for the version byte: '\x00'
 // - 9 from the 8-byte nonce with push data
 // = 205 available bytes
-export const BYTES_LIMIT = 220 - 5 - 1 - 9; // 205
+export const USER_DATA_BYTES_LIMIT = 220 - 5 - 1 - 9; // 205
 
 function prependHexStringWithPushData(hexString: string): string {
   // 2 hex chars == 1 byte
@@ -64,9 +64,9 @@ export function parseOpReturnProps(
   }
   const bytesQuantity = new Blob([opReturn]).size;
 
-  if (bytesQuantity > BYTES_LIMIT) {
+  if (bytesQuantity > USER_DATA_BYTES_LIMIT) {
     throw new Error(
-      `Maximum ${BYTES_LIMIT} byte size exceeded: ${bytesQuantity}`,
+      `Maximum ${USER_DATA_BYTES_LIMIT} byte size exceeded: ${bytesQuantity}`,
     );
   }
   const pushData = bytesQuantity.toString(16).padStart(2, '0');
