@@ -1,38 +1,37 @@
 import { lib, enc } from 'crypto-js';
 
 // All the below variables are already encoded to HEX
-export const OP_RETURN_PREFIX_PUSH_DATA = '04'; // \x04
+export const OP_RETURN_PREFIX_PUSHDATA = '04'; // \x04
 export const OP_RETURN_PREFIX = '50415900'; // PAY\x00
 export const VERSION = '00'; // \x00
 
 // 223 total bytes
 // - 1 from the OP_RETURN op code: '\x6a'
-// - 1 from the protocol push data: '\x04'
+// - 1 from the protocol pushdata: '\x04'
 // - 4 from the 4-byte procol prefix: 'PAY\x00'
 // - 1 for the version byte: '\x00'
-// - 1 from the 8-byte nonce push data: '\x08'
+// - 1 from the 8-byte nonce pushdata: '\x08'
 // - 8 from the 8-byte nonce
 // - 2 from the maximum size for the data pushdata
 // = 205 available bytes
 export const USER_DATA_BYTES_LIMIT = 223 - 1 - 1 - 4 - 1 - 1 - 8 - 2; // 205
 
-// Push data is self-describing up to 75 bytes, since 0x4c (76 in hex) is
-// a special OP code. We therefore limit the nonce size to 75 bytes,
-// since this is way more than necessary for security.
-const NONCE_BYTES_LIMIT = 75;
+// Pushdata is self-describing up to 75 bytes, since 0x4c (76 in hex) is
+// a special OP code.
+const SINGLE_PUSHDATA_BYTE_LIMIT = 75;
 
-function prependNonceWithPushData(hexString: string): string {
+function prependNonceWithPushdata(hexString: string): string {
   // 2 hex chars == 1 byte
   const bytesQuantity = hexString.length / 2;
   // We limit the nonce size to 75 bytes,
   // since this is way more than necessary for security.
-  if (bytesQuantity > SINGLE_PUSH_DATA_BYTE_LIMIT) {
+  if (bytesQuantity > SINGLE_PUSHDATA_BYTE_LIMIT) {
     throw new Error(
-      `Maximum ${SINGLE_PUSH_DATA_BYTE_LIMIT} byte size exceeded for nonce: ${bytesQuantity}`,
+      `Maximum ${SINGLE_PUSHDATA_BYTE_LIMIT} byte size exceeded for nonce: ${bytesQuantity}`,
     );
   }
-  const pushData = bytesQuantity.toString(16).padStart(2, '0');
-  return `${pushData}${hexString}`;
+  const pushdata = bytesQuantity.toString(16).padStart(2, '0');
+  return `${pushdata}${hexString}`;
 }
 
 function stringToHex(str: string): string {
@@ -42,7 +41,7 @@ function stringToHex(str: string): string {
     .join('');
 }
 
-function generatePushDataPrefixedNonce(bytesAmount: number): string {
+function generatePushdataPrefixedNonce(bytesAmount: number): string {
   // Generate 8 random bytes
   const wordArray = lib.WordArray.random(bytesAmount);
 
@@ -53,23 +52,23 @@ function generatePushDataPrefixedNonce(bytesAmount: number): string {
   // ---
   // a hex character encodes 4 bits of information (2⁴ = 16);
   // ... therefore; 8 bytes = 64 bits => 64/4 = 16 hex chars
-  // + 1 byte of push data at the beggining = 2 hex chars
+  // + 1 byte of pushdata at the beggining = 2 hex chars
   // = 18 chars
-  return prependNonceWithPushData(hexString);
+  return prependNonceWithPushdata(hexString);
 }
 
-function getDataPushData(data: string) {
+function getDataPushdata(data: string) {
   const bytesQuantity = new Blob([data]).size;
   if (bytesQuantity > USER_DATA_BYTES_LIMIT) {
     throw new Error(
       `Maximum ${USER_DATA_BYTES_LIMIT} byte size exceeded: ${bytesQuantity}`,
     );
   }
-  const rawPushData = bytesQuantity.toString(16).padStart(2, '0');
-  if (bytesQuantity > 75) {
-    return '4c' + rawPushData;
+  const rawPushdata = bytesQuantity.toString(16).padStart(2, '0');
+  if (bytesQuantity > SINGLE_PUSHDATA_BYTE_LIMIT) {
+    return '4c' + rawPushdata;
   }
-  return rawPushData;
+  return rawPushdata;
 }
 
 // Example:
@@ -91,13 +90,13 @@ export function parseOpReturnProps(
     opReturn = '';
   }
 
-  const pushData = getDataPushData(opReturn);
+  const pushdata = getDataPushdata(opReturn);
   return (
-    OP_RETURN_PREFIX_PUSH_DATA +
+    OP_RETURN_PREFIX_PUSHDATA +
     OP_RETURN_PREFIX +
     VERSION +
-    pushData +
+    pushdata +
     stringToHex(opReturn) +
-    generatePushDataPrefixedNonce(8)
+    generatePushdataPrefixedNonce(8)
   );
 }
