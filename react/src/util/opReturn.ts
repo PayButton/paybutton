@@ -24,9 +24,11 @@ const NONCE_BYTES_LIMIT = 75;
 function prependNonceWithPushData(hexString: string): string {
   // 2 hex chars == 1 byte
   const bytesQuantity = hexString.length / 2;
-  if (bytesQuantity > NONCE_BYTES_LIMIT) {
+  // We limit the nonce size to 75 bytes,
+  // since this is way more than necessary for security.
+  if (bytesQuantity > SINGLE_PUSH_DATA_BYTE_LIMIT) {
     throw new Error(
-      `Maximum ${NONCE_BYTES_LIMIT} byte size exceeded for nonce: ${bytesQuantity}`,
+      `Maximum ${SINGLE_PUSH_DATA_BYTE_LIMIT} byte size exceeded for nonce: ${bytesQuantity}`,
     );
   }
   const pushData = bytesQuantity.toString(16).padStart(2, '0');
