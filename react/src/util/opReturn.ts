@@ -21,12 +21,17 @@ export const VERSION = '00'; // \x00
 // = 205 available bytes
 export const USER_DATA_BYTES_LIMIT = 220 - 5 - 1 - 9; // 205
 
+// Push data encodes the number of bytes to follow; itself should
+// be no more than 1 byte in length so it shouldn't encode a number
+// of bytes greater than 255
+const PUSH_DATA_BYTES_LIMIT = 255;
+
 function prependHexStringWithPushData(hexString: string): string {
   // 2 hex chars == 1 byte
   const bytesQuantity = hexString.length / 2;
-  if (bytesQuantity > BYTES_LIMIT) {
+  if (bytesQuantity > PUSH_DATA_BYTES_LIMIT) {
     throw new Error(
-      `Maximum ${BYTES_LIMIT} byte size exceeded: ${bytesQuantity}`,
+      `Maximum ${PUSH_DATA_BYTES_LIMIT} byte size exceeded: ${bytesQuantity}`,
     );
   }
   const pushData = bytesQuantity.toString(16).padStart(2, '0');
