@@ -64,8 +64,8 @@ function generatePushDataPrefixed8ByteNonce(): string {
 // `00` - Version 0, pushed as `OP_0`
 // `16` - pushdata for the data payload, signifying this tx has 22 bytes of data
 // `68656c6c6f20776f726c64` - data payload, 'hello world' as ASCII encoded to hex
-// `08` - pushdata for the optional nonce payload, signifying this tx has 8 bytes of nonce data
-// `0102030405060708` - The 8-byte nonce
+// `08` - pushdata for the optional nonce (paymentId), signifying this tx has 8 bytes of nonce data
+// `0102030405060708` - The 8-byte nonce (paymentId)
 export function parseOpReturnProps(
   opReturn: string | undefined,
 ): string | undefined {
