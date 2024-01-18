@@ -12,12 +12,13 @@ export const VERSION = '00'; // \x00
 // - 1 for the version byte: '\x00'
 // - 1 from the 8-byte nonce push data: '\x08'
 // - 8 from the 8-byte nonce
-// = 207 available bytes
-export const USER_DATA_BYTES_LIMIT = 223 - 1 - 1 - 4 - 1 - 1 - 8; // 207
+// - 2 from the maximum size for the data pushdata
+// = 205 available bytes
+export const USER_DATA_BYTES_LIMIT = 223 - 1 - 1 - 4 - 1 - 1 - 8 - 2; // 205
 
-// Push data encodes the number of bytes to follow; itself should
-// be no more than 1 byte in length so it shouldn't encode a number
-// of bytes greater than 255
+// Push data is self-describing up to 75 bytes, since 0x4c (76 in hex) is
+// a special OP code. We therefore limit the nonce size to 75 bytes,
+// since this is way more than necessary for security.
 const NONCE_BYTES_LIMIT = 75;
 
 function prependNonceWithPushData(hexString: string): string {
