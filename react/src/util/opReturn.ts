@@ -18,14 +18,14 @@ export const USER_DATA_BYTES_LIMIT = 223 - 1 - 1 - 4 - 1 - 1 - 8; // 207
 // Push data encodes the number of bytes to follow; itself should
 // be no more than 1 byte in length so it shouldn't encode a number
 // of bytes greater than 255
-const PUSH_DATA_BYTES_LIMIT = 255;
+const NONCE_BYTES_LIMIT = 75;
 
-function prependHexStringWithPushData(hexString: string): string {
+function prependNonceWithPushData(hexString: string): string {
   // 2 hex chars == 1 byte
   const bytesQuantity = hexString.length / 2;
-  if (bytesQuantity > PUSH_DATA_BYTES_LIMIT) {
+  if (bytesQuantity > NONCE_BYTES_LIMIT) {
     throw new Error(
-      `Maximum ${PUSH_DATA_BYTES_LIMIT} byte size exceeded: ${bytesQuantity}`,
+      `Maximum ${NONCE_BYTES_LIMIT} byte size exceeded for nonce: ${bytesQuantity}`,
     );
   }
   const pushData = bytesQuantity.toString(16).padStart(2, '0');
@@ -39,9 +39,9 @@ function stringToHex(str: string): string {
     .join('');
 }
 
-function generatePushDataPrefixed8ByteNonce(): string {
+function generatePushDataPrefixedNonce(bytesAmount: number): string {
   // Generate 8 random bytes
-  const wordArray = lib.WordArray.random(8);
+  const wordArray = lib.WordArray.random(bytesAmount);
 
   // Convert the word array to a hex string
   const hexString = enc.Hex.stringify(wordArray);
@@ -52,7 +52,21 @@ function generatePushDataPrefixed8ByteNonce(): string {
   // ... therefore; 8 bytes = 64 bits => 64/4 = 16 hex chars
   // + 1 byte of push data at the beggining = 2 hex chars
   // = 18 chars
-  return prependHexStringWithPushData(hexString);
+  return prependNonceWithPushData(hexString);
+}
+
+function getDataPushData(data: string) {
+  const bytesQuantity = new Blob([data]).size;
+  if (bytesQuantity > USER_DATA_BYTES_LIMIT) {
+    throw new Error(
+      `Maximum ${USER_DATA_BYTES_LIMIT} byte size exceeded: ${bytesQuantity}`,
+    );
+  }
+  const rawPushData = bytesQuantity.toString(16).padStart(2, '0');
+  if (bytesQuantity > 75) {
+    return '4c' + rawPushData;
+  }
+  return rawPushData;
 }
 
 // Example:
@@ -66,26 +80,21 @@ function generatePushDataPrefixed8ByteNonce(): string {
 // `68656c6c6f20776f726c64` - data payload, 'hello world' as ASCII encoded to hex
 // `08` - pushdata for the optional nonce (paymentId), signifying this tx has 8 bytes of nonce data
 // `0102030405060708` - The 8-byte nonce (paymentId)
+
 export function parseOpReturnProps(
   opReturn: string | undefined,
 ): string | undefined {
   if (opReturn === undefined) {
     opReturn = '';
   }
-  const bytesQuantity = new Blob([opReturn]).size;
 
-  if (bytesQuantity > USER_DATA_BYTES_LIMIT) {
-    throw new Error(
-      `Maximum ${USER_DATA_BYTES_LIMIT} byte size exceeded: ${bytesQuantity}`,
-    );
-  }
-  const pushData = bytesQuantity.toString(16).padStart(2, '0');
+  const pushData = getDataPushData(opReturn);
   return (
     OP_RETURN_PREFIX_PUSH_DATA +
     OP_RETURN_PREFIX +
     VERSION +
     pushData +
     stringToHex(opReturn) +
-    generatePushDataPrefixed8ByteNonce()
+    generatePushDataPrefixedNonce(8)
   );
 }
