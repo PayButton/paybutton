@@ -1,14 +1,5 @@
 import { lib, enc } from 'crypto-js';
 
-// opReturn format is:
-// `04` - Pushdata of the Protocol Identifier, `50415900`
-// `50415900` - PayButton protocol identifier, ascii "PAY"
-// `00` - Version 0, pushed as `OP_0`
-// `09` - pushdata for the data payload, signifying this tx has 9 bytes of data
-// `0102030405060708aa` - data payload
-// `08` - pushdata for the optional nonce payload, signifying this tx has 8 bytes of nonce data
-// `0102030405060708` - The 8-byte nonce
-
 // All the below variables are already encoded to HEX
 export const OP_RETURN_PREFIX_PUSH_DATA = '04'; // \x04
 export const OP_RETURN_PREFIX = '50415900'; // PAY\x00
@@ -64,6 +55,17 @@ function generatePushDataPrefixed8ByteNonce(): string {
   return prependHexStringWithPushData(hexString);
 }
 
+// Example:
+// If the user wants to send "hello world" in the OP_RETURN, the
+// function below constructs it in the following way:
+//
+// `04` - Pushdata of the Protocol Identifier, `50415900`
+// `50415900` - PayButton protocol identifier, ascii "PAY"
+// `00` - Version 0, pushed as `OP_0`
+// `16` - pushdata for the data payload, signifying this tx has 22 bytes of data
+// `68656c6c6f20776f726c64` - data payload, 'hello world' as ASCII encoded to hex
+// `08` - pushdata for the optional nonce payload, signifying this tx has 8 bytes of nonce data
+// `0102030405060708` - The 8-byte nonce
 export function parseOpReturnProps(
   opReturn: string | undefined,
 ): string | undefined {
