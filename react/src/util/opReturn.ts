@@ -14,12 +14,15 @@ export const OP_RETURN_PREFIX_PUSH_DATA = '04'; // \x04
 export const OP_RETURN_PREFIX = '50415900'; // PAY\x00
 export const VERSION = '00'; // \x00
 
-// 220 total bytes
-// - 5 from the 4-byte procol prefix with push data: '\x04PAY\x00'
+// 223 total bytes
+// - 1 from the OP_RETURN op code: '\x6a'
+// - 1 from the protocol push data: '\x04'
+// - 4 from the 4-byte procol prefix: 'PAY\x00'
 // - 1 for the version byte: '\x00'
-// - 9 from the 8-byte nonce with push data
-// = 205 available bytes
-export const USER_DATA_BYTES_LIMIT = 220 - 5 - 1 - 9; // 205
+// - 1 from the 8-byte nonce push data: '\x08'
+// - 8 from the 8-byte nonce
+// = 207 available bytes
+export const USER_DATA_BYTES_LIMIT = 223 - 1 - 1 - 4 - 1 - 1 - 8; // 207
 
 // Push data encodes the number of bytes to follow; itself should
 // be no more than 1 byte in length so it shouldn't encode a number
