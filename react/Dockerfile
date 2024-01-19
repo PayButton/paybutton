@@ -6,5 +6,5 @@ COPY package*.json ./
 RUN yarn install && yarn run build --ignore-scripts
 COPY . .
 
-CMD chown node: -R node_modules && npm run storybook
+CMD chown node: -R node_modules && yarn storybook
 

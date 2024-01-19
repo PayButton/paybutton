@@ -62,7 +62,7 @@ export interface Output {
 
 const zero = new BigNumber(0);
 const withSnackbar =
-  <T extends object>(Component: React.ComponentType<T>): React.FC<T> =>
+  <T extends object>(Component: React.ComponentType<T>): React.FunctionComponent<T> =>
   (props): React.ReactElement =>
     (
       <SnackbarProvider>
@@ -70,7 +70,7 @@ const withSnackbar =
       </SnackbarProvider>
     );
 
-export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
+export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> = withSnackbar(
   (props): React.ReactElement => {
     let {
       active = true,
