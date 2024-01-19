@@ -85,7 +85,7 @@ function getDataPushdata(data: string) {
 
 export function parseOpReturnProps(
   opReturn: string | undefined,
-): string | undefined {
+): string {
   if (opReturn === undefined) {
     opReturn = '';
   }
