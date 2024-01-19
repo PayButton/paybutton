@@ -877,7 +877,7 @@ PayButton is a community-driven open-source initiative. Contributions from the c
 ### Build
 
 1. `git clone https://github.com/PayButton/paybutton.git`
-2. `cd paybutton/react && npm i && npm run build && cd ../paybutton && npm i && npm run build`
+2. `cd paybutton && yarn build`
 
 ### Starting Storybook
 
@@ -887,8 +887,7 @@ PayButton is a community-driven open-source initiative. Contributions from the c
 
 ### Starting Rollup
 
-1. `cd paybutton && npm i`
-2. `npm start`
+1. `yarn start-rollup`
 3. Site will be running on `localhost:10001`.
 
 ### Website / Documentation
