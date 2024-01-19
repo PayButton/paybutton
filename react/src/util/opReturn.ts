@@ -85,6 +85,7 @@ function getDataPushdata(data: string) {
 
 export function parseOpReturnProps(
   opReturn: string | undefined,
+  disablePaymentId=false
 ): string {
   if (opReturn === undefined) {
     opReturn = '';
@@ -97,7 +98,7 @@ export function parseOpReturnProps(
     VERSION +
     pushdata +
     stringToHex(opReturn) +
-    generatePushdataPrefixedNonce(8)
+    disablePaymentId ? '' : generatePushdataPrefixedNonce(8)
   );
 }
 

@@ -25,6 +25,7 @@ export interface WidgetContainerProps
   active?: boolean;
   amount?: number;
   opReturn?: string;
+  disablePaymentId?: boolean;
   currency?: currency;
   currencyObj?: currencyObject;
   setCurrencyObj: Function;
@@ -75,6 +76,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
       active = true,
       to,
       opReturn,
+      disablePaymentId,
       amount,
       setAmount,
       setCurrencyObj,
@@ -223,6 +225,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
           amount={amount}
           setAmount={setAmount}
           opReturn={opReturn}
+          disablePaymentId={disablePaymentId}
           goalAmount={goalAmount}
           currency={currency}
           animation={animation}

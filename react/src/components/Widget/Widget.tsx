@@ -35,6 +35,7 @@ export interface WidgetProps {
   amount?: number | null | string;
   setAmount?: Function;
   opReturn?: string;
+  disablePaymentId?: boolean;
   text?: string;
   ButtonComponent?: React.ComponentType;
   success: boolean;
@@ -431,7 +432,7 @@ export const Widget: React.FC<WidgetProps> = props => {
   useEffect(() => {
     try {
       setOpReturn(
-        parseOpReturnProps(props.opReturn)
+        parseOpReturnProps(props.opReturn, disablePaymentId)
       );
     } catch (err) {
       setErrorMsg(err.message)
