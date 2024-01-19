@@ -70,7 +70,7 @@
     "prettier": "2.7.1",
     "react-is": "16.13.1",
     "react-scripts": "3.4.4",
-    "typescript": "3.9.10"
+    "typescript": "^5.3.3"
   },
   "files": [
     "dist"
@@ -89,6 +89,7 @@
     "qrcode.react": "1.0.1",
     "react-jss": "10.9.0",
     "socket.io-client": "^4.7.1",
+    "ts-jest": "^29.1.1",
     "xecaddrjs": "^0.0.1"
   },
   "husky": {
