@@ -61,7 +61,7 @@ function getDataPushdata(data: string) {
   const bytesQuantity = new Blob([data]).size;
   if (bytesQuantity > USER_DATA_BYTES_LIMIT) {
     throw new Error(
-      `Maximum ${USER_DATA_BYTES_LIMIT} byte size exceeded: ${bytesQuantity}`,
+      `Maximum ${USER_DATA_BYTES_LIMIT} byte size exceeded for user data: ${bytesQuantity}`,
     );
   }
   const rawPushdata = bytesQuantity.toString(16).padStart(2, '0');
