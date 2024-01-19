@@ -7,15 +7,15 @@
   "repository": "https://github.com/PayButton/paybutton.git",
   "license": "MIT",
   "scripts": {
-    "build":"cd react && yarn && yarn build && cd ../paybutton && yarn && yarn build",
     "build:react":"cd react && yarn && yarn build",
-    "build:react:clean": "yarn clean:react && yarn build:react",
-    "build:paybutton": "cd paybutton && yarn build",
+    "build:paybutton": "cd paybutton && yarn && yarn build",
+    "build":"yarn build:react && yarn build:paybutton",
     "start:rollup": "cd paybutton && yarn && yarn start",
     "start:docs": "cd docs && yarn && yarn serve",
-    "clean:build": "yarn cleanup && yarn build",
     "clean:react": "rm -rf react/node_modules react/dist",
+    "build:react:clean": "yarn clean:react && yarn build:react",
     "clean:paybutton": "rm -rf paybutton/node_modules paybutton/dist",
-    "clean:app": "clean:react && clean:paybutton",
+    "clean:app": "yarn clean:react && yarn clean:paybutton",
+    "clean:build": "yarn clean:app && yarn build"
   }
 }
