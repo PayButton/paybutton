@@ -108,12 +108,20 @@ describe('parseOpReturnProps', () => {
     expect(resultNoNonce).toBe(allResultsPrefix + '00') // 00 is pushdata for no data
     expect(resultNonce).toMatch(nonceRegex)
   })
+  it('Undefined data no nonce', () => {
+    const fullResult = parseOpReturnProps(undefined, true)
+    expect(fullResult).toBe(allResultsPrefix + '00') // 00 is pushdata for no data
+  })
   it('Empty data', () => {
     const fullResult = parseOpReturnProps('')
     const resultNonce = fullResult?.slice(-nonceDigits)
     const resultNoNonce = fullResult?.slice(0, -nonceDigits)
     expect(resultNoNonce).toBe(allResultsPrefix + '00') // 00 is pushdata for no data
     expect(resultNonce).toMatch(nonceRegex)
+  })
+  it('Empty data no nonce', () => {
+    const fullResult = parseOpReturnProps('', true)
+    expect(fullResult).toBe(allResultsPrefix + '00') // 00 is pushdata for no data
   })
   it('Simple parse OpReturn 1', () => {
     const fullResult = parseOpReturnProps('myCustomUserData') // 16 bytes
@@ -125,6 +133,12 @@ describe('parseOpReturnProps', () => {
     expect(resultNonce?.length).toBe(nonceDigits)
     expect(resultNonce).toMatch(nonceRegex)
   })
+  it('Simple parse OpReturn 1 no nonce', () => {
+    const fullResult = parseOpReturnProps('myCustomUserData', true) // 16 bytes
+    expect(fullResult).toBe(allResultsPrefix +
+      '10' + // 16 in hex
+      '6d79437573746f6d5573657244617461')
+  })
   it('Simple parse OpReturn 2', () => {
     const fullResult = parseOpReturnProps('my=Longer more=sensible|user|data') // 33 bytes
     const resultNonce = fullResult?.slice(-nonceDigits)
@@ -135,10 +149,30 @@ describe('parseOpReturnProps', () => {
     expect(resultNonce?.length).toBe(nonceDigits)
     expect(resultNonce).toMatch(nonceRegex)
   })
+  it('Simple parse OpReturn 2 no nonce', () => {
+    const fullResult = parseOpReturnProps('my=Longer more=sensible|user|data', true) // 33 bytes
+    expect(fullResult).toBe(allResultsPrefix +
+      '21' + // 33 in hex
+      '6d793d4c6f6e676572206d6f72653d73656e7369626c657c757365727c64617461')
+  })
   it('Throws if too long', () => {
-    const data256bytes = '😂'.repeat(64)
+    const data208bytes = '😂'.repeat(52) // 52 * 4 = 208 bytes
     expect(() =>
-      parseOpReturnProps(data256bytes) // 33 bytes
-    ).toThrow('Maximum 205 byte size exceeded for user data: 256')
+      parseOpReturnProps(data208bytes)
+    ).toThrow('Maximum 205 byte size exceeded for user data: 208')
+  })
+  it('Is not too long if no nonce', () => {
+    const data208bytes = '😂'.repeat(52) // 52 * 4 = 208 bytes
+    const fullResult = parseOpReturnProps(data208bytes, true)
+    expect(fullResult).toBe(allResultsPrefix +
+      '4cd0' + // 4c because pushData > 75; d0 is 208 in hex
+      'f09f9882'.repeat(52)
+    )
    })
+  it('Throws if too long no nonce', () => {
+    const data216bytes = '😂'.repeat(54) // 54 * 4 = 216 bytes
+    expect(() =>
+      parseOpReturnProps(data216bytes, true)
+    ).toThrow('Maximum 214 byte size exceeded for user data: 216')
+  })
 })
