@@ -876,25 +876,22 @@ PayButton是一個社區主導的開放源代碼促進會。此項目的成功�
 ### 构建
 
 1. `git clone https://github.com/PayButton/paybutton.git`
-2. `cd paybutton/react && npm i && npm run build && cd ../paybutton && npm i && npm run build`
+2. `yarn build`
 
 ### 启动Storybook
 
-1. `cd react && npm i`
-2. `npm start`
+1. `docker-compose up`
 3. 如果網站沒有自動打開，它將在localhost:6006上運行。
 
 ### 启动Rollup
 
-1. `cd paybutton && npm i`
-2. `npm start`
-3. 網站將在localhost:10001上運行。
+1. `yarn start:rollup`
+2. 網站將在localhost:10001上運行。
 
 ### 网站/文件
 
-1. `cd docs && npm i`
-2. `npm run serve`
-3. 網站將在localhost:3000上運行。
+1. `yarn start:docs`
+2. 網站將在localhost:3000上運行。
 
 ## 捐款
 
