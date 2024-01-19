@@ -229,7 +229,7 @@ export default App;
 
 ## to
 
-> **参数"to"用来定义汇款去向。**
+> **参数'to'用来定义汇款去向。**
 
 !> 此参数是必需使用的。可用值是一切有效的eCash地址。
 
@@ -258,7 +258,7 @@ to = "ecash:qrmm7ed0px8tydrlhgvu3putwpwzlfyr0uzfc0slxp"
 
 ## amount
 
-> **参数"amount"用来定义指定金额。将此参数与可选用的参数"currency"结合使用，可以指定以其他货币来显示特定的金额。**
+> **参数'amount'用来定义指定金额。将此参数与可选用的参数"currency"结合使用，可以指定以其他货币来显示特定的金额。**
 
 ?> 此参数是可选用的。默认值为0。有效值为任何十进制。
 
@@ -287,7 +287,7 @@ amount = 100
 
 ## currency
 
-> **参数"currency"用来定义币种。将此参数与可选用的参数"amount"结合使用，可以指定以其他货币来显示特定的金额。**
+> **参数'currency'用来定义币种。将此参数与可选用的参数"amount"结合使用，可以指定以其他货币来显示特定的金额。**
 
 ?> 此参数是可选用的。默认货币为"XEC"。可用币种如下：XEC、BCH、美元、加拿大元
 
@@ -316,7 +316,7 @@ currency = "USD"
 
 ## text
 
-> **参数"text"用来定义按钮上显示的默认文字。**
+> **参数'text'用来定义按钮上显示的默认文字。**
 
 ?> 此参数是可选用的。默认文字为"Donate"。可用内容为任何文字符号。
 
@@ -345,7 +345,7 @@ text = "Purchase"
 
 ## hover-text
 
-> **参数"hover-text"用来定义当鼠标停留时所显示的文字。**
+> **参数'hover-text'用来定义当鼠标停留时所显示的文字。**
 
 ?> 此参数是可选用的。默认文字为"Click to send XEC"。可用内容为任何文字符号。
 
@@ -374,7 +374,7 @@ hoverText = "Send Bitcoin Cash"
 
 ## goal-amount
 
-> **'goal-amount' 参数指定了需要多少捐款/贡献才能认为资金筹集已完成，由一个进度条指示。**
+> **参数'goal-amount'指定了需要多少捐款/贡献才能认为资金筹集已完成，由一个进度条指示。**
 
 ?> 此参数是可选的。默认值为0（无）。可能的值是任何数字。
 
@@ -403,7 +403,7 @@ goalAmount = 10
 
 ## editable
 
-> **'editable' 参数指定是否提供一个输入框，以供用户能够改变付款金额。**
+> **参数'editable'指定是否提供一个输入框，以供用户能够改变付款金额。**
 
 ?> 此参数是可选用的。默认值为false。有效值为true或false。
 
@@ -432,7 +432,7 @@ editable = true
 
 ## theme
 
-> **参数"theme"用来定义按钮和对话框的主题。**
+> **参数'theme'用来定义按钮和对话框的主题。**
 
 ?> 此参数是可选用的。默认值为{ "palette": { "primary": "#4bc846", "secondary": "#f8fdf8", "tertiary": "#374936" } }。可用值为任何有效的调色板代码值。
 
@@ -461,7 +461,7 @@ theme = { palette: { primary: "#ee8b2b", secondary: "#fefbf8", tertiary: "#50403
 
 ## animation
 
-> **参数"animation"用来定义当鼠标停留时按钮所产生的改变。**
+> **参数'animation'用来定义当鼠标停留时按钮所产生的改变。**
 
 ?> 此参数是可选用的。默认值为slide。可用值为slide、invert、none。
 
@@ -490,7 +490,7 @@ animation = "invert"
 
 ## success-text
 
-> **参数"success-text"用来定义成功付款后所显示的文字。**
+> **参数'success-text'用来定义成功付款后所显示的文字。**
 
 ?> 此参数是可选用的。默认文字为"Thank for your support!"。可用内容为任何文字符号。
 
@@ -519,7 +519,7 @@ successText = "Thanks!"
 
 ## on-success
 
-> **参数"on-success"用来定义指定地址收款后运行的回调函数。**
+> **参数'on-success'用来定义指定地址收款后运行的回调函数。**
 
 ?> 此参数是可选用的。默认值为空白。有效值为任何已定义的函数。
 
@@ -548,7 +548,7 @@ onSuccess = successCallback
 
 ## on-transaction
 
-> **参数"on-transaction"用来定义收到任何付款到指定地址后运行回调函数。**
+> **参数'on-transaction'用来定义收到任何付款到指定地址后运行回调函数。**
 
 ?> 此参数是可选用的。默认值为空白。有效值为任何已定义的函数。
 
@@ -577,7 +577,7 @@ onTransaction = transactionCallback
 
 ## on-open
 
-> **参数"on-open"指定了在按钮被点击、对话框打开之前运行的回调函数。**
+> **参数'on-open'指定了在按钮被点击、对话框打开之前运行的回调函数。**
 
 ?> 这个参数是可选的。默认值为空。可能的值是任何已定义的函数。
 
@@ -606,7 +606,7 @@ onOpen = successCallback
 
 ## on-close
 
-> **参数"on-close"指定了对话框关闭时运行的回调函数。**
+> **参数'on-close'指定了对话框关闭时运行的回调函数。**
 
 ?> 这个参数是可选的。默认值为空。可能的值是任何已定义的函数。
 
@@ -636,7 +636,7 @@ onClose = successCallback
 
 ## op-return
 
-> **‘op-return’参数指定将与交易一起发送的自定义消息。**
+> **参数'op-return'指定将与交易一起发送的自定义消息。**
 
 ?> 此参数是可选的。默认值为空。可能的值为任何最多68字节的字符串。
 
@@ -665,7 +665,7 @@ opReturn = ""
 
 ## disable-payment-id
 
-> **「disable-payment-id」移除了交易付款时生成的随机id。**
+> **参数'disable-payment-id'移除了交易付款时生成的随机id。**
 
 ?> 此参数为可选。默认值为 false。可能的值为 true 或 false。
 
@@ -721,7 +721,7 @@ randomSatoshis = false
 
 ## hide-toasts
 
-> **'hide-toasts' 参数指定是否让应用程序完全控制在检测到付款时发生的情况。**
+> **参数'hide-toasts'指定是否让应用程序完全控制在检测到付款时发生的情况。**
 
 ?> 此参数是可选用的。默认值为false。有效值为true或false。
 
@@ -752,7 +752,7 @@ disabled = true
 
 ## disable-enforce-focus
 
-> **'disable-enforce-focus' 参数被传递给 Dialog material UI 组件。设置它为 false 可以帮助提高如屏幕阅读器等技术的可访问性，但可能会在运行 Material UI 的网站上引发错误。**
+> **参数'disable-enforce-focus'被传递给 Dialog material UI 组件。设置它为 false 可以帮助提高如屏幕阅读器等技术的可访问性，但可能会在运行 Material UI 的网站上引发错误。**
 
 ?> 此参数是可选用的。默认值为true。有效值为true或false。
 
@@ -781,7 +781,7 @@ disableEnforceFocus = false
 
 ## disabled
 
-> **'disabled' 参数指定是否锁定按钮/小工具以防止其被使用。**
+> **参数'disabled'指定是否锁定按钮/小工具以防止其被使用。**
 
 ?> 此参数是可选用的。默认值为false。有效值为true或false。
 
@@ -810,7 +810,7 @@ disabled = true
 
 ## ws-base-url
 
-> **‘wsBaseUrl’ 参数指定了用于 websocket 的 URL，新交易的信息将从这里获取。**
+> **参数'wsBaseUrl'指定了用于 websocket 的 URL，新交易的信息将从这里获取。**
 
 ?> 该参数是可选的。默认值是 ‘https://socket.paybutton.org’。可能的值是任何有效的 URL。
 
@@ -840,7 +840,7 @@ wsBaseUrl = "https://socket.paybutton.org"
 
 ## api-base-url
 
-> **‘apiBaseUrl’ 参数指定了 API 的 URL，新交易、价格和地址的信息将从这里获取。**
+> **参数'apiBaseUrl'指定了 API 的 URL，新交易、价格和地址的信息将从这里获取。**
 
 ?> 该参数是可选的。默认值是 ‘https://paybutton.org’。可能的值是任何有效的 URL。
 
