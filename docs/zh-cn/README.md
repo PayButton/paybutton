@@ -663,35 +663,6 @@ opReturn = ""
 <!-- tabs:end -->
 
 
-## disable-payment-id
-
-> **“disable-payment-id”参数会移除为了防止当一个人和另一个人同时打开支付屏幕时触发onSuccess回调而生成的支付随机ID。**
-
-?> 此参数是可选的。默认值为false。可能的值为true或false。
-
-**示例:**
-<!-- tabs:start -->
-
-#### ** HTML **
-
-```html
-disable-payment-id="true"
-```
-
-#### ** JavaScript **
-
-```javascript
-disablePaymentId: true
-```
-
-#### ** React **
-
-```react
-disablePaymentId = true
-```
-
-<!-- tabs:end -->
-
 ## random-satoshis
 
 > **参数"random-satoshis"用来定义是否将付款金额的最后几位随机化，因此当一个人进行付款时不太可能触发回调 onSuccess的同时另一个人正打开付款屏幕。**
@@ -804,6 +775,35 @@ disabled: true
 
 ```react
 disabled = true
+```
+
+<!-- tabs:end -->
+
+## disable-payment-id
+
+> **“disable-payment-id”参数会移除为了防止当一个人和另一个人同时打开支付屏幕时触发onSuccess回调而生成的支付随机ID。**
+
+?> 此参数是可选的。默认值为false。可能的值为true或false。
+
+**示例:**
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+disable-payment-id="true"
+```
+
+#### ** JavaScript **
+
+```javascript
+disablePaymentId: true
+```
+
+#### ** React **
+
+```react
+disablePaymentId = true
 ```
 
 <!-- tabs:end -->
