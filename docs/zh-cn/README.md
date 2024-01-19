@@ -665,9 +665,9 @@ opReturn = ""
 
 ## disable-payment-id
 
-> **参数'disable-payment-id'移除了交易付款时生成的随机id。**
+> **“disable-payment-id”参数会移除为了防止当一个人和另一个人同时打开支付屏幕时触发onSuccess回调而生成的支付随机ID。**
 
-?> 此参数为可选。默认值为 false。可能的值为 true 或 false。
+?> 此参数是可选的。默认值为false。可能的值为true或false。
 
 **示例:**
 <!-- tabs:start -->
