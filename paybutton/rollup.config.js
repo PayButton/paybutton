@@ -16,6 +16,7 @@ export default ( env ) => ({
     file: 'dist/paybutton.js',
     name: 'PayButton',
     format: 'umd',
+    exports: 'named',
   },
   plugins: [
     progress({
@@ -29,18 +30,23 @@ export default ( env ) => ({
     }),
     replace({
       'process.env.NODE_ENV': JSON.stringify(env),
+      preventAssignment: true,
     }),
     image(),
     svg(),
-    resolve( { browser: true, extensions: [ '.js', '.jsx', '.ts', '.tsx', '.svg' ] } ),
+    resolve({ 
+      browser: true, 
+      extensions: [ '.js', '.jsx', '.ts', '.tsx', '.svg' ],
+      preferBuiltins: false 
+    }),
     commonJS( { extensions: [ '.js', '.jsx', '.ts', '.tsx', '.svg' ], transformMixedEsModules: true } ),
     image(),
     nodePolyfills(),
-    typescript(),
     json(),
     dotenv({
       cwd: "../react"
     }),
-  ],
-  external: ['@types/currency-formatter', 'currency-formatter'],
-});
+    typescript({ compilerOptions: {lib: ["es5", "es6", "dom"], target: "es5"}}),
+    ],
+    external: ['@types/currency-formatter', 'currency-formatter'],
+  });

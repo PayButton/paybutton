@@ -1,7 +1,8 @@
 import camelcase from 'camelcase';
-import { PayButton, PayButtonProps, PaymentDialog, PaymentDialogProps, Widget, WidgetProps } from 'paybutton';
+import { PayButton, PayButtonProps, PaymentDialog, PaymentDialogProps, Widget, WidgetProps } from '@paybutton/react';
 import { h } from 'preact';
 import { render } from 'preact/compat';
+import React from 'react'
 
 declare global {
   interface Window {
@@ -243,5 +244,5 @@ export default {
       render(<Widget {...props} />, el)
     }
   },
-  openDialog: (props: PaymentDialogProps) => openDialog(props)
+  openDialog: (props: PaymentDialogProps) => openDialog(props),
 };
