@@ -35,10 +35,10 @@ function prependNonceWithPushdata(hexString: string): string {
 }
 
 function stringToHex(str: string): string {
-  return str
-    .split('')
-    .map(c => c.charCodeAt(0).toString(16).padStart(2, '0'))
-    .join('');
+  const encoder = new TextEncoder();
+  const encoded = encoder.encode(str);
+  const encodedBytes = Array.from(encoded)
+  return encodedBytes.map(byte => byte.toString(16).padStart(2, '0')).join('');
 }
 
 function generatePushdataPrefixedNonce(bytesAmount: number): string {
