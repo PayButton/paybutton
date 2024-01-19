@@ -781,7 +781,7 @@ disabled = true
 
 ## disable-payment-id
 
-> **“disable-payment-id”參數會移除為了防止當一個人和另一個人同時打開支付屏幕時觸發onSuccess回調而生成的支付隨機ID。**
+> **參數‘disable-payment-id’用於移除支付生成的隨機ID，該ID用於防止當一個人和另一個人同時打開支付屏幕時觸發onSuccess回調。**
 
 ?> 此參數是可選的。默認值為false。可能的值為true或false。
 
