@@ -647,19 +647,19 @@ onClose = successCallback
 #### ** HTML **
 
 ```html
-on-close="myCustomMessage"
+op-return="myCustomMessage"
 ```
 
 #### ** JavaScript **
 
 ```javascript
-onClose: "myCustomMessage"
+opReturn: "myCustomMessage"
 ```
 
 #### ** React **
 
 ```react
-onClose = "myCustomMessage"
+opReturn = "myCustomMessage"
 ```
 
 <!-- tabs:end -->
