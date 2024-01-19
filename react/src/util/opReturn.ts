@@ -14,7 +14,7 @@ export const VERSION = '00'; // \x00
 // - 8 from the 8-byte nonce
 // - 2 from the maximum size for the data pushdata
 // = 205 available bytes
-export const USER_DATA_BYTES_LIMIT = 223 - 1 - 1 - 4 - 1 - 1 - 8 - 2; // 205
+export const USER_DATA_BYTES_LIMIT = 205;
 
 // Pushdata is self-describing up to 75 bytes, since 0x4c (76 in hex) is
 // a special OP code.
