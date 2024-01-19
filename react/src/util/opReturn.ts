@@ -100,3 +100,10 @@ export function parseOpReturnProps(
     generatePushdataPrefixedNonce(8)
   );
 }
+
+export const exportedForTesting = {
+  prependNonceWithPushdata,
+  generatePushdataPrefixedNonce,
+  stringToHex,
+  getDataPushdata,
+}
