@@ -664,6 +664,35 @@ onClose = "myCustomMessage"
 
 <!-- tabs:end -->
 
+## disable-payment-id
+
+> **The ‘disable-payment-id’ removes the random id generated for the payment that will be send with the transaction
+
+?> This parameter is optional. Default value is false. Possible values are true or false.
+
+**Example:**
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+disable-payment-id="true"
+```
+
+#### ** JavaScript **
+
+```javascript
+disablePaymentId: true
+```
+
+#### ** React **
+
+```react
+disablePaymentId = true
+```
+
+<!-- tabs:end -->
+
 ## random-satoshis
 
 > **The ‘random-satoshis’ parameter specifies whether to randomize the last few digits of the payment amount so that it’s unlikely that a payment made by one person will trigger the onSuccess callback of another who has the payment screen open at the same time.**
