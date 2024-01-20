@@ -96,7 +96,7 @@ const requiredProps = [
   'to',
 ];
 
-export function renderDialogButton(dialogbuttonExists: boolean): void {
+function renderDialogButton(dialogbuttonExists: boolean): void {
   const content = document.getElementById('content');
   if (dialogbuttonExists && content) {
       Array
@@ -107,7 +107,7 @@ export function renderDialogButton(dialogbuttonExists: boolean): void {
   }
 }
 
-export function openDialog(props: PaymentDialogProps): void {
+function openDialog(props: PaymentDialogProps): void {
   const container = document.createElement('div');
   document.body.appendChild(container);
   const onClose = (success?: boolean) => {
@@ -119,7 +119,7 @@ export function openDialog(props: PaymentDialogProps): void {
   render(<PaymentDialog container={container} onClose={onClose} {...props} />, container)
 }
 
-export function renderButtons(paybuttonExists: boolean): void {
+function renderButtons(paybuttonExists: boolean): void {
 
   if (!paybuttonExists) {
     console.error('The "paybutton" class is either misspelled or missing.')
@@ -128,7 +128,7 @@ export function renderButtons(paybuttonExists: boolean): void {
   }
 }
 
-export function renderWidgets(widgetExists: boolean): void {
+function renderWidgets(widgetExists: boolean): void {
   if (!widgetExists) {
     console.error('The "paybutton-widget" class is either misspelled or missing.')
   } else {
@@ -245,4 +245,7 @@ export default {
     }
   },
   openDialog: (props: PaymentDialogProps) => openDialog(props),
+  renderButtons,
+  renderWidgets,
+  renderDialogButton,
 };
