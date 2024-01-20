@@ -106,21 +106,21 @@ describe('parseOpReturnProps', () => {
   const allResultsPrefix = '04' + '50415900' + '00'
   const nonceDigits = 18
   const nonceRegex = /^[0-9a-fA-F]{18}$/
-  it('Undefined data', () => {
+  it('Parses undefined data', () => {
     const fullResult = parseOpReturnProps(undefined)
     const resultNonce = fullResult?.slice(-nonceDigits)
     const resultNoNonce = fullResult?.slice(0, -nonceDigits)
     expect(resultNoNonce).toBe(allResultsPrefix + '00') // 00 is pushdata for no data
     expect(resultNonce).toMatch(nonceRegex)
   })
-  it('Empty data', () => {
+  it('Parses empty data', () => {
     const fullResult = parseOpReturnProps('')
     const resultNonce = fullResult?.slice(-nonceDigits)
     const resultNoNonce = fullResult?.slice(0, -nonceDigits)
     expect(resultNoNonce).toBe(allResultsPrefix + '00') // 00 is pushdata for no data
     expect(resultNonce).toMatch(nonceRegex)
   })
-  it('Simple parse OpReturn 1', () => {
+  it('Parses simple string', () => {
     const fullResult = parseOpReturnProps('myCustomUserData') // 16 bytes
     const resultNonce = fullResult?.slice(-nonceDigits)
     const resultNoNonce = fullResult?.slice(0,-nonceDigits)
@@ -130,7 +130,7 @@ describe('parseOpReturnProps', () => {
     expect(resultNonce?.length).toBe(nonceDigits)
     expect(resultNonce).toMatch(nonceRegex)
   })
-  it('Simple parse OpReturn 2', () => {
+  it('Parses key=value space separated string with array', () => {
     const fullResult = parseOpReturnProps('my=Longer more=sensible|user|data') // 33 bytes
     const resultNonce = fullResult?.slice(-nonceDigits)
     const resultNoNonce = fullResult?.slice(0,-nonceDigits)
@@ -140,10 +140,10 @@ describe('parseOpReturnProps', () => {
     expect(resultNonce?.length).toBe(nonceDigits)
     expect(resultNonce).toMatch(nonceRegex)
   })
-  it('Throws if too long', () => {
+  it('Throws if too long input', () => {
     const data256bytes = '😂'.repeat(64)
     expect(() =>
-      parseOpReturnProps(data256bytes) // 33 bytes
+      parseOpReturnProps(data256bytes)
     ).toThrow('Maximum 205 byte size exceeded for user data: 256')
    })
 })
