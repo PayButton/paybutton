@@ -22,6 +22,11 @@ const SINGLE_PUSHDATA_BYTE_LIMIT = 75;
 
 function prependNonceWithPushdata(hexString: string): string {
   // 2 hex chars == 1 byte
+  if (hexString.length % 2 !== 0) {
+    throw new Error(
+      `Malformed input; nonce hex should never be of odd length`,
+    );
+  }
   const bytesQuantity = hexString.length / 2;
   // We limit the nonce size to 75 bytes,
   // since this is way more than necessary for security.

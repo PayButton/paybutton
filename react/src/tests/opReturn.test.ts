@@ -30,6 +30,11 @@ describe('prependNonceWithPushdata', () => {
       prependNonceWithPushdata('aa'.repeat(76))
     ).toThrow('Maximum 75 byte size exceeded for nonce: 76')
   })
+  it ('Throws if non even length', () => {
+    expect(() =>
+      prependNonceWithPushdata('abc')
+    ).toThrow('Malformed input; nonce hex should never be of odd length')
+  })
 })
 
 describe('generatePushdataPrefixedNonce', () => {
