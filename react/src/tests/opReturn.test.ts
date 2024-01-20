@@ -3,26 +3,26 @@ import { exportedForTesting, parseOpReturnProps } from '../util/opReturn'
 const { stringToHex, prependNonceWithPushdata, generatePushdataPrefixedNonce, getDataPushdata } = exportedForTesting
 
 describe('stringToHex', () => {
-  it ('Simple conversion 1', () => {
+  it ('Converts paybutton protocol lokad', () => {
     expect(stringToHex('PAY\x00')).toBe('50415900')
   })
-  it ('Simple conversion 2', () => {
+  it ('Converts ASCII printable and non printable', () => {
     expect(stringToHex('aA1=-*&]]^!\x04\x14')).toBe('6141313d2d2a265d5d5e210414')
   })
-  it('Works for non ASCII chars', () => {
+  it('Converts mix of ASCII, extended ASCII and non-ASCII', () => {
     expect(stringToHex('a©æ😂👌')).toBe('61c2a9c3a6f09f9882f09f918c')
   })
 });
 
 describe('prependNonceWithPushdata', () => {
-  it ('Simple nonce prepend 1', () => {
+  it ('Prepends three bytes', () => {
     expect(prependNonceWithPushdata('aa00bb')).toBe('03aa00bb')
   })
-  it ('Simple nonce prepend 2', () => {
+  it ('Prepends 45 bytes', () => {
     const nonce = 'ff019349025bc95aefa6dfab756f6ea7cb96eadbfa696abd816abef6a97fbad8917afd5bbdf6a7b5976b95a6dc'
     expect(prependNonceWithPushdata(nonce)).toBe('2d' + nonce)
   })
-  it ('Doesnt throw at limit', () => {
+  it ('Doesnt throw at max byte limit of 75', () => {
     expect(prependNonceWithPushdata('aa'.repeat(75))).toBe('4b' + 'aa'.repeat(75))
   })
   it ('Throws if too big', () => {
