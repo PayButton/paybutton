@@ -213,6 +213,7 @@ export const Widget: React.FC<WidgetProps> = props => {
     (async (): Promise<void> => {
       const balance = await getAddressBalance(to, apiBaseUrl);
       setTotalReceived(balance);
+      setLoading(false);
     })();
   }, [newTxs]);
 

@@ -31,9 +31,15 @@ export const setListener = (socket: Socket, setNewTxs: Function): void => {
 export const getAddressBalance = async (
   address: string,
   rootUrl = config.apiBaseUrl,
-): Promise<number> => {
-  const res = await axios.get(`${rootUrl}/address/balance/${address}`);
-  return isNaN(res.data) ? null : res.data;
+): Promise<number | undefined> => {
+  try {
+    const res = await axios.get(`${rootUrl}/address/balance/${address}`);
+
+    return isNaN(res.data) ? null : res.data;
+  } catch (error) {
+    return;
+  }
+ 
 };
 
 export const getUTXOs = async (
