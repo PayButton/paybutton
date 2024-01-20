@@ -125,6 +125,7 @@ export const Widget: React.FC<WidgetProps> = props => {
     foot,
     success,
     successText,
+    disablePaymentId,
     goalAmount,
     ButtonComponent = Button,
     currency = getCurrencyTypeFromAddress(to),
