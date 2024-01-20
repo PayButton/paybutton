@@ -16,7 +16,6 @@ export default ( env ) => ({
     file: 'dist/paybutton.js',
     name: 'PayButton',
     format: 'umd',
-    exports: 'named',
   },
   plugins: [
     progress({
