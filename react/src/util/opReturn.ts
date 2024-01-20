@@ -39,6 +39,7 @@ function prependNonceWithPushdata(hexString: string): string {
   return `${pushdata}${hexString}`;
 }
 
+// UTF8 encoding
 function stringToHex(str: string): string {
   const encoder = new TextEncoder();
   const encoded = encoder.encode(str);
