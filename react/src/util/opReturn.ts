@@ -18,14 +18,14 @@ export const USER_DATA_BYTES_LIMIT = 214;
 // a special OP code.
 const SINGLE_PUSHDATA_BYTE_LIMIT = 75;
 
-function prependNonceWithPushdata(hexString: string): string {
+function prependPaymentIdWithPushdata(hexString: string): string {
   // 2 hex chars == 1 byte
   const bytesQuantity = hexString.length / 2;
-  // We limit the nonce size to 75 bytes,
+  // We limit the paymentId size to 75 bytes,
   // since this is way more than necessary for security.
   if (bytesQuantity > SINGLE_PUSHDATA_BYTE_LIMIT) {
     throw new Error(
-      `Maximum ${SINGLE_PUSHDATA_BYTE_LIMIT} byte size exceeded for nonce: ${bytesQuantity}`,
+      `Maximum ${SINGLE_PUSHDATA_BYTE_LIMIT} byte size exceeded for paymentId: ${bytesQuantity}`,
     );
   }
   const pushdata = bytesQuantity.toString(16).padStart(2, '0');
@@ -39,7 +39,7 @@ function stringToHex(str: string): string {
   return encodedBytes.map(byte => byte.toString(16).padStart(2, '0')).join('');
 }
 
-function generatePushdataPrefixedNonce(bytesAmount: number): string {
+function generatePushdataPrefixedPaymentId(bytesAmount: number): string {
   // Generate 8 random bytes
   const wordArray = lib.WordArray.random(bytesAmount);
 
@@ -52,12 +52,12 @@ function generatePushdataPrefixedNonce(bytesAmount: number): string {
   // ... therefore; 8 bytes = 64 bits => 64/4 = 16 hex chars
   // + 1 byte of pushdata at the beggining = 2 hex chars
   // = 18 chars
-  return prependNonceWithPushdata(hexString);
+  return prependPaymentIdWithPushdata(hexString);
 }
 
 function getDataPushdata(data: string, disablePaymentId=false) {
   const bytesQuantity = new Blob([data]).size;
-  // If nonce is expected, limit is 9 bytes smaller
+  // If paymentId is expected, limit is 9 bytes smaller
   const bytesLimit = USER_DATA_BYTES_LIMIT - (disablePaymentId ? 0 : 9)
   if (bytesQuantity > bytesLimit) {
     throw new Error(
@@ -80,8 +80,8 @@ function getDataPushdata(data: string, disablePaymentId=false) {
 // `00` - Version 0, pushed as `OP_0`
 // `16` - pushdata for the data payload, signifying this tx has 22 bytes of data
 // `68656c6c6f20776f726c64` - data payload, 'hello world' as ASCII encoded to hex
-// `08` - pushdata for the optional nonce (paymentId), signifying this tx has 8 bytes of nonce data
-// `0102030405060708` - The 8-byte nonce (paymentId)
+// `08` - pushdata for the optional paymentId (paymentId), signifying this tx has 8 bytes of paymentId data
+// `0102030405060708` - The 8-byte paymentId (paymentId)
 
 export function parseOpReturnProps(
   opReturn: string | undefined,
@@ -92,7 +92,7 @@ export function parseOpReturnProps(
   }
 
   const pushdata = getDataPushdata(opReturn, disablePaymentId);
-  const suffix = disablePaymentId ? '' : generatePushdataPrefixedNonce(8)
+  const suffix = disablePaymentId ? '' : generatePushdataPrefixedPaymentId(8)
   return (
     OP_RETURN_PREFIX_PUSHDATA +
     OP_RETURN_PREFIX +
@@ -104,8 +104,8 @@ export function parseOpReturnProps(
 }
 
 export const exportedForTesting = {
-  prependNonceWithPushdata,
-  generatePushdataPrefixedNonce,
+  prependPaymentIdWithPushdata,
+  generatePushdataPrefixedPaymentId,
   stringToHex,
   getDataPushdata,
 }
