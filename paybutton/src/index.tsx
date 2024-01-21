@@ -83,6 +83,7 @@ const allowedProps = [
   'text',
   'to',
   'opReturn',
+  'disablePaymentId',
   'disabled',
   'goalAmount',
   'editable',
