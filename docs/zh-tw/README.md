@@ -374,7 +374,7 @@ hoverText = "Send Bitcoin Cash"
 
 ## goal-amount
 
-> **'goal-amount' 參數指定了需要多少捐款/貢獻才能認為資金籌集已完成，由一個進度條指示。**
+> **參數'goal-amount'指定了需要多少捐款/貢獻才能認為資金籌集已完成，由一個進度條指示。**
 
 ?> 此參數是可選的。預設值為0（無）。可能的值是任何數字。
 
@@ -403,7 +403,7 @@ goalAmount = 10
 
 ## editable
 
-> **'editable' 參數指定是否提供一個輸入框，以供用戶能夠改變付款金額。**
+> **參數'editable'指定是否提供一個輸入框，以供用戶能夠改變付款金額。**
 
 ?> 此參數是可選用的。默認值為false。有效值為true或false。
 
@@ -663,38 +663,9 @@ opReturn = ""
 <!-- tabs:end -->
 
 
-## disable-payment-id
-
-> **「disable-payment-id」移除了交易付款時生成的隨機id。**
-
-?> 此參數為可選。默認值為 false。可能的值為 true 或 false。
-
-**範例:**
-<!-- tabs:start -->
-
-#### ** HTML **
-
-```html
-disable-payment-id="true"
-```
-
-#### ** JavaScript **
-
-```javascript
-disablePaymentId: true
-```
-
-#### ** React **
-
-```react
-disablePaymentId = true
-```
-
-<!-- tabs:end -->
-
 ## random-satoshis
 
-> **參數"random-satoshis"用來定義是否將付款金額的最後幾位隨機化，因此當一個人進行付款時不太可能觸發回呼onSuccess的同時另一個人正打開付款螢幕。**
+> **參數'random-satoshis'用來定義是否將付款金額的最後幾位隨機化，因此當一個人進行付款時不太可能觸發回呼onSuccess的同時另一個人正打開付款螢幕。**
 
 ?> 此參數是可選用的。默認值為true。有效值為true、false或0到4的整數，該整數指定應隨機化多少個最後的數字。將其設置為true等同於將其設置為3。將其設置為false等同於將其設置為0。
 
@@ -723,7 +694,7 @@ randomSatoshis = false
 
 ## hide-toasts
 
-> **'hide-toasts' 參數指定是否讓應用程式完全控制在檢測到付款時發生的情況。**
+> **參數'hide-toasts'指定是否讓應用程式完全控制在檢測到付款時發生的情況。**
 
 ?> 此參數是可選用的。默認值為false。有效值為true或false。
 
@@ -752,7 +723,7 @@ disabled = true
 
 ## disable-enforce-focus
 
-> **'disable-enforce-focus' 參數被傳遞給 Dialog material UI 組件。將其設定為 false 可以幫助提高如螢幕閱讀器等技術的可訪問性，但可能會在運行 Material UI 的網站上引發錯誤。**
+> **參數'disable-enforce-focus'被傳遞給 Dialog material UI 組件。將其設定為 false 可以幫助提高如螢幕閱讀器等技術的可訪問性，但可能會在運行 Material UI 的網站上引發錯誤。**
 
 ?> 此參數是可選用的。默認值為true。有效值為true或false。
 
@@ -781,7 +752,7 @@ disableEnforceFocus = false
 
 ## disabled
 
-> **'disabled' 參數指定是否鎖定按鈕/小工具以防止其被使用。**
+> **參數'disabled'指定是否鎖定按鈕/小工具以防止其被使用。**
 
 ?> 此參數是可選用的。默認值為false。有效值為true或false。
 
@@ -808,9 +779,38 @@ disabled = true
 
 <!-- tabs:end -->
 
+## disable-payment-id
+
+> **參數‘disable-payment-id’用於移除支付生成的隨機ID，該ID用於防止當一個人和另一個人同時打開支付屏幕時觸發onSuccess回調。**
+
+?> 此參數是可選的。默認值為false。可能的值為true或false。
+
+**範例:**
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+disable-payment-id="true"
+```
+
+#### ** JavaScript **
+
+```javascript
+disablePaymentId: true
+```
+
+#### ** React **
+
+```react
+disablePaymentId = true
+```
+
+<!-- tabs:end -->
+
 ## ws-base-url
 
-> **‘wsBaseUrl’ 參數指定了用於 websocket 的 URL，新交易的資訊將從這裡獲取。**
+> **參數'wsBaseUrl'指定了用於 websocket 的 URL，新交易的資訊將從這裡獲取。**
 
 ?> 該參數是可選的。預設值是‘https://socket.paybutton.org’。可能的值是任何有效的 URL。
 
@@ -840,7 +840,7 @@ wsBaseUrl = "https://socket.paybutton.org"
 
 ## api-base-url
 
-> **‘apiBaseUrl’ 參數指定了 API 的 URL，新交易、價格和地址的資訊將從這裡獲取。**
+> **參數'apiBaseUrl'指定了 API 的 URL，新交易、價格和地址的資訊將從這裡獲取。**
 
 ?> 該參數是可選的。預設值是‘https://paybutton.org’。可能的值是任何有效的 URL。
 
