@@ -1,6 +1,6 @@
 import { exportedForTesting, parseOpReturnProps } from '../util/opReturn'
 
-const { stringToHex, prependNonceWithPushdata, generatePushdataPrefixedNonce, getDataPushdata } = exportedForTesting
+const { stringToHex, prependPaymentIdWithPushdata, generatePushdataPrefixedPaymentId, getDataPushdata } = exportedForTesting
 
 describe('stringToHex', () => {
   it ('Converts paybutton protocol lokad', () => {
@@ -14,49 +14,49 @@ describe('stringToHex', () => {
   })
 });
 
-describe('prependNonceWithPushdata', () => {
+describe('prependPaymentIdWithPushdata', () => {
   it ('Prepends three bytes', () => {
-    expect(prependNonceWithPushdata('aa00bb')).toBe('03aa00bb')
+    expect(prependPaymentIdWithPushdata('aa00bb')).toBe('03aa00bb')
   })
   it ('Prepends 45 bytes', () => {
-    const nonce = 'ff019349025bc95aefa6dfab756f6ea7cb96eadbfa696abd816abef6a97fbad8917afd5bbdf6a7b5976b95a6dc'
-    expect(prependNonceWithPushdata(nonce)).toBe('2d' + nonce)
+    const paymentId = 'ff019349025bc95aefa6dfab756f6ea7cb96eadbfa696abd816abef6a97fbad8917afd5bbdf6a7b5976b95a6dc'
+    expect(prependPaymentIdWithPushdata(paymentId)).toBe('2d' + paymentId)
   })
   it ('Doesnt throw at max byte limit of 75', () => {
-    expect(prependNonceWithPushdata('aa'.repeat(75))).toBe('4b' + 'aa'.repeat(75))
+    expect(prependPaymentIdWithPushdata('aa'.repeat(75))).toBe('4b' + 'aa'.repeat(75))
   })
   it ('Throws if too big', () => {
     expect(() =>
-      prependNonceWithPushdata('aa'.repeat(76))
-    ).toThrow('Maximum 75 byte size exceeded for nonce: 76')
+      prependPaymentIdWithPushdata('aa'.repeat(76))
+    ).toThrow('Maximum 75 byte size exceeded for paymentId: 76')
   })
   it ('Throws if non even length', () => {
     expect(() =>
-      prependNonceWithPushdata('abc')
-    ).toThrow('Malformed input; nonce hex should never be of odd length')
+      prependPaymentIdWithPushdata('abc')
+    ).toThrow('Malformed input; paymentId hex should never be of odd length')
   })
 })
 
-describe('generatePushdataPrefixedNonce', () => {
-  it ('8 byte nonce', () => {
-    const prefixedNonce = generatePushdataPrefixedNonce(8)
-    expect(prefixedNonce.length).toBe(18) // 8 * 2 (two hex chars=byte) + 2(pushdata prefix)
-    expect(prefixedNonce.slice(0,2)).toBe('08')
+describe('generatePushdataPrefixedPaymentId', () => {
+  it ('8 byte paymentId', () => {
+    const prefixedPaymentId = generatePushdataPrefixedPaymentId(8)
+    expect(prefixedPaymentId.length).toBe(18) // 8 * 2 (two hex chars=byte) + 2(pushdata prefix)
+    expect(prefixedPaymentId.slice(0,2)).toBe('08')
   })
-  it ('16 byte nonce', () => {
-    const prefixedNonce = generatePushdataPrefixedNonce(16)
-    expect(prefixedNonce.length).toBe(34) // 16 * 2 + 2
-    expect(prefixedNonce.slice(0,2)).toBe('10')
+  it ('16 byte paymentId', () => {
+    const prefixedPaymentId = generatePushdataPrefixedPaymentId(16)
+    expect(prefixedPaymentId.length).toBe(34) // 16 * 2 + 2
+    expect(prefixedPaymentId.slice(0,2)).toBe('10')
   })
-  it ('75 byte nonce', () => {
-    const prefixedNonce = generatePushdataPrefixedNonce(75)
-    expect(prefixedNonce.length).toBe(152) // 75 * 2 + 2
-    expect(prefixedNonce.slice(0,2)).toBe('4b')
+  it ('75 byte paymentId', () => {
+    const prefixedPaymentId = generatePushdataPrefixedPaymentId(75)
+    expect(prefixedPaymentId.length).toBe(152) // 75 * 2 + 2
+    expect(prefixedPaymentId.slice(0,2)).toBe('4b')
   })
-  it ('fails at 76 byte nonce', () => {
+  it ('fails at 76 byte paymentId', () => {
     expect(() =>
-      generatePushdataPrefixedNonce(76)
-    ).toThrow('Maximum 75 byte size exceeded for nonce: 76')
+      generatePushdataPrefixedPaymentId(76)
+    ).toThrow('Maximum 75 byte size exceeded for paymentId: 76')
   })
 })
 
@@ -104,41 +104,41 @@ describe('getDataPushdata', () => {
 describe('parseOpReturnProps', () => {
   // protocol pushdata + protocol + version byte
   const allResultsPrefix = '04' + '50415900' + '00'
-  const nonceDigits = 18
-  const nonceRegex = /^[0-9a-fA-F]{18}$/
+  const paymentIdDigits = 18
+  const paymentIdRegex = /^[0-9a-fA-F]{18}$/
   it('Parses undefined data', () => {
     const fullResult = parseOpReturnProps(undefined)
-    const resultNonce = fullResult?.slice(-nonceDigits)
-    const resultNoNonce = fullResult?.slice(0, -nonceDigits)
-    expect(resultNoNonce).toBe(allResultsPrefix + '00') // 00 is pushdata for no data
-    expect(resultNonce).toMatch(nonceRegex)
+    const resultPaymentId = fullResult?.slice(-paymentIdDigits)
+    const resultNoPaymentId = fullResult?.slice(0, -paymentIdDigits)
+    expect(resultNoPaymentId).toBe(allResultsPrefix + '00') // 00 is pushdata for no data
+    expect(resultPaymentId).toMatch(paymentIdRegex)
   })
-  it('Undefined data no nonce', () => {
+  it('Undefined data no paymentId', () => {
     const fullResult = parseOpReturnProps(undefined, true)
     expect(fullResult).toBe(allResultsPrefix + '00') // 00 is pushdata for no data
   })
   it('Empty data', () => {
     const fullResult = parseOpReturnProps('')
-    const resultNonce = fullResult?.slice(-nonceDigits)
-    const resultNoNonce = fullResult?.slice(0, -nonceDigits)
-    expect(resultNoNonce).toBe(allResultsPrefix + '00') // 00 is pushdata for no data
-    expect(resultNonce).toMatch(nonceRegex)
+    const resultPaymentId = fullResult?.slice(-paymentIdDigits)
+    const resultNoPaymentId = fullResult?.slice(0, -paymentIdDigits)
+    expect(resultNoPaymentId).toBe(allResultsPrefix + '00') // 00 is pushdata for no data
+    expect(resultPaymentId).toMatch(paymentIdRegex)
   })
-  it('Empty data no nonce', () => {
+  it('Empty data no paymentId', () => {
     const fullResult = parseOpReturnProps('', true)
     expect(fullResult).toBe(allResultsPrefix + '00') // 00 is pushdata for no data
   })
   it('Simple parse OpReturn 1', () => {
     const fullResult = parseOpReturnProps('myCustomUserData') // 16 bytes
-    const resultNonce = fullResult?.slice(-nonceDigits)
-    const resultNoNonce = fullResult?.slice(0,-nonceDigits)
-    expect(resultNoNonce).toBe(allResultsPrefix +
+    const resultPaymentId = fullResult?.slice(-paymentIdDigits)
+    const resultNoPaymentId = fullResult?.slice(0,-paymentIdDigits)
+    expect(resultNoPaymentId).toBe(allResultsPrefix +
       '10' + // 16 in hex
       '6d79437573746f6d5573657244617461')
-    expect(resultNonce?.length).toBe(nonceDigits)
-    expect(resultNonce).toMatch(nonceRegex)
+    expect(resultPaymentId?.length).toBe(paymentIdDigits)
+    expect(resultPaymentId).toMatch(paymentIdRegex)
   })
-  it('Simple parse OpReturn 1 no nonce', () => {
+  it('Simple parse OpReturn 1 no paymentId', () => {
     const fullResult = parseOpReturnProps('myCustomUserData', true) // 16 bytes
     expect(fullResult).toBe(allResultsPrefix +
       '10' + // 16 in hex
@@ -146,15 +146,15 @@ describe('parseOpReturnProps', () => {
   })
   it('Simple parse OpReturn 2', () => {
     const fullResult = parseOpReturnProps('my=Longer more=sensible|user|data') // 33 bytes
-    const resultNonce = fullResult?.slice(-nonceDigits)
-    const resultNoNonce = fullResult?.slice(0,-nonceDigits)
-    expect(resultNoNonce).toBe(allResultsPrefix +
+    const resultPaymentId = fullResult?.slice(-paymentIdDigits)
+    const resultNoPaymentId = fullResult?.slice(0,-paymentIdDigits)
+    expect(resultNoPaymentId).toBe(allResultsPrefix +
       '21' + // 33 in hex
       '6d793d4c6f6e676572206d6f72653d73656e7369626c657c757365727c64617461')
-    expect(resultNonce?.length).toBe(nonceDigits)
-    expect(resultNonce).toMatch(nonceRegex)
+    expect(resultPaymentId?.length).toBe(paymentIdDigits)
+    expect(resultPaymentId).toMatch(paymentIdRegex)
   })
-  it('Simple parse OpReturn 2 no nonce', () => {
+  it('Simple parse OpReturn 2 no paymentId', () => {
     const fullResult = parseOpReturnProps('my=Longer more=sensible|user|data', true) // 33 bytes
     expect(fullResult).toBe(allResultsPrefix +
       '21' + // 33 in hex
@@ -166,7 +166,7 @@ describe('parseOpReturnProps', () => {
       parseOpReturnProps(data208bytes)
     ).toThrow('Maximum 205 byte size exceeded for user data: 208')
   })
-  it('Is not too long if no nonce', () => {
+  it('Is not too long if no paymentId', () => {
     const data208bytes = '😂'.repeat(52) // 52 * 4 = 208 bytes
     const fullResult = parseOpReturnProps(data208bytes, true)
     expect(fullResult).toBe(allResultsPrefix +
@@ -174,7 +174,7 @@ describe('parseOpReturnProps', () => {
       'f09f9882'.repeat(52)
     )
    })
-  it('Throws if too long no nonce', () => {
+  it('Throws if too long no paymentId', () => {
     const data216bytes = '😂'.repeat(54) // 54 * 4 = 216 bytes
     expect(() =>
       parseOpReturnProps(data216bytes, true)

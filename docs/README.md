@@ -666,7 +666,7 @@ opReturn = "myCustomMessage"
 
 ## disable-payment-id
 
-> **The ‘disable-payment-id’ removes the random id generated for the payment that will be send with the transaction
+> **The ‘disable-payment-id’ parameter removes the random ID generated for the payment that is used to prevent the onSuccess callback to be triggered by a person who has the payment screen open at the same time as another.**
 
 ?> This parameter is optional. Default value is false. Possible values are true or false.
 
