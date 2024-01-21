@@ -22,7 +22,7 @@ function prependPaymentIdWithPushdata(hexString: string): string {
   // 2 hex chars == 1 byte
   if (hexString.length % 2 !== 0) {
     throw new Error(
-      `Malformed input; nonce hex should never be of odd length`,
+      `Malformed input; paymentId hex should never be of odd length`,
     );
   }
   const bytesQuantity = hexString.length / 2;
