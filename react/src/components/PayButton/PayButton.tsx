@@ -12,6 +12,7 @@ export interface PayButtonProps extends ButtonProps {
   to: string;
   amount?: number | string;
   opReturn?: string;
+  disablePaymentId?: boolean;
   currency?: currency;
   theme?: ThemeName | Theme;
   text?: string;
@@ -41,6 +42,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
   const {
     to,
     opReturn,
+    disablePaymentId,
     currency,
     text,
     hoverText,
@@ -133,6 +135,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
         to={to}
         amount={amount}
         opReturn={opReturn}
+        disablePaymentId={disablePaymentId}
         setAmount={setAmount}
         currencyObj={currencyObj}
         setCurrencyObj={setCurrencyObj}
