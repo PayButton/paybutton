@@ -14,6 +14,7 @@ export interface PaymentDialogProps extends ButtonProps {
   amount?: number | string;
   setAmount: Function;
   opReturn?: string;
+  disablePaymentId?: boolean;
   currency?: currency;
   currencyObj?: currencyObject;
   setCurrencyObj: Function;
@@ -46,6 +47,7 @@ export const PaymentDialog = (
     amount,
     setAmount,
     opReturn,
+    disablePaymentId,
     currency,
     currencyObj,
     setCurrencyObj,
@@ -113,6 +115,7 @@ export const PaymentDialog = (
           to={to}
           amount={cleanAmount}
           opReturn={opReturn}
+          disablePaymentId={disablePaymentId}
           setAmount={setAmount}
           currencyObj={currencyObj}
           setCurrencyObj={setCurrencyObj}

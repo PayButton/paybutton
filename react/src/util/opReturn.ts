@@ -10,11 +10,9 @@ export const VERSION = '00'; // \x00
 // - 1 from the protocol pushdata: '\x04'
 // - 4 from the 4-byte procol prefix: 'PAY\x00'
 // - 1 for the version byte: '\x00'
-// - 1 from the 8-byte nonce pushdata: '\x08'
-// - 8 from the 8-byte nonce
 // - 2 from the maximum size for the data pushdata
-// = 205 available bytes
-export const USER_DATA_BYTES_LIMIT = 205;
+// = 214 available bytes
+export const USER_DATA_BYTES_LIMIT = 214;
 
 // Pushdata is self-describing up to 75 bytes, since 0x4c (76 in hex) is
 // a special OP code.
@@ -35,10 +33,10 @@ function prependNonceWithPushdata(hexString: string): string {
 }
 
 function stringToHex(str: string): string {
-  return str
-    .split('')
-    .map(c => c.charCodeAt(0).toString(16).padStart(2, '0'))
-    .join('');
+  const encoder = new TextEncoder();
+  const encoded = encoder.encode(str);
+  const encodedBytes = Array.from(encoded)
+  return encodedBytes.map(byte => byte.toString(16).padStart(2, '0')).join('');
 }
 
 function generatePushdataPrefixedNonce(bytesAmount: number): string {
@@ -57,11 +55,13 @@ function generatePushdataPrefixedNonce(bytesAmount: number): string {
   return prependNonceWithPushdata(hexString);
 }
 
-function getDataPushdata(data: string) {
+function getDataPushdata(data: string, disablePaymentId=false) {
   const bytesQuantity = new Blob([data]).size;
-  if (bytesQuantity > USER_DATA_BYTES_LIMIT) {
+  // If nonce is expected, limit is 9 bytes smaller
+  const bytesLimit = USER_DATA_BYTES_LIMIT - (disablePaymentId ? 0 : 9)
+  if (bytesQuantity > bytesLimit) {
     throw new Error(
-      `Maximum ${USER_DATA_BYTES_LIMIT} byte size exceeded: ${bytesQuantity}`,
+      `Maximum ${bytesLimit} byte size exceeded for user data: ${bytesQuantity}`,
     );
   }
   const rawPushdata = bytesQuantity.toString(16).padStart(2, '0');
@@ -85,18 +85,27 @@ function getDataPushdata(data: string) {
 
 export function parseOpReturnProps(
   opReturn: string | undefined,
-): string | undefined {
+  disablePaymentId=false
+): string {
   if (opReturn === undefined) {
     opReturn = '';
   }
 
-  const pushdata = getDataPushdata(opReturn);
+  const pushdata = getDataPushdata(opReturn, disablePaymentId);
+  const suffix = disablePaymentId ? '' : generatePushdataPrefixedNonce(8)
   return (
     OP_RETURN_PREFIX_PUSHDATA +
     OP_RETURN_PREFIX +
     VERSION +
     pushdata +
     stringToHex(opReturn) +
-    generatePushdataPrefixedNonce(8)
+    suffix
   );
+}
+
+export const exportedForTesting = {
+  prependNonceWithPushdata,
+  generatePushdataPrefixedNonce,
+  stringToHex,
+  getDataPushdata,
 }
