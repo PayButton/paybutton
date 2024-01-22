@@ -11,6 +11,7 @@
     "build:paybutton": "yarn clean:paybutton && cd paybutton && yarn && yarn build",
     "start:paybutton": "cd paybutton && yarn && yarn start",
     "build":"yarn build:react && yarn build:paybutton",
+    "build:soft":"cd react && yarn build && cd ../paybutton && yarn build",
     "start:docs": "cd docs && yarn && yarn serve",
     "clean:react": "rm -rf react/node_modules react/dist",
     "build:react:clean": "yarn clean:react && yarn build:react",

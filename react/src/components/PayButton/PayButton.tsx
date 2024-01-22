@@ -9,7 +9,7 @@ import { currencyObject, getCurrencyObject } from '../../util/satoshis';
 import BigNumber from 'bignumber.js';
 
 export interface PayButtonProps extends ButtonProps {
-  to?: string | undefined;
+  to: string;
   amount?: number | string;
   opReturn?: string;
   disablePaymentId?: boolean;
@@ -171,6 +171,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
 };
 
 const payButtonDefaultProps: PayButtonProps = {
+  to: '',
   animation: 'slide',
   hideToasts: false,
   randomSatoshis: true,

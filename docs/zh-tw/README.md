@@ -881,7 +881,7 @@ PayButton是一個社區主導的開放源代碼促進會。此項目的成功�
 ### 启动Storybook
 
 1. `docker-compose up`
-3. 如果網站沒有自動打開，它將在localhost:6006上運行。
+2. 如果網站沒有自動打開，它將在localhost:6006上運行。
 
 ### 启动Rollup
 

@@ -663,10 +663,12 @@
     "@material-ui/core" "4.12.4"
     "@material-ui/lab" "4.0.0-alpha.61"
     "@material-ui/styles" "4.11.5"
+    "@types/crypto-js" "^4.2.1"
     "@types/jest" "^29.5.11"
     axios "1.6.5"
     bignumber.js "9.0.2"
     copy-to-clipboard "3.3.3"
+    crypto-js "^4.2.0"
     jest "^29.7.0"
     lodash "4.17.21"
     notistack "3.0.1"
@@ -808,6 +810,11 @@
   integrity sha512-WXCyOcRtH37HAUkpXhUduaxdm82b4GSlyTqajXviN4EfiuPgNYR109xMCKvpl6zPIpua0DGlMEDCq+g8EdoheQ==
   dependencies:
     "@babel/types" "^7.20.7"
+
+"@types/crypto-js@^4.2.1":
+  version "4.2.2"
+  resolved "https://registry.yarnpkg.com/@types/crypto-js/-/crypto-js-4.2.2.tgz#771c4a768d94eb5922cc202a3009558204df0cea"
+  integrity sha512-sDOLlVbHhXpAUAL0YHDUUwDZf3iN4Bwi4W6a0W0b+QcAezUbRtH4FVb+9J4h+XFPW7l/gQ9F8qC7P+Ec4k8QVQ==
 
 "@types/estree@*", "@types/estree@^1.0.0":
   version "1.0.5"
@@ -1350,6 +1357,11 @@ cross-spawn@^7.0.3:
     path-key "^3.1.0"
     shebang-command "^2.0.0"
     which "^2.0.1"
+
+crypto-js@^4.2.0:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/crypto-js/-/crypto-js-4.2.0.tgz#4d931639ecdfd12ff80e8186dba6af2c2e856631"
+  integrity sha512-KALDyEYgpY+Rlob/iriUtjV6d5Eq+Y191A5g4UqLAi8CyGP9N1+FdVbkc1SxKc2r4YAYqG8JzO2KGL+AizD70Q==
 
 css-jss@10.10.0:
   version "10.10.0"
