@@ -104,15 +104,18 @@ export function parseOpReturnProps(
     opReturn = '';
   }
 
-  const pushdata = getDataPushdata(opReturn, disablePaymentId);
-  const suffix = generatePushdataPrefixedPaymentId(8, disablePaymentId);
+  const dataPushdata = getDataPushdata(opReturn, disablePaymentId);
+  const pushDataPrefixedPaymentId = generatePushdataPrefixedPaymentId(
+    8,
+    disablePaymentId,
+  );
   return (
     OP_RETURN_PREFIX_PUSHDATA +
     OP_RETURN_PREFIX +
     VERSION +
-    pushdata +
+    dataPushdata +
     stringToHex(opReturn) +
-    suffix
+    pushDataPrefixedPaymentId
   );
 }
 
