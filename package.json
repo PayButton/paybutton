@@ -8,7 +8,7 @@
   "license": "MIT",
   "scripts": {
     "build:react":"cd react && yarn && yarn build",
-    "build:paybutton": "yarn clean:paybutton && cd paybutton && yarn && yarn build",
+    "build:paybutton": "cd paybutton && yarn && yarn build",
     "start:paybutton": "cd paybutton && yarn && yarn start",
     "build":"yarn build:react && yarn build:paybutton",
     "build:soft":"cd react && yarn build && cd ../paybutton && yarn build",

@@ -13,7 +13,7 @@
     "@rollup/plugin-replace": "^5.0.5",
     "@rollup/plugin-typescript": "^11.1.6",
     "camelcase": "^6.3.0",
-    "@paybutton/react": "file:../react",
+    "@paybutton/react": "link:../react",
     "preact": "^10.10.0",
     "rollup": "^2.77.4-1",
     "rollup-plugin-cleanup": "^3.2.1",
