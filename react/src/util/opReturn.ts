@@ -70,7 +70,7 @@ function generatePushdataPrefixedPaymentId(
 
 function getDataPushdata(data: string, disablePaymentId = false) {
   const bytesQuantity = new Blob([data]).size;
-  // If nonce is expected, limit is 8 bytes smaller
+  // If paymentId is expected, limit is 8 bytes smaller
   const bytesLimit = USER_DATA_BYTES_LIMIT - (disablePaymentId ? 0 : 8);
   if (bytesQuantity > bytesLimit) {
     throw new Error(

@@ -132,7 +132,7 @@ describe('encodeOpReturnProps', () => {
   });
   it('Undefined data no paymentId', () => {
     const fullResult = encodeOpReturnProps(undefined, true);
-    expect(fullResult).toBe(allResultsPrefix + '00' + '00'); // the 00s are pushdata for the data and nonce respectively
+    expect(fullResult).toBe(allResultsPrefix + '00' + '00'); // the 00s are pushdata for the data and paymentId respectively
   });
   it('Empty data', () => {
     const fullResult = encodeOpReturnProps('');
@@ -143,7 +143,7 @@ describe('encodeOpReturnProps', () => {
   });
   it('Empty data no paymentId', () => {
     const fullResult = encodeOpReturnProps('', true);
-    expect(fullResult).toBe(allResultsPrefix + '00' + '00'); // the 00s are pushdata for the data and nonce respectively
+    expect(fullResult).toBe(allResultsPrefix + '00' + '00'); // the 00s are pushdata for the data and paymentId respectively
   });
   it('Simple parse OpReturn 1', () => {
     const fullResult = encodeOpReturnProps('myCustomUserData'); // 16 bytes
@@ -163,7 +163,7 @@ describe('encodeOpReturnProps', () => {
       allResultsPrefix +
         '10' + // 16 in hex
         '6d79437573746f6d5573657244617461' +
-        '00', // Empty nonce pushdata
+        '00', // Empty paymentId pushdata
     );
   });
   it('Simple parse OpReturn 2', () => {
@@ -187,7 +187,7 @@ describe('encodeOpReturnProps', () => {
       allResultsPrefix +
         '21' + // 33 in hex
         '6d793d4c6f6e676572206d6f72653d73656e7369626c657c757365727c64617461' +
-        '00', // Empty nonce pushdata
+        '00', // Empty paymentId pushdata
     );
   });
   it('Throws if too long', () => {
@@ -203,7 +203,7 @@ describe('encodeOpReturnProps', () => {
       allResultsPrefix +
         '4cd0' + // 4c because pushData > 75; d0 is 208 in hex
         'f09f9882'.repeat(52) +
-        '00', // Empty nonce pushdata
+        '00', // Empty paymentId pushdata
     );
   });
   it('Throws if too long no paymentId', () => {
