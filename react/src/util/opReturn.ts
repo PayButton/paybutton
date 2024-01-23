@@ -95,6 +95,8 @@ function getDataPushdata(data: string, disablePaymentId = false) {
 // `68656c6c6f20776f726c64` - data payload, 'hello world' as ASCII encoded to hex
 // `08` - pushdata for the optional paymentId (paymentId), signifying this tx has 8 bytes of paymentId data
 // `0102030405060708` - The 8-byte paymentId (paymentId)
+//
+// Result: 0450415900001668656c6c6f20776f726c64080102030405060708
 
 export function encodeOpReturnProps(
   opReturn: string | undefined,
