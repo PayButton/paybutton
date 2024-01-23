@@ -95,15 +95,6 @@ export const getFiatPrice = async (
   }
 };
 
-// export const getTransactionDetails = async (
-//   txid: string,
-// ): Promise<TransactionDetails> => {
-//   const res = await fetch(
-//     `https://rest.bitcoin.com/v2/transaction/details/${txid}`,
-//   );
-//   return res.json();
-// };
-
 export const getTransactionDetails = async (
   txid: string,
   rootUrl = config.apiBaseUrl,

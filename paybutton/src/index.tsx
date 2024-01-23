@@ -1,7 +1,8 @@
 import camelcase from 'camelcase';
-import { PayButton, PayButtonProps, PaymentDialog, PaymentDialogProps, Widget, WidgetProps } from 'paybutton';
+import { PayButton, PayButtonProps, PaymentDialog, PaymentDialogProps, Widget, WidgetProps } from '@paybutton/react';
 import { h } from 'preact';
 import { render } from 'preact/compat';
+import React from 'react'
 
 declare global {
   interface Window {
@@ -95,7 +96,7 @@ const requiredProps = [
   'to',
 ];
 
-export function renderDialogButton(dialogbuttonExists: boolean): void {
+function renderDialogButton(dialogbuttonExists: boolean): void {
   const content = document.getElementById('content');
   if (dialogbuttonExists && content) {
       Array
@@ -106,7 +107,7 @@ export function renderDialogButton(dialogbuttonExists: boolean): void {
   }
 }
 
-export function openDialog(props: PaymentDialogProps): void {
+function openDialog(props: PaymentDialogProps): void {
   const container = document.createElement('div');
   document.body.appendChild(container);
   const onClose = (success?: boolean) => {
@@ -118,7 +119,7 @@ export function openDialog(props: PaymentDialogProps): void {
   render(<PaymentDialog container={container} onClose={onClose} {...props} />, container)
 }
 
-export function renderButtons(paybuttonExists: boolean): void {
+function renderButtons(paybuttonExists: boolean): void {
 
   if (!paybuttonExists) {
     console.error('The "paybutton" class is either misspelled or missing.')
@@ -127,7 +128,7 @@ export function renderButtons(paybuttonExists: boolean): void {
   }
 }
 
-export function renderWidgets(widgetExists: boolean): void {
+function renderWidgets(widgetExists: boolean): void {
   if (!widgetExists) {
     console.error('The "paybutton-widget" class is either misspelled or missing.')
   } else {
@@ -243,5 +244,8 @@ export default {
       render(<Widget {...props} />, el)
     }
   },
-  openDialog: (props: PaymentDialogProps) => openDialog(props)
+  openDialog: (props: PaymentDialogProps) => openDialog(props),
+  renderButtons,
+  renderWidgets,
+  renderDialogButton,
 };
