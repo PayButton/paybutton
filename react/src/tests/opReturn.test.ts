@@ -1,6 +1,6 @@
 import {
   exportedForTesting,
-  parseOpReturnProps,
+  encodeOpReturnProps,
   USER_DATA_BYTES_LIMIT,
 } from '../util/opReturn';
 
@@ -118,35 +118,35 @@ describe('getDataPushdata', () => {
   });
 });
 
-describe('parseOpReturnProps', () => {
+describe('encodeOpReturnProps', () => {
   // protocol pushdata + protocol + version byte
   const allResultsPrefix = '04' + '50415900' + '00';
   const paymentIdDigits = 18;
   const paymentIdRegex = /^[0-9a-fA-F]{18}$/;
   it('Parses undefined data', () => {
-    const fullResult = parseOpReturnProps(undefined);
+    const fullResult = encodeOpReturnProps(undefined);
     const resultPaymentId = fullResult?.slice(-paymentIdDigits);
     const resultNoPaymentId = fullResult?.slice(0, -paymentIdDigits);
     expect(resultNoPaymentId).toBe(allResultsPrefix + '00'); // 00 is pushdata for no data
     expect(resultPaymentId).toMatch(paymentIdRegex);
   });
   it('Undefined data no paymentId', () => {
-    const fullResult = parseOpReturnProps(undefined, true);
+    const fullResult = encodeOpReturnProps(undefined, true);
     expect(fullResult).toBe(allResultsPrefix + '00' + '00'); // the 00s are pushdata for the data and nonce respectively
   });
   it('Empty data', () => {
-    const fullResult = parseOpReturnProps('');
+    const fullResult = encodeOpReturnProps('');
     const resultPaymentId = fullResult?.slice(-paymentIdDigits);
     const resultNoPaymentId = fullResult?.slice(0, -paymentIdDigits);
     expect(resultNoPaymentId).toBe(allResultsPrefix + '00'); // 00 is pushdata for no data
     expect(resultPaymentId).toMatch(paymentIdRegex);
   });
   it('Empty data no paymentId', () => {
-    const fullResult = parseOpReturnProps('', true);
+    const fullResult = encodeOpReturnProps('', true);
     expect(fullResult).toBe(allResultsPrefix + '00' + '00'); // the 00s are pushdata for the data and nonce respectively
   });
   it('Simple parse OpReturn 1', () => {
-    const fullResult = parseOpReturnProps('myCustomUserData'); // 16 bytes
+    const fullResult = encodeOpReturnProps('myCustomUserData'); // 16 bytes
     const resultPaymentId = fullResult?.slice(-paymentIdDigits);
     const resultNoPaymentId = fullResult?.slice(0, -paymentIdDigits);
     expect(resultNoPaymentId).toBe(
@@ -158,7 +158,7 @@ describe('parseOpReturnProps', () => {
     expect(resultPaymentId).toMatch(paymentIdRegex);
   });
   it('Simple parse OpReturn 1 no paymentId', () => {
-    const fullResult = parseOpReturnProps('myCustomUserData', true); // 16 bytes
+    const fullResult = encodeOpReturnProps('myCustomUserData', true); // 16 bytes
     expect(fullResult).toBe(
       allResultsPrefix +
         '10' + // 16 in hex
@@ -167,7 +167,7 @@ describe('parseOpReturnProps', () => {
     );
   });
   it('Simple parse OpReturn 2', () => {
-    const fullResult = parseOpReturnProps('my=Longer more=sensible|user|data'); // 33 bytes
+    const fullResult = encodeOpReturnProps('my=Longer more=sensible|user|data'); // 33 bytes
     const resultPaymentId = fullResult?.slice(-paymentIdDigits);
     const resultNoPaymentId = fullResult?.slice(0, -paymentIdDigits);
     expect(resultNoPaymentId).toBe(
@@ -179,7 +179,7 @@ describe('parseOpReturnProps', () => {
     expect(resultPaymentId).toMatch(paymentIdRegex);
   });
   it('Simple parse OpReturn 2 no paymentId', () => {
-    const fullResult = parseOpReturnProps(
+    const fullResult = encodeOpReturnProps(
       'my=Longer more=sensible|user|data',
       true,
     ); // 33 bytes
@@ -192,13 +192,13 @@ describe('parseOpReturnProps', () => {
   });
   it('Throws if too long', () => {
     const data208bytes = '😂'.repeat(52); // 52 * 4 = 208 bytes
-    expect(() => parseOpReturnProps(data208bytes)).toThrow(
+    expect(() => encodeOpReturnProps(data208bytes)).toThrow(
       'Maximum 205 byte size exceeded for user data: 208',
     );
   });
   it('Is not too long if no paymentId', () => {
     const data208bytes = '😂'.repeat(52); // 52 * 4 = 208 bytes
-    const fullResult = parseOpReturnProps(data208bytes, true);
+    const fullResult = encodeOpReturnProps(data208bytes, true);
     expect(fullResult).toBe(
       allResultsPrefix +
         '4cd0' + // 4c because pushData > 75; d0 is 208 in hex
@@ -208,7 +208,7 @@ describe('parseOpReturnProps', () => {
   });
   it('Throws if too long no paymentId', () => {
     const data216bytes = '😂'.repeat(54); // 54 * 4 = 216 bytes
-    expect(() => parseOpReturnProps(data216bytes, true)).toThrow(
+    expect(() => encodeOpReturnProps(data216bytes, true)).toThrow(
       `Maximum ${USER_DATA_BYTES_LIMIT} byte size exceeded for user data: 216`,
     );
   });

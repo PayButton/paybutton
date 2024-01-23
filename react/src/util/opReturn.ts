@@ -96,7 +96,7 @@ function getDataPushdata(data: string, disablePaymentId = false) {
 // `08` - pushdata for the optional paymentId (paymentId), signifying this tx has 8 bytes of paymentId data
 // `0102030405060708` - The 8-byte paymentId (paymentId)
 
-export function parseOpReturnProps(
+export function encodeOpReturnProps(
   opReturn: string | undefined,
   disablePaymentId = false,
 ): string {
