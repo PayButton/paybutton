@@ -230,6 +230,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     (async (): Promise<void> => {
       const balance = await getAddressBalance(to, apiBaseUrl);
       setTotalReceived(balance);
+      setLoading(false);
     })();
   }, [newTxs]);
 
