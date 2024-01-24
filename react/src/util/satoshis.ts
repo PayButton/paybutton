@@ -12,19 +12,21 @@ export type currencyObject = {
 export const getCurrencyObject = (
   amount: number,
   currencyType: currency,
-  randomSatoshis: boolean | number
+  randomSatoshis: boolean | number | undefined,
 ): currencyObject => {
   let string = '';
   let float = 0;
 
   if (currencyType === 'BCH' || currencyType === 'XEC') {
-    let newAmount = amount
+    let newAmount = amount;
     if (randomSatoshis) {
-      newAmount = randomizeSatoshis(amount, currencyType, randomSatoshis)
+      newAmount = randomizeSatoshis(amount, currencyType, randomSatoshis);
     }
-    let primaryUnit = new BigNumber(`${newAmount}`);
+    const primaryUnit = new BigNumber(`${newAmount}`);
     if (primaryUnit !== null && primaryUnit.c !== null) {
-      float = parseFloat(new BigNumber(primaryUnit).toFixed(DECIMALS[currencyType]));
+      float = parseFloat(
+        new BigNumber(primaryUnit).toFixed(DECIMALS[currencyType]),
+      );
       string = new BigNumber(`${primaryUnit}`).toFixed(DECIMALS[currencyType]);
       if (currencyType === 'BCH') {
         string = formatBCH(string);

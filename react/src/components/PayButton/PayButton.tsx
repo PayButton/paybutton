@@ -18,7 +18,7 @@ export interface PayButtonProps extends ButtonProps {
   text?: string;
   hoverText?: string;
   successText?: string;
-  randomSatoshis?: boolean | number;
+  randomSatoshis?: boolean | number | undefined;
   hideToasts?: boolean;
   disabled?: boolean;
   goalAmount?: number | string;
@@ -37,7 +37,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
   const [disabled, setDisabled] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [amount, setAmount] = useState(props.amount);
-  const [currencyObj, setCurrencyObj] = useState<currencyObject>();
+  const [currencyObj, setCurrencyObj] = useState<currencyObject | undefined>();
 
   const {
     to,
@@ -115,7 +115,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
     }
   }, [dialogOpen, props.amount, currency, randomSatoshis]);
 
-  const theme = useTheme(props.theme, isValidXecAddress(to));
+  const theme = useTheme(props.theme, isValidXecAddress(to ?? ''));
 
   const ButtonComponent: React.FC<ButtonProps> = (
     props: ButtonProps,
@@ -132,7 +132,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
       <PaymentDialog
         disableEnforceFocus={disableEnforceFocus}
         disableScrollLock
-        to={to}
+        to={to ?? ''}
         amount={amount}
         opReturn={opReturn}
         disablePaymentId={disablePaymentId}
@@ -170,7 +170,8 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
   );
 };
 
-PayButton.defaultProps = {
+const payButtonDefaultProps: PayButtonProps = {
+  to: '',
   animation: 'slide',
   hideToasts: false,
   randomSatoshis: true,
@@ -179,5 +180,7 @@ PayButton.defaultProps = {
   disabled: false,
   editable: false,
 };
+
+PayButton.defaultProps = payButtonDefaultProps;
 
 export default PayButton;

@@ -10,7 +10,7 @@ import {
 import React, { useEffect, useMemo, useState } from 'react';
 import copy from 'copy-to-clipboard';
 import QRCode, { BaseQRCodeProps } from 'qrcode.react';
-import config from '../../paybutton-config.json'
+import config from '../../paybutton-config.json';
 
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
 import {
@@ -23,7 +23,16 @@ import { Button, animation } from '../Button/Button';
 import BarChart from '../BarChart/BarChart';
 
 import { getCurrencyObject, currencyObject } from '../../util/satoshis';
-import { currency, getAddressBalance, getAddressDetails, isFiat, setListener, Transaction, getCashtabProviderStatus, cryptoCurrency } from '../../util/api-client';
+import {
+  currency,
+  getAddressBalance,
+  getAddressDetails,
+  isFiat,
+  setListener,
+  Transaction,
+  getCashtabProviderStatus,
+  cryptoCurrency,
+} from '../../util/api-client';
 import PencilIcon from '../../assets/edit-pencil';
 import io, { Socket } from 'socket.io-client'
 import { encodeOpReturnProps } from '../../util/opReturn';
@@ -49,7 +58,7 @@ export interface WidgetProps {
   currencyObject?: currencyObject | undefined;
   setCurrencyObject?: Function;
   randomSatoshis?: boolean | number;
-  price?: number;
+  price?: number | undefined;
   editable?: boolean;
   setNewTxs: Function; // function parent WidgetContainer passes down to be updated
   newTxs?: Transaction[]; // function parent WidgetContainer passes down to be updated
@@ -119,7 +128,7 @@ const useStyles = makeStyles({
   }),
 });
 
-export const Widget: React.FC<WidgetProps> = props => {
+export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const {
     to,
     foot,
@@ -135,22 +144,26 @@ export const Widget: React.FC<WidgetProps> = props => {
     setNewTxs,
     newTxs,
     apiBaseUrl,
-    wsBaseUrl
+    wsBaseUrl,
   } = Object.assign({}, Widget.defaultProps, props);
-
 
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
   const [recentlyCopied, setRecentlyCopied] = useState(false);
-  const [totalReceived, setTotalReceived] = useState<number | undefined>(undefined);
+  const [totalReceived, setTotalReceived] = useState<number | undefined>(
+    undefined,
+  );
   const [disabled, setDisabled] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [goalText, setGoalText] = useState('');
   const [goalPercent, setGoalPercent] = useState(0);
-  const [socket, setSocket] = useState<Socket | undefined>(undefined)
-  const [addressType, setAddressType] = useState<cryptoCurrency>(getCurrencyTypeFromAddress(to));
-  const [convertedCurrencyObj, setConvertedCurrencyObj] = useState<currencyObject|null>();
-  const price = props.price;
+  const [socket, setSocket] = useState<Socket | undefined>(undefined);
+  const [addressType, setAddressType] = useState<cryptoCurrency>(
+    getCurrencyTypeFromAddress(to),
+  );
+  const [convertedCurrencyObj, setConvertedCurrencyObj] =
+    useState<currencyObject | null>();
+  const price = props.price ?? 0;
   const [url, setUrl] = useState('');
   const [userEditedAmount, setUserEditedAmount] = useState<currencyObject>();
   const [text, setText] = useState(`Send any amount of ${addressType}`);
@@ -161,7 +174,9 @@ export const Widget: React.FC<WidgetProps> = props => {
   const classes = useStyles({ success, loading, theme });
 
   const [thisAmount, setThisAmount] = useState(props.amount);
-  const [thisCurrencyObject, setThisCurrencyObject] = useState(props.currencyObject);
+  const [thisCurrencyObject, setThisCurrencyObject] = useState(
+    props.currencyObject,
+  );
 
   const blurCSS = disabled ? { filter: 'blur(5px)' } : {};
 
@@ -199,27 +214,29 @@ export const Widget: React.FC<WidgetProps> = props => {
   useEffect(() => {
     (async (): Promise<void> => {
       // subscribes address on paybutton server
-      void await getAddressDetails(to, apiBaseUrl);
+      await getAddressDetails(to, apiBaseUrl);
       const newSocket = io(`${wsBaseUrl ?? config.wsBaseUrl}/addresses`, {
-        query: { addresses: [to] }
-      })
+        query: { addresses: [to] },
+      });
       if (socket !== undefined) {
-        socket.disconnect()
+        socket.disconnect();
       }
-      setSocket(newSocket)
-      setListener(newSocket, setNewTxs)
+      setSocket(newSocket);
+      setListener(newSocket, setNewTxs);
     })();
-  }, [to])
+  }, [to]);
 
   useEffect(() => {
     (async (): Promise<void> => {
       const balance = await getAddressBalance(to, apiBaseUrl);
       setTotalReceived(balance);
+      setLoading(false);
     })();
   }, [newTxs]);
 
   useEffect(() => {
-    const invalidAmount = thisAmount !== undefined && thisAmount && isNaN(+thisAmount);
+    const invalidAmount =
+      thisAmount !== undefined && thisAmount && isNaN(+thisAmount);
 
     if (isValidCashAddress(to) || isValidXecAddress(to)) {
       setDisabled(!!props.disabled);
@@ -234,7 +251,8 @@ export const Widget: React.FC<WidgetProps> = props => {
   }, [to, thisAmount]);
 
   useEffect(() => {
-    const invalidAmount = thisAmount !== undefined && thisAmount && isNaN(+thisAmount);
+    const invalidAmount =
+      thisAmount !== undefined && thisAmount && isNaN(+thisAmount);
     const isNegativeNumber =
       typeof thisAmount === 'string' && thisAmount.startsWith('-');
     let cleanAmount: any;
@@ -257,14 +275,14 @@ export const Widget: React.FC<WidgetProps> = props => {
       const obj = getCurrencyObject(+thisAmount, currency, false);
       setThisCurrencyObject(obj);
       if (props.setCurrencyObject) {
-        props.setCurrencyObject(obj)
+        props.setCurrencyObject(obj);
       }
     } else if (thisAmount && addressType) {
       cleanAmount = +thisAmount;
       const obj = getCurrencyObject(cleanAmount, currency, randomSatoshis);
       setThisCurrencyObject(obj);
       if (props.setCurrencyObject) {
-        props.setCurrencyObject(obj)
+        props.setCurrencyObject(obj);
       }
     }
   }, [thisAmount, currency, userEditedAmount]);
@@ -277,7 +295,7 @@ export const Widget: React.FC<WidgetProps> = props => {
     let url;
 
     const addressType: currency = getCurrencyTypeFromAddress(address);
-    setAddressType(addressType)
+    setAddressType(addressType);
     setWidgetButtonText(`Send with ${addressType} wallet`);
 
     switch (addressType) {
@@ -297,11 +315,15 @@ export const Widget: React.FC<WidgetProps> = props => {
 
     if (thisCurrencyObject && hasPrice) {
       const convertedObj = price
-        ? getCurrencyObject(thisCurrencyObject.float / price, addressType, randomSatoshis)
+        ? getCurrencyObject(
+            thisCurrencyObject.float / price,
+            addressType,
+            randomSatoshis,
+          )
         : null;
 
       if (convertedObj) {
-        setConvertedCurrencyObj(convertedObj)
+        setConvertedCurrencyObj(convertedObj);
         setText(
           `Send ${thisCurrencyObject.string} ${thisCurrencyObject.currency} = ${convertedObj.string} ${addressType}`,
         );
@@ -328,19 +350,19 @@ export const Widget: React.FC<WidgetProps> = props => {
   }, [to, thisCurrencyObject, price, thisAmount, opReturn]);
 
   const handleButtonClick = () => {
-    if (addressType === 'XEC'){
-      const hasExtension = getCashtabProviderStatus()
-      let thisAmount: number | undefined
+    if (addressType === 'XEC') {
+      const hasExtension = getCashtabProviderStatus();
+      let thisAmount: number | undefined;
       if (convertedCurrencyObj) {
-        thisAmount = convertedCurrencyObj.float
+        thisAmount = convertedCurrencyObj.float;
       } else {
-        thisAmount = (thisCurrencyObject ? thisCurrencyObject.float : undefined)
+        thisAmount = thisCurrencyObject ? thisCurrencyObject.float : undefined;
       }
       if (!hasExtension) {
         window.location.href = url;
-        const isMobile = window.matchMedia("(pointer:coarse)").matches;
+        const isMobile = window.matchMedia('(pointer:coarse)').matches;
         if (isMobile) {
-          window.location.href = `https://cashtab.com/#/send?address=${to}&value=${thisAmount}`
+          window.location.href = `https://cashtab.com/#/send?address=${to}&value=${thisAmount}`;
         } else {
           window.location.href = url;
         }
@@ -351,7 +373,7 @@ export const Widget: React.FC<WidgetProps> = props => {
             text: 'Cashtab',
             txInfo: {
               address: to,
-              value: thisAmount ?? null
+              value: thisAmount ?? null,
             },
           },
           '*',
@@ -360,21 +382,23 @@ export const Widget: React.FC<WidgetProps> = props => {
     } else {
       window.location.href = url;
     }
-  }
+  };
 
   const handleQrCodeClick = (): void => {
     if (disabled || to === undefined) return;
     const address = to;
-    let thisAmount: number | undefined
+    let thisAmount: number | undefined;
     if (convertedCurrencyObj) {
-      thisAmount = convertedCurrencyObj.float
+      thisAmount = convertedCurrencyObj.float;
     } else {
-      thisAmount = (thisCurrencyObject ? thisCurrencyObject.float : undefined)
+      thisAmount = thisCurrencyObject ? thisCurrencyObject.float : undefined;
     }
     if (isValidCashAddress(address)) {
       prefixedAddress = `bitcoincash:${address.replace(/^.*:/, '')}`;
     } else {
-      prefixedAddress = `ecash:${address.replace(/^.*:/, '')}${thisAmount ? `?amount=${thisAmount}` : ''}`;
+      prefixedAddress = `ecash:${address.replace(/^.*:/, '')}${
+        thisAmount ? `?amount=${thisAmount}` : ''
+      }`;
     }
     if (opReturn !== undefined && opReturn !== '') {
       if (prefixedAddress.includes('?')) {
@@ -426,7 +450,7 @@ export const Widget: React.FC<WidgetProps> = props => {
     setUserEditedAmount(userEdited);
     setThisAmount(amount);
     if (props.setAmount) {
-      props.setAmount(amount)
+      props.setAmount(amount);
     }
   };
 
@@ -436,7 +460,7 @@ export const Widget: React.FC<WidgetProps> = props => {
         encodeOpReturnProps(props.opReturn, disablePaymentId)
       );
     } catch (err) {
-      setErrorMsg(err.message)
+      setErrorMsg(err.message);
     }
   }, [props.opReturn]);
 
@@ -457,7 +481,7 @@ export const Widget: React.FC<WidgetProps> = props => {
         }
       } else {
         if (hasPrice) {
-          const receivedVal: number = totalReceived * price!;
+          const receivedVal: number = totalReceived * price;
           const receivedText: string = formatPrice(
             receivedVal,
             currency,

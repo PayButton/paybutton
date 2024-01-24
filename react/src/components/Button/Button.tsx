@@ -4,7 +4,7 @@ import React, { useRef, useState, useLayoutEffect } from 'react';
 
 import { Theme, ThemeName, useTheme } from '../../themes';
 
-export type animation = 'slide' | 'invert' | 'none';
+export type animation = 'slide' | 'invert' | 'none' | undefined;
 
 export interface ButtonProps {
   animation?: animation;
@@ -131,11 +131,13 @@ export const Button = (props: ButtonProps): React.ReactElement => {
   );
 };
 
-Button.defaultProps = {
+const buttonDefaultProps: ButtonProps = {
   animation: 'slide',
   text: 'Donate',
   hoverText: 'Send Payment',
   disabled: false,
 };
+
+Button.defaultProps = buttonDefaultProps;
 
 export default Button;

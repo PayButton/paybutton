@@ -31,9 +31,15 @@ export const setListener = (socket: Socket, setNewTxs: Function): void => {
 export const getAddressBalance = async (
   address: string,
   rootUrl = config.apiBaseUrl,
-): Promise<number> => {
-  const res = await axios.get(`${rootUrl}/address/balance/${address}`);
-  return isNaN(res.data) ? null : res.data;
+): Promise<number | undefined> => {
+  try {
+    const res = await axios.get(`${rootUrl}/address/balance/${address}`);
+
+    return isNaN(res.data) ? null : res.data;
+  } catch (error) {
+    return;
+  }
+ 
 };
 
 export const getUTXOs = async (
@@ -94,15 +100,6 @@ export const getFiatPrice = async (
     return { price };
   }
 };
-
-// export const getTransactionDetails = async (
-//   txid: string,
-// ): Promise<TransactionDetails> => {
-//   const res = await fetch(
-//     `https://rest.bitcoin.com/v2/transaction/details/${txid}`,
-//   );
-//   return res.json();
-// };
 
 export const getTransactionDetails = async (
   txid: string,

@@ -1,0 +1,22 @@
+{
+  "name": "paybutton",
+  "version": "2.1.2",
+  "description": "The easiest way to accept eCash online",
+  "author": "poldridge",
+  "main": "index.js",
+  "repository": "https://github.com/PayButton/paybutton.git",
+  "license": "MIT",
+  "scripts": {
+    "build:react":"cd react && yarn && yarn build",
+    "build:paybutton": "cd paybutton && yarn && yarn build",
+    "start:paybutton": "cd paybutton && yarn && yarn start",
+    "build":"yarn build:react && yarn build:paybutton",
+    "build:soft":"cd react && yarn build && cd ../paybutton && yarn build",
+    "start:docs": "cd docs && yarn && yarn serve",
+    "clean:react": "rm -rf react/node_modules react/dist",
+    "build:react:clean": "yarn clean:react && yarn build:react",
+    "clean:paybutton": "rm -rf paybutton/node_modules paybutton/dist",
+    "clean:app": "yarn clean:react && yarn clean:paybutton",
+    "clean:build": "yarn clean:app && yarn build"
+  }
+}

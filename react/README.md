@@ -7,17 +7,28 @@
 ## Install
 
 ```bash
-npm install --save @paybutton/react
+
+  npm install --save @paybutton/react
+
+```
+or 
+
+```bash
+
+  yarn add @paybutton/react
+
 ```
 
 ## Usage
 
 ```tsx
+
 import React from 'react'
 
 import { PayButton } from '@paybutton/react'
 
 <PayButton to={address} />
+
 ```
 
 ## License
