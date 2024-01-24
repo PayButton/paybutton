@@ -1,4 +1,4 @@
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react';
 import React from 'react';
 
 import { ThemeName } from '../../themes';
@@ -10,7 +10,7 @@ export default {
   title: 'PaymentDialog',
   component: PaymentDialog,
   decorators: [
-    (Story: Story): JSX.Element => (
+    (Story: StoryFn): JSX.Element => (
       <div style={{ margin: 'auto', maxWidth: 400 }}>
         <Story />
       </div>
@@ -27,7 +27,7 @@ export default {
   },
 };
 
-const Template: Story<PaymentDialogProps> = props => (
+const Template: StoryFn<PaymentDialogProps> = props => (
   <PaymentDialog {...props} />
 );
 

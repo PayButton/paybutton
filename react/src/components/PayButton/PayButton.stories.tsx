@@ -1,4 +1,4 @@
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react';
 import React from 'react';
 
 import { ThemeName } from '../../themes';
@@ -10,7 +10,7 @@ export default {
   title: 'PayButton',
   component: PayButton,
   decorators: [
-    (Story: Story): JSX.Element => (
+    (Story: StoryFn): JSX.Element => (
       <div style={{ margin: 'auto', maxWidth: 400 }}>
         <Story />
       </div>
@@ -29,7 +29,7 @@ export default {
   },
 };
 
-const Template: Story<PayButtonProps> = props => <PayButton {...props} />;
+const Template: StoryFn<PayButtonProps> = props => <PayButton {...props} />;
 
 export const Default = Template.bind({});
 Default.args = {};
@@ -46,7 +46,7 @@ UsdAmount.args = {
   amount: 5,
   currency: 'USD',
   text: '$5',
-  hoverText:`Pay with ${defaultCurrency}`,
+  hoverText: `Pay with ${defaultCurrency}`,
   animation: 'none',
 };
 
