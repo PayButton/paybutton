@@ -1,5 +1,3 @@
-import { lib, enc } from 'crypto-js';
-
 // All the below variables are already encoded to HEX
 export const OP_RETURN_PREFIX_PUSHDATA = '04'; // \x04
 export const OP_RETURN_PREFIX = '50415900'; // PAY\x00
@@ -31,20 +29,26 @@ function prependPaymentIdWithPushdata(hexString: string): string {
   const pushdata = bytesQuantity.toString(16).padStart(2, '0');
   return `${pushdata}${hexString}`;
 }
-
 function stringToHex(str: string): string {
   const encoder = new TextEncoder();
   const encoded = encoder.encode(str);
-  const encodedBytes = Array.from(encoded)
+  const encodedBytes = Array.from(encoded);
   return encodedBytes.map(byte => byte.toString(16).padStart(2, '0')).join('');
 }
-
+function getRandomBytesArray(bytesAmount: number): Uint8Array {
+  const byteArray = new Uint8Array(bytesAmount);
+  crypto.getRandomValues(byteArray);
+  return byteArray;
+}
+function bytesToHexString(bytes: Uint8Array) {
+  return Array.from(bytes, byte => byte.toString(16).padStart(2, '0')).join('');
+}
 function generatePushdataPrefixedPaymentId(bytesAmount: number): string {
   // Generate 8 random bytes
-  const wordArray = lib.WordArray.random(bytesAmount);
+  const wordArray = getRandomBytesArray(bytesAmount);
 
   // Convert the word array to a hex string
-  const hexString = enc.Hex.stringify(wordArray);
+  const hexString = bytesToHexString(wordArray);
 
   // The result is 18 char long:
   // ---
@@ -54,11 +58,10 @@ function generatePushdataPrefixedPaymentId(bytesAmount: number): string {
   // = 18 chars
   return prependPaymentIdWithPushdata(hexString);
 }
-
-function getDataPushdata(data: string, disablePaymentId=false) {
+function getDataPushdata(data: string, disablePaymentId = false) {
   const bytesQuantity = new Blob([data]).size;
   // If paymentId is expected, limit is 9 bytes smaller
-  const bytesLimit = USER_DATA_BYTES_LIMIT - (disablePaymentId ? 0 : 9)
+  const bytesLimit = USER_DATA_BYTES_LIMIT - (disablePaymentId ? 0 : 9);
   if (bytesQuantity > bytesLimit) {
     throw new Error(
       `Maximum ${bytesLimit} byte size exceeded for user data: ${bytesQuantity}`,
@@ -85,14 +88,14 @@ function getDataPushdata(data: string, disablePaymentId=false) {
 
 export function parseOpReturnProps(
   opReturn: string | undefined,
-  disablePaymentId=false
+  disablePaymentId = false,
 ): string {
   if (opReturn === undefined) {
     opReturn = '';
   }
 
   const pushdata = getDataPushdata(opReturn, disablePaymentId);
-  const suffix = disablePaymentId ? '' : generatePushdataPrefixedPaymentId(8)
+  const suffix = disablePaymentId ? '' : generatePushdataPrefixedPaymentId(8);
   return (
     OP_RETURN_PREFIX_PUSHDATA +
     OP_RETURN_PREFIX +
@@ -108,4 +111,4 @@ export const exportedForTesting = {
   generatePushdataPrefixedPaymentId,
   stringToHex,
   getDataPushdata,
-}
+};
