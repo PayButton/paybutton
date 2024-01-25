@@ -39,7 +39,7 @@ export const getAddressBalance = async (
   } catch (error) {
     return;
   }
- 
+
 };
 
 export const getUTXOs = async (
@@ -172,6 +172,10 @@ export interface Transaction {
   id: string;
   hash: string;
   amount: string;
+  opReturn?: {
+    paymentId: string;
+    data: any;
+  };
   confirmed: boolean;
   timestamp: number;
   addressId: string;

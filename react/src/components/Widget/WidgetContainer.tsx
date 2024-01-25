@@ -76,7 +76,6 @@ const withSnackbar =
 export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
   withSnackbar((props): React.ReactElement => {
     let {
-      active = true,
       to,
       opReturn,
       disablePaymentId,
@@ -158,9 +157,11 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
             snackbarOptions,
           );
 
+        const txPaymentId = transaction.opReturn?.paymentId
         if (
           cryptoAmount &&
-          receivedAmount.isEqualTo(new BigNumber(cryptoAmount))
+          receivedAmount.isEqualTo(new BigNumber(cryptoAmount)) &&
+          txPaymentId === paymentId
         ) {
           setSuccess(true);
           onSuccess?.(transaction.id, receivedAmount);
@@ -170,7 +171,6 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
         setNewTxs([]);
       },
       [
-        amount,
         onSuccess,
         onTransaction,
         enqueueSnackbar,
@@ -180,6 +180,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
         cryptoAmount,
         successText,
         to,
+        paymentId
       ],
     );
 
@@ -219,7 +220,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
       } else if (!isFiat(currency)) {
         setCryptoAmount(amount?.toString());
       }
-    }, [price, currencyObj, amount, currency, randomSatoshis]);
+    }, [price, currencyObj, amount, currency, randomSatoshis, to]);
 
     return (
       <React.Fragment>

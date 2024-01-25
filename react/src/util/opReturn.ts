@@ -72,7 +72,7 @@ function generatePushdataPrefixedPaymentId(
   return prependPaymentIdWithPushdata(hexString);
 }
 
-function getDataPushdata(data: string, disablePaymentId = false) {
+function getDataPushdata(data: string, disablePaymentId = false): string {
   const bytesQuantity = new Blob([data]).size;
   // If paymentId is expected, limit is 8 bytes smaller
   const bytesLimit = USER_DATA_BYTES_LIMIT - (disablePaymentId ? 0 : 8);
@@ -113,7 +113,7 @@ export interface EncodeOpReturnParams {
 export function encodeOpReturnProps({
   opReturn,
   disablePaymentId,
-  paymentId,
+  paymentId
 }: EncodeOpReturnParams): string {
   if (opReturn === undefined) {
     opReturn = '';
