@@ -108,6 +108,8 @@ export interface EncodeOpReturnParams {
   paymentId?: string;
 }
 
+// specs defined at:
+// https://github.com/Bitcoin-ABC/bitcoin-abc/blob/master/doc/standards/paybutton.md
 export function encodeOpReturnProps({
   opReturn,
   disablePaymentId,
