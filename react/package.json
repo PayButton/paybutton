@@ -38,6 +38,7 @@
     "@storybook/addon-links": "8.0.0-alpha.14",
     "@storybook/node-logger": "8.0.0-alpha.14",
     "@storybook/react": "^8.0.0-alpha.14",
+    "@storybook/react-webpack5": "8.0.0-alpha.14",
     "@types/currency-formatter": "1.5.4",
     "@types/lodash": "4.14.202",
     "@types/node": "20.11.5",
@@ -61,23 +62,27 @@
     "html-webpack-plugin": "^5.5.0",
     "husky": "8.0.3",
     "lint-staged": "15.2.0",
+    "microbundle": "0.12.4",
     "prettier": "3.2.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-is": "18.2.0",
+    "react-scripts": "3.4.4",
     "storybook": "8.0.0-alpha.14",
     "typescript": "^5.3.3",
     "webpack": "^5.89.0",
     "webpack-cli": "^5.1.4",
-    "yarn-run-all": "^3.1.1",
-    "react-scripts": "3.4.4",
-
-    "microbundle": "0.12.4"
+    "yarn-run-all": "^3.1.1"
   },
   "files": [
     "dist"
   ],
   "dependencies": {
+    "@emotion/react": "^11.11.3",
+    "@emotion/styled": "^11.11.0",
+    "@mui/lab": "^5.0.0-alpha.162",
+    "@mui/material": "^5.15.6",
+    "@mui/styles": "^5.15.6",
     "@rollup/plugin-commonjs": "^25.0.7",
     "@types/jest": "^29.5.11",
     "axios": "1.6.5",
