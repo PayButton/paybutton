@@ -3,10 +3,10 @@ import {
   CircularProgress,
   Fade,
   Typography,
-  makeStyles,
   TextField,
   Grid,
-} from '@material-ui/core';
+} from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import React, { useEffect, useMemo, useState } from 'react';
 import copy from 'copy-to-clipboard';
 import QRCode, { BaseQRCodeProps } from 'qrcode.react';
@@ -623,9 +623,10 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
             <Grid
               container
               spacing={2}
-              justify="center"
-              alignItems="flex-end"
-              style={{ margin: '6px auto' }}
+              style={{ 
+                margin: '6px auto', 
+                alignItems:'flex-end', 
+                justifyContent:'center'}}
             >
               <Grid item xs={6}>
                 <TextField
