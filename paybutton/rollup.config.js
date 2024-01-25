@@ -7,15 +7,21 @@ import resolve from '@rollup/plugin-node-resolve';
 import svg from 'rollup-plugin-svg';
 import typescript from '@rollup/plugin-typescript';
 import json from "@rollup/plugin-json";
-import dotenv from "rollup-plugin-dotenv";
 import progress from "rollup-plugin-progress";
 
 export default ( env ) => ({
+  makeAbsoluteExternalsRelative: true,
+	preserveEntrySignatures: 'strict',
   input: 'src/index.tsx',
   output: {
     file: 'dist/paybutton.js',
     name: 'PayButton',
-    format: 'umd',
+    esModule: true,
+    generatedCode: {
+      reservedNamesAsProps: false
+    },
+    interop: 'compat',
+    systemNullSetters: false
   },
   plugins: [
     progress({
@@ -42,9 +48,6 @@ export default ( env ) => ({
     image(),
     nodePolyfills(),
     json(),
-    dotenv({
-      cwd: "../react"
-    }),
     typescript({ compilerOptions: {lib: ["es5", "es6", "dom"], target: "es5"}}),
     ],
     external: ['@types/currency-formatter', 'currency-formatter'],
