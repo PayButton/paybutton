@@ -20,7 +20,6 @@ export default ( env ) => ({
     generatedCode: {
       reservedNamesAsProps: false
     },
-    interop: 'compat',
     systemNullSetters: false
   },
   plugins: [
@@ -48,7 +47,7 @@ export default ( env ) => ({
     image(),
     nodePolyfills(),
     json(),
-    typescript({ compilerOptions: {lib: ["es5", "es6", "dom"], target: "es5"}}),
+    typescript({ compilerOptions: {lib: ["es5", "es6", "dom", "esnext"], target: "esnext"}}),
     ],
     external: ['@types/currency-formatter', 'currency-formatter'],
   });

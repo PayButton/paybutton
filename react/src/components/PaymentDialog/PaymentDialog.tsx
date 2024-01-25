@@ -88,7 +88,7 @@ export const PaymentDialog = (
     }
   }, [to, amount, props.disabled]);
 
-  const ButtonComponent: React.FunctionComponent<ButtonProps> = (
+  const ButtonComponent: React.FC<ButtonProps> = (
     props: ButtonProps,
   ): React.ReactElement => <Button animation={animation} {...props} />;
 

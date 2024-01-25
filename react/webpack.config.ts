@@ -1,6 +1,6 @@
-const path = require('path');
+import path from 'path';
 
-module.exports = {
+export default {
   entry: './index.tsx', // Adjust the path to your TypeScript entry file
   output: {
     filename: 'index.js',
