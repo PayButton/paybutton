@@ -16,6 +16,7 @@
   "source": "index.tsx",
   "scripts": {
     "build": "cross-env TS_NODE_PROJECT=\"tsconfig.webpack.json\" webpack --mode production",
+    "start": "webpack --mode development",
     "lint": "eslint 'src/**/*.{ts,tsx}' --fix",
     "prettier": "prettier --write 'src/**/*.{ts,tsx}'",
     "dev": "concurrently yarn watch yarn storybook",
