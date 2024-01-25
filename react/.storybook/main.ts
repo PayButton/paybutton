@@ -10,6 +10,7 @@ const config: StorybookConfig = {
     "@storybook/addon-links",
     "@storybook/addon-essentials",
     "@storybook/addon-a11y",
+    "@storybook/preset-create-react-app",
   ],
 
   docs: {
@@ -18,7 +19,7 @@ const config: StorybookConfig = {
 
   framework: {
     name: "@storybook/react-webpack5",
-    options: {babelModeV7: true}
+    options: {}
   }
 };
 
