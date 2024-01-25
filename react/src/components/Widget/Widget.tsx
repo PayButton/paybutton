@@ -459,7 +459,11 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   useEffect(() => {
     try {
       setOpReturn(
-        encodeOpReturnProps(props.opReturn, paymentId, disablePaymentId),
+        encodeOpReturnProps({
+          opReturn: props.opReturn,
+          paymentId,
+          disablePaymentId: disablePaymentId === true,
+        }),
       );
     } catch (err) {
       setErrorMsg(err.message);
