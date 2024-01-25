@@ -1,4 +1,4 @@
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react';
 import React from 'react';
 
 import { ThemeName } from '../../themes';
@@ -10,7 +10,7 @@ export default {
   title: 'Widget',
   component: Widget,
   decorators: [
-    (Story: Story): React.ReactNode => (
+    (Story: StoryFn): React.ReactNode => (
       <div style={{ margin: 'auto', maxWidth: 400 }}>
         <Story />
       </div>
@@ -28,7 +28,7 @@ export default {
   },
 };
 
-const Template: Story<WidgetProps> = props => <Widget {...props} />;
+const Template: StoryFn<WidgetProps> = props => <Widget {...props} />;
 
 export const Default = Template.bind({});
 Default.args = {};

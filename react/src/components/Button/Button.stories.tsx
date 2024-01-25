@@ -1,4 +1,4 @@
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react';
 import React from 'react';
 
 import { ThemeName } from '../../themes';
@@ -8,7 +8,7 @@ export default {
   title: 'Button',
   component: Button,
   decorators: [
-    (Story: Story): React.ReactNode => (
+    (Story: StoryFn): React.ReactNode => (
       <div style={{ margin: 'auto', maxWidth: 400 }}>
         <Story />
       </div>
@@ -22,7 +22,7 @@ export default {
   },
 };
 
-const Template: Story<ButtonProps> = props => <Button {...props} />;
+const Template: StoryFn<ButtonProps> = props => <Button {...props} />;
 
 export const Default = Template.bind({});
 Default.args = {};

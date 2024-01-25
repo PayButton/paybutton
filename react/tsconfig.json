@@ -7,7 +7,9 @@
       "esnext"
     ],
     "moduleResolution": "node",
-    "jsx": "react",
+    "jsx": "react-jsx",
+    "jsxFactory": "",
+    "jsxFragmentFactory": "",
     "sourceMap": true,
     "declaration": true,
     "esModuleInterop": true,
