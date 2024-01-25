@@ -35,7 +35,7 @@ import {
 } from '../../util/api-client';
 import PencilIcon from '../../assets/edit-pencil';
 import io, { Socket } from 'socket.io-client'
-import { parseOpReturnProps } from '../../util/opReturn';
+import { encodeOpReturnProps } from '../../util/opReturn';
 
 type QRCodeProps = BaseQRCodeProps & { renderAs: 'svg' };
 
@@ -457,7 +457,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   useEffect(() => {
     try {
       setOpReturn(
-        parseOpReturnProps(props.opReturn, disablePaymentId)
+        encodeOpReturnProps(props.opReturn, disablePaymentId)
       );
     } catch (err) {
       setErrorMsg(err.message);
