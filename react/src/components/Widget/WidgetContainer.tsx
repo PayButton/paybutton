@@ -25,6 +25,7 @@ export interface WidgetContainerProps
   active?: boolean;
   amount?: number;
   opReturn?: string;
+  paymentId?: string;
   disablePaymentId?: boolean;
   currency?: currency;
   currencyObj?: currencyObject;
@@ -62,7 +63,9 @@ export interface Output {
 
 const zero = new BigNumber(0);
 const withSnackbar =
-  <T extends object>(Component: React.ComponentType<T>): React.FunctionComponent<T> =>
+  <T extends object>(
+    Component: React.ComponentType<T>,
+  ): React.FunctionComponent<T> =>
   (props): React.ReactElement =>
     (
       <SnackbarProvider>
@@ -70,13 +73,14 @@ const withSnackbar =
       </SnackbarProvider>
     );
 
-export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> = withSnackbar(
-  (props): React.ReactElement => {
+export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
+  withSnackbar((props): React.ReactElement => {
     let {
       active = true,
       to,
       opReturn,
       disablePaymentId,
+      paymentId,
       amount,
       setAmount,
       setCurrencyObj,
@@ -225,6 +229,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> = wi
           amount={amount}
           setAmount={setAmount}
           opReturn={opReturn}
+          paymentId={paymentId}
           disablePaymentId={disablePaymentId}
           goalAmount={goalAmount}
           currency={currency}
@@ -244,7 +249,6 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> = wi
         />
       </React.Fragment>
     );
-  },
-);
+  });
 
 export default WidgetContainer;

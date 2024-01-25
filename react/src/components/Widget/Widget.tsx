@@ -34,7 +34,7 @@ import {
   cryptoCurrency,
 } from '../../util/api-client';
 import PencilIcon from '../../assets/edit-pencil';
-import io, { Socket } from 'socket.io-client'
+import io, { Socket } from 'socket.io-client';
 import { encodeOpReturnProps } from '../../util/opReturn';
 
 type QRCodeProps = BaseQRCodeProps & { renderAs: 'svg' };
@@ -44,6 +44,7 @@ export interface WidgetProps {
   amount?: number | null | string;
   setAmount?: Function;
   opReturn?: string;
+  paymentId?: string;
   disablePaymentId?: boolean;
   text?: string;
   ButtonComponent?: React.ComponentType;
@@ -133,6 +134,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     to,
     foot,
     success,
+    paymentId,
     successText,
     disablePaymentId,
     goalAmount,
@@ -308,7 +310,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     }
 
     if (opReturn !== undefined && opReturn !== '') {
-      query.push(`op_return_raw=${opReturn}`)
+      query.push(`op_return_raw=${opReturn}`);
     }
 
     url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
@@ -402,9 +404,9 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     }
     if (opReturn !== undefined && opReturn !== '') {
       if (prefixedAddress.includes('?')) {
-        prefixedAddress += `&op_return_raw=${opReturn}`
+        prefixedAddress += `&op_return_raw=${opReturn}`;
       } else {
-        prefixedAddress += `?op_return_raw=${opReturn}`
+        prefixedAddress += `?op_return_raw=${opReturn}`;
       }
     }
     if (!copy(prefixedAddress)) return;
@@ -457,7 +459,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   useEffect(() => {
     try {
       setOpReturn(
-        encodeOpReturnProps(props.opReturn, disablePaymentId)
+        encodeOpReturnProps(props.opReturn, paymentId, disablePaymentId),
       );
     } catch (err) {
       setErrorMsg(err.message);

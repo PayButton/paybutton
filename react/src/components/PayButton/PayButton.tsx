@@ -7,6 +7,7 @@ import { PaymentDialog } from '../PaymentDialog/PaymentDialog';
 import { isValidCashAddress, isValidXecAddress } from '../../util/address';
 import { currencyObject, getCurrencyObject } from '../../util/satoshis';
 import BigNumber from 'bignumber.js';
+import { generatePaymentId } from '../../util/opReturn';
 
 export interface PayButtonProps extends ButtonProps {
   to: string;
@@ -26,8 +27,12 @@ export interface PayButtonProps extends ButtonProps {
   editable?: boolean;
   onSuccess?: (txid: string, amount: BigNumber) => void;
   onTransaction?: (txid: string, amount: BigNumber) => void;
-  onOpen?: (expectedAmount?: number | string, address?: string) => void;
-  onClose?: (success?: boolean) => void;
+  onOpen?: (
+    paymentId?: string,
+    expectedAmount?: number | string,
+    address?: string,
+  ) => void;
+  onClose?: (paymentId?: string, success?: boolean) => void;
   wsBaseUrl?: string;
   apiBaseUrl?: string;
 }
@@ -37,6 +42,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
   const [disabled, setDisabled] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [amount, setAmount] = useState(props.amount);
+  const [paymentId] = useState(generatePaymentId(8));
   const [currencyObj, setCurrencyObj] = useState<currencyObject | undefined>();
 
   const {
@@ -62,11 +68,11 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
   } = Object.assign({}, PayButton.defaultProps, props);
 
   const handleButtonClick = (): void => {
-    if (onOpen !== undefined) onOpen(amount, to);
+    if (onOpen !== undefined) onOpen(paymentId, amount, to);
     setDialogOpen(true);
   };
-  const handleCloseDialog = (success?: boolean): void => {
-    if (onClose !== undefined) onClose(success);
+  const handleCloseDialog = (paymentId?: string, success?: boolean): void => {
+    if (onClose !== undefined) onClose(paymentId, success);
     setDialogOpen(false);
   };
 
@@ -135,6 +141,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
         to={to ?? ''}
         amount={amount}
         opReturn={opReturn}
+        paymentId={paymentId}
         disablePaymentId={disablePaymentId}
         setAmount={setAmount}
         currencyObj={currencyObj}
