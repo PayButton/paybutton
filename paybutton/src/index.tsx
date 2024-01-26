@@ -110,9 +110,9 @@ function renderDialogButton(dialogbuttonExists: boolean): void {
 function openDialog(props: PaymentDialogProps): void {
   const container = document.createElement('div');
   document.body.appendChild(container);
-  const onClose = (paymentId?: string, success?: boolean) => {
+  const onClose = (success?: boolean, paymentId?:string) => {
     if (props.onClose !== undefined) {
-      props.onClose(paymentId, success)
+      props.onClose(success, paymentId)
     }
     container.remove()
   }

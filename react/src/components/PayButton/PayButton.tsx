@@ -32,7 +32,7 @@ export interface PayButtonProps extends ButtonProps {
     address?: string,
     paymentId?: string,
   ) => void;
-  onClose?: (paymentId?: string, success?: boolean) => void;
+  onClose?: (success?: boolean, paymentId?:string) => void;
   wsBaseUrl?: string;
   apiBaseUrl?: string;
 }
@@ -71,8 +71,8 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
     if (onOpen !== undefined) onOpen(amount, to, paymentId);
     setDialogOpen(true);
   };
-  const handleCloseDialog = (paymentId?: string, success?: boolean): void => {
-    if (onClose !== undefined) onClose(paymentId, success);
+  const handleCloseDialog = (success?: boolean, paymentId?: string): void => {
+    if (onClose !== undefined) onClose(success, paymentId);
     setDialogOpen(false);
   };
 

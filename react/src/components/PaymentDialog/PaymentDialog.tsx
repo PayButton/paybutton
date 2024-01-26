@@ -30,7 +30,7 @@ export interface PaymentDialogProps extends ButtonProps {
   disableScrollLock?: boolean;
   active?: boolean;
   container?: HTMLElement;
-  onClose?: (paymentId?: string, success?: boolean) => void;
+  onClose?: (success?: boolean, paymentId?: string) => void;
   onSuccess?: (txid: string, amount: BigNumber) => void;
   onTransaction?: (txid: string, amount: BigNumber) => void;
   wsBaseUrl?: string;
@@ -70,7 +70,7 @@ export const PaymentDialog = (
   } = Object.assign({}, PaymentDialog.defaultProps, props);
 
   const handleWidgetClose = (): void => {
-    if (onClose) onClose(paymentId, success);
+    if (onClose) onClose(success, paymentId);
     setSuccess(false);
   };
   const handleSuccess = (txid: string, amount: BigNumber): void => {
