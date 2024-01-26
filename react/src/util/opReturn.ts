@@ -46,6 +46,14 @@ function stringToHex(str: string): string {
   return encodedBytes.map(byte => byte.toString(16).padStart(2, '0')).join('');
 }
 
+export function generatePaymentId(bytesAmount: number): string {
+  // Generate random bytes
+  const wordArray = lib.WordArray.random(bytesAmount);
+
+  // Convert the word array to a hex string
+  return enc.Hex.stringify(wordArray);
+}
+
 function generatePushdataPrefixedPaymentId(
   bytesAmount: number,
   disabled = false,
@@ -53,11 +61,7 @@ function generatePushdataPrefixedPaymentId(
   if (disabled) {
     return '00';
   }
-  // Generate 8 random bytes
-  const wordArray = lib.WordArray.random(bytesAmount);
-
-  // Convert the word array to a hex string
-  const hexString = enc.Hex.stringify(wordArray);
+  const hexString = generatePaymentId(bytesAmount);
 
   // The result is 18 char long:
   // ---
@@ -98,18 +102,29 @@ function getDataPushdata(data: string, disablePaymentId = false) {
 //
 // Result: 0450415900001668656c6c6f20776f726c64080102030405060708
 
-export function encodeOpReturnProps(
-  opReturn: string | undefined,
-  disablePaymentId = false,
-): string {
+export interface EncodeOpReturnParams {
+  opReturn?: string;
+  disablePaymentId: boolean;
+  paymentId?: string;
+}
+
+// specs defined at:
+// https://github.com/Bitcoin-ABC/bitcoin-abc/blob/master/doc/standards/paybutton.md
+export function encodeOpReturnProps({
+  opReturn,
+  disablePaymentId,
+  paymentId,
+}: EncodeOpReturnParams): string {
   if (opReturn === undefined) {
     opReturn = '';
   }
 
   const dataPushdata = getDataPushdata(opReturn, disablePaymentId);
-  const pushDataPrefixedPaymentId = generatePushdataPrefixedPaymentId(
-    8,
-    disablePaymentId,
+  if (paymentId === undefined) {
+    paymentId = generatePaymentId(8);
+  }
+  const pushDataPrefixedPaymentId = prependPaymentIdWithPushdata(
+    disablePaymentId ? '' : paymentId,
   );
   return (
     OP_RETURN_PREFIX_PUSHDATA +
@@ -123,6 +138,7 @@ export function encodeOpReturnProps(
 
 export const exportedForTesting = {
   prependPaymentIdWithPushdata,
+  generatePaymentId,
   generatePushdataPrefixedPaymentId,
   stringToHex,
   getDataPushdata,

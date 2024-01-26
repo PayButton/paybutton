@@ -1,6 +1,8 @@
 import {
   exportedForTesting,
   encodeOpReturnProps,
+  EncodeOpReturnParams,
+  generatePaymentId,
 } from '../util/opReturn';
 
 const {
@@ -20,9 +22,7 @@ describe('stringToHex', () => {
     );
   });
   it('Converts extended ASCII into the expected UTF8 encoding', () => {
-    expect(stringToHex('‡‰Œÿë')).toBe(
-      'e280a1e280b0c592c3bfc3ab',
-    );
+    expect(stringToHex('‡‰Œÿë')).toBe('e280a1e280b0c592c3bfc3ab');
   });
   it('Converts non-ASCII into the expected UTF8 encoding', () => {
     expect(stringToHex('😂👌🇧🇷简体中文傳統中文Русский')).toBe(
@@ -135,42 +135,151 @@ describe('encodeOpReturnProps', () => {
   const allResultsPrefix = '04' + '50415900' + '00';
   const paymentIdDigits = 18;
   const paymentIdRegex = /^08[0-9a-fA-F]{16}$/;
-  it('Encodes undefined data with paymentId', () => {
-    const fullResult = encodeOpReturnProps(undefined);
+
+  // REGION: undefined data
+  it('Encodes undefined data, undefined paymentId, paymentId enabled', () => {
+    const input: EncodeOpReturnParams = {
+      opReturn: undefined,
+      paymentId: undefined,
+      disablePaymentId: false,
+    };
+    const fullResult = encodeOpReturnProps(input);
     const resultData = fullResult?.slice(0, -paymentIdDigits);
     expect(resultData).toBe(allResultsPrefix + '00'); // 00 is pushdata for no data
     const resultPaymentId = fullResult?.slice(-paymentIdDigits);
     expect(resultPaymentId).toMatch(paymentIdRegex);
   });
-  it('Encodes undefined data without paymentId', () => {
-    const fullResult = encodeOpReturnProps(undefined, true);
-    expect(fullResult).toBe(allResultsPrefix + '00' + '00'); // the 00s are pushdata for the data and paymentId respectively
-  });
-  it('Encodes empty string with paymentId', () => {
-    const fullResult = encodeOpReturnProps('');
-    const resultPaymentId = fullResult?.slice(-paymentIdDigits);
+  it('Encodes undefined data, pre-determined paymentId, paymentId enabled', () => {
+    const input: EncodeOpReturnParams = {
+      opReturn: undefined,
+      paymentId: 'abcdabcdabcdabcd',
+      disablePaymentId: false,
+    };
+    const fullResult = encodeOpReturnProps(input);
     const resultData = fullResult?.slice(0, -paymentIdDigits);
     expect(resultData).toBe(allResultsPrefix + '00'); // 00 is pushdata for no data
-    expect(resultPaymentId).toMatch(paymentIdRegex);
+    const resultPaymentId = fullResult?.slice(-paymentIdDigits);
+    expect(resultPaymentId).toBe('08' + input.paymentId);
   });
-  it('Encodes empty string without paymentId', () => {
-    const fullResult = encodeOpReturnProps('', true);
+  it('Encodes undefined data, undefined paymentId, paymentId disabled', () => {
+    const input: EncodeOpReturnParams = {
+      opReturn: undefined,
+      paymentId: undefined,
+      disablePaymentId: true,
+    };
+    const fullResult = encodeOpReturnProps(input);
     expect(fullResult).toBe(allResultsPrefix + '00' + '00'); // the 00s are pushdata for the data and paymentId respectively
   });
-  it('Encodes custom string with paymentId', () => {
-    const fullResult = encodeOpReturnProps('myCustomUserData'); // 16 bytes
+  it('Encodes undefined data, pre-determined paymentId, paymentId disabled', () => {
+    const input: EncodeOpReturnParams = {
+      opReturn: undefined,
+      paymentId: 'abcdabcdabcdabcd',
+      disablePaymentId: true,
+    };
+    const fullResult = encodeOpReturnProps(input);
+    expect(fullResult).toBe(allResultsPrefix + '00' + '00'); // the 00s are pushdata for the data and paymentId respectively
+  });
+  // END REGION
+
+  // REGION: empty string data
+  it('Encodes empty string data, undefined paymentId, paymentId enabled', () => {
+    const input: EncodeOpReturnParams = {
+      opReturn: '',
+      paymentId: undefined,
+      disablePaymentId: false,
+    };
+    const fullResult = encodeOpReturnProps(input);
+    const resultData = fullResult?.slice(0, -paymentIdDigits);
+    expect(resultData).toBe(allResultsPrefix + '00'); // 00 is pushdata for no data
     const resultPaymentId = fullResult?.slice(-paymentIdDigits);
+    expect(resultPaymentId).toMatch(paymentIdRegex);
+  });
+  it('Encodes empty string data, pre-determined paymentId, paymentId enabled', () => {
+    const input: EncodeOpReturnParams = {
+      opReturn: '',
+      paymentId: 'abcdabcdabcdabcd',
+      disablePaymentId: false,
+    };
+    const fullResult = encodeOpReturnProps(input);
+    const resultData = fullResult?.slice(0, -paymentIdDigits);
+    expect(resultData).toBe(allResultsPrefix + '00'); // 00 is pushdata for no data
+    const resultPaymentId = fullResult?.slice(-paymentIdDigits);
+    expect(resultPaymentId).toBe('08' + input.paymentId);
+  });
+  it('Encodes empty string data, undefined paymentId, paymentId disabled', () => {
+    const input: EncodeOpReturnParams = {
+      opReturn: '',
+      paymentId: undefined,
+      disablePaymentId: true,
+    };
+    const fullResult = encodeOpReturnProps(input);
+    expect(fullResult).toBe(allResultsPrefix + '00' + '00'); // the 00s are pushdata for the data and paymentId respectively
+  });
+  it('Encodes empty string data, pre-determined paymentId, paymentId disabled', () => {
+    const input: EncodeOpReturnParams = {
+      opReturn: '',
+      paymentId: 'abcdabcdabcdabcd',
+      disablePaymentId: true,
+    };
+    const fullResult = encodeOpReturnProps(input);
+    expect(fullResult).toBe(allResultsPrefix + '00' + '00'); // the 00s are pushdata for the data and paymentId respectively
+  });
+  // END REGION
+
+  // REGION: custom string data
+  it('Encodes custom string, undefined paymentId, paymentId enabled', () => {
+    const input: EncodeOpReturnParams = {
+      opReturn: 'myCustomUserData',
+      paymentId: undefined,
+      disablePaymentId: false,
+    };
+    const fullResult = encodeOpReturnProps(input);
     const resultData = fullResult?.slice(0, -paymentIdDigits);
     expect(resultData).toBe(
       allResultsPrefix +
         '10' + // 16 in hex
         '6d79437573746f6d5573657244617461',
     );
-    expect(resultPaymentId?.length).toBe(paymentIdDigits);
+    const resultPaymentId = fullResult?.slice(-paymentIdDigits);
     expect(resultPaymentId).toMatch(paymentIdRegex);
   });
-  it('Encodes custom string without paymentId', () => {
-    const fullResult = encodeOpReturnProps('myCustomUserData', true); // 16 bytes
+  it('Encodes custom string, pre-determined paymentId, paymentId enabled', () => {
+    const input: EncodeOpReturnParams = {
+      opReturn: 'myCustomUserData',
+      paymentId: 'abcdabcdabcdabcd',
+      disablePaymentId: false,
+    };
+    const fullResult = encodeOpReturnProps(input);
+    const resultData = fullResult?.slice(0, -paymentIdDigits);
+    expect(resultData).toBe(
+      allResultsPrefix +
+        '10' + // 16 in hex
+        '6d79437573746f6d5573657244617461',
+    );
+    const resultPaymentId = fullResult?.slice(-paymentIdDigits);
+    expect(resultPaymentId).toBe('08' + input.paymentId);
+  });
+  it('Encodes custom string, undefined paymentId, paymentId disabled', () => {
+    const input: EncodeOpReturnParams = {
+      opReturn: 'myCustomUserData',
+      paymentId: undefined,
+      disablePaymentId: true,
+    };
+    const resultData = encodeOpReturnProps(input);
+    expect(resultData).toBe(
+      allResultsPrefix +
+        '10' + // 16 in hex
+        '6d79437573746f6d5573657244617461' +
+        '00', // Empty paymentId pushdata
+    );
+  });
+  it('Encodes custom string, pre-determined paymentId, paymentId disabled', () => {
+    const input: EncodeOpReturnParams = {
+      opReturn: 'myCustomUserData',
+      paymentId: 'abcdabcdabcdabcd',
+      disablePaymentId: true,
+    };
+    const fullResult = encodeOpReturnProps(input);
     expect(fullResult).toBe(
       allResultsPrefix +
         '10' + // 16 in hex
@@ -178,48 +287,228 @@ describe('encodeOpReturnProps', () => {
         '00', // Empty paymentId pushdata
     );
   });
-  it('Encodes custom data at limit size of 205 bytes when paymentId is present', () => {
-    const data205bytes = '😂'.repeat(51).concat('x'); // 51 * 4 + 1 = 205 bytes
-    const fullResult = encodeOpReturnProps(data205bytes)
-    const resultPaymentId = fullResult?.slice(-paymentIdDigits);
+  // END REGION
+
+  // REGION: custom data at 205 bytes limit size
+  it('Encodes custom data at limit size of 205, undefined paymentId, paymentId enabled', () => {
+    const input: EncodeOpReturnParams = {
+      opReturn: '😂'.repeat(51).concat('x'), // 51 * 4 + 1 = 205 bytes
+
+      paymentId: undefined,
+      disablePaymentId: false,
+    };
+    const fullResult = encodeOpReturnProps(input);
     const resultData = fullResult?.slice(0, -paymentIdDigits);
     expect(resultData).toBe(
       allResultsPrefix +
         '4ccd' + // 4c because pushData > 75 bytes; cd is 205 in hex
-        'f09f9882'.repeat(51) + '78'
+        'f09f9882'.repeat(51) +
+        '78',
     );
-    expect(resultPaymentId?.length).toBe(paymentIdDigits);
+    const resultPaymentId = fullResult?.slice(-paymentIdDigits);
     expect(resultPaymentId).toMatch(paymentIdRegex);
   });
-  it('Throws if custom data greater than 205 bytes when paymentId is present', () => {
-    const data208bytes = '😂'.repeat(52); // 52 * 4 = 208 bytes
-    expect(() => encodeOpReturnProps(data208bytes)).toThrow(
-      'Maximum 205 byte size exceeded for user data: 208',
-    );
-  });
-  it('Encodes custom data greater than 205 bytes and smaller than 213 bytes when paymentId not present', () => {
-    const data208bytes = '😂'.repeat(52); // 52 * 4 = 208 bytes
-    const fullResult = encodeOpReturnProps(data208bytes, true);
-    expect(fullResult).toBe(
+  it('Encodes custom data at limit size of 205, pre-determined paymentId, paymentId enabled', () => {
+    const input: EncodeOpReturnParams = {
+      opReturn: '😂'.repeat(51).concat('x'), // 51 * 4 + 1 = 205 bytes
+
+      paymentId: 'abcdabcdabcdabcd',
+      disablePaymentId: false,
+    };
+    const fullResult = encodeOpReturnProps(input);
+    const resultData = fullResult?.slice(0, -paymentIdDigits);
+    expect(resultData).toBe(
       allResultsPrefix +
-        '4cd0' + // 4c because pushData > 75 bytes; d0 is 208 in hex
-        'f09f9882'.repeat(52) +
+        '4ccd' + // 4c because pushData > 75 bytes; cd is 205 in hex
+        'f09f9882'.repeat(51) +
+        '78',
+    );
+    const resultPaymentId = fullResult?.slice(-paymentIdDigits);
+    expect(resultPaymentId).toBe('08' + input.paymentId);
+  });
+  it('Encodes custom data at limit size of 205, undefined paymentId, paymentId disabled', () => {
+    const input: EncodeOpReturnParams = {
+      opReturn: '😂'.repeat(51).concat('x'), // 51 * 4 + 1 = 205 bytes
+
+      paymentId: undefined,
+      disablePaymentId: true,
+    };
+    const resultData = encodeOpReturnProps(input);
+    expect(resultData).toBe(
+      allResultsPrefix +
+        '4ccd' + // 4c because pushData > 75 bytes; cd is 205 in hex
+        'f09f9882'.repeat(51) +
+        '78' +
         '00', // Empty paymentId pushdata
     );
   });
-  it('Encodes custom data at limit size of 213 bytes when paymentId not present', () => {
-    const data213bytes = '😂'.repeat(53).concat('y'); // 53 * 4 + 1 = 213 bytes
-    const fullResult = encodeOpReturnProps(data213bytes, true);
+  it('Encodes custom data at limit size of 205, pre-determined paymentId, paymentId disabled', () => {
+    const input: EncodeOpReturnParams = {
+      opReturn: '😂'.repeat(51).concat('x'), // 51 * 4 + 1 = 205 bytes
+      paymentId: 'abcdabcdabcdabcd',
+      disablePaymentId: true,
+    };
+    const fullResult = encodeOpReturnProps(input);
+    expect(fullResult).toBe(
+      allResultsPrefix +
+        '4ccd' + // 4c because pushData > 75 bytes; cd is 205 in hex
+        'f09f9882'.repeat(51) +
+        '78' +
+        '00', // Empty paymentId pushdata
+    );
+  });
+  // END REGION
+
+  // REGION: 205 < custom data size < 213
+  it('Throws if custom data at size of 206, undefined paymentId, paymentId enabled', () => {
+    const input: EncodeOpReturnParams = {
+      opReturn: '😂'.repeat(51).concat('xb'), // 51 * 4 + 2 = 206 bytes
+      paymentId: undefined,
+      disablePaymentId: false,
+    };
+    expect(() => encodeOpReturnProps(input)).toThrow(
+      'Maximum 205 byte size exceeded for user data: 206',
+    );
+    //
+  });
+  it('Throws if custom data at size of 206, pre-determined paymentId, paymentId enabled', () => {
+    const input: EncodeOpReturnParams = {
+      opReturn: '😂'.repeat(51).concat('xb'), // 51 * 4 + 2 = 206 bytes
+      paymentId: 'abcdabcdabcdabcd',
+      disablePaymentId: false,
+    };
+    expect(() => encodeOpReturnProps(input)).toThrow(
+      'Maximum 205 byte size exceeded for user data: 206',
+    );
+    //
+  });
+  it('Encodes custom data at size 206, undefined paymentId, paymentId disabled', () => {
+    const input: EncodeOpReturnParams = {
+      opReturn: '😂'.repeat(51).concat('xb'), // 51 * 4 + 2 = 206 bytes
+      paymentId: undefined,
+      disablePaymentId: true,
+    };
+    const resultData = encodeOpReturnProps(input);
+    expect(resultData).toBe(
+      allResultsPrefix +
+        '4cce' + // 4c because pushData > 75 bytes; ce is 206 in hex
+        'f09f9882'.repeat(51) +
+        '7862' +
+        '00', // Empty paymentId pushdata
+    );
+  });
+  it('Encodes custom data at limit size of 206, pre-determined paymentId, paymentId disabled', () => {
+    const input: EncodeOpReturnParams = {
+      opReturn: '😂'.repeat(51).concat('xb'), // 51 * 4 + 2 = 206 bytes
+      paymentId: 'abcdabcdabcdabcd',
+      disablePaymentId: true,
+    };
+    const fullResult = encodeOpReturnProps(input);
+    expect(fullResult).toBe(
+      allResultsPrefix +
+        '4cce' + // 4c because pushData > 75 bytes; ce is 206 in hex
+        'f09f9882'.repeat(51) +
+        '7862' +
+        '00', // Empty paymentId pushdata
+    );
+  });
+  // END REGION
+
+  // REGION: custom data at 213 bytes limit size
+  it('Throws if custom data at limit size of 213, undefined paymentId, paymentId enabled', () => {
+    const input: EncodeOpReturnParams = {
+      opReturn: '😂'.repeat(53).concat('x'), // 53 * 4 + 1 = 213 bytes
+      paymentId: undefined,
+      disablePaymentId: false,
+    };
+    expect(() => encodeOpReturnProps(input)).toThrow(
+      'Maximum 205 byte size exceeded for user data: 213',
+    );
+    //
+  });
+  it('Throws if custom data at limit size of 213, pre-determined paymentId, paymentId enabled', () => {
+    const input: EncodeOpReturnParams = {
+      opReturn: '😂'.repeat(53).concat('x'), // 53 * 4 + 1 = 213 bytes
+      paymentId: 'abcdabcdabcdabcd',
+      disablePaymentId: false,
+    };
+    expect(() => encodeOpReturnProps(input)).toThrow(
+      'Maximum 205 byte size exceeded for user data: 213',
+    );
+    //
+  });
+  it('Encodes custom data at limit size 213, undefined paymentId, paymentId disabled', () => {
+    const input: EncodeOpReturnParams = {
+      opReturn: '😂'.repeat(53).concat('x'), // 53 * 4 + 1 = 213 bytes
+      paymentId: undefined,
+      disablePaymentId: true,
+    };
+    const resultData = encodeOpReturnProps(input);
+    expect(resultData).toBe(
+      allResultsPrefix +
+        '4cd5' + // 4c because pushData > 75 bytes; d5 is 213 in hex
+        'f09f9882'.repeat(53) +
+        '78' +
+        '00', // Empty paymentId pushdata
+    );
+  });
+  it('Encodes custom data at limit size of 213, pre-determined paymentId, paymentId disabled', () => {
+    const input: EncodeOpReturnParams = {
+      opReturn: '😂'.repeat(53).concat('x'), // 53 * 4 + 1 = 213 bytes
+      paymentId: 'abcdabcdabcdabcd',
+      disablePaymentId: true,
+    };
+    const fullResult = encodeOpReturnProps(input);
     expect(fullResult).toBe(
       allResultsPrefix +
         '4cd5' + // 4c because pushData > 75 bytes; d5 is 213 in hex
-        'f09f9882'.repeat(53) + '79' +
+        'f09f9882'.repeat(53) +
+        '78' +
         '00', // Empty paymentId pushdata
     );
   });
-  it('Throws if custom data greater than 213 bytes when paymentId not present', () => {
-    const data216bytes = '😂'.repeat(54); // 54 * 4 = 216 bytes
-    expect(() => encodeOpReturnProps(data216bytes, true)).toThrow(
+  // END REGION
+
+  // REGION: CUSTOM DATA > 213 BYTES LIMIT
+  it('Throws if custom data at size of 216, undefined paymentId, paymentId enabled', () => {
+    const input: EncodeOpReturnParams = {
+      opReturn: '😂'.repeat(54), // 54 * 4 = 216 bytes
+      paymentId: undefined,
+      disablePaymentId: false,
+    };
+    expect(() => encodeOpReturnProps(input)).toThrow(
+      'Maximum 205 byte size exceeded for user data: 216',
+    );
+    //
+  });
+  it('Throws if custom data at size of 216, pre-determined paymentId, paymentId enabled', () => {
+    const input: EncodeOpReturnParams = {
+      opReturn: '😂'.repeat(54), // 54 * 4 = 216 bytes
+      paymentId: 'abcdabcdabcdabcd',
+      disablePaymentId: false,
+    };
+    expect(() => encodeOpReturnProps(input)).toThrow(
+      'Maximum 205 byte size exceeded for user data: 216',
+    );
+    //
+  });
+  it('Throws if custom data at size 216, undefined paymentId, paymentId disabled', () => {
+    const input: EncodeOpReturnParams = {
+      opReturn: '😂'.repeat(54), // 54 * 4 = 216 bytes
+      paymentId: undefined,
+      disablePaymentId: true,
+    };
+    expect(() => encodeOpReturnProps(input)).toThrow(
+      'Maximum 213 byte size exceeded for user data: 216',
+    );
+  });
+  it('Throws if custom data at size of 216, pre-determined paymentId, paymentId disabled', () => {
+    const input: EncodeOpReturnParams = {
+      opReturn: '😂'.repeat(54), // 54 * 4 = 216 bytes
+      paymentId: 'abcdabcdabcdabcd',
+      disablePaymentId: true,
+    };
+    expect(() => encodeOpReturnProps(input)).toThrow(
       'Maximum 213 byte size exceeded for user data: 216',
     );
   });

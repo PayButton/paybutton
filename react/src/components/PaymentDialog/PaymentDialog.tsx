@@ -14,6 +14,7 @@ export interface PaymentDialogProps extends ButtonProps {
   amount?: number | string;
   setAmount: Function;
   opReturn?: string;
+  paymentId?: string;
   disablePaymentId?: boolean;
   currency?: currency;
   currencyObj?: currencyObject;
@@ -29,7 +30,7 @@ export interface PaymentDialogProps extends ButtonProps {
   disableScrollLock?: boolean;
   active?: boolean;
   container?: HTMLElement;
-  onClose?: (success?: boolean) => void;
+  onClose?: (success?: boolean, paymentId?: string) => void;
   onSuccess?: (txid: string, amount: BigNumber) => void;
   onTransaction?: (txid: string, amount: BigNumber) => void;
   wsBaseUrl?: string;
@@ -47,6 +48,7 @@ export const PaymentDialog = (
     amount,
     setAmount,
     opReturn,
+    paymentId,
     disablePaymentId,
     currency,
     currencyObj,
@@ -68,7 +70,7 @@ export const PaymentDialog = (
   } = Object.assign({}, PaymentDialog.defaultProps, props);
 
   const handleWidgetClose = (): void => {
-    if (onClose) onClose(success);
+    if (onClose) onClose(success, paymentId);
     setSuccess(false);
   };
   const handleSuccess = (txid: string, amount: BigNumber): void => {
@@ -115,6 +117,7 @@ export const PaymentDialog = (
           to={to}
           amount={cleanAmount}
           opReturn={opReturn}
+          paymentId={paymentId}
           disablePaymentId={disablePaymentId}
           setAmount={setAmount}
           currencyObj={currencyObj}
