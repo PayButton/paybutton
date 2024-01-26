@@ -11,8 +11,9 @@ export const VERSION = '00'; // \x00
 // - 4 from the 4-byte procol prefix: 'PAY\x00'
 // - 1 for the version byte: '\x00'
 // - 2 from the maximum size for the data pushdata
-// = 214 available bytes
-export const USER_DATA_BYTES_LIMIT = 214;
+// - 1 from the paymentId pushdata
+// = 213 available bytes
+export const USER_DATA_BYTES_LIMIT = 213;
 
 // Pushdata is self-describing up to 75 bytes, since 0x4c (76 in hex) is
 // a special OP code.
@@ -20,6 +21,11 @@ const SINGLE_PUSHDATA_BYTE_LIMIT = 75;
 
 function prependPaymentIdWithPushdata(hexString: string): string {
   // 2 hex chars == 1 byte
+  if (hexString.length % 2 !== 0) {
+    throw new Error(
+      `Malformed input; paymentId hex should never be of odd length`,
+    );
+  }
   const bytesQuantity = hexString.length / 2;
   // We limit the paymentId size to 75 bytes,
   // since this is way more than necessary for security.
@@ -32,14 +38,21 @@ function prependPaymentIdWithPushdata(hexString: string): string {
   return `${pushdata}${hexString}`;
 }
 
+// UTF8 encoding
 function stringToHex(str: string): string {
   const encoder = new TextEncoder();
   const encoded = encoder.encode(str);
-  const encodedBytes = Array.from(encoded)
+  const encodedBytes = Array.from(encoded);
   return encodedBytes.map(byte => byte.toString(16).padStart(2, '0')).join('');
 }
 
-function generatePushdataPrefixedPaymentId(bytesAmount: number): string {
+function generatePushdataPrefixedPaymentId(
+  bytesAmount: number,
+  disabled = false,
+): string {
+  if (disabled) {
+    return '00';
+  }
   // Generate 8 random bytes
   const wordArray = lib.WordArray.random(bytesAmount);
 
@@ -55,10 +68,10 @@ function generatePushdataPrefixedPaymentId(bytesAmount: number): string {
   return prependPaymentIdWithPushdata(hexString);
 }
 
-function getDataPushdata(data: string, disablePaymentId=false) {
+function getDataPushdata(data: string, disablePaymentId = false) {
   const bytesQuantity = new Blob([data]).size;
-  // If paymentId is expected, limit is 9 bytes smaller
-  const bytesLimit = USER_DATA_BYTES_LIMIT - (disablePaymentId ? 0 : 9)
+  // If paymentId is expected, limit is 8 bytes smaller
+  const bytesLimit = USER_DATA_BYTES_LIMIT - (disablePaymentId ? 0 : 8);
   if (bytesQuantity > bytesLimit) {
     throw new Error(
       `Maximum ${bytesLimit} byte size exceeded for user data: ${bytesQuantity}`,
@@ -82,24 +95,29 @@ function getDataPushdata(data: string, disablePaymentId=false) {
 // `68656c6c6f20776f726c64` - data payload, 'hello world' as ASCII encoded to hex
 // `08` - pushdata for the optional paymentId (paymentId), signifying this tx has 8 bytes of paymentId data
 // `0102030405060708` - The 8-byte paymentId (paymentId)
+//
+// Result: 0450415900001668656c6c6f20776f726c64080102030405060708
 
-export function parseOpReturnProps(
+export function encodeOpReturnProps(
   opReturn: string | undefined,
-  disablePaymentId=false
+  disablePaymentId = false,
 ): string {
   if (opReturn === undefined) {
     opReturn = '';
   }
 
-  const pushdata = getDataPushdata(opReturn, disablePaymentId);
-  const suffix = disablePaymentId ? '' : generatePushdataPrefixedPaymentId(8)
+  const dataPushdata = getDataPushdata(opReturn, disablePaymentId);
+  const pushDataPrefixedPaymentId = generatePushdataPrefixedPaymentId(
+    8,
+    disablePaymentId,
+  );
   return (
     OP_RETURN_PREFIX_PUSHDATA +
     OP_RETURN_PREFIX +
     VERSION +
-    pushdata +
+    dataPushdata +
     stringToHex(opReturn) +
-    suffix
+    pushDataPrefixedPaymentId
   );
 }
 
@@ -108,4 +126,4 @@ export const exportedForTesting = {
   generatePushdataPrefixedPaymentId,
   stringToHex,
   getDataPushdata,
-}
+};
