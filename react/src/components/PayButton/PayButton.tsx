@@ -181,7 +181,7 @@ const payButtonDefaultProps: PayButtonProps = {
   to: '',
   animation: 'slide',
   hideToasts: false,
-  randomSatoshis: true,
+  randomSatoshis: false,
   successText: 'Thank you!',
   disableEnforceFocus: false,
   disabled: false,
