@@ -697,7 +697,7 @@ disablePaymentId = true
 
 > **The ‘random-satoshis’ parameter specifies whether to randomize the last few digits of the payment amount so that it’s unlikely that a payment made by one person will trigger the onSuccess callback of another who has the payment screen open at the same time.**
 
-?> This parameter is optional. Default value is true. Possible values are true, false, or an integer from 0 to 4 that specifies how many last digits should be randomized. Setting it to true is the same as setting it to 3. Setting it to false is the same as setting it to 0.
+?> This parameter is optional. Default value is false. Possible values are true, false, or an integer from 0 to 4 that specifies how many last digits should be randomized. Setting it to true is the same as setting it to 3. Setting it to false is the same as setting it to 0.
 
 **Example:**
 <!-- tabs:start -->
@@ -705,19 +705,19 @@ disablePaymentId = true
 #### ** HTML **
 
 ```html
-random-satoshis="false"
+random-satoshis="true"
 ```
 
 #### ** JavaScript **
 
 ```javascript
-randomSatoshis: false
+randomSatoshis: true
 ```
 
 #### ** React **
 
 ```react
-randomSatoshis = false
+randomSatoshis = true
 ```
 
 <!-- tabs:end -->

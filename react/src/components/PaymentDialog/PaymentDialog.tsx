@@ -153,7 +153,7 @@ export const PaymentDialog = (
 PaymentDialog.defaultProps = {
   animation: 'slide',
   hideToasts: false,
-  randomSatoshis: true,
+  randomSatoshis: false,
   successText: 'Thank you!',
   disableEnforceFocus: false,
   disabled: false,
