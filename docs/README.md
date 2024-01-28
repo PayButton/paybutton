@@ -581,7 +581,11 @@ onTransaction = transactionCallback
 
 > **The ‘on-open’ parameter specifies the callback function that runs when the button is clicked, before the dialog opens.**
 
-?> This parameter is optional. Default value is empty. Possible values are any defined function.
+#### *callback* arguments
+
+- amount: *number* - how much money is being requested
+- paymentId: *string* - the unique identifier for the payment
+- to: *string* - where the money will be sent to
 
 **Example:**
 <!-- tabs:start -->
@@ -611,6 +615,11 @@ onOpen = successCallback
 > **The ‘on-close’ parameter specifies the callback function that runs when the dialog is closed.**
 
 ?> This parameter is optional. Default value is empty. Possible values are any defined function.
+
+#### *callback* arguments
+
+- **success**: *boolean* - status of the payment
+- **paymentId**: *string* - the paymentId
 
 **Example:**
 <!-- tabs:start -->
