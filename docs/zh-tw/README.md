@@ -581,6 +581,12 @@ onTransaction = transactionCallback
 
 ?> 這個參數是可選的。默認值為空。可能的值是任何已定義的函數。
 
+#### *回撥* 參數
+
+- **amount**: *number* - 被請求的金額是多少
+- **to**: *string* - 付款的唯一标识符
+- **paymentId**: *string* - 资金将汇入的地方
+
 **Example:**
 <!-- tabs:start -->
 
@@ -609,6 +615,11 @@ onOpen = successCallback
 > **參數"on-close"指定了對話框關閉時運行的回呼函數。**
 
 ?> 這個參數是可選的。默認值為空。可能的值是任何已定義的函數。
+
+#### *回撥* 參數
+
+- **success**: *boolean* - 付款狀態
+- **paymentId**: *string* - 付款標識
 
 **Example:**
 <!-- tabs:start -->

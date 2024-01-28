@@ -581,6 +581,12 @@ onTransaction = transactionCallback
 
 ?> 这个参数是可选的。默认值为空。可能的值是任何已定义的函数。
 
+#### *回调* 参数
+
+- amount: *number* - 被请求的金额是多少
+- to: *string* - 资金将汇入的地方
+- paymentId: *string* - 付款的唯一标识符
+
 **Example:**
 <!-- tabs:start -->
 
@@ -609,6 +615,11 @@ onOpen = successCallback
 > **参数'on-close'指定了对话框关闭时运行的回调函数。**
 
 ?> 这个参数是可选的。默认值为空。可能的值是任何已定义的函数。
+
+#### *回调* 参数
+
+- **success**: *boolean* - 付款状态
+- **paymentId**: *string* - 付款标识
 
 **Example:**
 <!-- tabs:start -->
