@@ -28,8 +28,8 @@ export interface PayButtonProps extends ButtonProps {
   onSuccess?: (txid: string, amount: BigNumber) => void;
   onTransaction?: (txid: string, amount: BigNumber) => void;
   onOpen?: (
-    expectedAmount?: number | string,
-    address?: string,
+    amount?: number | string,
+    to?: string,
     paymentId?: string,
   ) => void;
   onClose?: (success?: boolean, paymentId?:string) => void;
