@@ -4,6 +4,15 @@ import { h } from 'preact';
 import { render } from 'preact/compat';
 import React from 'react'
 
+const RANDOM_SATOSHIS_DEFAULT_VALUE = false
+
+const validateRandomSatoshis = (item:any) => {
+  if ( item && !isNaN(Number(item)) ) 
+    return Number(item); 
+  if ( item && typeof item === 'string' ) 
+    return item === 'true' ? true : item === 'false' ? false : undefined;
+}
+
 declare global {
   interface Window {
     WebKitMutationObserver: any;
@@ -162,22 +171,8 @@ function findAndRender<T>(className: string, Component: React.ComponentType<any>
       }
 
       props.hideToasts = attributes.hideToasts === 'true';
-      props.randomSatoshis = attributes.randomSatoshis === 'false' ? false : true;
-      switch (attributes.randomSatoshis) {
-        case '':
-        case undefined:
-        case 'true':
-          props.randomSatoshis = true
-          break
-        case 'false':
-          props.randomSatoshis = false
-          break
-        default:
-          props.randomSatoshis = +attributes.randomSatoshis
-          if (isNaN(props.randomSatoshis)) {
-            console.error('randomSatoshis must be true, false, or a number.')
-          }
-      }
+
+      props.randomSatoshis = validateRandomSatoshis(props.randomSatoshis) ?? RANDOM_SATOSHIS_DEFAULT_VALUE
 
       if (attributes.onSuccess) {
         const geval = window.eval;

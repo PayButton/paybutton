@@ -141,7 +141,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     ButtonComponent = Button,
     currency = getCurrencyTypeFromAddress(to),
     animation,
-    randomSatoshis = true,
+    randomSatoshis = false,
     editable,
     setNewTxs,
     newTxs,
