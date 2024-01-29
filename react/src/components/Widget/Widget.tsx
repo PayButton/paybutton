@@ -462,7 +462,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         encodeOpReturnProps({
           opReturn: props.opReturn,
           paymentId,
-          disablePaymentId: disablePaymentId === true,
+          disablePaymentId: disablePaymentId ?? false,
         }),
       );
     } catch (err) {
