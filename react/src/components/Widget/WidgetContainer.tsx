@@ -86,7 +86,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
       currencyObj,
       currency = '' as currency,
       animation,
-      randomSatoshis = true,
+      randomSatoshis = false,
       hideToasts = false,
       sound = true,
       onSuccess,
