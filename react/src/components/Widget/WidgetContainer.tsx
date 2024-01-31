@@ -161,7 +161,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
         if (
           cryptoAmount &&
           receivedAmount.isEqualTo(new BigNumber(cryptoAmount)) &&
-          txPaymentId === paymentId
+          (paymentId ? txPaymentId === paymentId : true)
         ) {
           setSuccess(true);
           onSuccess?.(transaction.id, receivedAmount);

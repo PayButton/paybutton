@@ -73,10 +73,6 @@ export const PaymentDialog = (
     if (onClose) onClose(success, paymentId);
     setSuccess(false);
   };
-  const handleSuccess = (txid: string, amount: BigNumber): void => {
-    setSuccess(true);
-    onSuccess?.(txid, amount);
-  };
 
   useEffect(() => {
     const invalidAmount = amount !== undefined && isNaN(+amount);
@@ -126,7 +122,7 @@ export const PaymentDialog = (
           animation={animation}
           randomSatoshis={randomSatoshis}
           hideToasts={hideToasts}
-          onSuccess={handleSuccess}
+          onSuccess={onSuccess}
           onTransaction={onTransaction}
           successText={successText}
           disabled={disabled}
