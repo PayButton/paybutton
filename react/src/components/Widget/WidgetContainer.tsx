@@ -158,11 +158,11 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
           );
 
         const txPaymentId = transaction.opReturn?.paymentId
-        if (
-          cryptoAmount &&
-          receivedAmount.isEqualTo(new BigNumber(cryptoAmount)) &&
-          (paymentId ? txPaymentId === paymentId : true)
-        ) {
+        const isCryptoAmountValid = (cryptoAmount && receivedAmount.isEqualTo(new BigNumber(cryptoAmount))) || !cryptoAmount;
+        const isPaymentIdValid = paymentId ? txPaymentId === paymentId : true;
+        
+        if (isCryptoAmountValid && isPaymentIdValid) 
+        {
           setSuccess(true);
           onSuccess?.(transaction.id, receivedAmount);
         } else {
