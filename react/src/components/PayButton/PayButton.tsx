@@ -6,7 +6,6 @@ import { currency } from '../../util/api-client';
 import { PaymentDialog } from '../PaymentDialog/PaymentDialog';
 import { isValidCashAddress, isValidXecAddress } from '../../util/address';
 import { currencyObject, getCurrencyObject } from '../../util/satoshis';
-import BigNumber from 'bignumber.js';
 import { generatePaymentId } from '../../util/opReturn';
 
 export interface PayButtonProps extends ButtonProps {
@@ -25,8 +24,8 @@ export interface PayButtonProps extends ButtonProps {
   goalAmount?: number | string;
   disableEnforceFocus?: boolean;
   editable?: boolean;
-  onSuccess?: (txid: string, amount: BigNumber) => void;
-  onTransaction?: (txid: string, amount: BigNumber) => void;
+  onSuccess?: (txid: string, amount: number) => void;
+  onTransaction?: (txid: string, amount: number) => void;
   onOpen?: (
     amount?: number | string,
     to?: string,

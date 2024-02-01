@@ -32,8 +32,8 @@ export interface WidgetContainerProps
   setCurrencyObj: Function;
   randomSatoshis?: boolean | number;
   hideToasts?: boolean;
-  onSuccess?: (txid: string, amount: BigNumber) => void;
-  onTransaction?: (txid: string, amount: BigNumber) => void;
+  onSuccess?: (txid: string, amount: number) => void;
+  onTransaction?: (txid: string, amount: number) => void;
   sound?: boolean;
   goalAmount?: number | string;
   disabled: boolean;
@@ -164,9 +164,9 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
         if (isCryptoAmountValid && isPaymentIdValid) 
         {
           setSuccess(true);
-          onSuccess?.(transaction.id, receivedAmount);
+          onSuccess?.(transaction.id, Number(transaction.amount));
         } else {
-          onTransaction?.(transaction.id, receivedAmount);
+          onTransaction?.(transaction.id,  Number(transaction.amount) );
         }
         setNewTxs([]);
       },
