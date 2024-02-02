@@ -18,6 +18,8 @@
   - [on-transaction](/zh-tw/?id=on-transaction)
   - [on-open](/zh-tw/?id=on-open)
   - [on-close](/zh-tw/?id=on-close)
+  - [op-return](/?id=op-return)
+  - [disable-payment-id](/?id=disable-payment-id)
   - [random-satoshis](/zh-tw/?id=random-satoshis)
   - [hide-toasts](/zh-tw/?id=hide-toasts)
   - [disable-enforce-focus](/zh-tw/?id=disable-enforce-focus)

@@ -19,6 +19,8 @@
   - [on-transaction](/?id=on-transaction)
   - [on-open](/?id=on-open)
   - [on-close](/?id=on-close)
+  - [op-return](/?id=op-return)
+  - [disable-payment-id](/?id=disable-payment-id)
   - [random-satoshis](/?id=random-satoshis)
   - [hide-toasts](/?id=hide-toasts)
   - [disable-enforce-focus](/?id=disable-enforce-focus)
