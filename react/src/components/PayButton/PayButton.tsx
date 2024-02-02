@@ -41,7 +41,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
   const [disabled, setDisabled] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [amount, setAmount] = useState(props.amount);
-  const [paymentId] = useState(generatePaymentId(8));
+ 
   const [currencyObj, setCurrencyObj] = useState<currencyObject | undefined>();
 
   const {
@@ -65,6 +65,8 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
     wsBaseUrl,
     apiBaseUrl,
   } = Object.assign({}, PayButton.defaultProps, props);
+
+  const [paymentId] = useState(!disablePaymentId ? generatePaymentId(8) : undefined);
 
   const handleButtonClick = (): void => {
     if (onOpen !== undefined) onOpen(amount, to, paymentId);
