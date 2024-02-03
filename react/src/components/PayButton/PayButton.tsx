@@ -24,8 +24,14 @@ export interface PayButtonProps extends ButtonProps {
   goalAmount?: number | string;
   disableEnforceFocus?: boolean;
   editable?: boolean;
-  onSuccess?: (txid: string, amount: number) => void;
-  onTransaction?: (txid: string, amount: number) => void;
+  onSuccess?: (
+    hash: string, 
+    amount: number, 
+    paymentId: string | undefined) => void;
+  onTransaction?: (
+    hash: string, 
+    amount: number,
+    paymentId: string | undefined) => void;
   onOpen?: (
     amount?: number | string,
     to?: string,

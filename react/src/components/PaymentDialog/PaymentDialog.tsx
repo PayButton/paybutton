@@ -30,8 +30,14 @@ export interface PaymentDialogProps extends ButtonProps {
   active?: boolean;
   container?: HTMLElement;
   onClose?: (success?: boolean, paymentId?: string) => void;
-  onSuccess?: (txid: string, amount: number) => void;
-  onTransaction?: (txid: string, amount: number) => void;
+  onSuccess?: (
+    hash: string, 
+    amount: number, 
+    paymentId: string | undefined) => void;
+  onTransaction?: (
+    hash: string, 
+    amount: number,
+    paymentId: string | undefined) => void;
   wsBaseUrl?: string;
   apiBaseUrl?: string;
 }
@@ -72,9 +78,9 @@ export const PaymentDialog = (
     if (onClose) onClose(success, paymentId);
     setSuccess(false);
   };
-  const handleSuccess = (txid: string, amount: number): void => {
+  const handleSuccess = (hash: string, amount: number): void => {
     setSuccess(true);
-    onSuccess?.(txid, amount);
+    onSuccess?.(hash, amount, paymentId);
   };
   useEffect(() => {
     const invalidAmount = amount !== undefined && isNaN(+amount);
