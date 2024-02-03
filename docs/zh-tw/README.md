@@ -523,6 +523,11 @@ successText = "Thanks!"
 
 ?> 此參數是可選用的。默認值為空白。有效值為任何已定義的函式。
 
+#### *回撥* 參數
+- **hash**: *string* - 傳輸的雜湊值
+- **amount**: *number* - 被請求的金額是多少
+- **paymentId**: *string* - 资金将汇入的地方
+
 **例子:**
 <!-- tabs:start -->
 
@@ -551,6 +556,11 @@ onSuccess = successCallback
 > **參數"on-transaction"用來定義收到任何付款到指定地址後運行回呼函式。**
 
 ?> 此參數是可選用的。默認值為空白。有效值為任何已定義的函式。
+
+#### *回撥* 參數
+- **hash**: *string* - 傳輸的雜湊值
+- **amount**: *number* - 被請求的金額是多少
+- **paymentId**: *string* - 资金将汇入的地方
 
 **例子:**
 <!-- tabs:start -->
