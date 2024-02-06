@@ -120,12 +120,10 @@ export function encodeOpReturnProps({
   }
 
   const dataPushdata = getDataPushdata(opReturn, disablePaymentId);
-  if (paymentId === undefined) {
+  if (paymentId === undefined && !disablePaymentId) {
     paymentId = generatePaymentId(8);
   }
-  const pushDataPrefixedPaymentId = prependPaymentIdWithPushdata(
-    disablePaymentId ? '' : paymentId,
-  );
+  const pushDataPrefixedPaymentId = prependPaymentIdWithPushdata(paymentId ?? '');
   return (
     OP_RETURN_PREFIX_PUSHDATA +
     OP_RETURN_PREFIX +

@@ -2,11 +2,10 @@ import React, { useState, useEffect } from 'react';
 
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
 import Button, { ButtonProps } from '../Button/Button';
-import { currency } from '../../util/api-client';
+import { Transaction, currency } from '../../util/api-client';
 import { PaymentDialog } from '../PaymentDialog/PaymentDialog';
 import { isValidCashAddress, isValidXecAddress } from '../../util/address';
 import { currencyObject, getCurrencyObject } from '../../util/satoshis';
-import BigNumber from 'bignumber.js';
 import { generatePaymentId } from '../../util/opReturn';
 
 export interface PayButtonProps extends ButtonProps {
@@ -25,8 +24,8 @@ export interface PayButtonProps extends ButtonProps {
   goalAmount?: number | string;
   disableEnforceFocus?: boolean;
   editable?: boolean;
-  onSuccess?: (txid: string, amount: BigNumber) => void;
-  onTransaction?: (txid: string, amount: BigNumber) => void;
+  onSuccess?: (transaction: Transaction) => void;
+  onTransaction?: (transaction: Transaction) => void;
   onOpen?: (
     amount?: number | string,
     to?: string,
@@ -42,7 +41,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
   const [disabled, setDisabled] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [amount, setAmount] = useState(props.amount);
-  const [paymentId] = useState(generatePaymentId(8));
+ 
   const [currencyObj, setCurrencyObj] = useState<currencyObject | undefined>();
 
   const {
@@ -66,6 +65,8 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
     wsBaseUrl,
     apiBaseUrl,
   } = Object.assign({}, PayButton.defaultProps, props);
+
+  const [paymentId] = useState(!disablePaymentId ? generatePaymentId(8) : undefined);
 
   const handleButtonClick = (): void => {
     if (onOpen !== undefined) onOpen(amount, to, paymentId);

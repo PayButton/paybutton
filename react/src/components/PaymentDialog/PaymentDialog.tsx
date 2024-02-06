@@ -5,8 +5,7 @@ import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
 import Button, { ButtonProps } from '../Button/Button';
 import { WidgetContainer } from '../Widget/WidgetContainer';
 import { isValidCashAddress, isValidXecAddress } from '../../util/address';
-import { currency } from '../../util/api-client';
-import BigNumber from 'bignumber.js';
+import { Transaction, currency } from '../../util/api-client';
 import { currencyObject } from '../../util/satoshis';
 
 export interface PaymentDialogProps extends ButtonProps {
@@ -31,8 +30,8 @@ export interface PaymentDialogProps extends ButtonProps {
   active?: boolean;
   container?: HTMLElement;
   onClose?: (success?: boolean, paymentId?: string) => void;
-  onSuccess?: (txid: string, amount: BigNumber) => void;
-  onTransaction?: (txid: string, amount: BigNumber) => void;
+  onSuccess?: (transaction: Transaction) => void;
+  onTransaction?: (transaction: Transaction) => void;
   wsBaseUrl?: string;
   apiBaseUrl?: string;
 }
@@ -73,7 +72,10 @@ export const PaymentDialog = (
     if (onClose) onClose(success, paymentId);
     setSuccess(false);
   };
-
+  const handleSuccess = (transaction: Transaction): void => {
+    setSuccess(true);
+    onSuccess?.(transaction);
+  };
   useEffect(() => {
     const invalidAmount = amount !== undefined && isNaN(+amount);
 
@@ -122,7 +124,7 @@ export const PaymentDialog = (
           animation={animation}
           randomSatoshis={randomSatoshis}
           hideToasts={hideToasts}
-          onSuccess={onSuccess}
+          onSuccess={handleSuccess}
           onTransaction={onTransaction}
           successText={successText}
           disabled={disabled}

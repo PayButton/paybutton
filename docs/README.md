@@ -525,6 +525,13 @@ successText = "Thanks!"
 
 ?> This parameter is optional. Default value is empty. Possible values are any defined function.
 
+#### *callback*  arguments
+
+- **transaction** (`object`): 
+  - **hash** (`string`): The hash of the broadcasted transaction
+  - **amount** (`string`): Amount of money requested
+  - **paymentId**\* (`string`): Unique identifier for the payment
+
 **Example:**
 <!-- tabs:start -->
 
@@ -553,6 +560,13 @@ onSuccess = successCallback
 > **The ‘on-transaction’ parameter specifies the callback function that runs upon any payment received to the specified address.**
 
 ?> This parameter is optional. Default value is empty. Possible values are any defined function.
+
+#### *callback*  arguments
+
+- **transaction** (`object`): 
+  - **hash** (`string`): The hash of the broadcasted transaction
+  - **amount** (`string`): Amount of money requested
+  - **paymentId**\* (`string`): Unique identifier for the payment
 
 **Example:**
 <!-- tabs:start -->

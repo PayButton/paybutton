@@ -32,8 +32,8 @@ export interface WidgetContainerProps
   setCurrencyObj: Function;
   randomSatoshis?: boolean | number;
   hideToasts?: boolean;
-  onSuccess?: (txid: string, amount: BigNumber) => void;
-  onTransaction?: (txid: string, amount: BigNumber) => void;
+  onSuccess?: (transaction: Transaction) => void;
+  onTransaction?: (transaction: Transaction) => void;
   sound?: boolean;
   goalAmount?: number | string;
   disabled: boolean;
@@ -144,29 +144,36 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
       (transaction: Transaction) => {
         if (sound && !hideToasts) txSound.play().catch(() => {});
 
-        const receivedAmount = new BigNumber(transaction.amount);
+        const { 
+          amount: transactionAmount, 
+          opReturn, 
+          hash, 
+          paymentId: transactionPaymentId } = transaction;
+        const receivedAmount = new BigNumber(transactionAmount);
 
         const currencyTicker = getCurrencyTypeFromAddress(to);
-
         if (!hideToasts)
-          // TODO: This assumes only bch
           enqueueSnackbar(
             `${
               successText ? successText + ' | ' : ''
             }Received ${receivedAmount} ${currencyTicker}`,
             snackbarOptions,
           );
+        const txPaymentId = transactionPaymentId ?? opReturn?.paymentId
+        const isCryptoAmountValid = (cryptoAmount && receivedAmount.isEqualTo(new BigNumber(cryptoAmount))) || !cryptoAmount;
+        const isPaymentIdValid = paymentId ? txPaymentId === paymentId : true;
+        const transactionResponse: Transaction = {
+          hash: hash,
+          amount: transactionAmount,
+          paymentId: txPaymentId
+        };
 
-        const txPaymentId = transaction.opReturn?.paymentId
-        if (
-          cryptoAmount &&
-          receivedAmount.isEqualTo(new BigNumber(cryptoAmount)) &&
-          (paymentId ? txPaymentId === paymentId : true)
-        ) {
+        if (isCryptoAmountValid && isPaymentIdValid) 
+        {
           setSuccess(true);
-          onSuccess?.(transaction.id, receivedAmount);
+          onSuccess?.(transactionResponse);
         } else {
-          onTransaction?.(transaction.id, receivedAmount);
+          onTransaction?.(transactionResponse);
         }
         setNewTxs([]);
       },
