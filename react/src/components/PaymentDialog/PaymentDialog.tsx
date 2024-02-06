@@ -5,7 +5,7 @@ import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
 import Button, { ButtonProps } from '../Button/Button';
 import { WidgetContainer } from '../Widget/WidgetContainer';
 import { isValidCashAddress, isValidXecAddress } from '../../util/address';
-import { currency } from '../../util/api-client';
+import { Transaction, currency } from '../../util/api-client';
 import { currencyObject } from '../../util/satoshis';
 
 export interface PaymentDialogProps extends ButtonProps {
@@ -30,14 +30,8 @@ export interface PaymentDialogProps extends ButtonProps {
   active?: boolean;
   container?: HTMLElement;
   onClose?: (success?: boolean, paymentId?: string) => void;
-  onSuccess?: (
-    hash: string, 
-    amount: number, 
-    paymentId: string | undefined) => void;
-  onTransaction?: (
-    hash: string, 
-    amount: number,
-    paymentId: string | undefined) => void;
+  onSuccess?: (transaction: Transaction) => void;
+  onTransaction?: (transaction: Transaction) => void;
   wsBaseUrl?: string;
   apiBaseUrl?: string;
 }
@@ -78,9 +72,9 @@ export const PaymentDialog = (
     if (onClose) onClose(success, paymentId);
     setSuccess(false);
   };
-  const handleSuccess = (hash: string, amount: number): void => {
+  const handleSuccess = (transaction: Transaction): void => {
     setSuccess(true);
-    onSuccess?.(hash, amount, paymentId);
+    onSuccess?.(transaction);
   };
   useEffect(() => {
     const invalidAmount = amount !== undefined && isNaN(+amount);

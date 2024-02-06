@@ -143,25 +143,8 @@ export function isValidCurrency(
   return isFiat(unknownString) || isCrypto(unknownString)
 }
 
-// export interface AddressDetails {
-//   balance: number;
-//   balanceSat: number;
-//   totalReceived: number;
-//   totalReceivedSat: number;
-//   totalSent: number;
-//   totalSentSat: number;
-//   unconfirmedBalance: number;
-//   unconfirmedBalanceSat: number;
-//   unconfirmedTxAppearances: number;
-//   txAppearances: number;
-//   transactions: [string];
-//   legacyAddress: string;
-//   cashAddress: string;
-// }
-
 export const getCashtabProviderStatus = () => {
   const windowAny = window as any
-  console.log(windowAny.bitcoinAbc);
   if (window && windowAny.bitcoinAbc && windowAny.bitcoinAbc === 'cashtab') {
     return true;
   }
@@ -169,134 +152,15 @@ export const getCashtabProviderStatus = () => {
 };
 
 export interface Transaction {
-  id: string;
   hash: string;
   amount: string;
+  paymentId?: string;
+  confirmed?: boolean;
   opReturn?: {
     paymentId: string;
     data: any;
   };
-  confirmed: boolean;
-  timestamp: number;
-  addressId: string;
-  createdAt: string;
-  updatedAt: string;
-  address: {
-    id: string;
-    address: string;
-    createdAt: string;
-    updatedAt: string;
-    networkId: number;
-    lastSynced: string;
-  };
-  prices: [
-    {
-      priceId: number;
-      transactionId: string;
-      createdAt: string;
-      updatedAt: string;
-      price: {
-        id: number;
-        value: string;
-        createdAt: string;
-        updatedAt: string;
-        timestamp: number;
-        networkId: 1;
-        quoteId: 1;
-      };
-    },
-  ];
 }
-
-// This below is old, it referred to the GRPC implementation
-/*
-export interface AddressDetails {
-  confirmedTransactionsList: [ConfirmedTransaction];
-  unconfirmedTransactionsList: [UnconfirmedTransaction];
-}
-export interface ConfirmedTransaction {
-  hash: string;
-  version: number;
-  inputsList: {
-    index: number;
-    outpoint: {
-      hash: string;
-      index: number;
-    };
-    signatureScript: string;
-    sequence: number;
-    value: number;
-    previousScript: string;
-    address: string;
-  }[];
-  outputsList: {
-    index: number;
-    value: number;
-    pubkeyScript: string;
-    address: string;
-    scriptClass: string;
-    disassembledScript: string;
-  }[];
-  lockTime: number;
-  size: number;
-  timestamp: number;
-  confirmations: number;
-  blockHeight: number;
-  blockHash: string;
-  slpTransactionInfo: {
-    slpAction: number;
-    validityJudgement: number;
-    parseError: string;
-    tokenId: string;
-    burnFlagsList: [];
-  };
-}
-
-export interface UnconfirmedTransaction {
-  transaction: {
-    hash: string;
-    version: number;
-    inputsList: {
-      index: number;
-      outpoint: {
-        hash: string;
-        index: number;
-      };
-      signatureScript: string;
-      sequence: number;
-      value: number;
-      previousScript: string;
-      address: string;
-    }[];
-    outputsList: {
-      index: number;
-      value: number;
-      pubkeyScript: string;
-      address: string;
-      scriptClass: string;
-      disassembledScript: string;
-    }[];
-    lockTime: number;
-    size: number;
-    timestamp: number;
-    confirmations: number;
-    blockHeight: number;
-    blockHash: string;
-    slpTransactionInfo: {
-      slpAction: number;
-      validityJudgement: number;
-      parseError: string;
-      tokenId: string;
-      burnFlagsList: [];
-    };
-  };
-  addedTime: number;
-  addedHeight: number;
-  fee: number;
-  feePerKb: number;
-  startingPriority: number;
-}
-*/
 
 export interface UtxoDetails {
   outputsList: [Output];
@@ -408,37 +272,3 @@ export interface TransactionDetails {
     };
   };
 }
-
-// export interface TransactionDetails {
-//   txid: string;
-//   version: number;
-//   locktime: number;
-//   vin: {
-//     coinbase: string;
-//     sequence: number;
-//     n: number;
-//   }[];
-//   vout: {
-//     value: string;
-//     n: number;
-//     scriptPubKey: {
-//       hex: string;
-//       asm: string;
-//       addresses: string[];
-//       type: string;
-//       cashAddrs: string[];
-//     };
-//     spentTxId: string | null;
-//     spentIndex: number | null;
-//     spentHeight: number | null;
-//   }[];
-//   blockhash: string;
-//   blockheight: number;
-//   confirmations: number;
-//   time: number;
-//   blocktime: number;
-//   firstSeenTime: number;
-//   isCoinBase: boolean;
-//   valueOut: number;
-//   size: number;
-// }

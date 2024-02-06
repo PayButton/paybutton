@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
 import Button, { ButtonProps } from '../Button/Button';
-import { currency } from '../../util/api-client';
+import { Transaction, currency } from '../../util/api-client';
 import { PaymentDialog } from '../PaymentDialog/PaymentDialog';
 import { isValidCashAddress, isValidXecAddress } from '../../util/address';
 import { currencyObject, getCurrencyObject } from '../../util/satoshis';
@@ -24,14 +24,8 @@ export interface PayButtonProps extends ButtonProps {
   goalAmount?: number | string;
   disableEnforceFocus?: boolean;
   editable?: boolean;
-  onSuccess?: (
-    hash: string, 
-    amount: number, 
-    paymentId: string | undefined) => void;
-  onTransaction?: (
-    hash: string, 
-    amount: number,
-    paymentId: string | undefined) => void;
+  onSuccess?: (transaction: Transaction) => void;
+  onTransaction?: (transaction: Transaction) => void;
   onOpen?: (
     amount?: number | string,
     to?: string,
