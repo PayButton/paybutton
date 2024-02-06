@@ -153,7 +153,6 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
 
         const currencyTicker = getCurrencyTypeFromAddress(to);
         if (!hideToasts)
-          // TODO: This assumes only bch
           enqueueSnackbar(
             `${
               successText ? successText + ' | ' : ''
