@@ -524,9 +524,10 @@ successText = "Thanks!"
 ?> 此参数是可选用的。默认值为空白。有效值为任何已定义的函数。
 
 #### *回调* 参数
-- hash: *string* - 传输的哈希值
-- amount: *number* - 被请求的金额是多少
-- paymentId: *string* - 付款的唯一标识符
+- **transaction** (`object`):
+  - **hash** (`string`) - 传输的哈希值
+  - **amount** (`number`) - 被请求的金额是多少
+  - **paymentId** (`string`) - 付款的唯一标识符
 
 **例子:**
 <!-- tabs:start -->
@@ -558,9 +559,10 @@ onSuccess = successCallback
 ?> 此参数是可选用的。默认值为空白。有效值为任何已定义的函数。
 
 #### *回调* 参数
-- hash: *string* - 传输的哈希值
-- amount: *number* - 被请求的金额是多少
-- paymentId: *string* - 付款的唯一标识符
+- **transaction** (`object`):
+  - **hash** (`string`) - 传输的哈希值
+  - **amount** (`number`) - 被请求的金额是多少
+  - **paymentId** (`string`) - 付款的唯一标识符
 
 **例子:**
 <!-- tabs:start -->
