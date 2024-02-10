@@ -873,7 +873,7 @@ wsBaseUrl = "https://socket.paybutton.org"
 #### ** HTML **
 
 ```html
-api-base-url="https://paybutton.org".
+api-base-url="https://paybutton.org"
 ```
 
 #### ** JavaScript **
