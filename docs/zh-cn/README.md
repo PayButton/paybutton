@@ -843,7 +843,7 @@ disablePaymentId = true
 #### ** HTML **
 
 ```html
-ws-base-url="https://socket.paybutton.org".
+ws-base-url="https://socket.paybutton.org"
 ```
 
 #### ** JavaScript **
