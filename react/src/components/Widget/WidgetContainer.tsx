@@ -146,7 +146,6 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
 
         const {
           amount: transactionAmount,
-          opReturn,
           paymentId: transactionPaymentId } = transaction;
         const receivedAmount = new BigNumber(transactionAmount);
 
@@ -158,7 +157,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
             }Received ${receivedAmount} ${currencyTicker}`,
             snackbarOptions,
           );
-        const txPaymentId = transactionPaymentId ?? opReturn?.paymentId
+        const txPaymentId = transactionPaymentId
         const isCryptoAmountValid = (cryptoAmount && receivedAmount.isEqualTo(new BigNumber(cryptoAmount))) || !cryptoAmount;
         const isPaymentIdValid = paymentId ? txPaymentId === paymentId : true;
 

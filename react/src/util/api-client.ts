@@ -155,7 +155,7 @@ export const getCashtabProviderStatus = () => {
 export interface Transaction {
   hash: string
   amount: string
-  paymentId?: string
+  paymentId: string
   confirmed?: boolean
   message: string
   timestamp: number
