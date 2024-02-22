@@ -143,12 +143,12 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
     const handlePayment = useCallback(
       (transaction: Transaction) => {
         if (sound && !hideToasts) txSound.play().catch(() => {});
-
         const { 
           amount: transactionAmount, 
           opReturn, 
           hash, 
-          paymentId: transactionPaymentId } = transaction;
+          paymentId: transactionPaymentId,
+          message } = transaction;
         const receivedAmount = new BigNumber(transactionAmount);
 
         const currencyTicker = getCurrencyTypeFromAddress(to);
@@ -165,7 +165,8 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
         const transactionResponse: Transaction = {
           hash: hash,
           amount: transactionAmount,
-          paymentId: txPaymentId
+          paymentId: txPaymentId,
+          message
         };
 
         if (isCryptoAmountValid && isPaymentIdValid) 
