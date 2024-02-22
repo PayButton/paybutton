@@ -144,10 +144,9 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
       (transaction: Transaction) => {
         if (sound && !hideToasts) txSound.play().catch(() => {});
 
-        const { 
-          amount: transactionAmount, 
-          opReturn, 
-          hash, 
+        const {
+          amount: transactionAmount,
+          opReturn,
           paymentId: transactionPaymentId } = transaction;
         const receivedAmount = new BigNumber(transactionAmount);
 
@@ -162,18 +161,13 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
         const txPaymentId = transactionPaymentId ?? opReturn?.paymentId
         const isCryptoAmountValid = (cryptoAmount && receivedAmount.isEqualTo(new BigNumber(cryptoAmount))) || !cryptoAmount;
         const isPaymentIdValid = paymentId ? txPaymentId === paymentId : true;
-        const transactionResponse: Transaction = {
-          hash: hash,
-          amount: transactionAmount,
-          paymentId: txPaymentId
-        };
 
-        if (isCryptoAmountValid && isPaymentIdValid) 
+        if (isCryptoAmountValid && isPaymentIdValid)
         {
           setSuccess(true);
-          onSuccess?.(transactionResponse);
+          onSuccess?.(transaction);
         } else {
-          onTransaction?.(transactionResponse);
+          onTransaction?.(transaction);
         }
         setNewTxs([]);
       },
