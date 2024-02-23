@@ -19,6 +19,7 @@ import {
 import { getCurrencyObject, currencyObject } from '../../util/satoshis';
 import Widget, { WidgetProps } from './Widget';
 import BigNumber from 'bignumber.js';
+import { generatePaymentId } from '../../util/opReturn';
 
 export interface WidgetContainerProps
   extends Omit<WidgetProps, 'success' | 'setNewTxs' | 'setCurrencyObject'> {
@@ -102,6 +103,15 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
 
     const address = to;
 
+    const [thisPaymentId, setThisPaymentId] = useState<string | undefined>();
+    useEffect(() => {
+      if ((paymentId === undefined || paymentId === '') && !disablePaymentId) {
+        const newPaymentId = generatePaymentId(8);
+        setThisPaymentId(newPaymentId)
+      } else {
+        setThisPaymentId(paymentId)
+      }
+    }, [paymentId, disablePaymentId]);
     const [success, setSuccess] = useState(false);
     const { enqueueSnackbar } = useSnackbar();
     const [cryptoAmount, setCryptoAmount] = useState<string>();
@@ -159,7 +169,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
           );
         const txPaymentId = transactionPaymentId
         const isCryptoAmountValid = (cryptoAmount && receivedAmount.isEqualTo(new BigNumber(cryptoAmount))) || !cryptoAmount;
-        const isPaymentIdValid = paymentId ? txPaymentId === paymentId : true;
+        const isPaymentIdValid = thisPaymentId ? txPaymentId === thisPaymentId : true;
 
         if (isCryptoAmountValid && isPaymentIdValid)
         {
@@ -180,7 +190,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
         cryptoAmount,
         successText,
         to,
-        paymentId
+        thisPaymentId
       ],
     );
 
@@ -230,7 +240,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
           amount={amount}
           setAmount={setAmount}
           opReturn={opReturn}
-          paymentId={paymentId}
+          paymentId={thisPaymentId}
           disablePaymentId={disablePaymentId}
           goalAmount={goalAmount}
           currency={currency}
