@@ -468,7 +468,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     } catch (err) {
       setErrorMsg(err.message);
     }
-  }, [props.opReturn]);
+  }, [props.opReturn, paymentId, disablePaymentId]);
 
   useEffect(() => {
     setThisAmount(props.amount);
