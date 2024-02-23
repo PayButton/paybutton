@@ -151,15 +151,15 @@ export const getCashtabProviderStatus = () => {
   return false;
 };
 
+
 export interface Transaction {
-  hash: string;
-  amount: string;
-  paymentId?: string;
-  confirmed?: boolean;
-  opReturn?: {
-    paymentId: string;
-    data: any;
-  };
+  hash: string
+  amount: string
+  paymentId: string
+  confirmed?: boolean
+  message: string
+  timestamp: number
+  address: string
 }
 
 export interface UtxoDetails {
