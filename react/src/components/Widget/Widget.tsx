@@ -364,7 +364,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         window.location.href = url;
         const isMobile = window.matchMedia('(pointer:coarse)').matches;
         if (isMobile) {
-          window.location.href = `https://cashtab.com/#/send?address=${to}&value=${thisAmount}`;
+          window.location.href = `https://cashtab.com/#/send?address=${to}&value=${thisAmount}&op_return_raw=${opReturn}`;
         } else {
           window.location.href = url;
         }
@@ -376,6 +376,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
             txInfo: {
               address: to,
               value: thisAmount ?? null,
+              op_return_raw: opReturn ?? null
             },
           },
           '*',
