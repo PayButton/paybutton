@@ -354,17 +354,11 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const handleButtonClick = () => {
     if (addressType === 'XEC') {
       const hasExtension = getCashtabProviderStatus();
-      let thisAmount: number | undefined;
-      if (convertedCurrencyObj) {
-        thisAmount = convertedCurrencyObj.float;
-      } else {
-        thisAmount = thisCurrencyObject ? thisCurrencyObject.float : undefined;
-      }
       if (!hasExtension) {
         window.location.href = url;
         const isMobile = window.matchMedia('(pointer:coarse)').matches;
         if (isMobile) {
-          window.location.href = `https://cashtab.com/#/send?address=${to}&value=${thisAmount}&op_return_raw=${opReturn}`;
+          window.location.href = `https://cashtab.com/#/send?bip21=${url}`;
         } else {
           window.location.href = url;
         }
@@ -374,9 +368,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
             type: 'FROM_PAGE',
             text: 'Cashtab',
             txInfo: {
-              address: to,
-              value: thisAmount ?? null,
-              op_return_raw: opReturn ?? null
+              bip21: url
             },
           },
           '*',
