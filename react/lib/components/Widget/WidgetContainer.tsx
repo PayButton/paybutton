@@ -67,7 +67,9 @@ const withSnackbar =
   (props): React.ReactElement =>
     (
       <SnackbarProvider>
-        <Component {...props} />
+        <div>
+          <Component {...props} />
+        </div>
       </SnackbarProvider>
     );
 
@@ -214,32 +216,30 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
     }, [newTxs, handleNewTransaction]);
 
     return (
-      <React.Fragment>
-        <Widget
-          to={to}
-          {...widgetProps}
-          amount={amount}
-          setAmount={setAmount}
-          opReturn={opReturn}
-          paymentId={thisPaymentId}
-          disablePaymentId={disablePaymentId}
-          goalAmount={goalAmount}
-          currency={currency}
-          animation={animation}
-          currencyObject={currencyObj}
-          setCurrencyObject={setCurrencyObj}
-          randomSatoshis={randomSatoshis}
-          price={thisPrice}
-          success={success}
-          disabled={disabled}
-          editable={editable}
-          setNewTxs={setNewTxs}
-          newTxs={newTxs}
-          wsBaseUrl={wsBaseUrl}
-          apiBaseUrl={apiBaseUrl}
-          successText={successText}
-        />
-      </React.Fragment>
+      <Widget
+        to={to}
+        {...widgetProps}
+        amount={amount}
+        setAmount={setAmount}
+        opReturn={opReturn}
+        paymentId={paymentId}
+        disablePaymentId={disablePaymentId}
+        goalAmount={goalAmount}
+        currency={currency}
+        animation={animation}
+        currencyObject={currencyObj}
+        setCurrencyObject={setCurrencyObj}
+        randomSatoshis={randomSatoshis}
+        price={price}
+        success={success}
+        disabled={disabled}
+        editable={editable}
+        setNewTxs={setNewTxs}
+        newTxs={newTxs}
+        wsBaseUrl={wsBaseUrl}
+        apiBaseUrl={apiBaseUrl}
+        successText={successText}
+      />
     );
   });
 

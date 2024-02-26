@@ -1,3 +1,5 @@
+import { lib, enc } from 'crypto-js';
+
 // All the below variables are already encoded to HEX
 export const OP_RETURN_PREFIX_PUSHDATA = '04'; // \x04
 export const OP_RETURN_PREFIX = '50415900'; // PAY\x00
