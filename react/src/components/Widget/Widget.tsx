@@ -129,7 +129,7 @@ const useStyles = makeStyles({
   }),
 });
 
-export const Widget: React.FC<WidgetProps> = props => {
+export const Widget: React.FC<WidgetProps | any> = props => {
   const {
     to,
     foot,
