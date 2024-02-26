@@ -1,3 +1,5 @@
+import { lib, enc } from 'crypto-js';
+
 // All the below variables are already encoded to HEX
 export const OP_RETURN_PREFIX_PUSHDATA = '04'; // \x04
 export const OP_RETURN_PREFIX = '50415900'; // PAY\x00
@@ -119,7 +121,7 @@ export function encodeOpReturnProps({
 
   const dataPushdata = getDataPushdata(opReturn, disablePaymentId);
   if (paymentId === undefined && !disablePaymentId) {
-    paymentId = generatePaymentId(8);
+    paymentId = ''
   }
   const pushDataPrefixedPaymentId = prependPaymentIdWithPushdata(paymentId ?? '');
   return (

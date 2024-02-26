@@ -583,7 +583,7 @@ export const Widget: React.FC<WidgetProps | any> = props => {
             onClick={handleQrCodeClick}
           >
             <Fade in={!loading && url !== ''}>
-              <React.Fragment>
+              <div>
                 {qrCode}
                 <Box position="absolute" bottom={0} right={0}>
                   <Fade
@@ -600,7 +600,7 @@ export const Widget: React.FC<WidgetProps | any> = props => {
                     </Box>
                   </Fade>
                 </Box>
-              </React.Fragment>
+              </div>
             </Fade>
             {loading && (
               <Box
