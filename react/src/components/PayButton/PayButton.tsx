@@ -72,7 +72,6 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
   } = Object.assign({}, PayButton.defaultProps, props);
 
   const [paymentId] = useState(!disablePaymentId ? generatePaymentId(8) : undefined);
-  const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
   useEffect(() => {
     priceRef.current = price;
@@ -82,16 +81,14 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
     cryptoAmountRef.current = cryptoAmount;
   }, [cryptoAmount]);
 
-  const waitPrice = async (callback: Function) => {
-    while (true) {
+  const waitPrice = (callback: Function) => {
+    const intervalId = setInterval(() => {
       if (priceRef.current !== 0) {
-        break;
-      } else {
-        await delay(300);
+        clearInterval(intervalId);
+        callback();
       }
-    }
-    callback()
-  }
+    }, 300);
+  };
   const handleButtonClick = useCallback(async (): Promise<void> => {
     if (onOpen !== undefined) {
       if (isFiat(currency)) {
