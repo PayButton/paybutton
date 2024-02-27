@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
 import Button, { ButtonProps } from '../Button/Button';
@@ -45,6 +45,8 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
   const [currencyObj, setCurrencyObj] = useState<currencyObject | undefined>();
   const [cryptoAmount, setCryptoAmount] = useState<string>();
   const [price, setPrice] = useState(0);
+  const priceRef = useRef<number>(price);
+  const cryptoAmountRef = useRef<string | undefined>(cryptoAmount);
 
 
   const {
@@ -70,11 +72,33 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
   } = Object.assign({}, PayButton.defaultProps, props);
 
   const [paymentId] = useState(!disablePaymentId ? generatePaymentId(8) : undefined);
+  const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-  const handleButtonClick = (): void => {
-    if (onOpen !== undefined) onOpen(cryptoAmount, to, paymentId);
+  useEffect(() => {
+    priceRef.current = price;
+  }, [price]);
+
+  useEffect(() => {
+    cryptoAmountRef.current = cryptoAmount;
+  }, [cryptoAmount]);
+
+  const waitPrice = async (callback: Function) => {
+    while (true) {
+      if (priceRef.current !== 0) {
+        break;
+      } else {
+        await delay(300);
+      }
+    }
+    callback()
+  }
+  const handleButtonClick = useCallback(async (): Promise<void> => {
+    if (isFiat(currency)) void waitPrice(() => {
+      if (onOpen !== undefined) onOpen(cryptoAmountRef.current, to, paymentId);
+    })
     setDialogOpen(true);
-  };
+  }, [cryptoAmount, to, paymentId, price])
+
   const handleCloseDialog = (success?: boolean, paymentId?: string): void => {
     if (onClose !== undefined) onClose(success, paymentId);
     setDialogOpen(false);
@@ -134,9 +158,11 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
   );
 
   useEffect(() => {
+    (async () => {
     if (isFiat(currency) && price === 0) {
-      getPrice();
+      await getPrice();
     }
+    })()
   }, [currency, getPrice, to, price]);
 
   useEffect(() => {
@@ -179,7 +205,6 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
         currencyObj={currencyObj}
         setCurrencyObj={setCurrencyObj}
         cryptoAmount={cryptoAmount}
-        setCryptoAmount={setCryptoAmount}
         price={price}
         currency={currency}
         animation={animation}

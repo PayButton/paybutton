@@ -29,7 +29,6 @@ export interface WidgetContainerProps
   currencyObj?: currencyObject;
   cryptoAmount?: string;
   price?: number;
-  setCryptoAmount: Function;
   setCurrencyObj: Function;
   randomSatoshis?: boolean | number;
   hideToasts?: boolean;
@@ -88,7 +87,6 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
       currency = '' as currency,
       cryptoAmount,
       price,
-      setCryptoAmount,
       animation,
       randomSatoshis = false,
       hideToasts = false,
