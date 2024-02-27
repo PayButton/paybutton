@@ -1,5 +1,7 @@
-import { Button as MuiButton, makeStyles } from '@material-ui/core';
-import { CreateCSSProperties } from '@material-ui/styles';
+import { Button as MuiButton } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+
+import { CreateCSSProperties } from '@mui/styles';
 import React, { useRef, useState, useLayoutEffect } from 'react';
 
 import { Theme, ThemeName, useTheme } from '../../themes';

@@ -1,4 +1,4 @@
-import { Dialog } from '@material-ui/core';
+import { Dialog } from '@mui/material';
 import React, { useState, useEffect } from 'react';
 
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
@@ -92,7 +92,7 @@ export const PaymentDialog = (
     }
   }, [to, amount, props.disabled]);
 
-  const ButtonComponent: React.FunctionComponent<ButtonProps> = (
+  const ButtonComponent: React.FC<ButtonProps> = (
     props: ButtonProps,
   ): React.ReactElement => <Button animation={animation} {...props} />;
 

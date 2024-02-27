@@ -1,15 +1,15 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "module": "esnext",
-    "lib": [ "dom", "es2020" ],
+    "module": "commonjs",
+    "lib": ["dom", "esnext"],
     "jsx": "react",
     "jsxFactory": "h",
     "isolatedModules": false,
-    "strict": true,               
+    "strict": true,
     "esModuleInterop": true,
-    "skipLibCheck": true,         
+    "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "NodeNext",
+    "resolveJsonModule": true,
   }
 }

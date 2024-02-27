@@ -1,4 +1,4 @@
-import * as Components from './src/components/';
+import * as Components from './src/components';
 
 export const PayButton = Components.PayButton;
 export type PayButtonProps = Components.PayButtonProps;
