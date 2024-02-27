@@ -93,9 +93,13 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
     callback()
   }
   const handleButtonClick = useCallback(async (): Promise<void> => {
-    if (isFiat(currency)) void waitPrice(() => {
-      if (onOpen !== undefined) onOpen(cryptoAmountRef.current, to, paymentId);
-    })
+    if (onOpen !== undefined) {
+      if (isFiat(currency)) {
+        void waitPrice(() => { onOpen(cryptoAmountRef.current, to, paymentId) })
+      } else {
+        onOpen(amount, to, paymentId)
+      }
+    }
     setDialogOpen(true);
   }, [cryptoAmount, to, paymentId, price])
 
