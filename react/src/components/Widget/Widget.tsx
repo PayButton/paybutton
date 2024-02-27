@@ -216,7 +216,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   useEffect(() => {
     (async (): Promise<void> => {
       // subscribes address on paybutton server
-      await getAddressDetails(to, apiBaseUrl);
+      void getAddressDetails(to, apiBaseUrl);
       const newSocket = io(`${wsBaseUrl ?? config.wsBaseUrl}/addresses`, {
         query: { addresses: [to] },
       });
