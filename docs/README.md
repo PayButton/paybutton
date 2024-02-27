@@ -597,7 +597,7 @@ onTransaction = transactionCallback
 
 #### *callback* arguments
 
-- amount: *number* - how much money is being requested
+- amount: *number* - how much money is being requested (in crypto)
 - paymentId: *string* - the unique identifier for the payment
 - to: *string* - where the money will be sent to
 

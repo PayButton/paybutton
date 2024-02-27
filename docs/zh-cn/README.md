@@ -595,7 +595,7 @@ onTransaction = transactionCallback
 
 #### *回调* 参数
 
-- amount: *number* - 被请求的金额是多少
+amount: number - 请求的金额是多少（以加密货币计)
 - to: *string* - 资金将汇入的地方
 - paymentId: *string* - 付款的唯一标识符
 
