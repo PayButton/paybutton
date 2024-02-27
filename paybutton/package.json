@@ -1,9 +1,10 @@
 {
   "name": "@paybutton/paybutton",
-  "version": "2.1.2",
+  "version": "3.0.0",
   "description": "The easiest way to accept eCash online",
   "main": "dist/paybutton.js",
   "devDependencies": {
+    "@paybutton/react": "link:../react",
     "@rollup/plugin-alias": "^5.1.0",
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-html": "^1.0.3",
@@ -13,7 +14,6 @@
     "@rollup/plugin-replace": "^5.0.5",
     "@rollup/plugin-typescript": "^11.1.6",
     "camelcase": "^6.3.0",
-    "@paybutton/react": "link:../react",
     "preact": "^10.10.0",
     "rollup": "^2.77.4-1",
     "rollup-plugin-cleanup": "^3.2.1",
@@ -31,7 +31,6 @@
     "dev": "rollup -c rollup.dev.js -w",
     "build": "rollup -c rollup.prod.js"
   },
-
   "author": "",
   "repository": {
     "type": "git",
