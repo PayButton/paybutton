@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
 import Button, { ButtonProps } from '../Button/Button';
-import { Transaction, currency } from '../../util/api-client';
+import { Transaction, currency, isFiat, getBchFiatPrice, getXecFiatPrice } from '../../util/api-client';
 import { PaymentDialog } from '../PaymentDialog/PaymentDialog';
-import { isValidCashAddress, isValidXecAddress } from '../../util/address';
+import { getCurrencyTypeFromAddress, isValidCashAddress, isValidXecAddress } from '../../util/address';
 import { currencyObject, getCurrencyObject } from '../../util/satoshis';
 import { generatePaymentId } from '../../util/opReturn';
 
@@ -41,15 +41,17 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
   const [disabled, setDisabled] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [amount, setAmount] = useState(props.amount);
- 
+
   const [currencyObj, setCurrencyObj] = useState<currencyObject | undefined>();
   const [cryptoAmount, setCryptoAmount] = useState<string>();
+  const [price, setPrice] = useState(0);
+
 
   const {
     to,
     opReturn,
     disablePaymentId,
-    currency,
+    currency = '' as currency,
     text,
     hoverText,
     successText,
@@ -123,6 +125,45 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
     }
   }, [dialogOpen, props.amount, currency, randomSatoshis]);
 
+  const getPrice = useCallback(async (): Promise<void> => {
+    try {
+      if (isFiat(currency) && isValidCashAddress(to)) {
+        const data = await getBchFiatPrice(currency, apiBaseUrl);
+
+        const { price } = data;
+        setPrice(price);
+      } else if (isFiat(currency) && isValidXecAddress(to)) {
+        const data = await getXecFiatPrice(currency, apiBaseUrl);
+
+        const { price } = data;
+        setPrice(price);
+      }
+    } catch (error) {
+      console.log('err', error);
+    }
+  }, [currency, to, apiBaseUrl]);
+
+  useEffect(() => {
+    if (isFiat(currency) && price === 0) {
+      getPrice();
+    }
+  }, [currency, getPrice, price]);
+
+  useEffect(() => {
+    console.log('other eff gets', price)
+    if (currencyObj && isFiat(currency) && price) {
+      const addressType: currency = getCurrencyTypeFromAddress(to);
+      const convertedObj = getCurrencyObject(
+        currencyObj.float / price,
+        addressType,
+        randomSatoshis,
+      );
+      setCryptoAmount(convertedObj.string);
+    } else if (!isFiat(currency)) {
+      setCryptoAmount(amount?.toString());
+    }
+  }, [price, currencyObj, amount, currency, randomSatoshis, to]);
+
   const theme = useTheme(props.theme, isValidXecAddress(to ?? ''));
 
   const ButtonComponent: React.FC<ButtonProps> = (
@@ -150,6 +191,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
         setCurrencyObj={setCurrencyObj}
         cryptoAmount={cryptoAmount}
         setCryptoAmount={setCryptoAmount}
+        price={price}
         currency={currency}
         animation={animation}
         randomSatoshis={randomSatoshis}
