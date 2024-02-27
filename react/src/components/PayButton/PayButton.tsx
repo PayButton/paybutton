@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
 import Button, { ButtonProps } from '../Button/Button';
-import { Transaction, currency } from '../../util/api-client';
+import { Transaction, currency, isFiat, getFiatPrice } from '../../util/api-client';
 import { PaymentDialog } from '../PaymentDialog/PaymentDialog';
-import { isValidCashAddress, isValidXecAddress } from '../../util/address';
+import { getCurrencyTypeFromAddress, isValidCashAddress, isValidXecAddress } from '../../util/address';
 import { currencyObject, getCurrencyObject } from '../../util/satoshis';
 import { generatePaymentId } from '../../util/opReturn';
 
@@ -41,14 +41,19 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
   const [disabled, setDisabled] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [amount, setAmount] = useState(props.amount);
- 
+
   const [currencyObj, setCurrencyObj] = useState<currencyObject | undefined>();
+  const [cryptoAmount, setCryptoAmount] = useState<string>();
+  const [price, setPrice] = useState(0);
+  const priceRef = useRef<number>(price);
+  const cryptoAmountRef = useRef<string | undefined>(cryptoAmount);
+
 
   const {
     to,
     opReturn,
     disablePaymentId,
-    currency,
+    currency = '' as currency,
     text,
     hoverText,
     successText,
@@ -68,10 +73,33 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
 
   const [paymentId] = useState(!disablePaymentId ? generatePaymentId(8) : undefined);
 
-  const handleButtonClick = (): void => {
-    if (onOpen !== undefined) onOpen(amount, to, paymentId);
-    setDialogOpen(true);
+  useEffect(() => {
+    priceRef.current = price;
+  }, [price]);
+
+  useEffect(() => {
+    cryptoAmountRef.current = cryptoAmount;
+  }, [cryptoAmount]);
+
+  const waitPrice = (callback: Function) => {
+    const intervalId = setInterval(() => {
+      if (priceRef.current !== 0) {
+        clearInterval(intervalId);
+        callback();
+      }
+    }, 300);
   };
+  const handleButtonClick = useCallback(async (): Promise<void> => {
+    if (onOpen !== undefined) {
+      if (isFiat(currency)) {
+        void waitPrice(() => { onOpen(cryptoAmountRef.current, to, paymentId) })
+      } else {
+        onOpen(amount, to, paymentId)
+      }
+    }
+    setDialogOpen(true);
+  }, [cryptoAmount, to, paymentId, price])
+
   const handleCloseDialog = (success?: boolean, paymentId?: string): void => {
     if (onClose !== undefined) onClose(success, paymentId);
     setDialogOpen(false);
@@ -122,6 +150,36 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
     }
   }, [dialogOpen, props.amount, currency, randomSatoshis]);
 
+  const getPrice = useCallback(
+    async () => {
+      const price = await getFiatPrice(currency, to, apiBaseUrl)
+      if (price !== null) setPrice(price)
+    }
+    , [currency, to, apiBaseUrl]
+  );
+
+  useEffect(() => {
+    (async () => {
+    if (isFiat(currency) && price === 0) {
+      await getPrice();
+    }
+    })()
+  }, [currency, getPrice, to, price]);
+
+  useEffect(() => {
+    if (currencyObj && isFiat(currency) && price) {
+      const addressType: currency = getCurrencyTypeFromAddress(to);
+      const convertedObj = getCurrencyObject(
+        currencyObj.float / price,
+        addressType,
+        randomSatoshis,
+      );
+      setCryptoAmount(convertedObj.string);
+    } else if (!isFiat(currency)) {
+      setCryptoAmount(amount?.toString());
+    }
+  }, [price, currencyObj, amount, currency, randomSatoshis, to]);
+
   const theme = useTheme(props.theme, isValidXecAddress(to ?? ''));
 
   const ButtonComponent: React.FC<ButtonProps> = (
@@ -147,6 +205,8 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
         setAmount={setAmount}
         currencyObj={currencyObj}
         setCurrencyObj={setCurrencyObj}
+        cryptoAmount={cryptoAmount}
+        price={price}
         currency={currency}
         animation={animation}
         randomSatoshis={randomSatoshis}

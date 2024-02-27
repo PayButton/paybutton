@@ -176,6 +176,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const classes = useStyles({ success, loading, theme });
 
   const [thisAmount, setThisAmount] = useState(props.amount);
+  const [hasPrice, setHasPrice] = useState(props.price !== undefined && props.price > 0);
   const [thisCurrencyObject, setThisCurrencyObject] = useState(
     props.currencyObject,
   );
@@ -210,13 +211,15 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   }, [recentlyCopied]);
 
   const query: string[] = [];
-  const hasPrice: boolean = price !== undefined && price > 0;
+  useEffect(() => {
+    setHasPrice(price !== undefined && price > 0)
+  }, [price])
   let prefixedAddress: string;
 
   useEffect(() => {
     (async (): Promise<void> => {
       // subscribes address on paybutton server
-      await getAddressDetails(to, apiBaseUrl);
+      void getAddressDetails(to, apiBaseUrl);
       const newSocket = io(`${wsBaseUrl ?? config.wsBaseUrl}/addresses`, {
         query: { addresses: [to] },
       });
@@ -349,7 +352,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         setUrl(url);
       }
     }
-  }, [to, thisCurrencyObject, price, thisAmount, opReturn]);
+  }, [to, thisCurrencyObject, price, thisAmount, opReturn, hasPrice]);
 
   const handleButtonClick = () => {
     if (addressType === 'XEC') {
@@ -504,7 +507,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         setErrorMsg('Goal Value must be a number');
       }
     }
-  }, [totalReceived, currency, goalAmount, price]);
+  }, [totalReceived, currency, goalAmount, price, hasPrice]);
 
   return (
     <ThemeProvider value={theme}>

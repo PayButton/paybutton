@@ -3,20 +3,17 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import successSound from '../../assets/success.mp3.json';
 import {
-  isValidCashAddress,
-  isValidXecAddress,
   getCurrencyTypeFromAddress,
 } from '../../util/address';
 import {
   Transaction,
   isCrypto,
-  isFiat,
   currency,
-  getBchFiatPrice,
-  getXecFiatPrice,
   isValidCurrency,
+  isFiat,
+  getFiatPrice,
 } from '../../util/api-client';
-import { getCurrencyObject, currencyObject } from '../../util/satoshis';
+import { currencyObject } from '../../util/satoshis';
 import Widget, { WidgetProps } from './Widget';
 import BigNumber from 'bignumber.js';
 import { generatePaymentId } from '../../util/opReturn';
@@ -30,6 +27,8 @@ export interface WidgetContainerProps
   disablePaymentId?: boolean;
   currency?: currency;
   currencyObj?: currencyObject;
+  cryptoAmount?: string;
+  price?: number;
   setCurrencyObj: Function;
   randomSatoshis?: boolean | number;
   hideToasts?: boolean;
@@ -86,6 +85,8 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
       setCurrencyObj,
       currencyObj,
       currency = '' as currency,
+      cryptoAmount,
+      price,
       animation,
       randomSatoshis = false,
       hideToasts = false,
@@ -101,9 +102,8 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
       ...widgetProps
     } = props;
 
-    const address = to;
-
     const [thisPaymentId, setThisPaymentId] = useState<string | undefined>();
+    const [thisPrice, setThisPrice] = useState(0);
     useEffect(() => {
       if ((paymentId === undefined || paymentId === '') && !disablePaymentId) {
         const newPaymentId = generatePaymentId(8);
@@ -114,9 +114,6 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
     }, [paymentId, disablePaymentId]);
     const [success, setSuccess] = useState(false);
     const { enqueueSnackbar } = useSnackbar();
-    const [cryptoAmount, setCryptoAmount] = useState<string>();
-
-    const [price, setPrice] = useState(0);
 
     const [newTxs, setNewTxs] = useState<Transaction[] | undefined>();
     const addrType = getCurrencyTypeFromAddress(to);
@@ -126,24 +123,6 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
     ) {
       currency = addrType;
     }
-
-    const getPrice = useCallback(async (): Promise<void> => {
-      try {
-        if (isFiat(currency) && isValidCashAddress(address)) {
-          const data = await getBchFiatPrice(currency, apiBaseUrl);
-
-          const { price } = data;
-          setPrice(price);
-        } else if (isFiat(currency) && isValidXecAddress(address)) {
-          const data = await getXecFiatPrice(currency, apiBaseUrl);
-
-          const { price } = data;
-          setPrice(price);
-        }
-      } catch (error) {
-        console.log('err', error);
-      }
-    }, [currency, address, apiBaseUrl]);
 
     const txSound = useMemo(
       (): HTMLAudioElement => new Audio(successSound.base64),
@@ -194,6 +173,30 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
       ],
     );
 
+    const getPrice = useCallback(
+      async () => {
+        const price = await getFiatPrice(currency, to, apiBaseUrl)
+        if (price !== null) setThisPrice(price)
+      }
+      , [currency, to, apiBaseUrl]
+    );
+
+    useEffect(() => {
+      if (price === undefined) {
+          getPrice();
+      } else {
+        setThisPrice(price)
+      }
+    }, [currency, price]);
+
+    useEffect(() => {
+      if (isFiat(currency) && price === undefined) {
+        (async () => {
+          getPrice();
+        })()
+      }
+    }, [currency, price]);
+
     const handleNewTransaction = useCallback(
       (tx: Transaction) => {
         if (
@@ -207,30 +210,10 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
     );
 
     useEffect(() => {
-      if (isFiat(currency) && price === 0) {
-        getPrice();
-      }
-    }, [currency, getPrice, price]);
-
-    useEffect(() => {
       newTxs?.map(tx => {
         handleNewTransaction(tx);
       });
     }, [newTxs, handleNewTransaction]);
-
-    useEffect(() => {
-      if (currencyObj && isFiat(currency) && price) {
-        const addressType: currency = getCurrencyTypeFromAddress(to);
-        const convertedObj = getCurrencyObject(
-          currencyObj.float / price,
-          addressType,
-          randomSatoshis,
-        );
-        setCryptoAmount(convertedObj.string);
-      } else if (!isFiat(currency)) {
-        setCryptoAmount(amount?.toString());
-      }
-    }, [price, currencyObj, amount, currency, randomSatoshis, to]);
 
     return (
       <React.Fragment>
@@ -248,7 +231,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
           currencyObject={currencyObj}
           setCurrencyObject={setCurrencyObj}
           randomSatoshis={randomSatoshis}
-          price={price}
+          price={thisPrice}
           success={success}
           disabled={disabled}
           editable={editable}
