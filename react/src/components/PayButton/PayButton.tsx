@@ -140,7 +140,6 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
   }, [currency, getPrice, to, price]);
 
   useEffect(() => {
-    console.log('other eff gets', price)
     if (currencyObj && isFiat(currency) && price) {
       const addressType: currency = getCurrencyTypeFromAddress(to);
       const convertedObj = getCurrencyObject(
