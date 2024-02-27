@@ -2,6 +2,7 @@ import axios from 'axios';
 import _ from 'lodash';
 import { Socket } from 'socket.io-client'
 import config from '../paybutton-config.json'
+import { isValidCashAddress, isValidXecAddress } from './address';
 
 export const getAddressDetails = async (
   address: string,
@@ -74,32 +75,21 @@ export const getXecFiatPrice = async (
   return { price };
 };
 
-export const getFiatPrice = async (
-  fiat: fiatCurrency,
-  crypto: cryptoCurrency,
-  rootUrl = config.apiBaseUrl,
-): Promise<PriceData> => {
-  // TODO: get rid of 'getXecFiatPrice' && 'getBchFiatPrice' and replace
-  // with this function.
-  let url = '';
-
-  switch (crypto) {
-    case 'BCH':
-      url = `${rootUrl}/price/bitcoincash/${_.lowerCase(fiat)}`;
-      break;
-    case 'XEC':
-      url = `${rootUrl}/price/ecash/${_.lowerCase(fiat)}`;
-      break;
+export const getFiatPrice = async (currency: string, to: string, apiBaseUrl?: string): Promise<number | null> => {
+  try {
+    if (isFiat(currency) && isValidCashAddress(to)) {
+      const data = await getBchFiatPrice(currency, apiBaseUrl);
+      return data.price;
+    } else if (isFiat(currency) && isValidXecAddress(to)) {
+      const data = await getXecFiatPrice(currency, apiBaseUrl);
+      return data.price;
+    }
+    return null
+  } catch (error) {
+    console.log('err', error);
   }
-  if (!url) {
-    throw new Error('No url');
-  } else {
-    const { data } = await axios.get(url);
-
-    const price: number = data;
-    return { price };
-  }
-};
+  return null
+}
 
 export const getTransactionDetails = async (
   txid: string,

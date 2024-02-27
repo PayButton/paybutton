@@ -10,6 +10,8 @@ import {
   isCrypto,
   currency,
   isValidCurrency,
+  isFiat,
+  getFiatPrice,
 } from '../../util/api-client';
 import { currencyObject } from '../../util/satoshis';
 import Widget, { WidgetProps } from './Widget';
@@ -103,6 +105,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
     } = props;
 
     const [thisPaymentId, setThisPaymentId] = useState<string | undefined>();
+    const [thisPrice, setThisPrice] = useState(0);
     useEffect(() => {
       if ((paymentId === undefined || paymentId === '') && !disablePaymentId) {
         const newPaymentId = generatePaymentId(8);
@@ -172,6 +175,30 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
       ],
     );
 
+    const getPrice = useCallback(
+      async () => {
+        const price = await getFiatPrice(currency, to, apiBaseUrl)
+        if (price !== null) setThisPrice(price)
+      }
+      , [currency, to, apiBaseUrl]
+    );
+
+    useEffect(() => {
+      if (price === undefined) {
+          getPrice();
+      } else {
+        setThisPrice(price)
+      }
+    }, [currency, price]);
+
+    useEffect(() => {
+      if (isFiat(currency) && price === undefined) {
+        (async () => {
+          getPrice();
+        })()
+      }
+    }, [currency, price]);
+
     const handleNewTransaction = useCallback(
       (tx: Transaction) => {
         if (
@@ -206,7 +233,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
           currencyObject={currencyObj}
           setCurrencyObject={setCurrencyObj}
           randomSatoshis={randomSatoshis}
-          price={price}
+          price={thisPrice}
           success={success}
           disabled={disabled}
           editable={editable}

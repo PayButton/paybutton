@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
 import Button, { ButtonProps } from '../Button/Button';
-import { Transaction, currency, isFiat, getBchFiatPrice, getXecFiatPrice } from '../../util/api-client';
+import { Transaction, currency, isFiat, getFiatPrice } from '../../util/api-client';
 import { PaymentDialog } from '../PaymentDialog/PaymentDialog';
 import { getCurrencyTypeFromAddress, isValidCashAddress, isValidXecAddress } from '../../util/address';
 import { currencyObject, getCurrencyObject } from '../../util/satoshis';
@@ -125,29 +125,19 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
     }
   }, [dialogOpen, props.amount, currency, randomSatoshis]);
 
-  const getPrice = useCallback(async (): Promise<void> => {
-    try {
-      if (isFiat(currency) && isValidCashAddress(to)) {
-        const data = await getBchFiatPrice(currency, apiBaseUrl);
-
-        const { price } = data;
-        setPrice(price);
-      } else if (isFiat(currency) && isValidXecAddress(to)) {
-        const data = await getXecFiatPrice(currency, apiBaseUrl);
-
-        const { price } = data;
-        setPrice(price);
-      }
-    } catch (error) {
-      console.log('err', error);
+  const getPrice = useCallback(
+    async () => {
+      const price = await getFiatPrice(currency, to, apiBaseUrl)
+      if (price !== null) setPrice(price)
     }
-  }, [currency, to, apiBaseUrl]);
+    , [currency, to, apiBaseUrl]
+  );
 
   useEffect(() => {
     if (isFiat(currency) && price === 0) {
       getPrice();
     }
-  }, [currency, getPrice, price]);
+  }, [currency, getPrice, to, price]);
 
   useEffect(() => {
     console.log('other eff gets', price)
