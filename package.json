@@ -1,8 +1,8 @@
 {
   "name": "paybutton",
-  "version": "2.1.2",
+  "version": "3.0.0",
   "description": "The easiest way to accept eCash online",
-  "author": "poldridge",
+  "author": "Blockchain Ventures Corp.",
   "main": "index.js",
   "repository": "https://github.com/PayButton/paybutton.git",
   "license": "MIT",
