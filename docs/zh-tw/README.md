@@ -594,7 +594,7 @@ onTransaction = transactionCallback
 
 #### *回撥* 參數
 
-amount: number - 請求的金額是多少（以加密貨幣計)
+- amount: number - 請求的金額是多少（以加密貨幣計)
 - **to**: *string* - 付款的唯一标识符
 - **paymentId**: *string* - 资金将汇入的地方
 
