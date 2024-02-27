@@ -43,6 +43,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
   const [amount, setAmount] = useState(props.amount);
  
   const [currencyObj, setCurrencyObj] = useState<currencyObject | undefined>();
+  const [cryptoAmount, setCryptoAmount] = useState<string>();
 
   const {
     to,
@@ -69,7 +70,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
   const [paymentId] = useState(!disablePaymentId ? generatePaymentId(8) : undefined);
 
   const handleButtonClick = (): void => {
-    if (onOpen !== undefined) onOpen(amount, to, paymentId);
+    if (onOpen !== undefined) onOpen(cryptoAmount, to, paymentId);
     setDialogOpen(true);
   };
   const handleCloseDialog = (success?: boolean, paymentId?: string): void => {
@@ -147,6 +148,8 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
         setAmount={setAmount}
         currencyObj={currencyObj}
         setCurrencyObj={setCurrencyObj}
+        cryptoAmount={cryptoAmount}
+        setCryptoAmount={setCryptoAmount}
         currency={currency}
         animation={animation}
         randomSatoshis={randomSatoshis}

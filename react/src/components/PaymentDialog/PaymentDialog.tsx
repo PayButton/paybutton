@@ -17,6 +17,8 @@ export interface PaymentDialogProps extends ButtonProps {
   disablePaymentId?: boolean;
   currency?: currency;
   currencyObj?: currencyObject;
+  cryptoAmount?: string;
+  setCryptoAmount: Function;
   setCurrencyObj: Function;
   theme?: ThemeName | Theme;
   successText?: string;
@@ -52,6 +54,8 @@ export const PaymentDialog = (
     currency,
     currencyObj,
     setCurrencyObj,
+    cryptoAmount,
+    setCryptoAmount,
     successText,
     animation,
     randomSatoshis,
@@ -120,6 +124,8 @@ export const PaymentDialog = (
           setAmount={setAmount}
           currencyObj={currencyObj}
           setCurrencyObj={setCurrencyObj}
+          cryptoAmount={cryptoAmount}
+          setCryptoAmount={setCryptoAmount}
           currency={currency}
           animation={animation}
           randomSatoshis={randomSatoshis}

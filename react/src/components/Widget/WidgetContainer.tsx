@@ -30,6 +30,8 @@ export interface WidgetContainerProps
   disablePaymentId?: boolean;
   currency?: currency;
   currencyObj?: currencyObject;
+  cryptoAmount?: string;
+  setCryptoAmount: Function;
   setCurrencyObj: Function;
   randomSatoshis?: boolean | number;
   hideToasts?: boolean;
@@ -86,6 +88,8 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
       setCurrencyObj,
       currencyObj,
       currency = '' as currency,
+      cryptoAmount,
+      setCryptoAmount,
       animation,
       randomSatoshis = false,
       hideToasts = false,
@@ -114,7 +118,6 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
     }, [paymentId, disablePaymentId]);
     const [success, setSuccess] = useState(false);
     const { enqueueSnackbar } = useSnackbar();
-    const [cryptoAmount, setCryptoAmount] = useState<string>();
 
     const [price, setPrice] = useState(0);
 
