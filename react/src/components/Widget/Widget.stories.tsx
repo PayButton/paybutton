@@ -1,4 +1,3 @@
-import React from 'react';
 import { Meta, StoryObj } from '@storybook/react';
 import Widget, { WidgetProps } from './Widget';
 import { to } from '../../../.storybook/default-args';

@@ -1,6 +1,4 @@
 import { StoryFn } from '@storybook/react';
-import React from 'react';
-
 import { ThemeName } from '../../themes';
 import PayButton from './PayButton';
 
