@@ -1,74 +1,84 @@
-import { Story } from '@storybook/react';
 import React from 'react';
-
-import { ThemeName } from '../../themes';
+import { Meta, StoryObj } from '@storybook/react';
 import Widget, { WidgetProps } from './Widget';
-
 import { to } from '../../../.storybook/default-args';
+import { ThemeName } from '../../themes';
 
-export default {
-  title: 'Widget',
+const defaultArgs = {
+  to,
+  success: false,
+  loading: false,
+};
+
+const meta: Meta<WidgetProps> = {
   component: Widget,
   decorators: [
-    (Story: Story): React.ReactNode => (
+    Story => (
       <div style={{ margin: 'auto', maxWidth: 400 }}>
         <Story />
       </div>
     ),
   ],
-  argTypes: {
-    success: { control: 'boolean' },
-    ButtonComponent: { table: { disable: true } },
-    foot: { table: { disable: true } },
-  },
+  args: defaultArgs,
+};
+
+export default meta;
+type Story = StoryObj<typeof Widget>;
+
+/*
+ *👇 Render functions are a framework specific feature to allow you control on how the component renders.
+ * See https://storybook.js.org/docs/api/csf
+ * to learn how to use render functions.
+ */
+
+export const Default: Story = {};
+
+export const Success: Story = {
   args: {
-    to,
-    loading: false,
-    success: false,
+    ...defaultArgs,
+    success: true,
   },
 };
 
-const Template: Story<WidgetProps> = props => <Widget {...props} />;
-
-export const Default = Template.bind({});
-Default.args = {};
-
-export const Success = Template.bind({});
-Success.args = {
-  success: true,
+export const Loading: Story = {
+  args: {
+    ...defaultArgs,
+    loading: true,
+  },
 };
 
-export const Loading = Template.bind({});
-Loading.args = {
-  loading: true,
-};
-
-export const OrangeTheme = Template.bind({});
-OrangeTheme.args = {
-  theme: ThemeName.ORANGE,
-};
-
-export const CustomTheme = Template.bind({});
-CustomTheme.args = {
-  theme: {
-    palette: {
-      primary: '#d05050',
-      secondary: '#bee',
-      tertiary: '#084',
-      logo: '#404',
+export const WithGoal: Story = {
+  args: {
+    ...defaultArgs,
+    goalAmount: 100,
+    theme: {
+      palette: {
+        primary: '#d05050',
+        secondary: '#bee',
+        tertiary: '#084',
+        logo: '#404',
+      },
     },
   },
 };
 
-export const WithGoal = Template.bind({});
-WithGoal.args = {
-  goalAmount: 100,
-  theme: {
-    palette: {
-      primary: '#d05050',
-      secondary: '#bee',
-      tertiary: '#084',
-      logo: '#404',
+export const OrangeTheme: Story = {
+  args: {
+    ...defaultArgs,
+    theme: ThemeName.ORANGE, //TODO change to themeNames
+  },
+};
+
+export const CustomTheme: Story = {
+  args: {
+    ...defaultArgs,
+    theme: {
+      palette: {
+        primary: '#d05050',
+        secondary: '#bee',
+        tertiary: '#084',
+        logo: '#404',
+      },
     },
   },
 };

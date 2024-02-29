@@ -1,14 +1,14 @@
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react';
 import React from 'react';
 
 import { ThemeName } from '../../themes';
-import Button, { ButtonProps } from './Button';
+import Button from './Button';
 
 export default {
   title: 'Button',
   component: Button,
   decorators: [
-    (Story: Story): React.ReactNode => (
+    (Story: StoryFn): React.ReactNode => (
       <div style={{ margin: 'auto', maxWidth: 400 }}>
         <Story />
       </div>
@@ -22,13 +22,13 @@ export default {
   },
 };
 
-const Template: Story<ButtonProps> = props => <Button {...props} />;
+export const Default = {
+  args: {},
+};
 
-export const Default = Template.bind({});
-Default.args = {};
-
-export const OrangeTheme = Template.bind({});
-OrangeTheme.args = {
-  theme: ThemeName.ORANGE,
-  animation: 'invert',
+export const OrangeTheme = {
+  args: {
+    theme: ThemeName.ORANGE,
+    animation: 'invert',
+  },
 };

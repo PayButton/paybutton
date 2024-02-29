@@ -1,8 +1,8 @@
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react';
 import React from 'react';
 
 import { ThemeName } from '../../themes';
-import PaymentDialog, { PaymentDialogProps } from './PaymentDialog';
+import PaymentDialog from './PaymentDialog';
 
 import { defaultCurrency, to } from '../../../.storybook/default-args';
 
@@ -10,7 +10,7 @@ export default {
   title: 'PaymentDialog',
   component: PaymentDialog,
   decorators: [
-    (Story: Story): JSX.Element => (
+    (Story: StoryFn): JSX.Element => (
       <div style={{ margin: 'auto', maxWidth: 400 }}>
         <Story />
       </div>
@@ -27,49 +27,55 @@ export default {
   },
 };
 
-const Template: Story<PaymentDialogProps> = props => (
-  <PaymentDialog {...props} />
-);
-
-export const Default = Template.bind({});
-Default.args = {};
-
-export const OrangeTheme = Template.bind({});
-OrangeTheme.args = {
-  theme: ThemeName.ORANGE,
-  animation: 'invert',
+export const Default = {
+  args: {},
 };
 
-export const UsdAmount = Template.bind({});
-UsdAmount.storyName = 'USD Amount';
-UsdAmount.args = {
-  amount: 5,
-  currency: 'USD',
-  text: '$5',
-  hoverText: `Pay with ${defaultCurrency}`,
-  animation: 'none',
+export const OrangeTheme = {
+  args: {
+    theme: ThemeName.ORANGE,
+    animation: 'invert',
+  },
 };
 
-export const withGoal = Template.bind({});
-withGoal.storyName = 'With Goal';
-withGoal.args = {
-  hoverText: `Pay with ${defaultCurrency}`,
-  animation: 'none',
-  goalAmount: 100,
+export const UsdAmount = {
+  name: 'USD Amount',
+
+  args: {
+    amount: 5,
+    currency: 'USD',
+    text: '$5',
+    hoverText: `Pay with ${defaultCurrency}`,
+    animation: 'none',
+  },
 };
 
-export const withUSDGoalCurrency = Template.bind({});
-withUSDGoalCurrency.storyName = 'With USD Goal';
-withUSDGoalCurrency.args = {
-  animation: 'none',
-  goalAmount: 500000,
-  currency: 'USD',
+export const withGoal = {
+  name: 'With Goal',
+
+  args: {
+    hoverText: `Pay with ${defaultCurrency}`,
+    animation: 'none',
+    goalAmount: 100,
+  },
 };
 
-export const withEURGoalCurrency = Template.bind({});
-withEURGoalCurrency.storyName = 'With EUR Goal';
-withEURGoalCurrency.args = {
-  animation: 'none',
-  goalAmount: 400000,
-  currency: 'EUR',
+export const withUSDGoalCurrency = {
+  name: 'With USD Goal',
+
+  args: {
+    animation: 'none',
+    goalAmount: 500000,
+    currency: 'USD',
+  },
+};
+
+export const withEURGoalCurrency = {
+  name: 'With EUR Goal',
+
+  args: {
+    animation: 'none',
+    goalAmount: 400000,
+    currency: 'EUR',
+  },
 };

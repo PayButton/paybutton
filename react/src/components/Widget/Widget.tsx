@@ -465,7 +465,7 @@ export const Widget: React.FC<WidgetProps | any> = props => {
           disablePaymentId: disablePaymentId ?? false,
         }),
       );
-    } catch (err) {
+    } catch (err:any) {
       setErrorMsg(err.message);
     }
   }, [props.opReturn]);
