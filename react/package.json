@@ -10,17 +10,16 @@
   },
   "type": "module",
   "files": [
-    "dist/*",
-    "src"
+    "dist"
   ],
-  "main": "dist/paybutton-react.cjs.js",
-  "module": "dist/paybutton-react.es.js",
-  "source": "index.ts",
+  "main": "dist/main.js",
+  "types": "dist/main.d.ts",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "tsc --p ./tsconfig-build.json && vite build",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "lint": "eslint 'src/**/*.{ts,tsx}' --fix",
+    "prepublishOnly": "yarn build",
     "lint:prettier": "prettier --write 'src/**/*.{ts,tsx}'",
     "storybook": "storybook dev"
   },
@@ -29,14 +28,14 @@
     "react-dom": "^18.0.0"
   },
   "devDependencies": {
-    "@babel/core": "~7.22.20",
-    "@babel/eslint-parser": "^7.23.3",
-    "@babel/plugin-transform-class-properties": "^7.23.3",
-    "@babel/preset-env": "~7.22.20",
-    "@babel/preset-react": "~7.22.15",
-    "@babel/preset-typescript": "~7.22.15",
+    "@emotion/react": "^11.11.3",
+    "@emotion/styled": "^11.11.0",
     "@jridgewell/sourcemap-codec": "^1.4.15",
+    "@mui/lab": "^5.0.0-alpha.162",
+    "@mui/material": "^5.15.6",
+    "@mui/styles": "^5.15.6",
     "@popperjs/core": "2.11.8",
+    "@preact/preset-vite": "^2.8.1",
     "@storybook/addon-a11y": "8.0.0-alpha.14",
     "@storybook/addon-actions": "8.0.0-alpha.14",
     "@storybook/addon-essentials": "^8.0.0-alpha.14",
@@ -47,12 +46,15 @@
     "@storybook/builder-vite": "^7.6.17",
     "@storybook/manager-api": "^7.6.17",
     "@storybook/node-logger": "8.0.0-alpha.14",
+    "@storybook/preset-create-react-app": "^7.6.10",
     "@storybook/react": "^8.0.0-alpha.14",
     "@storybook/react-vite": "8.0.0-alpha.14",
     "@storybook/test": "8.0.0-alpha.14",
+    "@storybook/testing-library": "^0.2.2",
     "@storybook/theming": "^7.6.17",
     "@types/crypto-js": "^4.2.1",
     "@types/currency-formatter": "1.5.4",
+    "@types/jest": "^29.5.11",
     "@types/lodash": "4.14.202",
     "@types/mini-css-extract-plugin": "~1.4.3",
     "@types/node": "20.11.5",
@@ -62,59 +64,48 @@
     "@typescript-eslint/eslint-plugin": "^7.0.2",
     "@typescript-eslint/parser": "^7.0.2",
     "@vitejs/plugin-react": "^4.2.1",
-    "babel-loader": "^9.1.3",
+    "@vitejs/plugin-react-refresh": "^1.3.1",
     "concurrently": "8.2.2",
     "cross-env": "7.0.3",
     "crypto-js": "^4.2.0",
     "currency-formatter": "1.5.9",
-    "eslint": "^8.56.0",
+    "eslint": "^8.57.0",
     "eslint-config-prettier": "9.1.0",
     "eslint-plugin-import": "2.29.1",
     "eslint-plugin-node": "11.1.0",
     "eslint-plugin-prettier": "5.1.3",
     "eslint-plugin-promise": "6.1.1",
-    "eslint-plugin-react": "7.33.2",
+    "eslint-plugin-react": "^7.34.0",
     "eslint-plugin-react-hooks": "^4.6.0",
-    "@vitejs/plugin-react-refresh": "^1.3.1",
     "eslint-plugin-react-refresh": "^0.4.5",
     "eslint-plugin-storybook": "^0.8.0",
     "husky": "8.0.3",
-    "lint-staged": "15.2.0",
-    "prettier": "3.2.4",
-    "react-is": "18.2.0",
-    "storybook": "8.0.0-alpha.14",
-    "typescript": "~5.3.3",
-    "vite": "^5.1.4",
-    "vite-plugin-commonjs": "^0.10.1",
-    "yarn-run-all": "^3.1.1"
-  },
-  "dependencies": {
-    "@emotion/react": "^11.11.3",
-    "@emotion/styled": "^11.11.0",
-    "@mui/lab": "^5.0.0-alpha.162",
-    "@mui/material": "^5.15.6",
-    "@mui/styles": "^5.15.6",
-    "@storybook/mdx1-csf": "^1.0.0",
-    "@storybook/preset-create-react-app": "^7.6.10",
-    "@storybook/testing-library": "^0.2.2",
-    "@types/jest": "^29.5.11",
-    "axios": "1.6.5",
-    "bignumber.js": "9.1.2",
-    "copy-to-clipboard": "3.3.3",
     "jest": "^29.7.0",
-    "lodash": "4.17.21",
+    "lint-staged": "15.2.0",
     "mini-css-extract-plugin": "~1.6.2",
-    "notistack": "^3.0.1",
-    "preact": "^10.19.3",
+    "prettier": "3.2.4",
     "qrcode.react": "1.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-is": "18.2.0",
     "react-refresh": "^0.14.0",
-    "socket.io-client": "4.7.4",
-    "stream": "^0.0.2",
+    "storybook": "8.0.0-alpha.14",
     "ts-jest": "^29.1.1",
     "ts-loader": "^9.5.1",
+    "typescript": "~5.3.3",
+    "vite": "^5.1.4",
+    "vite-plugin-commonjs": "^0.10.1",
     "vite-plugin-dts": "^3.7.3",
+    "yarn-run-all": "^3.1.1"
+  },
+  "dependencies": {
+    "axios": "1.6.5",
+    "bignumber.js": "9.1.2",
+    "copy-to-clipboard": "3.3.3",
+    "lodash": "4.17.21",
+    "notistack": "^3.0.1",
+    "socket.io-client": "4.7.4",
+    "stream": "^0.0.2",
     "xecaddrjs": "^0.0.1"
   },
   "husky": {
@@ -128,13 +119,15 @@
       "prettier --write"
     ]
   },
-  "resolutions": {
-    "@types/react": "^18.0.0",
-    "@types/react-dom": "^18.0.0"
-  },
+  "sideEffects": [
+    "**/*.css"
+  ],
   "eslintConfig": {
     "extends": [
       "plugin:storybook/recommended"
     ]
+  },
+  "resolutions": {
+    "jackspeak": "2.1.1"
   }
 }

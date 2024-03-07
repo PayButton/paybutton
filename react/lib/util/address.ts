@@ -1,3 +1,4 @@
+// @ts-ignore
 import * as xecaddr from 'xecaddrjs';
 import { cryptoCurrency } from '../util/api-client';
 

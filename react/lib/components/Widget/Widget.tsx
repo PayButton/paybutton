@@ -442,7 +442,8 @@ export const Widget: React.FC<WidgetProps | any> = props => {
 
   const shouldDisplayGoal: boolean = goalAmount !== undefined;
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let amount = e.target.value;
+    
+    let amount = (e.target as any).value;
     if (amount === '') {
       amount = '0';
     }
@@ -636,7 +637,7 @@ export const Widget: React.FC<WidgetProps | any> = props => {
                   label={currency}
                   value={thisAmount || 0}
                   onChange={handleAmountChange}
-                  inputProps={{ maxlength: '12' }}
+                  inputProps={{ maxlength: 12 }}
                   name="Amount"
                   id="userEditedAmount"
                 />

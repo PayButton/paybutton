@@ -1,31 +1,23 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-
-import commonjs from 'vite-plugin-commonjs'
 import dts from 'vite-plugin-dts'
+import { resolve } from 'path'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-    plugins: [
-        react(),
-        commonjs(),
-        dts()
-    ],
-    build: {
-        outDir: 'dist',
-        target: 'esnext',
-        minify: true,
-        lib: {
-            name: 'paybutton',
-            entry: 'index.ts',
-            formats: ['es', 'cjs'],
-            fileName: format => `paybutton-react.${format}.js`,
-        },
-        rollupOptions: {
-            external: ['react', 'svg'],
-            output: {
-                sourcemapExcludeSources: true,
-            },
-        },
+  plugins: [
+    react(),
+    dts({ include: ['lib'] })
+  ],
+  build: {
+    copyPublicDir: false,
+    lib: {
+      entry: resolve(__dirname, 'lib/main.ts'),
+      formats: ['es'],
+      fileName: 'index'
     },
+    rollupOptions: {
+      external: ['react', 'react/jsx-runtime'],
+    }
+  }
 })

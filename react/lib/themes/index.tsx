@@ -23,7 +23,7 @@ export const getTheme = (name: ThemeName = DEFAULT_THEME): Theme =>
 
 const ThemeContext = React.createContext<Theme | undefined>(undefined);
 
-export const ThemeProvider = ThemeContext.Provider;
+export const ThemeProvider:any = ThemeContext.Provider;
 
 const checkHash = (name: string): string => {
   // const textColor = new RegExp(/^[A-Za-z]+$/, 'i');
