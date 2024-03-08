@@ -100,11 +100,11 @@
     "copy-to-clipboard": "3.3.3",
     "lodash": "4.17.21",
     "notistack": "^3.0.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "socket.io-client": "4.7.4",
     "stream": "^0.0.2",
-    "xecaddrjs": "^0.0.1",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "xecaddrjs": "^0.0.1"
   },
   "husky": {
     "hooks": {
