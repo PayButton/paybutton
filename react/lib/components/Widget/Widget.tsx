@@ -10,7 +10,7 @@ import { makeStyles } from '@mui/styles';
 import React, { useEffect, useMemo, useState } from 'react';
 import copy from 'copy-to-clipboard';
 import QRCode, { BaseQRCodeProps } from 'qrcode.react';
-import config from '../../paybutton-config.json';
+import config from '../../config.json';
 
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
 import {
