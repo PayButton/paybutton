@@ -2,7 +2,6 @@ import {
   exportedForTesting,
   encodeOpReturnProps,
   EncodeOpReturnParams,
-  generatePaymentId,
 } from '../util/opReturn';
 
 const {

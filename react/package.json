@@ -11,13 +11,14 @@
   "main": "dist/index.js",
   "module": "dist/index.modern.js",
   "source": "index.tsx",
+  "typings": "lib/typings.d.ts",
   "engines": {
     "node": ">=10"
   },
   "scripts": {
     "build": "microbundle --jsx React.createElement --format modern,cjs",
-    "lint": "eslint 'src/**/*.{ts,tsx}' --fix",
-    "prettier": "prettier --write 'src/**/*.ts'",
+    "lint": "eslint 'lib/**/*.{ts,tsx}' --fix",
+    "prettier": "prettier --write 'lib/**/*.ts'",
     "dev": "concurrently yarn:watch yarn:storybook",
     "storybook": "start-storybook -p 6006",
     "watch": "microbundle watch --jsx React.createElement --no-compress --format modern,cjs",
@@ -99,7 +100,7 @@
     }
   },
   "lint-staged": {
-    "src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
+    "lib/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
       "eslint --fix",
       "prettier --write"
     ]
