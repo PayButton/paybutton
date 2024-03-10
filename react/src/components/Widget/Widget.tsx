@@ -590,7 +590,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                     <Box className={classes.copyTextContainer}>
                       {!disabled && (
                         <Typography className={classes.copyText}>
-                          {copied ? 'Address copied!' : 'Click to copy'}
+                          {copied ? 'Payment copied!' : 'Click to copy'}
                         </Typography>
                       )}
                     </Box>
