@@ -9,7 +9,7 @@
     "moduleResolution": "node",
     "jsx": "react",
     "sourceMap": true,
-    "declaration": false,
+    "declaration": true,
     "esModuleInterop": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
@@ -27,5 +27,5 @@
     "isolatedModules": true,
     "noEmit": true
   },
-  "include": ["src/**/*", "lib/**/*"],
+  "include": ["src", "lib/**/*"],
 }
