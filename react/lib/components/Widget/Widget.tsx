@@ -10,7 +10,7 @@ import {
 import React, { useEffect, useMemo, useState } from 'react';
 import copy from 'copy-to-clipboard';
 import QRCode, { BaseQRCodeProps } from 'qrcode.react';
-import config from '../../../paybutton-config.json';
+import config from '../../config.json';
 
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
 import {
@@ -65,6 +65,7 @@ export interface WidgetProps {
   newTxs?: Transaction[]; // function parent WidgetContainer passes down to be updated
   wsBaseUrl?: string;
   apiBaseUrl?: string;
+  loading?: boolean;
 }
 
 interface StyleProps {
@@ -462,7 +463,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         }),
       );
     } catch (err) {
-      setErrorMsg(err.message);
+      setErrorMsg((err as Error).message);
     }
   }, [props.opReturn, paymentId, disablePaymentId]);
 

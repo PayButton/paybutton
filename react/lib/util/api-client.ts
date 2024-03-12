@@ -1,7 +1,7 @@
 import axios from 'axios';
 import _ from 'lodash';
 import { Socket } from 'socket.io-client'
-import config from '../../paybutton-config.json'
+import config from '../config.json'
 import { isValidCashAddress, isValidXecAddress } from './address';
 
 export const getAddressDetails = async (

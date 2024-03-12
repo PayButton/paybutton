@@ -8,15 +8,17 @@
     "type": "git",
     "url": "https://github.com/PayButton/paybutton.git"
   },
+  "type": "module",
+  "files": [
+    "dist"
+  ],
   "main": "dist/index.js",
-  "module": "dist/index.modern.js",
-  "source": "index.tsx",
-  "typings": "lib/typings.d.ts",
+  "source": "lib/main.tsx",
   "engines": {
     "node": ">=10"
   },
   "scripts": {
-    "build": "microbundle --jsx React.createElement --format modern,cjs",
+    "build": "tsc --p ./tsconfig-build.json && microbundle --jsx React.createElement --format modern,cjs",
     "lint": "eslint 'lib/**/*.{ts,tsx}' --fix",
     "prettier": "prettier --write 'lib/**/*.ts'",
     "dev": "concurrently yarn:watch yarn:storybook",
@@ -72,9 +74,6 @@
     "typescript": "^4.8.2",
     "yarn-run-all": "^3.1.1"
   },
-  "files": [
-    "dist"
-  ],
   "dependencies": {
     "@material-ui/core": "4.12.4",
     "@material-ui/lab": "4.0.0-alpha.61",
