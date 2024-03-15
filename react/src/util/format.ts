@@ -24,6 +24,7 @@ export const formatPrice = (
   return Intl.NumberFormat(undefined, {
     style: 'currency',
     currency: currencyType,
+    currencyDisplay: 'narrowSymbol',
     minimumFractionDigits: precision,
     maximumFractionDigits: precision,
   }).format(price);

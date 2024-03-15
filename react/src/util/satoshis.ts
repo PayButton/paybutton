@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js';
 import { formatPrice, formatBCH, formatXEC, DECIMALS } from './format';
-import { currency } from './api-client';
+
+import { currency, isCrypto } from './api-client';
 import { randomizeSatoshis } from './randomizeSats';
 
 export type currencyObject = {
@@ -17,17 +18,15 @@ export const getCurrencyObject = (
   let string = '';
   let float = 0;
 
-  if (currencyType === 'BCH' || currencyType === 'XEC') {
-    let newAmount = amount;
-    if (randomSatoshis) {
-      newAmount = randomizeSatoshis(amount, currencyType, randomSatoshis);
-    }
+  if (isCrypto(currencyType)) {
+    let newAmount = randomSatoshis ? randomizeSatoshis(amount, currencyType, randomSatoshis) : amount;
+    const decimals = DECIMALS[currencyType]
     const primaryUnit = new BigNumber(`${newAmount}`);
-    if (primaryUnit !== null && primaryUnit.c !== null) {
-      float = parseFloat(
-        new BigNumber(primaryUnit).toFixed(DECIMALS[currencyType]),
-      );
-      string = new BigNumber(`${primaryUnit}`).toFixed(DECIMALS[currencyType]);
+
+    if (primaryUnit?.c !== null) {
+      float = parseFloat(new BigNumber(primaryUnit).toFixed(decimals));
+      string = new BigNumber(`${primaryUnit}`).toFixed(decimals);
+
       if (currencyType === 'BCH') {
         string = formatBCH(string);
       } else if (currencyType === 'XEC') {
@@ -36,11 +35,11 @@ export const getCurrencyObject = (
     }
   } else {
     float = amount;
-    string = formatPrice(amount, currencyType, DECIMALS.FIAT);
+    string = formatPrice(amount, currencyType, DECIMALS.FIAT)
   }
 
   return {
-    float: float,
+    float,
     string,
     currency: currencyType,
   };
