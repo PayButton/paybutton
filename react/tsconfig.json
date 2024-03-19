@@ -27,5 +27,9 @@
     "isolatedModules": true,
     "noEmit": true
   },
-  "include": ["src", "lib/**/*"],
+  "include": ["lib", "src"],
+  "exclude": [
+    "node_modules",
+    "example"
+  ]
 }

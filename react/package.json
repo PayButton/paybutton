@@ -8,12 +8,12 @@
     "type": "git",
     "url": "https://github.com/PayButton/paybutton.git"
   },
-  "type": "module",
   "files": [
     "dist"
   ],
+  "module": "dist/index.modern.js",
   "main": "dist/index.js",
-  "source": "lib/main.tsx",
+  "source": "index.tsx",
   "engines": {
     "node": ">=10"
   },
