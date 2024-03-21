@@ -1,12 +1,12 @@
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react';
 import React from 'react';
-import BarChart, { BarChartProps } from './BarChart';
+import BarChart from './BarChart';
 
 export default {
   title: 'BarChart',
   component: BarChart,
   decorators: [
-    (Story: Story): React.ReactNode => (
+    (Story: StoryFn): React.ReactNode => (
       <div style={{ margin: 'auto', maxWidth: 400 }}>
         <Story />
       </div>
@@ -20,10 +20,9 @@ export default {
   },
 };
 
-const Template: Story<BarChartProps> = props => <BarChart {...props} />;
-
-export const Default = Template.bind({});
-Default.args = {
-  value: 34,
-  color: '#4bc846',
+export const Default = {
+  args: {
+    value: 34,
+    color: '#4bc846',
+  },
 };

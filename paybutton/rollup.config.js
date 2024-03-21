@@ -13,10 +13,14 @@ export default ( env ) => ({
   makeAbsoluteExternalsRelative: true,
 	preserveEntrySignatures: 'strict',
   input: 'src/index.tsx',
-  output: {
+  output:{
+    globals: {
+      react: 'React',
+      'react-dom': 'ReactDom'
+    },
     file: 'dist/paybutton.js',
     name: 'PayButton',
-    esModule: true,
+    format: 'umd',
     generatedCode: {
       reservedNamesAsProps: false
     },
@@ -48,6 +52,11 @@ export default ( env ) => ({
     nodePolyfills(),
     json(),
     typescript({ compilerOptions: {lib: ["es5", "es6", "dom", "esnext"], target: "esnext"}}),
-    ],
-    external: ['@types/currency-formatter', 'currency-formatter'],
-  });
+  ],
+  external: [
+    '@types/currency-formatter', 
+    'currency-formatter', 
+    'react', 
+    'react-dom',
+  ],
+});

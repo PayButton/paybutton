@@ -1,8 +1,8 @@
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react';
 import React from 'react';
 
 import { ThemeName } from '../../themes';
-import Widget, { WidgetProps } from './Widget';
+import Widget from './Widget';
 
 import { to } from '../../../.storybook/default-args';
 
@@ -10,7 +10,7 @@ export default {
   title: 'Widget',
   component: Widget,
   decorators: [
-    (Story: Story): React.ReactNode => (
+    (Story: StoryFn): React.ReactNode => (
       <div style={{ margin: 'auto', maxWidth: 400 }}>
         <Story />
       </div>
@@ -28,47 +28,51 @@ export default {
   },
 };
 
-const Template: Story<WidgetProps> = props => <Widget {...props} />;
-
-export const Default = Template.bind({});
-Default.args = {};
-
-export const Success = Template.bind({});
-Success.args = {
-  success: true,
+export const Default = {
+  args: {},
 };
 
-export const Loading = Template.bind({});
-Loading.args = {
-  loading: true,
+export const Success = {
+  args: {
+    success: true,
+  },
 };
 
-export const OrangeTheme = Template.bind({});
-OrangeTheme.args = {
-  theme: ThemeName.ORANGE,
+export const Loading = {
+  args: {
+    loading: true,
+  },
 };
 
-export const CustomTheme = Template.bind({});
-CustomTheme.args = {
-  theme: {
-    palette: {
-      primary: '#d05050',
-      secondary: '#bee',
-      tertiary: '#084',
-      logo: '#404',
+export const OrangeTheme = {
+  args: {
+    theme: ThemeName.ORANGE,
+  },
+};
+
+export const CustomTheme = {
+  args: {
+    theme: {
+      palette: {
+        primary: '#d05050',
+        secondary: '#bee',
+        tertiary: '#084',
+        logo: '#404',
+      },
     },
   },
 };
 
-export const WithGoal = Template.bind({});
-WithGoal.args = {
-  goalAmount: 100,
-  theme: {
-    palette: {
-      primary: '#d05050',
-      secondary: '#bee',
-      tertiary: '#084',
-      logo: '#404',
+export const WithGoal = {
+  args: {
+    goalAmount: 100,
+    theme: {
+      palette: {
+        primary: '#d05050',
+        secondary: '#bee',
+        tertiary: '#084',
+        logo: '#404',
+      },
     },
   },
 };
