@@ -66,6 +66,7 @@ export interface WidgetProps {
   wsBaseUrl?: string;
   apiBaseUrl?: string;
   loading?: boolean;
+  hoverText?: string;
 }
 
 interface StyleProps {
@@ -148,6 +149,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     newTxs,
     apiBaseUrl,
     wsBaseUrl,
+    hoverText = Button.defaultProps.hoverText
   } = Object.assign({}, Widget.defaultProps, props);
 
   const [loading, setLoading] = useState(true);
@@ -647,6 +649,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
             <Box pt={2} flex={1}>
               <ButtonComponent
                 text={widgetButtonText}
+                hoverText={hoverText}
                 onClick={handleButtonClick}
                 disabled={disabled}
                 animation={animation}
