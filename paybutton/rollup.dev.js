@@ -1,4 +1,3 @@
-import html from '@rollup/plugin-html';
 import livereload from 'rollup-plugin-livereload';
 import serve from 'rollup-plugin-serve';
 
