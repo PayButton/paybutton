@@ -32,5 +32,5 @@
     - [Getting Started](/?id=getting-started)
     - [Setup Development](/?id=setup-development-environment)
     - [Starting Storybook](/?id=test-ui-components-with-storybook)
-    - [Documentation](/?id=website-documentation)
+    - [Documentation Website](/?id=starting-documentation-website)
   - [Donate](/?id=donate)

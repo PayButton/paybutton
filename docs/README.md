@@ -914,7 +914,7 @@ yarn build
 3. You can now incorporate the `bundle` found at `paybutton/dist/paybutton.js` into your local website.
 
 
-### Setup development environment
+### Setup Development Environment
 
 1. Start development server
 
@@ -929,7 +929,7 @@ yarn dev
 4. Changes in the demo page should reflect in the server automatically
 
 
-### Test UI components with Storybook
+### Test UI Components with Storybook
 
 1. Run docker container to start storybook
 
@@ -943,10 +943,14 @@ docker-compose up
 
 
 
-### Website / Documentation
+### Starting Documentation Website
 
-1. `yarn start:docs`
-3. Site will be running on `localhost:3001`.
+1. Start documentation website local server
+```
+  yarn start:docs
+```
+2. Site will be avaiable on `localhost:3001`
+3. You can update the documentation by modifying the file `docs/README.md`
 
 ## Donate
 
