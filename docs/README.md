@@ -897,21 +897,51 @@ PayButton is a community-driven open-source initiative. Contributions from the c
 
 ## Developer Quick Start
 
-### Build
+### Getting Started
 
-1. `git clone https://github.com/PayButton/paybutton.git`
-2. `cd paybutton && yarn build`
+1. Clone the repository:
 
-### Starting Storybook
+```
+git clone https://github.com/PayButton/paybutton.git
 
-1. `docker-compose up`
-2. Wait for storybook to initialize.
-3. Open `http://localhost:6006`.
+```
+2. Navigate to project folder and build the project:
 
-### Starting Rollup
+```
+yarn build
 
-1. `yarn start:rollup`
-3. Site will be running on `localhost:10001`.
+```
+3. You can now incorporate the `bundle` found at `paybutton/dist/paybutton.js` into your local website.
+
+
+### Setup development environment
+
+1. Start development server
+
+```
+yarn dev
+```
+
+2. View site on `localhost:10001`
+
+3. You can modify the demo page in `paybutton/dev/demo/index.html`
+
+4. Changes in the demo page should reflect in the server automatically
+
+
+### Test UI components with Storybook
+
+1. Run docker container to start storybook
+
+```
+docker-compose up
+
+```
+
+2. Wait for `storybook` to initialize
+3. Open `http://localhost:6006` and you should be able to test the components in storybook
+
+
 
 ### Website / Documentation
 
