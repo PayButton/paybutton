@@ -3,6 +3,7 @@
   "version": "3.0.0",
   "description": "The easiest way to accept eCash online",
   "main": "dist/paybutton.js",
+  "type": "module",
   "dependencies": {
     "camelcase": "^8.0.0",
     "preact": "^10.10.0"
@@ -44,7 +45,7 @@
   ],
   "license": "MIT",
   "resolutions": {
-    "@types/react": "^18.2.64",
+    "@types/react": "^18.2.56",
     "@types/react-dom": "^18.2.19",
     "readable-stream": "^3.5.0"
   }

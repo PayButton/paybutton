@@ -1,6 +1,6 @@
 import React from "react";
 import { to } from "../.storybook/default-args";
-import { PayButton } from "../lib/components";
+import { PayButton } from "../lib/main";
 
 function App() {
   return (

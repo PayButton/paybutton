@@ -1,19 +1,16 @@
 {
   "compilerOptions": {
-    "target": "es2020",
-    "module": "commonjs",
-    "lib": ["dom", "esnext"],
-    "paths": {
-      "react": ["./node_modules/preact/compat/"],
-      "react-dom": ["./node_modules/preact/compat/"]
-    },
+    "target": "esnext",
+    "module": "esnext",
+    "lib": [ "es5", "es6", "es2020", "esnext", "dom", "DOM.Iterable"],
     "jsx": "react-jsx",
     "jsxImportSource": "preact",
+    
     "isolatedModules": false,
-    "strict": true,
+    "strict": true,               
     "esModuleInterop": true,
-    "skipLibCheck": true,
+    "skipLibCheck": true,         
     "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
+    "moduleResolution": "node",
   }
 }

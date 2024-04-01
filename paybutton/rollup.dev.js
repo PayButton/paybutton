@@ -38,6 +38,7 @@ function template ( { attributes, title, bundle } ) {
             success-text="Thank you!!!!"
           >
           </div>
+          <h1>hey<h1/>
           <br />
           <div class="paybutton" to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp" animation="invert" palette='{ "primary": "#26a", "secondary": "#dff", "dark": "#3a6" }'></div>
           <br />
@@ -49,9 +50,6 @@ function template ( { attributes, title, bundle } ) {
           <br />
           <div class="paybutton-widget" to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp" amount="50000" currency="SAT" detect-payment="true"></div>
           <br />
-          <div class="dialogbutton">
-              <button onclick="PayButton.openDialog({ to: 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp' })">open payment dialog</button>
-          </div>
           <br />
         </div>
       </body>

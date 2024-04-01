@@ -2,7 +2,7 @@ import { Button as MuiButton } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 
 import { CreateCSSProperties } from '@mui/styles';
-import React, { useRef, useState, useLayoutEffect } from 'react';
+import  { useRef, useState, useLayoutEffect } from 'react';
 
 import { Theme, ThemeName, useTheme } from '../../themes';
 
@@ -73,7 +73,7 @@ const useStyles = makeStyles({
   }),
 });
 
-export const Button = (props: ButtonProps): React.ReactElement => {
+export function Button(props: ButtonProps) {
   const { animation, text, hoverText, disabled } = Object.assign(
     {},
     Button.defaultProps,

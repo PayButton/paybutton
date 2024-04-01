@@ -1,5 +1,11 @@
 {
   "name": "paybutton",
+  "packageManager": "yarn@4.1.0",
+  "private": true,
+  "workspaces": [
+    "react",
+    "paybutton"
+  ],
   "version": "3.0.0",
   "description": "The easiest way to accept eCash online",
   "author": "Blockchain Ventures Corp.",

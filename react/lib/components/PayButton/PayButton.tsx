@@ -36,7 +36,7 @@ export interface PayButtonProps extends ButtonProps {
   apiBaseUrl?: string;
 }
 
-export const PayButton = (props: PayButtonProps): React.ReactElement => {
+export function PayButton(props: PayButtonProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [disabled, setDisabled] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');

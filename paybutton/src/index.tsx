@@ -125,7 +125,7 @@ function openDialog(props: PaymentDialogProps): void {
     }
     container.remove()
   }
-  // render(<PaymentDialog container={container} onClose={onClose} {...props} />, container)
+  render(<PaymentDialog container={container} onClose={onClose} {...props} />, container)
 }
 
 function renderButtons(paybuttonExists: boolean): void {
@@ -210,7 +210,7 @@ function findAndRender<T>(className: string, Component: React.ComponentType<any>
 
       //    el.classList.remove(className);
 
-      // render(<Component {...props} />, el)
+      //render(<Component {...props} />, el)
     });
 }
 
@@ -230,15 +230,13 @@ export default {
   render: (el: HTMLElement, props: PayButtonProps) => {
     if (el !== null) {
       validateJSProps(props)
-      const payButtonElement = React.createElement(PayButton, {...props});
-
-      render(payButtonElement, el)
+      render(<PayButton {...props} />, el)
     }
   },
   renderWidget: (el: HTMLElement, props: WidgetProps) => {
     if (el !== null) {
       validateJSProps(props)
-     // render(<Widget {...props} />, el)
+      //render(<Widget {...props} />, el)
     }
   },
   openDialog: (props: PaymentDialogProps) => openDialog(props),
