@@ -19,6 +19,7 @@ export interface PaymentDialogProps extends ButtonProps {
   currencyObj?: currencyObject;
   cryptoAmount?: string;
   price?: number;
+  hoverText?: string;
   setCurrencyObj: Function;
   theme?: ThemeName | Theme;
   successText?: string;
@@ -70,6 +71,7 @@ export const PaymentDialog = (
     container,
     wsBaseUrl,
     apiBaseUrl,
+    hoverText
   } = Object.assign({}, PaymentDialog.defaultProps, props);
 
   const handleWidgetClose = (): void => {
@@ -138,6 +140,7 @@ export const PaymentDialog = (
           goalAmount={goalAmount}
           wsBaseUrl={wsBaseUrl}
           apiBaseUrl={apiBaseUrl}
+          hoverText={hoverText}
           foot={
             success && (
               <ButtonComponent

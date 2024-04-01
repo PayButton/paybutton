@@ -221,6 +221,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
         onClose={handleCloseDialog}
         wsBaseUrl={wsBaseUrl}
         apiBaseUrl={apiBaseUrl}
+        hoverText={hoverText}
       />
       {errorMsg && (
         <p
