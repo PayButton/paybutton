@@ -99,6 +99,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
       wsBaseUrl,
       apiBaseUrl,
       successText,
+      hoverText,
       ...widgetProps
     } = props;
 
@@ -240,6 +241,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
           wsBaseUrl={wsBaseUrl}
           apiBaseUrl={apiBaseUrl}
           successText={successText}
+          hoverText={hoverText}
         />
       </React.Fragment>
     );
