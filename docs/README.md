@@ -320,7 +320,7 @@ currency = "USD"
 
 > **The ‘text’ parameter specifies the default text displayed on the button.**
 
-?> This parameter is optional. Default value is ‘Donate’. Possible values are any string.
+?> This parameter is optional. Default value is ‘Donate’. Possible values are any string. It has no effect on the widget.
 
 **Example:**
 <!-- tabs:start -->
