@@ -11,5 +11,8 @@
     "serve": "npx docsify serve --port 3001"
   },
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "resolutions": {
+    "docsify": "^4.13.1"
+  }
 }
