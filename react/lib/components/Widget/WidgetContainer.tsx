@@ -156,7 +156,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
   
         if(shouldTriggerOnSuccess(transaction, paymentId, cryptoAmount, opReturn)){
           
-          if (sound && !hideToasts) {
+          if (sound) {
             txSound.play().catch(); 
           }
           if (!hideToasts){
