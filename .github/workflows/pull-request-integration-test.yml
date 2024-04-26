@@ -1,0 +1,21 @@
+name: Run tests
+on:
+  pull_request:
+    branches:
+      - master
+jobs:
+  test:
+    name: Run unittests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Install base dependencies
+        run: yarn
+      - name: Run react unittests
+        run: |
+          cd react
+          yarn
+          yarn test
