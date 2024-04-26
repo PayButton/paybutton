@@ -93,11 +93,6 @@
     "ts-jest": "^29.1.1",
     "xecaddrjs": "^0.0.1"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
   "lint-staged": {
     "lib/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
       "eslint --fix",
