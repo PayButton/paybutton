@@ -13,9 +13,12 @@ jobs:
         with:
           fetch-depth: 0
       - name: Install base dependencies
-        run: yarn
+        run: |
+          yarn
+          cd react
+          yarn
+
       - name: Run react unittests
         run: |
           cd react
-          yarn
           yarn test
