@@ -11,6 +11,29 @@ import {
 } from './types';
 import { isFiat } from './currency';
 
+export const shouldTriggerOnSuccess = (
+  transaction: Transaction,
+  thisPaymentId?: string,
+  cryptoAmount?: string,
+  thisOpReturn?: string,
+) => {
+  const { amount, paymentId, message } = transaction;
+
+  const formattedTxAmount = resolveNumber(amount);
+  const formattedAmountSet = cryptoAmount ? resolveNumber(cryptoAmount) : false;
+  const formattedTxOpReturn = JSON.stringify(message);
+  const formattedOpReturn = JSON.stringify(thisOpReturn);
+
+  const isAmountValid = formattedAmountSet
+    ? formattedTxAmount.isEqualTo(formattedAmountSet)
+    : true;
+  const isPaymentIdValid = thisPaymentId ? thisPaymentId === paymentId : true;
+  const isOpReturnValid = thisOpReturn
+    ? formattedOpReturn === formattedTxOpReturn
+    : true;
+
+  return isAmountValid && isPaymentIdValid && isOpReturnValid;
+};
 export const getAddressDetails = async (
   address: string,
   rootUrl = config.apiBaseUrl,
