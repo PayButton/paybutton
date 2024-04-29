@@ -1,10 +1,4 @@
-import { formatPrice, formatBCH, formatXEC } from './format';
-import { DECIMALS } from './constants'
-
-
-import { isCrypto } from './currency';
-import { randomizeSatoshis } from './randomizeSats';
-import { Currency, CurrencyObject } from './types';
+import { formatPrice, formatBCH, formatXEC, DECIMALS, Currency, isCrypto, randomizeSatoshis, CurrencyObject } from './index';
 import { resolveNumber } from './number';
 
 

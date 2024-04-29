@@ -113,17 +113,19 @@ export interface EncodeOpReturnParams {
 export function encodeOpReturnProps({
   opReturn,
   disablePaymentId,
-  paymentId
+  paymentId,
 }: EncodeOpReturnParams): string {
   if (opReturn === undefined) {
     opReturn = '';
   }
 
   const dataPushdata = getDataPushdata(opReturn, disablePaymentId);
-  if (paymentId === undefined || disablePaymentId) {
-    paymentId = ''
+  if (paymentId === undefined && !disablePaymentId) {
+    paymentId = '';
   }
-  const pushDataPrefixedPaymentId = prependPaymentIdWithPushdata(paymentId ?? '');
+  const pushDataPrefixedPaymentId = prependPaymentIdWithPushdata(
+    paymentId ?? '',
+  );
   return (
     OP_RETURN_PREFIX_PUSHDATA +
     OP_RETURN_PREFIX +
