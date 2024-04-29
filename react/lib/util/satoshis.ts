@@ -1,4 +1,4 @@
-import { formatPrice, formatBCH, formatXEC, DECIMALS, Currency, isCrypto, randomizeSatoshis, CurrencyObject } from './index';
+import { formatPrice, formatBCH, formatXEC, DECIMALS, Currency, isCrypto, randomizeSatoshis, CurrencyObject, resolveNumber } from './index';
 
 
 export const getCurrencyObject = (

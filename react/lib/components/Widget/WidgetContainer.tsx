@@ -3,26 +3,10 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import successSound from '../../assets/success.mp3.json';
 
-import {
-  Transaction,
-  isCrypto,
-  currency,
-  isValidCurrency,
-  isFiat,
-  getFiatPrice,
-  Currency,
-  CurrencyObject,
-  Transaction,
-  generatePaymentId,
-  getCurrencyTypeFromAddress,
-  isCrypto,
-  isFiat,
-  isGreaterThanZero,
-  isValidCurrency,
-  resolveNumber
-} from '../../util';
 
 import Widget, { WidgetProps } from './Widget';
+import { Currency } from 'currency-formatter';
+import { CurrencyObject, Transaction, getCurrencyTypeFromAddress, isValidCurrency, isCrypto, isAddressSupported, compareAddresses, getFiatPrice, isFiat, resolveNumber } from '../../util';
 
 export interface WidgetContainerProps
   extends Omit<WidgetProps, 'success' | 'setNewTxs' | 'setCurrencyObject'> {
@@ -84,8 +68,8 @@ const withSnackbar =
         message
       } = transaction;
       
-        const formattedTxAmount = new BigNumber(amount);
-        const formattedAmountSet = cryptoAmount ? new BigNumber(cryptoAmount) : false;
+        const formattedTxAmount = resolveNumber(amount);
+        const formattedAmountSet = cryptoAmount ? resolveNumber(cryptoAmount) : false;
         const formattedTxOpReturn = JSON.stringify(message);
         const formattedOpReturn = JSON.stringify(thisOpReturn);
 
@@ -147,20 +131,19 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
 
     const handlePayment = useCallback(
       (transaction: Transaction) => {
-       const { address, amount } = transaction
+        const { address, amount } = transaction;
         if(!isAddressSupported(address)||
             !compareAddresses(to, address)){ 
-            console.log(`Address is not valid. Transaction address: ${address}, destination address: ${to}`, address);
-            return;
-        }          
-  
-        if(shouldTriggerOnSuccess(transaction, paymentId, cryptoAmount, opReturn)){
-          
+          console.log(`Address is not valid. Transaction address: ${address}, destination address: ${to}`, address,)
+          return;
+        }
+
+        if (shouldTriggerOnSuccess(transaction, paymentId, cryptoAmount, opReturn)) {
           if (sound) {
-            txSound.play().catch(); 
+            txSound.play().catch();
           }
-          if (!hideToasts){
-            const toastSuccessText =  successText ? successText + ' | ' : ''
+          if (!hideToasts) {
+            const toastSuccessText = successText ? successText + ' | ' : ''
             enqueueSnackbar(
               `${ toastSuccessText }Received ${amount} ${getCurrencyTypeFromAddress(to)}`,
               snackbarOptions,
@@ -211,8 +194,8 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
 
     useEffect(() => {
       newTxs?.map(tx => {
-        if(tx.confirmed === false &&
-          zero.isLessThan(new BigNumber(tx.amount))){
+        if (tx.confirmed === false &&
+          isLessThanZero(tx.amount)){
             handlePayment(tx);
             setNewTxs([])
         }
