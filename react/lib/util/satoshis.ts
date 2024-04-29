@@ -37,7 +37,6 @@ export const getCurrencyObject = (
   };
 };
 
-
 export default {
   getCurrencyObject,
 };

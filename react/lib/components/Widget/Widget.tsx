@@ -19,18 +19,25 @@ import {
   getCurrencyTypeFromAddress,
 } from '../../util/address';
 import { formatPrice } from '../../util/format';
-import { DECIMALS } from '../../util/constants';
 import { Button, animation } from '../Button/Button';
 import BarChart from '../BarChart/BarChart';
 
+import { getCurrencyObject } from '../../util/satoshis';
+import {
+  Currency,
+  getAddressBalance,
+  getAddressDetails,
+  isFiat,
+  Transaction,
+  getCashtabProviderStatus,
+  CryptoCurrency,
+  DECIMALS,
+  CurrencyObject
+} from '../../util';
+import { setListener } from '../../util/socket';
 import PencilIcon from '../../assets/edit-pencil';
 import io, { Socket } from 'socket.io-client';
 import { encodeOpReturnProps } from '../../util/opReturn';
-import { getAddressDetails, getAddressBalance, getCashtabProviderStatus } from '../../util/api-client';
-import { getCurrencyObject } from '../../util/satoshis';
-import { Currency, CurrencyObject, Transaction, CryptoCurrency } from '../../util/types';
-import { setListener } from '../../util/socket';
-import { isFiat } from '../../util/currency';
 
 type QRCodeProps = BaseQRCodeProps & { renderAs: 'svg' };
 

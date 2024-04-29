@@ -2,16 +2,19 @@ import { OptionsObject, SnackbarProvider, useSnackbar } from 'notistack';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import successSound from '../../assets/success.mp3.json';
+
 import {
   getCurrencyTypeFromAddress,
 } from '../../util/address';
 import {
   getFiatPrice,
-} from '../../util/api-client';
+  Currency,
+  CurrencyObject,
+  Transaction
+} from '../../util';
 
 import Widget, { WidgetProps } from './Widget';
 import { generatePaymentId } from '../../util/opReturn';
-import { Currency, CurrencyObject, Transaction } from '../../util/types';
 import { isGreaterThanZero, resolveNumber } from '../../util/number';
 import { isCrypto, isFiat, isValidCurrency } from '../../util/currency';
 

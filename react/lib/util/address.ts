@@ -33,6 +33,24 @@ export const getCurrencyTypeFromAddress = (address: string): CryptoCurrency => {
   }
 };
 
+export const isAddressSupported = (address: string): boolean => {
+  return xecaddr.isValidAddress(address);
+};
+
+export const compareAddresses = (
+  addressA: string,
+  addressB: string,
+): boolean => {
+  const prefixes = ['bitcoincash', 'bchtest', 'bchreg', 'ecash', 'ectest'];
+  prefixes.forEach(prefix =>
+    [addressA, addressB].forEach(a =>
+      a.replace(prefix, '').toLocaleUpperCase(),
+    ),
+  );
+
+  return addressA === addressB;
+};
+
 export default {
   isValidCashAddress,
   isValidXecAddress,
