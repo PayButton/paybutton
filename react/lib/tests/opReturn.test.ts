@@ -133,20 +133,16 @@ describe('encodeOpReturnProps', () => {
   // protocol pushdata + protocol + version byte
   const allResultsPrefix = '04' + '50415900' + '00';
   const paymentIdDigits = 18;
-  const paymentIdRegex = /^08[0-9a-fA-F]{16}$/;
 
   // REGION: undefined data
   it('Encodes undefined data, undefined paymentId, paymentId enabled', () => {
     const input: EncodeOpReturnParams = {
       opReturn: undefined,
-      paymentId: undefined,
+      paymentId: undefined, // 16 chars + pushdata
       disablePaymentId: false,
     };
     const fullResult = encodeOpReturnProps(input);
-    const resultData = fullResult?.slice(0, -paymentIdDigits);
-    expect(resultData).toBe(allResultsPrefix + '00'); // 00 is pushdata for no data
-    const resultPaymentId = fullResult?.slice(-paymentIdDigits);
-    expect(resultPaymentId).toMatch(paymentIdRegex);
+    expect(fullResult).toBe(allResultsPrefix + '00' + '00'); // 00 as pushdata for no data and 00 as pushdata for no paymentId
   });
   it('Encodes undefined data, pre-determined paymentId, paymentId enabled', () => {
     const input: EncodeOpReturnParams = {
@@ -188,10 +184,7 @@ describe('encodeOpReturnProps', () => {
       disablePaymentId: false,
     };
     const fullResult = encodeOpReturnProps(input);
-    const resultData = fullResult?.slice(0, -paymentIdDigits);
-    expect(resultData).toBe(allResultsPrefix + '00'); // 00 is pushdata for no data
-    const resultPaymentId = fullResult?.slice(-paymentIdDigits);
-    expect(resultPaymentId).toMatch(paymentIdRegex);
+    expect(fullResult).toBe(allResultsPrefix + '00' + '00'); // 00 as pushdata for no data and 00 as pushdata for no paymentId
   });
   it('Encodes empty string data, pre-determined paymentId, paymentId enabled', () => {
     const input: EncodeOpReturnParams = {
@@ -233,14 +226,12 @@ describe('encodeOpReturnProps', () => {
       disablePaymentId: false,
     };
     const fullResult = encodeOpReturnProps(input);
-    const resultData = fullResult?.slice(0, -paymentIdDigits);
-    expect(resultData).toBe(
+    expect(fullResult).toBe(
       allResultsPrefix +
         '10' + // 16 in hex
-        '6d79437573746f6d5573657244617461',
+        '6d79437573746f6d5573657244617461' +
+        '00' // pushdata for no paymentId
     );
-    const resultPaymentId = fullResult?.slice(-paymentIdDigits);
-    expect(resultPaymentId).toMatch(paymentIdRegex);
   });
   it('Encodes custom string, pre-determined paymentId, paymentId enabled', () => {
     const input: EncodeOpReturnParams = {
@@ -297,15 +288,13 @@ describe('encodeOpReturnProps', () => {
       disablePaymentId: false,
     };
     const fullResult = encodeOpReturnProps(input);
-    const resultData = fullResult?.slice(0, -paymentIdDigits);
-    expect(resultData).toBe(
+    expect(fullResult).toBe(
       allResultsPrefix +
         '4ccd' + // 4c because pushData > 75 bytes; cd is 205 in hex
         'f09f9882'.repeat(51) +
-        '78',
+        '78' +
+        '00' // pushdata for no paymentId
     );
-    const resultPaymentId = fullResult?.slice(-paymentIdDigits);
-    expect(resultPaymentId).toMatch(paymentIdRegex);
   });
   it('Encodes custom data at limit size of 205, pre-determined paymentId, paymentId enabled', () => {
     const input: EncodeOpReturnParams = {
