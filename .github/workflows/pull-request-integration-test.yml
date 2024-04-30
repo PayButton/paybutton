@@ -18,7 +18,7 @@ jobs:
           cd react
           yarn
 
-      - name: Run react unittests
+      - name: Run react unit tests
         run: |
           cd react
           yarn test
