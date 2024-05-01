@@ -117,6 +117,12 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
 
     const [newTxs, setNewTxs] = useState<Transaction[] | undefined>();
     const addrType = getCurrencyTypeFromAddress(to);
+
+    const txSound = useMemo(
+      (): HTMLAudioElement => new Audio(successSound.base64),
+      [],
+    );
+
     if (
       !isValidCurrency(currency) ||
       (isCrypto(currency) && addrType !== currency)
