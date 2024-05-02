@@ -53,7 +53,7 @@ describe('API Client Util Tests', () => {
             timestamp: 0,
             address: ''
         };
-        expect(shouldTriggerOnSuccess(transaction, '123', '100.00', 'test opReturn')).toBe(false);
+        expect(shouldTriggerOnSuccess(transaction, '123', '101.00', 'test opReturn')).toBe(false);
     });
 
     it('should ignore amount validation when amount is not set', () => {
