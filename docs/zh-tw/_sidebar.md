@@ -10,7 +10,7 @@
   - [text](/zh-tw/?id=text)
   - [hover-text](/zh-tw/?id=hover-text)
   - [goal-amount](/zh-tw/?id=goal-amount)
-  - [editable](/zh-tw/?id=editable)
+  - [can-edit](/zh-tw/?id=can-edit)
   - [theme](/zh-tw/?id=theme)
   - [animation](/zh-tw/?id=animation)
   - [success-text](/zh-tw/?id=success-text)

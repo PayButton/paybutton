@@ -10,7 +10,6 @@
     "dev": "cd paybutton && yarn dev",
     "test": "cd react && yarn test",
     "test:coverage": "cd react && yarn test:coverage",
-    "dev:refresh": "yarn build:react && yarn dev",
     "build:react": "cd react && yarn && yarn build",
     "build:paybutton": "cd paybutton && yarn && yarn build",
     "start:paybutton": "cd paybutton && yarn && yarn start",

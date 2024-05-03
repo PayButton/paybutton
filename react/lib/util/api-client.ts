@@ -10,6 +10,7 @@ import {
   Currency,
 } from './types';
 import { isFiat } from './currency';
+import { resolveNumber } from './number';
 
 export const shouldTriggerOnSuccess = (
   transaction: Transaction,
@@ -30,7 +31,7 @@ export const shouldTriggerOnSuccess = (
   const isPaymentIdValid = thisPaymentId ? thisPaymentId === paymentId : true;
   const isOpReturnValid = thisOpReturn
     ? formattedOpReturn === formattedTxOpReturn
-    : true;
+    : (message === '');
 
   return isAmountValid && isPaymentIdValid && isOpReturnValid;
 };

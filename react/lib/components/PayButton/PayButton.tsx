@@ -56,6 +56,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
   const priceRef = useRef<number>(price);
   const cryptoAmountRef = useRef<string | undefined>(cryptoAmount);
 
+
   const {
     to,
     opReturn,
@@ -157,11 +158,13 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
     }
   }, [dialogOpen, props.amount, currency, randomSatoshis]);
 
-  const getPrice = useCallback(async () => {
-    const price = await getFiatPrice(currency, to, apiBaseUrl);
-    if (price !== null) 
-      setPrice(price);
-}, [currency, to, apiBaseUrl]);
+  const getPrice = useCallback(
+    async () => {
+      const price = await getFiatPrice(currency, to, apiBaseUrl)
+      if (price !== null) setPrice(price)
+    }
+    , [currency, to, apiBaseUrl]
+  );
 
   useEffect(() => {
     (async () => {

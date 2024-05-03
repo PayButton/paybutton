@@ -7,7 +7,7 @@ global.fetch = jest.fn();
 
 describe('API Client Util Tests', () => {
   describe('shouldTriggerOnSuccess', () => {
-    it('should return true when all conditions match', () => {
+    it('returns true when all conditions match', () => {
       const transaction:Transaction = {
           amount: '100.00',
           paymentId: '123',
@@ -20,7 +20,31 @@ describe('API Client Util Tests', () => {
     
     });
 
-    it('should return false when the payment ID does not match', () => {
+    it('returns true when tx paymentId is empty and component paymentId is undefined', () => {
+        const transaction:Transaction = {
+            amount: '101.00',
+            paymentId: '',
+            message: 'test opReturn message',
+            hash: '',
+            timestamp: 0,
+            address: ''
+        };
+        expect(shouldTriggerOnSuccess(transaction, undefined, '101.00', 'test opReturn message')).toBe(true);
+    });
+
+    it('returns true when tx paymentId is empty and component paymentId is empty', () => {
+        const transaction:Transaction = {
+            amount: '101.00',
+            paymentId: '',
+            message: 'test opReturn message',
+            hash: '',
+            timestamp: 0,
+            address: ''
+        };
+        expect(shouldTriggerOnSuccess(transaction, '', '101.00', 'test opReturn message')).toBe(true);
+    });
+
+    it('returns false when the payment ID does not match', () => {
       const transaction:Transaction = {
           amount: '100.00',
           paymentId: '123',
@@ -32,7 +56,7 @@ describe('API Client Util Tests', () => {
       expect(shouldTriggerOnSuccess(transaction, '999', '100.00', 'test opReturn message')).toBe(false);
     });
     
-    it('should return false when crypto amounts do not match', () => {
+    it('returns false when crypto amounts do not match', () => {
         const transaction:Transaction = {
             amount: '101.00',
             paymentId: '123',
@@ -42,9 +66,9 @@ describe('API Client Util Tests', () => {
             address: ''
         };
         expect(shouldTriggerOnSuccess(transaction, '123', '100.00', 'test opReturn message')).toBe(false);
-    }); // todo - check if amount higher than the one requested is also valid
+    });
 
-    it('should return false when OpReturn data does not match', () => {
+    it('returns false when OpReturn data does not match', () => {
         const transaction:Transaction = {
             amount: '101.00',
             paymentId: '123',
@@ -80,7 +104,7 @@ describe('API Client Util Tests', () => {
         expect(shouldTriggerOnSuccess(transaction, undefined, '101.00', 'test opReturn')).toBe(true);
     });
 
-    it('should ignore opReturn validation when opReturn does not exists', () => {
+    it('should fail when there is a message but opReturn is not enabled', () => {
         const transaction:Transaction = {
             amount: '101.00',
             paymentId: '123',
@@ -89,7 +113,7 @@ describe('API Client Util Tests', () => {
             timestamp: 0,
             address: ''
         };
-        expect(shouldTriggerOnSuccess(transaction, '123', '101.00', undefined)).toBe(true);
+        expect(shouldTriggerOnSuccess(transaction, '123', '101.00', undefined)).toBe(false);
     });
   });
 });

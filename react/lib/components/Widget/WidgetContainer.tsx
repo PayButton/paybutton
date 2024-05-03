@@ -3,10 +3,22 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import successSound from '../../assets/success.mp3.json';
 
+import {
+  getFiatPrice,
+  Currency,
+  CurrencyObject,
+  Transaction,
+  generatePaymentId,
+  getCurrencyTypeFromAddress,
+  isCrypto,
+  isFiat,
+  isGreaterThanZero,
+  isValidCurrency,
+  resolveNumber,
+  shouldTriggerOnSuccess
+} from '../../util';
 
 import Widget, { WidgetProps } from './Widget';
-import { Currency } from 'currency-formatter';
-import { CurrencyObject, Transaction, getCurrencyTypeFromAddress, isValidCurrency, isCrypto, isAddressSupported, compareAddresses, getFiatPrice, isFiat, resolveNumber } from '../../util';
 
 export interface WidgetContainerProps
   extends Omit<WidgetProps, 'success' | 'setNewTxs' | 'setCurrencyObject'> {
@@ -121,30 +133,30 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
 
     const handlePayment = useCallback(
       (transaction: Transaction) => {
-        const { address, amount } = transaction;
-        if(!isAddressSupported(address)||
-            !compareAddresses(to, address)){ 
-          console.log(`Address is not valid. Transaction address: ${address}, destination address: ${to}`, address,)
-          return;
-        }
+        const { amount } = transaction;
 
         if (shouldTriggerOnSuccess(transaction, paymentId, cryptoAmount, opReturn)) {
           if (sound) {
-            txSound.play().catch();
+            txSound.play().catch(() => {});
           }
-          if (!hideToasts) {
-            const toastSuccessText = successText ? successText + ' | ' : ''
+          
+          const currencyTicker = getCurrencyTypeFromAddress(to);
+          const receivedAmount = resolveNumber(amount)
+          if (!hideToasts)
             enqueueSnackbar(
-              `${ toastSuccessText }Received ${amount} ${getCurrencyTypeFromAddress(to)}`,
+              `${
+                successText ? successText + ' | ' : ''
+              }Received ${receivedAmount} ${currencyTicker}`,
               snackbarOptions,
             );
-          }
 
           setSuccess(true);
           onSuccess?.(transaction);
         } else {
           onTransaction?.(transaction);
         }
+
+        setNewTxs([]);
       },
       [
         onSuccess,
@@ -156,8 +168,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
         cryptoAmount,
         successText,
         to,
-        paymentId,
-        opReturn
+        thisPaymentId
       ],
     );
 
@@ -177,13 +188,21 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
       }
     }, [currency, price]);
 
-
     useEffect(() => {
-      newTxs?.map(tx => {
-        if (tx.confirmed === false &&
-          isLessThanZero(tx.amount)){
-            handlePayment(tx);
-            setNewTxs([])
+      if (isFiat(currency) && price === undefined) {
+        (async () => {
+          getPrice();
+        })()
+      }
+    }, [currency, price]);
+
+    const handleNewTransaction = useCallback(
+      (tx: Transaction) => {
+        if (
+          tx.confirmed === false &&
+          isGreaterThanZero(resolveNumber(tx.amount))
+        ) {
+          handlePayment(tx);
         }
       },
       [handlePayment],

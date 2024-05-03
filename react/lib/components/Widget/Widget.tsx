@@ -1,5 +1,3 @@
-import React, { useEffect, useMemo, useState } from 'react';
-
 import {
   Box,
   CircularProgress,
@@ -9,10 +7,10 @@ import {
   TextField,
   Grid,
 } from '@material-ui/core';
-
+import React, { useEffect, useMemo, useState } from 'react';
 import copy from 'copy-to-clipboard';
 import QRCode, { BaseQRCodeProps } from 'qrcode.react';
-import io from 'socket.io-client';
+import io, { Socket } from 'socket.io-client';
 import PencilIcon from '../../assets/edit-pencil';
 import config from '../../config.json';
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
@@ -162,10 +160,10 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const [errorMsg, setErrorMsg] = useState('');
   const [goalText, setGoalText] = useState('');
   const [goalPercent, setGoalPercent] = useState(0);
+  const [socket, setSocket] = useState<Socket | undefined>(undefined);
   const [addressType, setAddressType] = useState<CryptoCurrency>(
     getCurrencyTypeFromAddress(to),
   );
-
   const [convertedCurrencyObj, setConvertedCurrencyObj] =
     useState<CurrencyObject | null>();
   const price = props.price ?? 0;
