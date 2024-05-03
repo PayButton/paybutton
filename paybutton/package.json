@@ -36,7 +36,6 @@
     "dev": "rollup -c rollup.dev.js -w --bundleConfigAsCjs",
     "build": "rollup -c rollup.prod.js --bundleConfigAsCjs"
   },
-  "author": "",
   "repository": {
     "type": "git",
     "url": "https://github.com/PayButton/paybutton.git"
