@@ -61,24 +61,6 @@ const withSnackbar =
         <Component {...props} />
       </SnackbarProvider>
     );
-    const shouldTriggerOnSuccess = (transaction: Transaction, thisPaymentId?: string, cryptoAmount?: string, thisOpReturn?:string) => {
-      const { 
-        amount, 
-        paymentId, 
-        message
-      } = transaction;
-      
-        const formattedTxAmount = resolveNumber(amount);
-        const formattedAmountSet = cryptoAmount ? resolveNumber(cryptoAmount) : false;
-        const formattedTxOpReturn = JSON.stringify(message);
-        const formattedOpReturn = JSON.stringify(thisOpReturn);
-
-        const isAmountValid = formattedAmountSet ? formattedTxAmount.isEqualTo(formattedAmountSet) : true;        
-        const isPaymentIdValid = thisPaymentId ? thisPaymentId === paymentId : true;
-        const isOpReturnValid = thisOpReturn ? formattedOpReturn === formattedTxOpReturn : true
-
-        return isAmountValid && isPaymentIdValid && isOpReturnValid
-    }
 
 export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
   withSnackbar((props): React.ReactElement => {
@@ -110,19 +92,21 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
       ...widgetProps
     } = props;
 
+    const [thisPaymentId, setThisPaymentId] = useState<string | undefined>();
     const [thisPrice, setThisPrice] = useState(0);
-
+    useEffect(() => {
+      if ((paymentId === undefined || paymentId === '') && !disablePaymentId) {
+        const newPaymentId = generatePaymentId(8);
+        setThisPaymentId(newPaymentId)
+      } else {
+        setThisPaymentId(paymentId)
+      }
+    }, [paymentId, disablePaymentId]);
     const [success, setSuccess] = useState(false);
     const { enqueueSnackbar } = useSnackbar();
 
     const [newTxs, setNewTxs] = useState<Transaction[] | undefined>();
     const addrType = getCurrencyTypeFromAddress(to);
-
-    const txSound = useMemo(
-      (): HTMLAudioElement => new Audio(successSound.base64),
-      [],
-    );
-
     if (
       !isValidCurrency(currency) ||
       (isCrypto(currency) && addrType !== currency)
@@ -167,6 +151,8 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
         onTransaction,
         enqueueSnackbar,
         hideToasts,
+        sound,
+        txSound,
         cryptoAmount,
         successText,
         to,
@@ -184,16 +170,10 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
     );
 
     useEffect(() => {
-      const fetchPrice = async () => {
-        if (price === undefined) {
-          await getPrice();
-        } else {
-          setThisPrice(price);
-        }
-      };
-
-      if (isFiat(currency) || price === undefined) {
-        fetchPrice();
+      if (price === undefined) {
+          getPrice();
+      } else {
+        setThisPrice(price)
       }
     }, [currency, price]);
 
@@ -205,8 +185,15 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
             handlePayment(tx);
             setNewTxs([])
         }
+      },
+      [handlePayment],
+    );
+
+    useEffect(() => {
+      newTxs?.map(tx => {
+        handleNewTransaction(tx);
       });
-    }, [newTxs]);
+    }, [newTxs, handleNewTransaction]);
 
     return (
       <React.Fragment>
@@ -216,7 +203,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
           amount={amount}
           setAmount={setAmount}
           opReturn={opReturn}
-          paymentId={paymentId}
+          paymentId={thisPaymentId}
           disablePaymentId={disablePaymentId}
           goalAmount={goalAmount}
           currency={currency}

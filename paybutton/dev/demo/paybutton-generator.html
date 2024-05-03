@@ -144,11 +144,12 @@
           :theme="paybuttonProps.theme"
           :animation="paybuttonProps.animation"
           :editable="paybuttonProps.editable"
+          :disable-payment-id="paybuttonProps.disablePaymentId"
           :random-satoshis="paybuttonProps.randomSatoshis"
           :hide-toasts="paybuttonProps.hideToasts"
           :disable-enforce-focus="paybuttonProps.disableEnforceFocus"
-          :on-success="paybuttonProps.onSuccess"
-          :on-transaction="paybuttonProps.onTransaction">
+          :on-success="mySuccessFuction"
+          :on-transaction="myTransactionFuction">
         </div>
       </div>
     </div>
@@ -159,6 +160,7 @@
       const myTransactionFuction = (tx) => (console.log("Transaction", {tx}))
       createApp({
         setup() {
+          //todo - add the missing props once it is fixed
           const paybuttonProps = reactive({
             to: "ecash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7quss2vxek",
             amount: undefined,
