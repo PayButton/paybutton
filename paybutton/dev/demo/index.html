@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html [object Object]>
+
+<head>
+  <meta charset="utf-8" />
+  <title>Paybutton Bundle Test</title>
+  <style>
+    body {
+      padding: auto;
+    }
+
+    .buttons-section {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 20px;
+      width: 100%;
+      padding: 5px;
+      align-items: center;
+    }
+
+    .buttons-section div {
+      width: 100%;
+    }
+
+    .widgets-section {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+      gap: 20px;
+      width: 100%;
+      padding: 10px;
+      align-items: center;
+    }
+
+    .btn {
+      display: flex;
+      margin: 10px;
+    }
+
+    .btn button {
+      text-transform: none;
+      color: #fff;
+      /* Bright white text color for better contrast */
+      border: 1px solid rgb(58, 48, 166);
+      /* Vibrant purple border */
+      margin: auto !important;
+      padding: 0.618em 1.618em !important;
+      font-size: 1em !important;
+      min-width: 14em !important;
+      background: #518efe;
+      transition: background-position 0.8s ease 0s, color 0.15s ease 0s,
+        border-color 0.4s ease 0s;
+      /* Smooth transition for background and border color */
+      border-radius: 10px !important;
+    }
+
+    .btn button:hover {
+      cursor: pointer !important;
+      background: #518efeb7;
+      color: #101563;
+      /* Change text color on hover for a cool effect */
+    }
+
+    .btn.purple button {
+      border: 2px solid #7a33ff;
+      /* Vibrant purple border */
+      background: #9a55ff;
+    }
+
+    .btn.purple button:hover {
+      background: #ebe0fb;
+      color: #5805f3;/
+    }
+  </style>
+</head>
+
+<body>
+  <script src="./paybutton.js"></script>
+
+  <div class="buttons-section">
+    <div id="my_button"></div>
+    <div class="paybutton" to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp" amount="5" currency="USD"
+      display-currency="BCH"></div>
+
+    <div class="paybutton" to="ecash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7quss2vxek"
+      theme='{ "palette": { "primary": "#FF00FF", "secondary": "#ffffff", "tertiary": "#333333"} }'></div>
+
+    <div class="paybutton" to="ecash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7quss2vxek" text="Purchase" amount="0.01"
+      currency="CAD" goal-amount="2.5" success-text="WOW!" on-close="myClose" on-open="myOpen"
+      on-success="mySuccessFunction" on-transaction="myTransactionFunction" editable="true"></div>
+
+    <div class="paybutton" to="bitcoincash:qq7f38meqgctcnywyx74uputa3yuycnv6qr3c6p6rz" goal-amount="0.3" amount="0.05"
+      currency="BCH" text="Purchase" on-transaction="myTransactionFunction"></div>
+
+    <div class="paybutton" to="ecash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7quss2vxek" goal-amount="2500.05" currency="USD"
+      text="Donate (other dev)" on-success="mySuccessFunction" on-transaction="myTransactionFunction"></div>
+
+    <div class="paybutton" to="ecash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7quss2vxek" goal-amount="2500000.05"
+      on-close="myClose" on-open="myOpen" amount="50" currency="USD" text="Random Sats" random-satoshis="true"
+      theme='{ "palette": { "tertiary": "#333333"} }'></div>
+
+    <div class="paybutton" to="ecash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7quss2vxek" goal-amount="5000" on-close="myClose"
+      on-open="myOpen" amount="15" currency="XEC" text="OP RETURN" op-return="classOf=2013 bullYears=2013|2017|2021">
+    </div>
+
+    <div class="paybutton" to="ecash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7quss2vxek" goal-amount="5000" on-close="myClose"
+      on-open="myOpen" amount="15" currency="XEC" text="OP RETURN NO ID" disable-payment-id="true"
+      op-return="classOf=2013 bullYears=2013|2017|2021"></div>
+
+    <div class="paybutton" to="ecash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7quss2vxek" goal-amount="5000" on-close="myClose"
+      on-open="myOpen" amount="15" currency="XEC" text="OP RETURN SHORT" op-return="ABC"></div>
+
+    <div class="paybutton" to="ecash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7quss2vxek" goal-amount="5000" on-close="myClose"
+      on-open="myOpen" amount="15" currency="XEC" text="OP RETURN EMOJI dev CT" op-return="🦾"></div>
+
+    <div class="paybutton" to="ecash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7quss2vxek" goal-amount="5000" on-close="myClose"
+      on-open="myOpen" amount="15" currency="XEC" text="OP RETURN JSON" op-return='{"Profit": "Yes"}'></div>
+
+    <div class="paybutton" to="ecash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7quss2vxek" amount="10" on-close="myClose"
+      on-open="myOpen" currency="XEC" text="Basic" on-success="mySuccessFunction"></div>
+
+    <div class="paybutton" to="ecash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7quss2vxek" amount="10" on-close="myClose"
+      on-open="myOpen" currency="XEC"
+      theme='{ "palette": { "primary": "#D64045", "secondary": "#9ED8DB", "tertiary": "#222222"} }'
+      text="Basic - Localhost" on-success="mySuccessFunction" ws-base-url="http://localhost:3000"
+      api-base-url="http://localhost:3000"></div>
+    <div class="paybutton" to="qpfx6l0x85kc5qaah4wx9nahezcgqefnss2sp0cy06"></div>
+    <div class="dialogbutton btn purple">
+      <button onclick="PayButton.openDialog({ to: 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp' })">
+        open payment dialog
+      </button>
+    </div>
+  </div>
+  <br />
+  <div class="widgets-section">
+    <div>
+      <div id="the_widget" class="paybutton-widget" to="ecash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7quss2vxek"
+        goal-amount="500000" hover-text="BLARG" amount="1000.69" success-text="WOW!" text="Purchase"
+        on-success="mySuccessFunction" editable="true" on-transaction="myTransactionFunction"
+        theme='{ "palette": { "primary": "#F18F01", "secondary": "#C3F3FD", "tertiary": "#2E4057"} }'></div>
+      <div class="btn">
+        <button onclick="buttonClick()">Switch up widget!</button>
+      </div>
+    </div>
+    <div>
+      <div>
+        <div id="the_other_widget" class="paybutton-widget" to="ecash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7quss2vxek"
+          goal-amount="500000" amount="1000.69" success-text="WOW!" text="Purchase" on-success="mySuccessFunction"
+          editable="true" on-transaction="myTransactionFunction"
+          theme='{ "palette": { "primary": "#463730", "secondary": "#759FBC", "tertiary": "#1F5673"} }'></div>
+      </div>
+      <div class="btn">
+        <button onclick="button2Click()">
+          Switch up widget!
+        </button>
+      </div>
+    </div>
+    <div>
+      <div class="paybutton-widget" to="bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp" amount="50000"
+        currency="SAT" detect-payment="true"></div>
+      <br />
+    </div>
+  </div>
+  <script>
+    function mySuccessFunction(tx) {
+      console.log(tx)
+      console.log('Success')
+    }
+
+    function myTransactionFunction(tx) {
+      console.log(tx)
+      console.log('Transaction')
+    }
+
+    function myClose(success, paymentId) {
+      console.log('Closed!')
+      console.log('Payment successful?: ' + success)
+      console.log('Payment ID: ' + paymentId)
+    }
+
+    function myOpen(amount, to, paymentId) {
+      console.log('Opened to: ' + to + ' for ' + amount + ' XEC')
+      console.log('Payment ID: ' + paymentId)
+    }
+
+    var addressIndex = 0
+    var addresses = [
+      'ecash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7quss2vxek',
+    ]
+
+    function buttonClick() {
+      if (addressIndex == addresses.length) {
+        addressIndex = 0
+      }
+
+      var amountForPayment = Math.floor(1 + Math.random() * 5) / 100
+      var widgetConfig = {
+        to: addresses[addressIndex],
+        amount: amountForPayment,
+        currency: 'CAD',
+        text: 'Send (sum muhney)',
+        hoverText: 'LETS GO 1',
+      }
+
+      console.log(widgetConfig)
+
+      PayButton.renderWidget(
+        document.getElementById('the_widget'),
+        widgetConfig
+      )
+
+      addressIndex++
+    }
+
+    function button2Click() {
+      if (addressIndex == addresses.length) {
+        addressIndex = 0
+      }
+
+      var amountForPayment = Math.floor(1 + Math.random() * 5) + 5
+      var widgetConfig = {
+        to: addresses[addressIndex],
+        amount: amountForPayment,
+        text: 'Send (sum muhney)',
+        hoverText: 'LETS GO 2',
+      }
+
+      console.log(widgetConfig)
+
+      PayButton.renderWidget(
+        document.getElementById('the_other_widget'),
+        widgetConfig
+      )
+
+      addressIndex++
+    }
+
+    var config = {
+      to: 'bitcoincash:qpfx6l0x85kc5qaah4wx9nahezcgqefnss2sp0cy06',
+      amount: '0.01',
+      currency: 'CAD',
+      goalAmount: 25,
+      text: 'Send (1 cent)',
+      hoverText: 'For testing!!!',
+      theme: {
+        palette: {
+          primary: '#040404',
+          secondary: '#669CFE',
+          tertiary: '#040404',
+        },
+      },
+      animation: 'invert',
+      successText: 'Payment sent to personal Bitcoin.com wallet',
+      onSuccess: mySuccessFunction,
+      onTransaction: myTransactionFunction,
+      randomSatoshis: true,
+    }
+
+    PayButton.render(document.getElementById('my_button'), config)
+  </script>
+</body>
+
+</html>

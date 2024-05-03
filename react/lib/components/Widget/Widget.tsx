@@ -66,6 +66,7 @@ export interface WidgetProps {
   wsBaseUrl?: string;
   apiBaseUrl?: string;
   loading?: boolean;
+  hoverText?: string;
 }
 
 interface StyleProps {
@@ -148,6 +149,7 @@ export function Widget (props: WidgetProps) {
     newTxs,
     apiBaseUrl,
     wsBaseUrl,
+    hoverText = Button.defaultProps.hoverText
   } = Object.assign({}, Widget.defaultProps, props);
 
   const [loading, setLoading] = useState(true);
@@ -649,6 +651,7 @@ export function Widget (props: WidgetProps) {
             <Box pt={2} flex={1}>
               <ButtonComponent
                 text={widgetButtonText}
+                hoverText={hoverText}
                 onClick={handleButtonClick}
                 disabled={disabled}
                 animation={animation}

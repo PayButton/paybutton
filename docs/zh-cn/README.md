@@ -318,7 +318,7 @@ currency = "USD"
 
 > **参数'text'用来定义按钮上显示的默认文字。**
 
-?> 此参数是可选用的。默认文字为"Donate"。可用内容为任何文字符号。
+?> 此参数是可选用的。默认文字为"Donate"。可用内容为任何文字符号。它对小部件没有任何影响。
 
 **例子:**
 <!-- tabs:start -->
@@ -896,25 +896,58 @@ PayButton是一个社群主导的开放源代码促进会。此项目的成功�
 
 ## 开发人员快速入门
 
-### 构建
+### 入门
 
-1. `git clone https://github.com/PayButton/paybutton.git`
-2. `yarn build`
+1. 克隆仓库 
 
-### 启动Storybook
+```
+  git clone https://github.com/PayButton/paybutton.git
 
-1. `docker-compose up`
-2. 如果网站没有自动打开，它将在localhost:6006上运行。
+```
 
-### 启动Rollup
+2. 导航至项目文件夹并构建项目
 
-1. `yarn start:rollup`
-2. 网站将在localhost:10001上运行。
+```
+yarn build
 
-### 网站/文件
+``` 
 
-1. `yarn start:docs`
-2. 网站将在localhost:3000上运行。
+3. 你现在可以将在 `paybutton/dist/paybutton.js` 找到的 bundle 集成到你的本地网站中。
+
+### 设置开发环境
+
+1. 启动开发服务器
+
+```
+yarn dev
+```
+
+2. 在此查看网站 `localhost:10001`
+
+3. 你可以在 `paybutton/dev/demo/index.html` 中修改演示页面 
+
+4. 演示页面的更改应该会自动反映在服务器上
+
+
+
+### 用 Storybook 测试 UI 组件
+
+1. 运行 docker 容器以启动 storybook
+
+```
+docker-compose up
+
+```
+
+2. 等待 `storybook` 初始化
+3. 打开 http://localhost:6006，你应该能够在 storybook 中测试组件
+
+### 启动文档网站
+
+1. 启动文档网站本地服务器
+```yarn start:docs```
+2. 网站将在 localhost:3001 上可用。
+3. 你可以通过修改文件 docs/README.md 来更新文档
 
 ## 捐助
 

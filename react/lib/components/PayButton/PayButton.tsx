@@ -221,6 +221,7 @@ export function PayButton(props: PayButtonProps) {
         onClose={handleCloseDialog}
         wsBaseUrl={wsBaseUrl}
         apiBaseUrl={apiBaseUrl}
+        hoverText={hoverText}
       />
       {errorMsg && (
         <p

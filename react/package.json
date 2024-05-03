@@ -1,8 +1,8 @@
 {
   "name": "@paybutton/react",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "The easiest way to accept eCash online",
-  "author": "poldridge",
+  "author": "Blockchain Ventures Corp.",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -105,11 +105,6 @@
     "socket.io-client": "4.7.4",
     "stream": "^0.0.2",
     "xecaddrjs": "^0.0.1"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
   },
   "lint-staged": {
     "lib/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
