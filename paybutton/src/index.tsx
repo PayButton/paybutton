@@ -210,7 +210,7 @@ function findAndRender<T>(className: string, Component: React.ComponentType<any>
 
       //    el.classList.remove(className);
 
-      //render(<Component {...props} />, el)
+      render(<Component {...props} />, el)
     });
 }
 
@@ -236,7 +236,7 @@ export default {
   renderWidget: (el: HTMLElement, props: WidgetProps) => {
     if (el !== null) {
       validateJSProps(props)
-      //render(<Widget {...props} />, el)
+      render(<Widget {...props} />, el)
     }
   },
   openDialog: (props: PaymentDialogProps) => openDialog(props),
