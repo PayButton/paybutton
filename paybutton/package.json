@@ -1,8 +1,8 @@
 {
   "name": "@paybutton/paybutton",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "The easiest way to accept eCash online",
-  "author": "Blockchain Ventures Corp.",
+  "author": "",
   "main": "dist/paybutton.js",
   "devDependencies": {
     "@paybutton/react": "link:../react",
@@ -32,7 +32,6 @@
     "dev": "rollup -c rollup.dev.js -w",
     "build": "rollup -c rollup.prod.js"
   },
-  "author": "",
   "repository": {
     "type": "git",
     "url": "https://github.com/PayButton/paybutton.git"
