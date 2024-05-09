@@ -6,7 +6,7 @@
     "react",
     "paybutton"
   ],
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "The easiest way to accept eCash online",
   "author": "Blockchain Ventures Corp.",
   "main": "index.js",
