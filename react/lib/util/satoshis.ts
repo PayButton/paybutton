@@ -1,5 +1,9 @@
-import { formatPrice, formatBCH, formatXEC, DECIMALS, Currency, isCrypto, randomizeSatoshis, CurrencyObject } from './index';
+import { DECIMALS } from './constants';
+import { isCrypto } from './currency';
+import { formatBCH, formatPrice, formatXEC } from './format';
 import { resolveNumber } from './number';
+import randomizeSatoshis from './randomizeSats';
+import { Currency, CurrencyObject } from './types';
 
 
 export const getCurrencyObject = (
