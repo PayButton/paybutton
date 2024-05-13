@@ -1,6 +1,6 @@
 import camelcase from 'camelcase';
 import { PayButton, PayButtonProps, PaymentDialog, PaymentDialogProps, Widget, WidgetProps } from '@paybutton/react';
-import { h } from 'preact';
+import { FunctionComponent, h } from 'preact';
 import { render } from 'preact/compat';
 import React from 'react'
 
@@ -210,7 +210,8 @@ function findAndRender<T>(className: string, Component: React.ComponentType<any>
 
       //    el.classList.remove(className);
 
-      render(<Component {...props} />, el)
+      const Comp = Component as unknown as FunctionComponent<any>;
+      render(<Comp {...props} />, el)
     });
 }
 
@@ -236,7 +237,8 @@ export default {
   renderWidget: (el: HTMLElement, props: WidgetProps) => {
     if (el !== null) {
       validateJSProps(props)
-      render(<Widget {...props} />, el)
+      const Comp = Widget as unknown as FunctionComponent<any>;
+      render(<Comp {...props} />, el)
     }
   },
   openDialog: (props: PaymentDialogProps) => openDialog(props),
