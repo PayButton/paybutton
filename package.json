@@ -1,6 +1,5 @@
 {
   "name": "paybutton",
-  "packageManager": "yarn@4.1.0",
   "private": true,
   "workspaces": [
     "react",

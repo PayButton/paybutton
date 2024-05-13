@@ -5,6 +5,7 @@ import resolve from '@rollup/plugin-node-resolve';
 import typescript from '@rollup/plugin-typescript';
 import json from "@rollup/plugin-json";
 import progress from "rollup-plugin-progress";
+import nodePolyfills from 'rollup-plugin-polyfill-node';
 
 export default (env) => ({
   makeAbsoluteExternalsRelative: true,
@@ -21,7 +22,8 @@ export default (env) => ({
     alias({
       entries: [
         { find: 'react', replacement: require.resolve('preact/compat') },
-        { find: 'react-dom', replacement: require.resolve('preact/compat') }
+        { find: 'react-dom', replacement: require.resolve('preact/compat') },
+        { find: 'react/jsx-runtime', replacement: require.resolve('preact/jsx-runtime') }
       ]
     }),
     replace({
@@ -38,6 +40,7 @@ export default (env) => ({
       transformMixedEsModules: true
     }),
     json(),
+    nodePolyfills({sourceMap: true}),
     typescript({
       compilerOptions: {
         lib: ["es5", "es6", "ES2020", "ESnext", "dom"],
@@ -45,5 +48,5 @@ export default (env) => ({
       }
     }),
   ],
-  external: ['@types/currency-formatter', 'currency-formatter'],
+  external: ['@types/currency-formatter', 'currency-formatter', 'jsx-runtime'],
 });

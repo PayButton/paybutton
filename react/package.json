@@ -13,7 +13,7 @@
   "files": [
     "dist"
   ],
-  "main": "dist/app.js",
+  "main": "dist/index.js",
   "scripts": {
     "dev": "vite",
     "build": "tsc --p ./tsconfig-build.json && vite build",
@@ -23,11 +23,8 @@
     "lint:prettier": "prettier --write 'src/**/*.{ts,tsx}'",
     "storybook": "storybook dev"
   },
-  "peerDependencies": {
-    "react": "^17.0.0 || ^18.0.0",
-    "react-dom": "^17.0.0 || ^18.0.0"
-  },
   "devDependencies": {
+    "@babel/core": "^7.24.5",
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
     "@jridgewell/sourcemap-codec": "^1.4.15",
@@ -35,7 +32,6 @@
     "@mui/material": "^5.15.6",
     "@mui/styles": "^5.15.6",
     "@popperjs/core": "2.11.8",
-    "@preact/preset-vite": "^2.8.1",
     "@storybook/addon-a11y": "8.0.0-alpha.14",
     "@storybook/addon-actions": "8.0.0-alpha.14",
     "@storybook/addon-essentials": "^8.0.0-alpha.14",
@@ -52,6 +48,7 @@
     "@storybook/test": "8.0.0-alpha.14",
     "@storybook/testing-library": "^0.2.2",
     "@storybook/theming": "^7.6.17",
+    "@types/babel__core": "^7",
     "@types/crypto-js": "^4.2.1",
     "@types/currency-formatter": "1.5.4",
     "@types/jest": "^29.5.11",
@@ -82,6 +79,8 @@
     "mini-css-extract-plugin": "~1.6.2",
     "prettier": "3.2.4",
     "qrcode.react": "1.0.1",
+    "react": "^17.0.0 || ^18.0.0",
+    "react-dom": "^17.0.0 || ^18.0.0",
     "react-is": "18.2.0",
     "react-refresh": "^0.14.0",
     "storybook": "8.0.0-alpha.14",
