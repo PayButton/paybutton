@@ -107,9 +107,10 @@ export default {
   getAddressBalance,
 };
 
-export const fiatCurrencies = ['USD', 'CAD', 'EUR', 'GBP', 'AUD'] as const;
-type fiatCurrenciesTuple = typeof fiatCurrencies; // readonly ['USD', 'CAD', 'EUR', 'GBP', 'AUD']
-export type fiatCurrency = fiatCurrenciesTuple[number]; // "USD" | "CAD" | "EUR" | "GBP" | "AUD"
+export const fiatCurrencies = ['USD', 'CAD'] as const;
+
+type fiatCurrenciesTuple = typeof fiatCurrencies; // readonly ['USD', 'CAD' ]
+export type fiatCurrency = fiatCurrenciesTuple[number]; // "USD" | "CAD" 
 
 export const cryptoCurrencies = ['BCH', 'XEC'] as const;
 type cryptoCurrenciesTuple = typeof cryptoCurrencies; // readonly ['BCH', 'XEC']
