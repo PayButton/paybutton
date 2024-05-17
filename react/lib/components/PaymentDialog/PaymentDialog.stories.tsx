@@ -65,11 +65,3 @@ withUSDGoalCurrency.args = {
   goalAmount: 500000,
   currency: 'USD',
 };
-
-export const withEURGoalCurrency = Template.bind({});
-withEURGoalCurrency.storyName = 'With EUR Goal';
-withEURGoalCurrency.args = {
-  animation: 'none',
-  goalAmount: 400000,
-  currency: 'EUR',
-};
