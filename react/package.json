@@ -24,8 +24,7 @@
     "dev": "concurrently yarn:watch yarn:storybook",
     "storybook": "start-storybook -p 6006",
     "watch": "microbundle watch --jsx React.createElement --no-compress --format modern,cjs",
-    "test": "jest",
-    "test:coverage": "jest --coverage"
+    "test": "jest"
   },
   "peerDependencies": {
     "react": "17.0.0",
