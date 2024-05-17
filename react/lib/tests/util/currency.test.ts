@@ -48,6 +48,9 @@ describe('isCrypto', () => {
     it('returns false for unrecognized currencies', () => {
       expect(isValidCurrency('XYZ')).toBeFalsy();
       expect(isValidCurrency('ABC')).toBeFalsy();
+      expect(isValidCurrency('EUR')).toBeFalsy();
+      expect(isValidCurrency('GBP')).toBeFalsy();
+      expect(isValidCurrency('AUD')).toBeFalsy();
     });
 
     it('is case-sensitive', () => {
