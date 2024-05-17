@@ -3,14 +3,10 @@ import { formatPrice, formatBCH, formatXEC } from './format';
 import { DECIMALS } from './constants'
 
 
-import { currency, isCrypto } from './api-client';
+import { isCrypto } from './api-client';
 import { randomizeSatoshis } from './randomizeSats';
+import { currency, currencyObject } from './types';
 
-export type currencyObject = {
-  float: number;
-  string: string;
-  currency: string;
-};
 
 export const getCurrencyObject = (
   amount: number,

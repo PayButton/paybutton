@@ -1,5 +1,5 @@
 import * as xecaddr from 'xecaddrjs';
-import { cryptoCurrency } from '../util/api-client';
+import { cryptoCurrency } from './types';
 
 export const isValidCashAddress = (address: string): boolean => {
   if (!address) return false;

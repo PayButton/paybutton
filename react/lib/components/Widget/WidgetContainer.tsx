@@ -6,17 +6,15 @@ import {
   getCurrencyTypeFromAddress,
 } from '../../util/address';
 import {
-  Transaction,
   isCrypto,
-  currency,
   isValidCurrency,
   isFiat,
   getFiatPrice,
 } from '../../util/api-client';
-import { currencyObject } from '../../util/satoshis';
 import Widget, { WidgetProps } from './Widget';
 import BigNumber from 'bignumber.js';
 import { generatePaymentId } from '../../util/opReturn';
+import { currency, currencyObject, Transaction } from '../../util/types';
 
 export interface WidgetContainerProps
   extends Omit<WidgetProps, 'success' | 'setNewTxs' | 'setCurrencyObject'> {

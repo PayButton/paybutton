@@ -23,20 +23,12 @@ import { DECIMALS } from '../../util/constants';
 import { Button, animation } from '../Button/Button';
 import BarChart from '../BarChart/BarChart';
 
-import { getCurrencyObject, currencyObject } from '../../util/satoshis';
-import {
-  currency,
-  getAddressBalance,
-  getAddressDetails,
-  isFiat,
-  setListener,
-  Transaction,
-  getCashtabProviderStatus,
-  cryptoCurrency,
-} from '../../util/api-client';
 import PencilIcon from '../../assets/edit-pencil';
 import io, { Socket } from 'socket.io-client';
 import { encodeOpReturnProps } from '../../util/opReturn';
+import { getAddressDetails, setListener, getAddressBalance, isFiat, getCashtabProviderStatus } from '../../util/api-client';
+import { getCurrencyObject } from '../../util/satoshis';
+import { currency, currencyObject, Transaction, cryptoCurrency } from '../../util/types';
 
 type QRCodeProps = BaseQRCodeProps & { renderAs: 'svg' };
 

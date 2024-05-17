@@ -1,4 +1,4 @@
-import { cryptoCurrency } from './api-client';
+import { cryptoCurrency } from "./types";
 
 const DEFAULT = 3
 const MAX = 4
