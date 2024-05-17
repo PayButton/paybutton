@@ -3,6 +3,7 @@ import _ from 'lodash';
 import { Socket } from 'socket.io-client'
 import config from '../config.json'
 import { isValidCashAddress, isValidXecAddress } from './address';
+import { CRYPTO_CURRENCIES, FIAT_CURRENCIES } from './constants';
 
 export const getAddressDetails = async (
   address: string,
@@ -107,25 +108,23 @@ export default {
   getAddressBalance,
 };
 
-export const fiatCurrencies = ['USD', 'CAD'] as const;
 
-type fiatCurrenciesTuple = typeof fiatCurrencies; // readonly ['USD', 'CAD' ]
-export type fiatCurrency = fiatCurrenciesTuple[number]; // "USD" | "CAD" 
+type fiatCurrenciesTuple = typeof FIAT_CURRENCIES;
+export type fiatCurrency = fiatCurrenciesTuple[number];
 
-export const cryptoCurrencies = ['BCH', 'XEC'] as const;
-type cryptoCurrenciesTuple = typeof cryptoCurrencies; // readonly ['BCH', 'XEC']
-export type cryptoCurrency = cryptoCurrenciesTuple[number]; // "BCH" | "XEC"
+type cryptoCurrenciesTuple = typeof CRYPTO_CURRENCIES;
+export type cryptoCurrency = cryptoCurrenciesTuple[number];
 
 export type currency = cryptoCurrency | fiatCurrency;
 
 export function isFiat(unknownString: string): unknownString is fiatCurrency {
-  return fiatCurrencies.includes(unknownString as fiatCurrency);
+  return FIAT_CURRENCIES.includes(unknownString as fiatCurrency);
 }
 
 export function isCrypto(
   unknownString: string,
 ): unknownString is cryptoCurrency {
-  return cryptoCurrencies.includes(unknownString as cryptoCurrency)
+  return CRYPTO_CURRENCIES.includes(unknownString as cryptoCurrency)
 }
 
 export function isValidCurrency(

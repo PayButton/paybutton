@@ -1,4 +1,6 @@
-import { fiatCurrencies, isCrypto, isFiat, isValidCurrency } from '../util/api-client';
+import { isCrypto, isFiat, isValidCurrency } from '../util/api-client';
+import { FIAT_CURRENCIES } from '../util/constants'
+
 
 describe('API Client Util Tests', () => {
   describe('isCrypto', () => {
@@ -34,8 +36,8 @@ describe('API Client Util Tests', () => {
 
     it('identifies fiat currencies correctly', () => {
       expect(isValidCurrency('USD')).toBeTruthy();
-      expect(isValidCurrency('EUR')).toBeFalsy();
       expect(isValidCurrency('CAD')).toBeTruthy();
+      expect(isValidCurrency('EUR')).toBeFalsy();
       expect(isValidCurrency('GBP')).toBeFalsy();
       expect(isValidCurrency('AUD')).toBeFalsy();
     });
@@ -64,7 +66,7 @@ describe('API Client Util Tests', () => {
 
   describe('isFiat', () => {
     test('returns true for valid fiat currencies', () => {
-      fiatCurrencies.forEach(currency => {
+      FIAT_CURRENCIES.forEach(currency => {
         expect(isFiat(currency)).toBe(true);
       });
     });

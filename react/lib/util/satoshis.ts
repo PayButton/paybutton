@@ -1,5 +1,7 @@
 import BigNumber from 'bignumber.js';
-import { formatPrice, formatBCH, formatXEC, DECIMALS } from './format';
+import { formatPrice, formatBCH, formatXEC } from './format';
+import { DECIMALS } from './constants'
+
 
 import { currency, isCrypto } from './api-client';
 import { randomizeSatoshis } from './randomizeSats';

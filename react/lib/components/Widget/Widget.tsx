@@ -18,7 +18,8 @@ import {
   isValidXecAddress,
   getCurrencyTypeFromAddress,
 } from '../../util/address';
-import { formatPrice, DECIMALS } from '../../util/format';
+import { formatPrice } from '../../util/format';
+import { DECIMALS } from '../../util/constants';
 import { Button, animation } from '../Button/Button';
 import BarChart from '../BarChart/BarChart';
 
