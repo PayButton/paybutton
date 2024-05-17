@@ -1,4 +1,4 @@
-export const FIAT_CURRENCIES = ['USD', 'CAD' ];
+export const FIAT_CURRENCIES = ['USD', 'CAD'];
 
 export const CRYPTO_CURRENCIES = ['BCH', 'XEC'];
 
