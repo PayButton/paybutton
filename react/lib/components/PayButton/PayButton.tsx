@@ -7,14 +7,14 @@ import { PaymentDialog } from '../PaymentDialog/PaymentDialog';
 import { getCurrencyTypeFromAddress, isValidCashAddress, isValidXecAddress } from '../../util/address';
 import { getCurrencyObject } from '../../util/satoshis';
 import { generatePaymentId } from '../../util/opReturn';
-import { currency, Transaction, currencyObject } from '../../util/types';
+import { Currency, Transaction, CurrencyObject } from '../../util/types';
 
 export interface PayButtonProps extends ButtonProps {
   to: string;
   amount?: number | string;
   opReturn?: string;
   disablePaymentId?: boolean;
-  currency?: currency;
+  currency?: Currency;
   theme?: ThemeName | Theme;
   text?: string;
   hoverText?: string;
@@ -43,7 +43,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
   const [errorMsg, setErrorMsg] = useState('');
   const [amount, setAmount] = useState(props.amount);
 
-  const [currencyObj, setCurrencyObj] = useState<currencyObject | undefined>();
+  const [currencyObj, setCurrencyObj] = useState<CurrencyObject | undefined>();
   const [cryptoAmount, setCryptoAmount] = useState<string>();
   const [price, setPrice] = useState(0);
   const priceRef = useRef<number>(price);
@@ -54,7 +54,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
     to,
     opReturn,
     disablePaymentId,
-    currency = '' as currency,
+    currency = '' as Currency,
     text,
     hoverText,
     successText,
@@ -169,7 +169,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
 
   useEffect(() => {
     if (currencyObj && isFiat(currency) && price) {
-      const addressType: currency = getCurrencyTypeFromAddress(to);
+      const addressType: Currency = getCurrencyTypeFromAddress(to);
       const convertedObj = getCurrencyObject(
         currencyObj.float / price,
         addressType,

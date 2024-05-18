@@ -1,6 +1,6 @@
-import { fiatCurrencies, cryptoCurrencies } from "./api-client";
+import { CRYPTO_CURRENCIES, FIAT_CURRENCIES } from "./constants"
 
-export type currencyObject = {
+export type CurrencyObject = {
     float: number;
     string: string;
     currency: string;
@@ -127,16 +127,13 @@ export interface TransactionDetails {
     };
 }
 
-type fiatCurrenciesTuple = typeof fiatCurrencies;
-export type fiatCurrency = fiatCurrenciesTuple[number];
-
-type cryptoCurrenciesTuple = typeof cryptoCurrencies;            
-export type cryptoCurrency = cryptoCurrenciesTuple[number];
-
-export type currency = cryptoCurrency | fiatCurrency;
-
-
+type FiatCurrenciesTuple = typeof FIAT_CURRENCIES;
+type CyptoCurrenciesTuple = typeof CRYPTO_CURRENCIES;            
 type TxBroadcast = 'NewTx' | 'OldTx'
+
+export type CryptoCurrency = FiatCurrenciesTuple[number];
+export type FiatCurrency = CyptoCurrenciesTuple[number];
+export type Currency = CryptoCurrency | FiatCurrency;
 
 
 export interface BroadcastTxData {

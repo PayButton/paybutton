@@ -1,5 +1,5 @@
 import currencyFormat from 'currency-formatter';
-import { currency } from './api-client';
+import { Currency } from './types';
 import { DECIMALS } from './constants'
 
 export const amount = (x?: number | null): string | undefined => {
@@ -13,7 +13,7 @@ export const amount = (x?: number | null): string | undefined => {
 
 export const formatPrice = (
   price: number,
-  currencyType: currency,
+  currencyType: Currency,
   precision = DECIMALS.FIAT,
 ) => {
   return Intl.NumberFormat(undefined, {

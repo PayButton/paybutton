@@ -5,14 +5,14 @@ import { DECIMALS } from './constants'
 
 import { isCrypto } from './api-client';
 import { randomizeSatoshis } from './randomizeSats';
-import { currency, currencyObject } from './types';
+import { Currency, CurrencyObject } from './types';
 
 
 export const getCurrencyObject = (
   amount: number,
-  currencyType: currency,
+  currencyType: Currency,
   randomSatoshis: boolean | number | undefined,
-): currencyObject => {
+): CurrencyObject => {
   let string = '';
   let float = 0;
 
