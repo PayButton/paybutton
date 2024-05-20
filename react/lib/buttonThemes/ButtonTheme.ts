@@ -1,4 +1,4 @@
-export interface Theme {
+export interface ButtonTheme {
   palette: {
     primary: string;
     secondary: string;
@@ -7,4 +7,4 @@ export interface Theme {
   };
 }
 
-export default Theme;
+export default ButtonTheme;

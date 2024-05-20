@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 
-import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
+import { ButtonTheme, ButtonThemeName, ButtonThemeProvider, useButtonTheme } from '../../buttonThemes';
 import Button, { ButtonProps } from '../Button/Button';
 import { getFiatPrice } from '../../util/api-client';
 import { PaymentDialog } from '../PaymentDialog/PaymentDialog';
@@ -16,7 +16,7 @@ export interface PayButtonProps extends ButtonProps {
   opReturn?: string;
   disablePaymentId?: boolean;
   currency?: Currency;
-  theme?: ThemeName | Theme;
+  buttonTheme?: ButtonThemeName | ButtonTheme;
   text?: string;
   hoverText?: string;
   successText?: string;
@@ -182,14 +182,14 @@ export function PayButton(props: PayButtonProps) {
     }
   }, [price, currencyObj, amount, currency, randomSatoshis, to]);
 
-  const theme = useTheme(props.theme, isValidXecAddress(to ?? ''));
+  const buttonTheme = useButtonTheme(props.buttonTheme, isValidXecAddress(to ?? ''));
 
   const ButtonComponent: React.FC<ButtonProps> = (
     props: ButtonProps,
   ): React.ReactElement => <Button animation={animation} {...props} />;
 
   return (
-    <ThemeProvider value={theme}>
+    <ButtonThemeProvider value={buttonTheme}>
       <ButtonComponent
         onClick={handleButtonClick}
         text={text}
@@ -237,7 +237,7 @@ export function PayButton(props: PayButtonProps) {
           {errorMsg}
         </p>
       )}
-    </ThemeProvider>
+    </ButtonThemeProvider>
   );
 };
 
