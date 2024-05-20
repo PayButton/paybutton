@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import { Theme, createTheme } from '@mui/material/styles'
 
 import { ButtonTheme } from './ButtonTheme';
 import orange from './buttonThemes/orange';
@@ -88,3 +89,16 @@ export const useButtonTheme = (
     (typeof validated === 'object' ? validated : getButtonTheme(validated));
   return buttonTheme;
 };
+
+export const getThemeFromButtonTheme = (buttonTheme: ButtonTheme): Theme => {
+  return createTheme({
+    palette: {
+      primary: {
+        main: buttonTheme.palette.primary
+      },
+      secondary: {
+        main: buttonTheme.palette.secondary
+      },
+    }
+  })
+}

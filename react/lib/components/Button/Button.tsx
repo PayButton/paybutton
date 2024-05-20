@@ -1,9 +1,10 @@
 import { Button as MuiButton } from '@mui/material';
+import { Theme } from '@mui/material/styles';
 import { styled } from '@mui/system'
 
 import  { useRef, useState, useLayoutEffect } from 'react';
 
-import { ButtonTheme, ButtonThemeName, useButtonTheme } from '../../buttonThemes';
+import { ButtonTheme, ButtonThemeName, useButtonTheme, getThemeFromButtonTheme } from '../../buttonThemes';
 
 export type animation = 'slide' | 'invert' | 'none' | undefined;
 
@@ -18,30 +19,26 @@ export interface ButtonProps {
 
 interface StyleProps {
   animation: animation;
-  buttonTheme: ButtonTheme;
+  theme: Theme;
 }
 
-const WIPcontainer = {
-  fontSize: '0.8rem !important',
-}
-
-const StyledButton = styled(MuiButton)(({ buttonTheme, ...props }: StyleProps) => ({
-  background: `${buttonTheme.palette.secondary} !important`,
+const StyledButton = styled(MuiButton)(({ theme, ...props }: StyleProps) => ({
+  background: `${theme.palette.secondary} !important`,
   transition: '0.6s !important',
   ...(props.animation === 'slide'
     ? {
-      background: `linear-gradient(45deg, ${buttonTheme.palette.primary} 50%, ${buttonTheme.palette.secondary} 50%) 100% center / 300% !important`,
+      background: `linear-gradient(45deg, ${theme.palette.primary} 50%, ${theme.palette.secondary} 50%) 100% center / 300% !important`,
       backgroundSize: '300% !important',
       backgroundPosition: '100% !important',
       transition: 'background-position 0.8s, color 0.15s !important',
     }
     : {}),
-  color: `${buttonTheme.palette.primary} !important`,
+  color: `${theme.palette.primary} !important`,
   minWidth: '14em !important',
   padding: '0.618em 1.618em !important',
   margin: 'auto !important',
   boxShadow: '3px 3px 3px rgba(0, 0, 0, 0.08) !important',
-  border: `2px solid ${buttonTheme.palette.primary} !important`,
+  border: `2px solid ${theme.palette.primary} !important`,
   borderRadius: '10px !important',
   fontSize: '1em !important',
   textTransform: 'none',
@@ -49,19 +46,19 @@ const StyledButton = styled(MuiButton)(({ buttonTheme, ...props }: StyleProps) =
     ...(props.animation === 'slide'
       ? {
         backgroundPosition: '0 !important',
-        color: `${buttonTheme.palette.secondary} !important`,
+        color: `${theme.palette.secondary} !important`,
       }
       : {}),
     ...(props.animation === 'invert'
       ? {
-        background: `${buttonTheme.palette.primary} !important`,
-        color: `${buttonTheme.palette.secondary} !important`,
+        background: `${theme.palette.primary} !important`,
+        color: `${theme.palette.secondary} !important`,
       }
       : {}),
     ...(props.animation === 'none'
       ? {
-        background: `${buttonTheme.palette.secondary} !important`,
-        color: `${buttonTheme.palette.primary} !important`,
+        background: `${theme.palette.secondary} !important`,
+        color: `${theme.palette.primary} !important`,
       }
       : {}),
   },
@@ -86,7 +83,8 @@ export function Button(props: ButtonProps =  {
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   const buttonTheme = useButtonTheme(props.buttonTheme);
-  const styleProps: StyleProps = { animation, buttonTheme };
+  const theme = getThemeFromButtonTheme(buttonTheme)
+  const styleProps: StyleProps = { animation, theme };
 
   useLayoutEffect(() => {
     if (buttonRef !== null && text) {
