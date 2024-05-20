@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { zero, resolveNumber, zeroIsLessThan } from '../util/number'; // Adjust the import path
+import { zero, resolveNumber, isGreaterThanZero } from '../util/number'; // Adjust the import path
 
 describe('Number util functions', () => {
   it('zero should be an instance of BigNumber and equal to 0', () => {
@@ -19,17 +19,17 @@ describe('Number util functions', () => {
     expect(resolveNumber(bigNumberInstance).isEqualTo(42)).toBe(true);
   });
 
-  it('zeroIsLessThan should correctly identify values less than zero', () => {
-    expect(zeroIsLessThan(-1)).toBe(false);
-    expect(zeroIsLessThan('-1')).toBe(false);
-    expect(zeroIsLessThan(new BigNumber(-1))).toBe(false);
+  it('isGreaterThanZero should correctly identify values less than zero', () => {
+    expect(isGreaterThanZero(-1)).toBe(false);
+    expect(isGreaterThanZero('-1')).toBe(false);
+    expect(isGreaterThanZero(new BigNumber(-1))).toBe(false);
 
-    expect(zeroIsLessThan(0)).toBe(false);
-    expect(zeroIsLessThan('0')).toBe(false);
-    expect(zeroIsLessThan(zero)).toBe(false);
+    expect(isGreaterThanZero(0)).toBe(false);
+    expect(isGreaterThanZero('0')).toBe(false);
+    expect(isGreaterThanZero(zero)).toBe(false);
 
-    expect(zeroIsLessThan(1)).toBe(true);
-    expect(zeroIsLessThan('1')).toBe(true);
-    expect(zeroIsLessThan(new BigNumber(1))).toBe(true);
+    expect(isGreaterThanZero(1)).toBe(true);
+    expect(isGreaterThanZero('1')).toBe(true);
+    expect(isGreaterThanZero(new BigNumber(1))).toBe(true);
   });
 });
