@@ -27,55 +27,52 @@ describe('isCrypto', () => {
     });
   });
 
-  describe('isValidCurrency', () => {
-    beforeEach(() => {
-      jest.resetAllMocks();
-    });
+describe('isValidCurrency', () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+  });
 
-    it('identifies fiat currencies correctly', () => {
-      expect(isValidCurrency('USD')).toBeTruthy();
-      expect(isValidCurrency('CAD')).toBeTruthy();
-      expect(isValidCurrency('EUR')).toBeFalsy();
-      expect(isValidCurrency('GBP')).toBeFalsy();
-      expect(isValidCurrency('AUD')).toBeFalsy();
-    });
+  it('identifies fiat currencies correctly', () => {
+    expect(isValidCurrency('USD')).toBeTruthy();
+    expect(isValidCurrency('CAD')).toBeTruthy();
+    expect(isValidCurrency('EUR')).toBeFalsy();
+    expect(isValidCurrency('GBP')).toBeFalsy();
+    expect(isValidCurrency('AUD')).toBeFalsy();
+  });
 
-    it('identifies crypto currencies correctly', () => {
-      expect(isValidCurrency('BCH')).toBeTruthy();
-      expect(isValidCurrency('XEC')).toBeTruthy();
-    });
+  it('identifies crypto currencies correctly', () => {
+    expect(isValidCurrency('BCH')).toBeTruthy();
+    expect(isValidCurrency('XEC')).toBeTruthy();
+  });
 
-    it('returns false for unrecognized currencies', () => {
-      expect(isValidCurrency('XYZ')).toBeFalsy();
-      expect(isValidCurrency('ABC')).toBeFalsy();
-      expect(isValidCurrency('EUR')).toBeFalsy();
-      expect(isValidCurrency('GBP')).toBeFalsy();
-      expect(isValidCurrency('AUD')).toBeFalsy();
-    });
+  it('returns false for unrecognized currencies', () => {
+    expect(isValidCurrency('XYZ')).toBeFalsy();
+    expect(isValidCurrency('ABC')).toBeFalsy();
+  });
 
-    it('is case-sensitive', () => {
-      expect(isValidCurrency('bch')).toBeFalsy();
-      expect(isValidCurrency('usd')).toBeFalsy();
-      expect(isValidCurrency('xec')).toBeFalsy();
-    });
+  it('is case-sensitive', () => {
+    expect(isValidCurrency('bch')).toBeFalsy();
+    expect(isValidCurrency('usd')).toBeFalsy();
+    expect(isValidCurrency('xec')).toBeFalsy();
+  });
 
-    it('returns false for spaces or special characters', () => {
-      expect(isValidCurrency(' BCH ')).toBeFalsy();
-      expect(isValidCurrency('USD@')).toBeFalsy();
+  it('returns false for spaces or special characters', () => {
+    expect(isValidCurrency(' BCH ')).toBeFalsy();
+    expect(isValidCurrency('USD@')).toBeFalsy();
+  });
+});
+
+describe('isFiat', () => {
+  test('returns true for valid fiat currencies', () => {
+    FIAT_CURRENCIES.forEach(currency => {
+      expect(isFiat(currency)).toBe(true);
     });
   });
 
-  describe('isFiat', () => {
-    test('returns true for valid fiat currencies', () => {
-      FIAT_CURRENCIES.forEach(currency => {
-        expect(isFiat(currency)).toBe(true);
-      });
-    });
-  
-    test('returns false for invalid fiat currencies', () => {
-      const invalidCurrencies = ['INR', 'JPY', 'BTC', 'ETH', 'XYZ', 'EUR'];
-      invalidCurrencies.forEach(currency => {
-        expect(isFiat(currency)).toBe(false);
-      });
+  test('returns false for invalid fiat currencies', () => {
+    const invalidCurrencies = ['INR', 'JPY', 'BTC', 'ETH', 'XYZ', 'EUR'];
+    invalidCurrencies.forEach(currency => {
+      expect(isFiat(currency)).toBe(false);
     });
   });
+});
