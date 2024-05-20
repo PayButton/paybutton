@@ -1,7 +1,6 @@
 import { Button as MuiButton } from '@mui/material';
-import { makeStyles } from '@mui/styles';
+import { styled } from '@mui/system'
 
-import { CreateCSSProperties } from '@mui/styles';
 import  { useRef, useState, useLayoutEffect } from 'react';
 
 import { Theme, ThemeName, useTheme } from '../../themes';
@@ -22,56 +21,56 @@ interface StyleProps {
   theme: Theme;
 }
 
-const useStyles = makeStyles({
-  container: {
-    fontSize: '0.8rem !important',
-  },
-  button: ({ theme, ...props }: StyleProps): CreateCSSProperties => ({
-    background: `${theme.palette.secondary} !important`,
-    transition: '0.6s !important',
+const WIPcontainer = {
+  fontSize: '0.8rem !important',
+}
+
+const StyledButton = styled(MuiButton)(({ theme, ...props }: StyleProps) => ({
+  background: `${theme.palette.secondary} !important`,
+  transition: '0.6s !important',
+  ...(props.animation === 'slide'
+    ? {
+      background: `linear-gradient(45deg, ${theme.palette.primary} 50%, ${theme.palette.secondary} 50%) 100% center / 300% !important`,
+      backgroundSize: '300% !important',
+      backgroundPosition: '100% !important',
+      transition: 'background-position 0.8s, color 0.15s !important',
+    }
+    : {}),
+  color: `${theme.palette.primary} !important`,
+  minWidth: '14em !important',
+  padding: '0.618em 1.618em !important',
+  margin: 'auto !important',
+  boxShadow: '3px 3px 3px rgba(0, 0, 0, 0.08) !important',
+  border: `2px solid ${theme.palette.primary} !important`,
+  borderRadius: '10px !important',
+  fontSize: '1em !important',
+  textTransform: 'none',
+  '&:hover': {
     ...(props.animation === 'slide'
       ? {
-          background: `linear-gradient(45deg, ${theme.palette.primary} 50%, ${theme.palette.secondary} 50%) 100% center / 300% !important`,
-          backgroundSize: '300% !important',
-          backgroundPosition: '100% !important',
-          transition: 'background-position 0.8s, color 0.15s !important',
-        }
+        backgroundPosition: '0 !important',
+        color: `${theme.palette.secondary} !important`,
+      }
       : {}),
-    color: `${theme.palette.primary} !important`,
-    minWidth: '14em !important',
-    padding: '0.618em 1.618em !important',
-    margin: 'auto !important',
-    boxShadow: '3px 3px 3px rgba(0, 0, 0, 0.08) !important',
-    border: `2px solid ${theme.palette.primary} !important`,
-    borderRadius: '10px !important',
-    fontSize: '1em !important',
-    textTransform: 'none',
-    '&:hover': {
-      ...(props.animation === 'slide'
-        ? {
-            backgroundPosition: '0 !important',
-            color: `${theme.palette.secondary} !important`,
-          }
-        : {}),
-      ...(props.animation === 'invert'
-        ? {
-            background: `${theme.palette.primary} !important`,
-            color: `${theme.palette.secondary} !important`,
-          }
-        : {}),
-      ...(props.animation === 'none'
-        ? {
-            background: `${theme.palette.secondary} !important`,
-            color: `${theme.palette.primary} !important`,
-          }
-        : {}),
-    },
-    '& .MuiTouchRipple-root': {
-      margin: -2,
-      color: '#00000044 !important',
-    },
-  }),
-});
+    ...(props.animation === 'invert'
+      ? {
+        background: `${theme.palette.primary} !important`,
+        color: `${theme.palette.secondary} !important`,
+      }
+      : {}),
+    ...(props.animation === 'none'
+      ? {
+        background: `${theme.palette.secondary} !important`,
+        color: `${theme.palette.primary} !important`,
+      }
+      : {}),
+  },
+  '& .MuiTouchRipple-root': {
+    margin: -2,
+    color: '#00000044 !important',
+  },
+})
+)
 
 export function Button(props: ButtonProps) {
   const { animation, text, hoverText, disabled } = Object.assign(
@@ -87,7 +86,6 @@ export function Button(props: ButtonProps) {
 
   const theme = useTheme(props.theme);
   const styleProps: StyleProps = { animation, theme };
-  const classes = useStyles(styleProps);
 
   useLayoutEffect(() => {
     if (buttonRef !== null && text) {
@@ -118,17 +116,18 @@ export function Button(props: ButtonProps) {
   };
 
   return (
-    <div className={classes.container}>
-      <MuiButton
+    <div style={{ fontSize: '0.8rem' }}>
+      <StyledButton
+        {...styleProps}
         disabled={disabled}
-        className={classes.button}
+        className={"button"}
         onClick={props.onClick}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         ref={buttonRef}
       >
         <span>{transitioning !== hovering ? hoverText : text}</span>
-      </MuiButton>
+      </StyledButton>
     </div>
   );
 };
