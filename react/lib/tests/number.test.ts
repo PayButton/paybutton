@@ -20,13 +20,15 @@ describe('resolveNumber', () => {
       });
       
       it('should convert float type to BigNumber', () => {
-        expect(resolveNumber(42.0)).toBeInstanceOf(BigNumber);
-        expect(resolveNumber(42.5).isEqualTo(42.5)).toBe(true);
+        const result = resolveNumber(42.8)
+        expect(result).toBeInstanceOf(BigNumber);
+        expect(result.isEqualTo(42.8)).toBe(true);
       });
       
       it('should convert string representation of float type to BigNumber', () => {
-        expect(resolveNumber('42.0')).toBeInstanceOf(BigNumber);
-        expect(resolveNumber('42.5').isEqualTo(42.5)).toBe(true);
+        const result = resolveNumber('42.8')
+        expect(result).toBeInstanceOf(BigNumber);
+        expect(result.isEqualTo(42.8)).toBe(true);
       });
       
       it('should handle BigNumber instance correctly', () => {
