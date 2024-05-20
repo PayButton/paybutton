@@ -1,9 +1,19 @@
 import axios from 'axios';
 import _ from 'lodash';
-import { Socket } from 'socket.io-client'
 import config from '../config.json'
 import { isValidCashAddress, isValidXecAddress } from './address';
-import { CRYPTO_CURRENCIES, FIAT_CURRENCIES } from './constants';
+import {
+  Transaction,
+  UtxoDetails,
+  PriceData,
+  TransactionDetails,
+  Currency,
+  CryptoCurrency,
+  FiatCurrency,
+  BroadcastTxData
+} from './types';
+import { FIAT_CURRENCIES, CRYPTO_CURRENCIES } from './constants';
+import { Socket } from 'socket.io-client';
 
 export const getAddressDetails = async (
   address: string,
@@ -12,14 +22,6 @@ export const getAddressDetails = async (
   const res = await fetch(`${rootUrl}/address/transactions/${address}`);
   return res.json();
 };
-
-type TxBroadcast = 'NewTx' | 'OldTx'
-export interface BroadcastTxData {
-  address: string
-  txs: Transaction[]
-  messageType: TxBroadcast
-}
-
 export const setListener = (socket: Socket, setNewTxs: Function): void => {
   socket.on('incoming-txs', (broadcastedTxData: BroadcastTxData) => {
     const unconfirmedTxs = broadcastedTxData.txs.filter(tx => tx.confirmed === false)
@@ -28,7 +30,6 @@ export const setListener = (socket: Socket, setNewTxs: Function): void => {
     }
   })
 }
-
 
 export const getAddressBalance = async (
   address: string,
@@ -53,7 +54,7 @@ export const getUTXOs = async (
 };
 
 export const getBchFiatPrice = async (
-  currency: currency,
+  currency: Currency,
   rootUrl = config.apiBaseUrl,
 ): Promise<PriceData> => {
   const { data } = await axios.get(
@@ -65,7 +66,7 @@ export const getBchFiatPrice = async (
 };
 
 export const getXecFiatPrice = async (
-  currency: currency,
+  currency: Currency,
   rootUrl = config.apiBaseUrl,
 ): Promise<PriceData> => {
   const { data } = await axios.get(
@@ -108,28 +109,19 @@ export default {
   getAddressBalance,
 };
 
-
-type fiatCurrenciesTuple = typeof FIAT_CURRENCIES;
-export type fiatCurrency = fiatCurrenciesTuple[number];
-
-type cryptoCurrenciesTuple = typeof CRYPTO_CURRENCIES;
-export type cryptoCurrency = cryptoCurrenciesTuple[number];
-
-export type currency = cryptoCurrency | fiatCurrency;
-
-export function isFiat(unknownString: string): unknownString is fiatCurrency {
-  return FIAT_CURRENCIES.includes(unknownString as fiatCurrency);
+export function isFiat(unknownString: string): unknownString is FiatCurrency {
+  return FIAT_CURRENCIES.includes(unknownString as FiatCurrency);
 }
 
 export function isCrypto(
   unknownString: string,
-): unknownString is cryptoCurrency {
-  return CRYPTO_CURRENCIES.includes(unknownString as cryptoCurrency)
+): unknownString is CryptoCurrency {
+  return CRYPTO_CURRENCIES.includes(unknownString as CryptoCurrency)
 }
 
 export function isValidCurrency(
   unknownString: string,
-): unknownString is cryptoCurrency {
+): unknownString is CryptoCurrency {
   return isFiat(unknownString) || isCrypto(unknownString)
 }
 
@@ -141,124 +133,3 @@ export const getCashtabProviderStatus = () => {
   return false;
 };
 
-
-export interface Transaction {
-  hash: string
-  amount: string
-  paymentId: string
-  confirmed?: boolean
-  message: string
-  timestamp: number
-  address: string
-}
-
-export interface UtxoDetails {
-  outputsList: [Output];
-  tokenMetadataList: [TokenMetaData];
-}
-
-export interface Output {
-  outpoint: {
-    hash: string;
-    index: number;
-  };
-  pubkeyScript: string;
-  value: number;
-  isCoinbase: boolean;
-  blockHeight: number;
-}
-
-export interface TokenMetaData {
-  tokenId: string;
-  tokenType: number;
-  v1Fungible: {
-    tokenTicker: string;
-    tokenName: string;
-    tokenDocumentUrl: string;
-    tokenDocumentHash: string;
-    decimals: number;
-    mintBatonHash: string;
-    mintBatonVout: number;
-  };
-}
-
-export interface PriceData {
-  price: number;
-}
-
-export interface TransactionDetails {
-  transaction: {
-    hash: string;
-    version: number;
-    inputsList: {
-      index: number;
-      outpoint: {
-        hash: string;
-        index: number;
-      };
-      signatureScript: string;
-      sequence: number;
-      value: number;
-      previousScript: string;
-      address: string;
-      slpToken: {
-        tokenId: string;
-        amount: string;
-        isMintBaton: boolean;
-        address: string;
-        decimals: number;
-        slpAction: number;
-        tokenType: number;
-      };
-    }[];
-    outputsList: {
-      index: number;
-      value: number;
-      pubkeyScript: string;
-      address: string;
-      scriptClass: string;
-      disassembledScript: string;
-      slpToken?: {
-        tokenId: string;
-        amount: string;
-        isMintBaton: boolean;
-        address: string;
-        decimals: number;
-        slpAction: number;
-        tokenType: number;
-      };
-    }[];
-    lockTime: number;
-    size: number;
-    timestamp: number;
-    confirmations: number;
-    blockHeight: number;
-    blockHash: string;
-    slpTransactionInfo: {
-      slpAction: number;
-      validityJudgement: number;
-      parseError: string;
-      tokenId: string;
-      burnFlagsList: [number];
-      v1Nft1ChildGenesis: {
-        name: string;
-        ticker: string;
-        documentUrl: string;
-        documentHash: string;
-        decimals: number;
-        groupTokenId: string;
-      };
-    };
-  };
-  tokenMetadata: {
-    tokenId: string;
-    tokenType: number;
-    v1Nft1Child: {
-      tokenTicker: string;
-      tokenName: string;
-      tokenDocumentUrl: string;
-      tokenDocumentHash: string;
-      groupId: string;
-    };
-  };
-}

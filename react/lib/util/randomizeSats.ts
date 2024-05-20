@@ -1,4 +1,4 @@
-import { cryptoCurrency } from './api-client';
+import { CryptoCurrency } from "./types";
 
 const DEFAULT = 3
 const MAX = 4
@@ -17,7 +17,7 @@ export const getNSatoshis = (amount: number, randomSatoshis: boolean | number, s
   return Math.min(randomSatoshis, amountDigits)
 }
 
-export const randomizeSatoshis = (amount: number, addressType: cryptoCurrency, randomSatoshis: boolean | number): number => {
+export const randomizeSatoshis = (amount: number, addressType: CryptoCurrency, randomSatoshis: boolean | number): number => {
   if (amount === 0) {
     return 0;
   }

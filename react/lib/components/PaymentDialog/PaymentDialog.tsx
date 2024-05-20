@@ -5,8 +5,7 @@ import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
 import Button, { ButtonProps } from '../Button/Button';
 import { WidgetContainer } from '../Widget/WidgetContainer';
 import { isValidCashAddress, isValidXecAddress } from '../../util/address';
-import { Transaction, currency } from '../../util/api-client';
-import { currencyObject } from '../../util/satoshis';
+import { Currency, CurrencyObject, Transaction } from '../../util/types';
 
 export interface PaymentDialogProps extends ButtonProps {
   to: string;
@@ -15,8 +14,8 @@ export interface PaymentDialogProps extends ButtonProps {
   opReturn?: string;
   paymentId?: string;
   disablePaymentId?: boolean;
-  currency?: currency;
-  currencyObj?: currencyObject;
+  currency?: Currency;
+  currencyObj?: CurrencyObject;
   cryptoAmount?: string;
   price?: number;
   hoverText?: string;
