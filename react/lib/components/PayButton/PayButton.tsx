@@ -23,7 +23,7 @@ export interface PayButtonProps extends ButtonProps {
   disabled?: boolean;
   goalAmount?: number | string;
   disableEnforceFocus?: boolean;
-  editable?: boolean;
+  editable: boolean;
   onSuccess?: (transaction: Transaction) => void;
   onTransaction?: (transaction: Transaction) => void;
   onOpen?: (
@@ -36,7 +36,16 @@ export interface PayButtonProps extends ButtonProps {
   apiBaseUrl?: string;
 }
 
-export function PayButton(props: PayButtonProps) {
+export function PayButton(props: PayButtonProps= {
+  to: '',
+  animation: 'slide',
+  hideToasts: false,
+  randomSatoshis: false,
+  successText: 'Thank you!',
+  disableEnforceFocus: false,
+  disabled: false,
+  editable: false,
+}) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [disabled, setDisabled] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
@@ -69,7 +78,7 @@ export function PayButton(props: PayButtonProps) {
     editable,
     wsBaseUrl,
     apiBaseUrl,
-  } = Object.assign({}, PayButton.defaultProps, props);
+  } = props;
 
   const [paymentId] = useState(!disablePaymentId ? generatePaymentId(8) : undefined);
 
@@ -239,17 +248,7 @@ export function PayButton(props: PayButtonProps) {
   );
 };
 
-const payButtonDefaultProps: PayButtonProps = {
-  to: '',
-  animation: 'slide',
-  hideToasts: false,
-  randomSatoshis: false,
-  successText: 'Thank you!',
-  disableEnforceFocus: false,
-  disabled: false,
-  editable: false,
-};
+ ;
 
-PayButton.defaultProps = payButtonDefaultProps;
 
 export default PayButton;

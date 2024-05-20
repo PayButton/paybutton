@@ -73,12 +73,13 @@ const useStyles = makeStyles({
   }),
 });
 
-export function Button(props: ButtonProps) {
-  const { animation, text, hoverText, disabled } = Object.assign(
-    {},
-    Button.defaultProps,
-    props,
-  );
+export function Button(props: ButtonProps =  {
+  animation: 'slide',
+  text: 'Donate',
+  hoverText: 'Send Payment',
+  disabled: false,
+}) {
+  const { animation, text, hoverText, disabled } = props
 
   const [hovering, setHovering] = useState(false);
   const [transitioning, setTransitioning] = useState(false);
@@ -132,14 +133,5 @@ export function Button(props: ButtonProps) {
     </div>
   );
 };
-
-const buttonDefaultProps: ButtonProps = {
-  animation: 'slide',
-  text: 'Donate',
-  hoverText: 'Send Payment',
-  disabled: false,
-};
-
-Button.defaultProps = buttonDefaultProps;
 
 export default Button;

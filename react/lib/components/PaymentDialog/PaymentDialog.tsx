@@ -27,7 +27,7 @@ export interface PaymentDialogProps extends ButtonProps {
   hideToasts?: boolean;
   goalAmount?: number | string;
   disableEnforceFocus?: boolean;
-  editable?: boolean;
+  editable: boolean;
   dialogOpen: boolean;
   disableScrollLock?: boolean;
   active?: boolean;
@@ -40,7 +40,19 @@ export interface PaymentDialogProps extends ButtonProps {
 }
 
 export function PaymentDialog(
-  props: PaymentDialogProps,
+  props: PaymentDialogProps = {
+    animation: 'slide',
+    hideToasts: false,
+    randomSatoshis: false,
+    successText: 'Thank you!',
+    disableEnforceFocus: false,
+    disabled: false,
+    editable: false,
+    dialogOpen: true,
+    to: '',
+    setAmount: () =>{},
+    setCurrencyObj: () =>{},
+  }
 ){
   const [success, setSuccess] = useState(false);
   const [disabled, setDisabled] = useState(false);
@@ -72,7 +84,7 @@ export function PaymentDialog(
     wsBaseUrl,
     apiBaseUrl,
     hoverText
-  } = Object.assign({}, PaymentDialog.defaultProps, props);
+  } = props
 
   const handleWidgetClose = (): void => {
     if (onClose) onClose(success, paymentId);
@@ -155,17 +167,6 @@ export function PaymentDialog(
       </Dialog>
     </ThemeProvider>
   );
-};
-
-PaymentDialog.defaultProps = {
-  animation: 'slide',
-  hideToasts: false,
-  randomSatoshis: false,
-  successText: 'Thank you!',
-  disableEnforceFocus: false,
-  disabled: false,
-  editable: false,
-  dialogOpen: true,
 };
 
 export default PaymentDialog;
