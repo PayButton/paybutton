@@ -24,6 +24,18 @@ describe('resolveNumber', () => {
         expect(result).toBeInstanceOf(BigNumber);
         expect(result.isEqualTo(42.8)).toBe(true);
       });
+
+      it('should convert float type with only zero after the decimal point to BigNumber int', () => {
+        const result = resolveNumber(42.0)
+        expect(result).toBeInstanceOf(BigNumber);
+        expect(result.isEqualTo(42)).toBe(true);
+      });
+
+      it('should convert string float type with only zero after the decimal point to BigNumber int', () => {
+        const result = resolveNumber('42.0')
+        expect(result).toBeInstanceOf(BigNumber);
+        expect(result.isEqualTo(42)).toBe(true);
+      });
       
       it('should convert string representation of float type to BigNumber', () => {
         const result = resolveNumber('42.8')
