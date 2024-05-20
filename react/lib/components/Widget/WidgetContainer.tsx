@@ -14,7 +14,7 @@ import {
 import Widget, { WidgetProps } from './Widget';
 import { generatePaymentId } from '../../util/opReturn';
 import { Currency, CurrencyObject, Transaction } from '../../util/types';
-import { isLessThanZero, resolveNumber } from '../../util/number';
+import { zeroIsLessThan, resolveNumber } from '../../util/number';
 
 export interface WidgetContainerProps
   extends Omit<WidgetProps, 'success' | 'setNewTxs' | 'setCurrencyObject'> {
@@ -199,7 +199,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
       (tx: Transaction) => {
         if (
           tx.confirmed === false &&
-          isLessThanZero(resolveNumber(tx.amount))
+          zeroIsLessThan(resolveNumber(tx.amount))
         ) {
           handlePayment(tx);
         }

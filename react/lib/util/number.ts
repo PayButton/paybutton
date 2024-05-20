@@ -6,7 +6,6 @@ export const resolveNumber = (value: BigNumber.Value) => {
   return new BigNumber(value);
 };
 
-export const isLessThanZero = (value: BigNumber.Value) => {
-  const formmatedValue = new BigNumber(value)
-  return zero.isLessThan(formmatedValue)
+export const zeroIsLessThan = (value: BigNumber.Value) => {
+  return zero.isLessThan(value)
 }
