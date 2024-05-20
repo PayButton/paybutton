@@ -12,9 +12,9 @@ import {
   getFiatPrice,
 } from '../../util/api-client';
 import Widget, { WidgetProps } from './Widget';
-import BigNumber from 'bignumber.js';
 import { generatePaymentId } from '../../util/opReturn';
 import { Currency, CurrencyObject, Transaction } from '../../util/types';
+import { isGreaterThanZero, resolveNumber } from '../../util/number';
 
 export interface WidgetContainerProps
   extends Omit<WidgetProps, 'success' | 'setNewTxs' | 'setCurrencyObject'> {
@@ -59,7 +59,6 @@ export interface Output {
   disassembledScript: string;
 }
 
-const zero = new BigNumber(0);
 const withSnackbar =
   <T extends object>(
     Component: React.ComponentType<T>,
@@ -135,7 +134,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
         const {
           amount: transactionAmount,
           paymentId: transactionPaymentId } = transaction;
-        const receivedAmount = new BigNumber(transactionAmount);
+        const receivedAmount = resolveNumber(transactionAmount);
 
         const currencyTicker = getCurrencyTypeFromAddress(to);
         if (!hideToasts)
@@ -146,7 +145,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
             snackbarOptions,
           );
         const txPaymentId = transactionPaymentId
-        const isCryptoAmountValid = (cryptoAmount && receivedAmount.isEqualTo(new BigNumber(cryptoAmount))) || !cryptoAmount;
+        const isCryptoAmountValid = (cryptoAmount && receivedAmount.isEqualTo(resolveNumber(cryptoAmount))) || !cryptoAmount;
         const isPaymentIdValid = thisPaymentId ? txPaymentId === thisPaymentId : true;
 
         if (isCryptoAmountValid && isPaymentIdValid)
@@ -200,7 +199,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
       (tx: Transaction) => {
         if (
           tx.confirmed === false &&
-          zero.isLessThan(new BigNumber(tx.amount))
+          isGreaterThanZero(resolveNumber(tx.amount))
         ) {
           handlePayment(tx);
         }
