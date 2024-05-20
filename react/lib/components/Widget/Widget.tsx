@@ -18,24 +18,17 @@ import {
   isValidXecAddress,
   getCurrencyTypeFromAddress,
 } from '../../util/address';
-import { formatPrice, DECIMALS } from '../../util/format';
+import { formatPrice } from '../../util/format';
+import { DECIMALS } from '../../util/constants';
 import { Button, animation } from '../Button/Button';
 import BarChart from '../BarChart/BarChart';
 
-import { getCurrencyObject, currencyObject } from '../../util/satoshis';
-import {
-  currency,
-  getAddressBalance,
-  getAddressDetails,
-  isFiat,
-  setListener,
-  Transaction,
-  getCashtabProviderStatus,
-  cryptoCurrency,
-} from '../../util/api-client';
 import PencilIcon from '../../assets/edit-pencil';
 import io, { Socket } from 'socket.io-client';
 import { encodeOpReturnProps } from '../../util/opReturn';
+import { getAddressDetails, setListener, getAddressBalance, isFiat, getCashtabProviderStatus } from '../../util/api-client';
+import { getCurrencyObject } from '../../util/satoshis';
+import { Currency, CurrencyObject, Transaction, CryptoCurrency } from '../../util/types';
 
 type QRCodeProps = BaseQRCodeProps & { renderAs: 'svg' };
 
@@ -54,9 +47,9 @@ export interface WidgetProps {
   foot?: React.ReactNode;
   disabled: boolean;
   goalAmount?: number | string | null;
-  currency?: currency;
+  currency?: Currency;
   animation?: animation;
-  currencyObject?: currencyObject | undefined;
+  currencyObject?: CurrencyObject | undefined;
   setCurrencyObject?: Function;
   randomSatoshis?: boolean | number;
   price?: number | undefined;
@@ -163,14 +156,14 @@ export function Widget (props: WidgetProps) {
   const [goalText, setGoalText] = useState('');
   const [goalPercent, setGoalPercent] = useState(0);
   const [socket, setSocket] = useState<Socket | undefined>(undefined);
-  const [addressType, setAddressType] = useState<cryptoCurrency>(
+  const [addressType, setAddressType] = useState<CryptoCurrency>(
     getCurrencyTypeFromAddress(to),
   );
   const [convertedCurrencyObj, setConvertedCurrencyObj] =
-    useState<currencyObject | null>();
+    useState<CurrencyObject | null>();
   const price = props.price ?? 0;
   const [url, setUrl] = useState('');
-  const [userEditedAmount, setUserEditedAmount] = useState<currencyObject>();
+  const [userEditedAmount, setUserEditedAmount] = useState<CurrencyObject>();
   const [text, setText] = useState(`Send any amount of ${addressType}`);
   const [widgetButtonText, setWidgetButtonText] = useState('Send Payment');
   const [opReturn, setOpReturn] = useState<string | undefined>();
@@ -302,7 +295,7 @@ export function Widget (props: WidgetProps) {
     const address = to;
     let url;
 
-    const addressType: currency = getCurrencyTypeFromAddress(address);
+    const addressType: Currency = getCurrencyTypeFromAddress(address);
     setAddressType(addressType);
     setWidgetButtonText(`Send with ${addressType} wallet`);
 

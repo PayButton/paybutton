@@ -6,17 +6,15 @@ import {
   getCurrencyTypeFromAddress,
 } from '../../util/address';
 import {
-  Transaction,
   isCrypto,
-  currency,
   isValidCurrency,
   isFiat,
   getFiatPrice,
 } from '../../util/api-client';
-import { currencyObject } from '../../util/satoshis';
 import Widget, { WidgetProps } from './Widget';
 import BigNumber from 'bignumber.js';
 import { generatePaymentId } from '../../util/opReturn';
+import { Currency, CurrencyObject, Transaction } from '../../util/types';
 
 export interface WidgetContainerProps
   extends Omit<WidgetProps, 'success' | 'setNewTxs' | 'setCurrencyObject'> {
@@ -25,8 +23,8 @@ export interface WidgetContainerProps
   opReturn?: string;
   paymentId?: string;
   disablePaymentId?: boolean;
-  currency?: currency;
-  currencyObj?: currencyObject;
+  currency?: Currency;
+  currencyObj?: CurrencyObject;
   cryptoAmount?: string;
   price?: number;
   setCurrencyObj: Function;
@@ -84,7 +82,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
       setAmount,
       setCurrencyObj,
       currencyObj,
-      currency = '' as currency,
+      currency = '' as Currency,
       cryptoAmount,
       price,
       animation,

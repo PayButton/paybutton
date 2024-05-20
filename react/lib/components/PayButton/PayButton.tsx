@@ -2,18 +2,19 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 
 import { ButtonTheme, ButtonThemeName, ButtonThemeProvider, useButtonTheme } from '../../buttonThemes';
 import Button, { ButtonProps } from '../Button/Button';
-import { Transaction, currency, isFiat, getFiatPrice } from '../../util/api-client';
+import { isFiat, getFiatPrice } from '../../util/api-client';
 import { PaymentDialog } from '../PaymentDialog/PaymentDialog';
 import { getCurrencyTypeFromAddress, isValidCashAddress, isValidXecAddress } from '../../util/address';
-import { currencyObject, getCurrencyObject } from '../../util/satoshis';
+import { getCurrencyObject } from '../../util/satoshis';
 import { generatePaymentId } from '../../util/opReturn';
+import { Currency, Transaction, CurrencyObject } from '../../util/types';
 
 export interface PayButtonProps extends ButtonProps {
   to: string;
   amount?: number | string;
   opReturn?: string;
   disablePaymentId?: boolean;
-  currency?: currency;
+  currency?: Currency;
   buttonTheme?: ButtonThemeName | ButtonTheme;
   text?: string;
   hoverText?: string;
@@ -51,7 +52,7 @@ export function PayButton(props: PayButtonProps= {
   const [errorMsg, setErrorMsg] = useState('');
   const [amount, setAmount] = useState(props.amount);
 
-  const [currencyObj, setCurrencyObj] = useState<currencyObject | undefined>();
+  const [currencyObj, setCurrencyObj] = useState<CurrencyObject | undefined>();
   const [cryptoAmount, setCryptoAmount] = useState<string>();
   const [price, setPrice] = useState(0);
   const priceRef = useRef<number>(price);
@@ -62,7 +63,7 @@ export function PayButton(props: PayButtonProps= {
     to,
     opReturn,
     disablePaymentId,
-    currency = '' as currency,
+    currency = '' as Currency,
     text,
     hoverText,
     successText,
@@ -177,7 +178,7 @@ export function PayButton(props: PayButtonProps= {
 
   useEffect(() => {
     if (currencyObj && isFiat(currency) && price) {
-      const addressType: currency = getCurrencyTypeFromAddress(to);
+      const addressType: Currency = getCurrencyTypeFromAddress(to);
       const convertedObj = getCurrencyObject(
         currencyObj.float / price,
         addressType,

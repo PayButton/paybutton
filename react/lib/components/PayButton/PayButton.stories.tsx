@@ -50,16 +50,6 @@ export const UsdAmount = {
   },
 };
 
-export const withGoal = {
-  name: 'With Goal',
-
-  args: {
-    hoverText: `Pay with ${defaultCurrency}`,
-    animation: 'none',
-    goalAmount: 100,
-  },
-};
-
 export const withUSDGoalCurrency = {
   name: 'With USD Goal',
 
@@ -67,15 +57,5 @@ export const withUSDGoalCurrency = {
     animation: 'none',
     goalAmount: 500000,
     currency: 'USD',
-  },
-};
-
-export const withEURGoalCurrency = {
-  name: 'With EUR Goal',
-
-  args: {
-    animation: 'none',
-    goalAmount: 400000,
-    currency: 'EUR',
   },
 };

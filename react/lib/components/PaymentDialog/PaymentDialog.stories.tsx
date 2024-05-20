@@ -57,23 +57,3 @@ export const withGoal = {
     goalAmount: 100,
   },
 };
-
-export const withUSDGoalCurrency = {
-  name: 'With USD Goal',
-
-  args: {
-    animation: 'none',
-    goalAmount: 500000,
-    currency: 'USD',
-  },
-};
-
-export const withEURGoalCurrency = {
-  name: 'With EUR Goal',
-
-  args: {
-    animation: 'none',
-    goalAmount: 400000,
-    currency: 'EUR',
-  },
-};
