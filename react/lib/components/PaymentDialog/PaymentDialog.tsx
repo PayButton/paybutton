@@ -1,7 +1,7 @@
 import { Dialog } from '@mui/material';
 import React, { useState, useEffect } from 'react';
 
-import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
+import { ButtonTheme, ButtonThemeName, ButtonThemeProvider, useButtonTheme } from '../../buttonThemes';
 import Button, { ButtonProps } from '../Button/Button';
 import { WidgetContainer } from '../Widget/WidgetContainer';
 import { isValidCashAddress, isValidXecAddress } from '../../util/address';
@@ -21,7 +21,7 @@ export interface PaymentDialogProps extends ButtonProps {
   price?: number;
   hoverText?: string;
   setCurrencyObj: Function;
-  theme?: ThemeName | Theme;
+  buttonTheme?: ButtonThemeName | ButtonTheme;
   successText?: string;
   randomSatoshis?: boolean | number;
   hideToasts?: boolean;
@@ -110,7 +110,7 @@ export function PaymentDialog(
     props: ButtonProps,
   ): React.ReactElement => <Button animation={animation} {...props} />;
 
-  const theme = useTheme(props.theme, isValidXecAddress(to));
+  const buttonTheme = useButtonTheme(props.buttonTheme, isValidXecAddress(to));
 
   let cleanAmount: any;
 
@@ -119,7 +119,7 @@ export function PaymentDialog(
   }
 
   return (
-    <ThemeProvider value={theme}>
+    <ButtonThemeProvider value={buttonTheme}>
       <Dialog
         container={container}
         open={dialogOpen}
@@ -165,7 +165,7 @@ export function PaymentDialog(
           }
         />
       </Dialog>
-    </ThemeProvider>
+    </ButtonThemeProvider>
   );
 };
 

@@ -1,7 +1,7 @@
 import { StoryFn } from '@storybook/react';
 import React from 'react';
 
-import { ThemeName } from '../../themes';
+import { ButtonThemeName } from '../../buttonThemes';
 import Button from './Button';
 
 export default {
@@ -26,9 +26,9 @@ export const Default = {
   args: {},
 };
 
-export const OrangeTheme = {
+export const OrangeButtonTheme = {
   args: {
-    theme: ThemeName.ORANGE,
+    buttonTheme: ButtonThemeName.ORANGE,
     animation: 'invert',
   },
 };

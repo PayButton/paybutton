@@ -1,8 +1,8 @@
-import Theme from '../Theme';
+import ButtonTheme from '../ButtonTheme';
 
 const primary = '#0074C2';
 
-const theme: Theme = {
+const theme: ButtonTheme = {
   palette: {
     primary,
     secondary: '#f8fdf8',

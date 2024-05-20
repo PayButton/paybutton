@@ -1,5 +1,5 @@
 import { StoryFn } from '@storybook/react';
-import { ThemeName } from '../../themes';
+import { ButtonThemeName } from '../../buttonThemes';
 import PaymentDialog from './PaymentDialog';
 
 import { defaultCurrency, to } from '../../../.storybook/default-args';
@@ -29,9 +29,9 @@ export const Default = {
   args: {},
 };
 
-export const OrangeTheme = {
+export const OrangeButtonTheme = {
   args: {
-    theme: ThemeName.ORANGE,
+    buttonTheme: ButtonThemeName.ORANGE,
     animation: 'invert',
   },
 };

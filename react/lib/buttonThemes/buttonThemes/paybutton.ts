@@ -1,8 +1,8 @@
-import Theme from '../Theme';
+import ButtonTheme from '../ButtonTheme';
 
 const primary = '#4bc846';
 
-const theme: Theme = {
+const buttonTheme: ButtonTheme = {
   palette: {
     primary,
     secondary: '#f8fdf8',
@@ -11,4 +11,4 @@ const theme: Theme = {
   },
 };
 
-export default theme;
+export default buttonTheme;

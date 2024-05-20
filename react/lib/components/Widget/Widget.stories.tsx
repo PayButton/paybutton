@@ -1,7 +1,7 @@
 import { StoryFn } from '@storybook/react';
 import React from 'react';
 
-import { ThemeName } from '../../themes';
+import { ButtonThemeName } from '../../buttonThemes';
 import Widget from './Widget';
 
 import { to } from '../../../.storybook/default-args';
@@ -44,15 +44,15 @@ export const Loading = {
   },
 };
 
-export const OrangeTheme = {
+export const OrangeButtonTheme = {
   args: {
-    theme: ThemeName.ORANGE,
+    buttonTheme: ButtonThemeName.ORANGE,
   },
 };
 
-export const CustomTheme = {
+export const CustomButtonTheme = {
   args: {
-    theme: {
+    buttonTheme: {
       palette: {
         primary: '#d05050',
         secondary: '#bee',
@@ -66,7 +66,7 @@ export const CustomTheme = {
 export const WithGoal = {
   args: {
     goalAmount: 100,
-    theme: {
+    buttonTheme: {
       palette: {
         primary: '#d05050',
         secondary: '#bee',
