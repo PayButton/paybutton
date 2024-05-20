@@ -1,35 +1,77 @@
 import BigNumber from 'bignumber.js';
 import { zero, resolveNumber, isGreaterThanZero } from '../util/number'; // Adjust the import path
 
-describe('Number util functions', () => {
-  it('zero should be an instance of BigNumber and equal to 0', () => {
-    expect(zero).toBeInstanceOf(BigNumber);
-    expect(zero.isEqualTo(0)).toBe(true);
-  });
+describe('zero', () => {
+    it('zero should be an instance of BigNumber and equal to 0', () => {
+        expect(zero).toBeInstanceOf(BigNumber);
+        expect(zero.isEqualTo(0)).toBe(true);
+    });    
+})
 
-  it('resolveNumber should convert various types to BigNumber', () => {
-    expect(resolveNumber(42)).toBeInstanceOf(BigNumber);
-    expect(resolveNumber(42).isEqualTo(42)).toBe(true);
-    
-    expect(resolveNumber('42')).toBeInstanceOf(BigNumber);
-    expect(resolveNumber('42').isEqualTo(42)).toBe(true);
-    
-    const bigNumberInstance = new BigNumber(42);
-    expect(resolveNumber(bigNumberInstance)).toBeInstanceOf(BigNumber);
-    expect(resolveNumber(bigNumberInstance).isEqualTo(42)).toBe(true);
-  });
+describe('resolveNumber', () => {
+    it('should convert int type to BigNumber', () => {
+        expect(resolveNumber(42)).toBeInstanceOf(BigNumber);
+        expect(resolveNumber(42).isEqualTo(42)).toBe(true);
+      });
+      
+      it('should convert string representation of int type to BigNumber', () => {
+        expect(resolveNumber('42')).toBeInstanceOf(BigNumber);
+        expect(resolveNumber('42').isEqualTo(42)).toBe(true);
+      });
+      
+      it('should convert float type to BigNumber', () => {
+        expect(resolveNumber(42.0)).toBeInstanceOf(BigNumber);
+        expect(resolveNumber(42.5).isEqualTo(42.5)).toBe(true);
+      });
+      
+      it('should convert string representation of float type to BigNumber', () => {
+        expect(resolveNumber('42.0')).toBeInstanceOf(BigNumber);
+        expect(resolveNumber('42.5').isEqualTo(42.5)).toBe(true);
+      });
+      
+      it('should handle BigNumber instance correctly', () => {
+        const bigNumberInstance = new BigNumber(42);
+        expect(resolveNumber(bigNumberInstance)).toBeInstanceOf(BigNumber);
+        expect(resolveNumber(bigNumberInstance).isEqualTo(42)).toBe(true);
+      });
+})
 
-  it('isGreaterThanZero should correctly identify values less than zero', () => {
-    expect(isGreaterThanZero(-1)).toBe(false);
-    expect(isGreaterThanZero('-1')).toBe(false);
-    expect(isGreaterThanZero(new BigNumber(-1))).toBe(false);
+describe('isGreaterThanZero', () => {
+    it('should correctly identify values less than zero', () => {
+        expect(isGreaterThanZero(-1)).toBe(false);
+      });
+      
+      it('should correctly identify string representation of values less than zero', () => {
+        expect(isGreaterThanZero('-1')).toBe(false);
+      });
+      
+      it('should correctly identify BigNumber instance of values less than zero', () => {
+        expect(isGreaterThanZero(new BigNumber(-1))).toBe(false);
+      });
+      
+      it('should correctly identify zero as not greater than zero', () => {
+        expect(isGreaterThanZero(0)).toBe(false);
+      });
+      
+      it('should correctly identify string representation of zero as not greater than zero', () => {
+        expect(isGreaterThanZero('0')).toBe(false);
+      });
+      
+      it('should correctly identify zero BigNumber instance as not greater than zero', () => {
+        expect(isGreaterThanZero(zero)).toBe(false);
+      });
+      
+      it('should correctly identify values greater than zero', () => {
+        expect(isGreaterThanZero(1)).toBe(true);
+      });
+      
+      it('should correctly identify string representation of values greater than zero', () => {
+        expect(isGreaterThanZero('1')).toBe(true);
+      });
+      
+      it('should correctly identify BigNumber instance of values greater than zero', () => {
+        expect(isGreaterThanZero(new BigNumber(1))).toBe(true);
+      });
+})
 
-    expect(isGreaterThanZero(0)).toBe(false);
-    expect(isGreaterThanZero('0')).toBe(false);
-    expect(isGreaterThanZero(zero)).toBe(false);
 
-    expect(isGreaterThanZero(1)).toBe(true);
-    expect(isGreaterThanZero('1')).toBe(true);
-    expect(isGreaterThanZero(new BigNumber(1))).toBe(true);
-  });
-});
