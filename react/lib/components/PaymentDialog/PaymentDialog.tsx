@@ -38,21 +38,23 @@ export interface PaymentDialogProps extends ButtonProps {
   apiBaseUrl?: string;
 }
 
-export function PaymentDialog(
-  props: PaymentDialogProps = {
-    animation: 'slide',
-    hideToasts: false,
-    randomSatoshis: false,
-    successText: 'Thank you!',
-    disableEnforceFocus: false,
-    disabled: false,
-    editable: false,
-    dialogOpen: true,
-    to: '',
-    setAmount: () =>{},
-    setCurrencyObj: () =>{},
-  }
-){
+const defaultPaymentDialogProps: PaymentDialogProps = {
+  animation: 'slide',
+  hideToasts: false,
+  randomSatoshis: false,
+  successText: 'Thank you!',
+  disableEnforceFocus: false,
+  disabled: false,
+  editable: false,
+  dialogOpen: true,
+  to: '',
+  setAmount: () =>{},
+  setCurrencyObj: () =>{},
+}
+
+export function PaymentDialog(props: PaymentDialogProps){
+  props = {...defaultPaymentDialogProps, ...props}
+
   const [success, setSuccess] = useState(false);
   const [disabled, setDisabled] = useState(false);
 

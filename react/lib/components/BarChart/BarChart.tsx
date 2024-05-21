@@ -5,11 +5,10 @@ export interface BarChartProps {
   color: string;
 }
 
-export const BarChart = (props: BarChartProps = {
-  value: 34,
-  color: '#4bc846',
-}): React.ReactElement => {
-  const { value, color } = props;
+export const BarChart = ({
+  value = 34,
+  color = '#4bc846',
+}: BarChartProps): React.ReactElement => {
   const [barWidth, setBarWidth] = useState(0);
 
   const containerStyle: CSSProperties = {

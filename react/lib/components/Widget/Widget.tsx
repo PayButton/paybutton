@@ -124,15 +124,15 @@ const useStyles = makeStyles({
   }),
 });
 
-export function Widget (props: WidgetProps = {
+const defaultWidgetProps: Partial<WidgetProps> = {
   success: false,
   successText: 'Thank you!',
   editable: false,
-  to: '',
   disabled: false,
-  setNewTxs: () => {}
-}
- ) {
+};
+
+export function Widget (props: WidgetProps) {
+  props = { ...defaultWidgetProps, ...props };
   const {
     to,
     foot,
