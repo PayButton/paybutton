@@ -7,3 +7,5 @@ export const DECIMALS: { [key: string]: number } = {
     XEC: 2,
     FIAT: 2,
 };
+
+export const DEFAULT_HOVER_TEXT = 'Send Payment'

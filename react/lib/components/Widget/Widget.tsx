@@ -19,7 +19,7 @@ import {
   getCurrencyTypeFromAddress,
 } from '../../util/address';
 import { formatPrice } from '../../util/format';
-import { DECIMALS } from '../../util/constants';
+import { DECIMALS, DEFAULT_HOVER_TEXT } from '../../util/constants';
 import { Button, animation } from '../Button/Button';
 import BarChart from '../BarChart/BarChart';
 
@@ -126,7 +126,15 @@ const useStyles = makeStyles({
   }),
 });
 
-export function Widget (props: WidgetProps) {
+export function Widget (props: WidgetProps = {
+  success: false,
+  successText: 'Thank you!',
+  editable: false,
+  to: '',
+  disabled: false,
+  setNewTxs: () => {}
+}
+ ) {
   const {
     to,
     foot,
@@ -144,8 +152,8 @@ export function Widget (props: WidgetProps) {
     newTxs,
     apiBaseUrl,
     wsBaseUrl,
-    hoverText = Button.defaultProps.hoverText
-  } = Object.assign({}, Widget.defaultProps, props);
+    hoverText = DEFAULT_HOVER_TEXT
+  } = props;
 
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
@@ -667,12 +675,6 @@ export function Widget (props: WidgetProps) {
       </Box>
     </ButtonThemeProvider>
   );
-};
-
-Widget.defaultProps = {
-  success: false,
-  successText: 'Thank you!',
-  editable: false,
 };
 
 export default Widget;
