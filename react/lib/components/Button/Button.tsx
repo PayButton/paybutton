@@ -5,6 +5,7 @@ import { styled } from '@mui/system'
 import  { useRef, useState, useLayoutEffect } from 'react';
 
 import { ButtonTheme, ButtonThemeName, useButtonTheme, getThemeFromButtonTheme } from '../../buttonThemes';
+import { DEFAULT_HOVER_TEXT } from '../../util/constants';
 
 export type animation = 'slide' | 'invert' | 'none' | undefined;
 
@@ -23,22 +24,22 @@ interface StyleProps {
 }
 
 const StyledButton = styled(MuiButton)(({ theme, ...props }: StyleProps) => ({
-  background: `${theme.palette.secondary} !important`,
+  background: `${theme.palette.secondary.main} !important`,
   transition: '0.6s !important',
   ...(props.animation === 'slide'
     ? {
-      background: `linear-gradient(45deg, ${theme.palette.primary} 50%, ${theme.palette.secondary} 50%) 100% center / 300% !important`,
+      background: `linear-gradient(45deg, ${theme.palette.primary.main} 50%, ${theme.palette.secondary.main} 50%) 100% center / 300% !important`,
       backgroundSize: '300% !important',
       backgroundPosition: '100% !important',
       transition: 'background-position 0.8s, color 0.15s !important',
     }
     : {}),
-  color: `${theme.palette.primary} !important`,
+  color: `${theme.palette.primary.main} !important`,
   minWidth: '14em !important',
   padding: '0.618em 1.618em !important',
   margin: 'auto !important',
   boxShadow: '3px 3px 3px rgba(0, 0, 0, 0.08) !important',
-  border: `2px solid ${theme.palette.primary} !important`,
+  border: `2px solid ${theme.palette.primary.main} !important`,
   borderRadius: '10px !important',
   fontSize: '1em !important',
   textTransform: 'none',
@@ -46,19 +47,19 @@ const StyledButton = styled(MuiButton)(({ theme, ...props }: StyleProps) => ({
     ...(props.animation === 'slide'
       ? {
         backgroundPosition: '0 !important',
-        color: `${theme.palette.secondary} !important`,
+        color: `${theme.palette.secondary.main} !important`,
       }
       : {}),
     ...(props.animation === 'invert'
       ? {
-        background: `${theme.palette.primary} !important`,
-        color: `${theme.palette.secondary} !important`,
+        background: `${theme.palette.primary.main} !important`,
+        color: `${theme.palette.secondary.main} !important`,
       }
       : {}),
     ...(props.animation === 'none'
       ? {
-        background: `${theme.palette.secondary} !important`,
-        color: `${theme.palette.primary} !important`,
+        background: `${theme.palette.secondary.main} !important`,
+        color: `${theme.palette.primary.main} !important`,
       }
       : {}),
   },
@@ -72,7 +73,7 @@ const StyledButton = styled(MuiButton)(({ theme, ...props }: StyleProps) => ({
 export function Button(props: ButtonProps =  {
   animation: 'slide',
   text: 'Donate',
-  hoverText: 'Send Payment',
+  hoverText: DEFAULT_HOVER_TEXT,
   disabled: false,
 }) {
   const { animation, text, hoverText, disabled } = props
@@ -113,6 +114,7 @@ export function Button(props: ButtonProps =  {
     clearTimeout(timer.current);
     timer.current = window.setTimeout(() => setTransitioning(false), 150);
   };
+  console.log('ué', styleProps)
 
   return (
     <div style={{ fontSize: '0.8rem' }}>
