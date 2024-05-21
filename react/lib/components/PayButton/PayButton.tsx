@@ -11,8 +11,11 @@ import {
   getCurrencyTypeFromAddress,
   isValidCashAddress,
   isValidXecAddress,
-  CurrencyObject
+  CurrencyObject,
+  generatePaymentId,
+  getCurrencyObject
 } from '../../util';
+import { PaymentDialog } from '../PaymentDialog';
 export interface PayButtonProps extends ButtonProps {
   to: string;
   amount?: number | string;

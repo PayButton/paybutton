@@ -10,12 +10,3 @@ export * from './socket';
 export * from './types';
 export * from './number';
 export * from './currency';
-
-
-export const getCashtabProviderStatus = () => {
-  const windowAny = window as any;
-  if (window && windowAny.bitcoinAbc && windowAny.bitcoinAbc === 'cashtab') {
-    return true;
-  }
-  return false;
-};

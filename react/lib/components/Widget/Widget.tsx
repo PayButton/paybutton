@@ -10,19 +10,12 @@ import {
 import React, { useEffect, useMemo, useState } from 'react';
 import copy from 'copy-to-clipboard';
 import QRCode, { BaseQRCodeProps } from 'qrcode.react';
+import io, { Socket } from 'socket.io-client';
+import PencilIcon from '../../assets/edit-pencil';
 import config from '../../config.json';
-
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
-import {
-  isValidCashAddress,
-  isValidXecAddress,
-  getCurrencyTypeFromAddress,
-} from '../../util/address';
-import { formatPrice } from '../../util/format';
 import { Button, animation } from '../Button/Button';
 import BarChart from '../BarChart/BarChart';
-
-import { getCurrencyObject } from '../../util/satoshis';
 import {
   Currency,
   getAddressBalance,
@@ -32,12 +25,15 @@ import {
   getCashtabProviderStatus,
   CryptoCurrency,
   DECIMALS,
-  CurrencyObject
+  CurrencyObject,
+  getCurrencyObject,
+  formatPrice,
+  setListener,
+  encodeOpReturnProps,
+  isValidCashAddress,
+  isValidXecAddress,
+  getCurrencyTypeFromAddress,
 } from '../../util';
-import { setListener } from '../../util/socket';
-import PencilIcon from '../../assets/edit-pencil';
-import io, { Socket } from 'socket.io-client';
-import { encodeOpReturnProps } from '../../util/opReturn';
 
 type QRCodeProps = BaseQRCodeProps & { renderAs: 'svg' };
 

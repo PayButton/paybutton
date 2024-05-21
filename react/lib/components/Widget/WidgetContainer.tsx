@@ -4,19 +4,20 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import successSound from '../../assets/success.mp3.json';
 
 import {
-  getCurrencyTypeFromAddress,
-} from '../../util/address';
-import {
   getFiatPrice,
   Currency,
   CurrencyObject,
-  Transaction
+  Transaction,
+  generatePaymentId,
+  getCurrencyTypeFromAddress,
+  isCrypto,
+  isFiat,
+  isGreaterThanZero,
+  isValidCurrency,
+  resolveNumber
 } from '../../util';
 
 import Widget, { WidgetProps } from './Widget';
-import { generatePaymentId } from '../../util/opReturn';
-import { isGreaterThanZero, resolveNumber } from '../../util/number';
-import { isCrypto, isFiat, isValidCurrency } from '../../util/currency';
 
 export interface WidgetContainerProps
   extends Omit<WidgetProps, 'success' | 'setNewTxs' | 'setCurrencyObject'> {

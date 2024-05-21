@@ -19,12 +19,13 @@
   },
   "scripts": {
     "build": "tsc --p ./tsconfig-build.json && microbundle --jsx React.createElement --format modern,cjs",
-    "lint": "eslint 'lib/**/*.{js,jsx,ts,tsx,json,css,scss,md}' --fix",
-    "prettier": "prettier --write 'lib/**/*.{js,jsx,ts,tsx,json,css,scss,md}'",
+    "lint": "eslint 'lib/**/*.{ts,tsx}' --fix",
+    "prettier": "prettier --write 'lib/**/*.ts'",
     "dev": "concurrently yarn:watch yarn:storybook",
     "storybook": "start-storybook -p 6006",
     "watch": "microbundle watch --jsx React.createElement --no-compress --format modern,cjs",
-    "test": "jest"
+    "test": "jest",
+    "test:coverage": "jest --coverage"
   },
   "peerDependencies": {
     "react": "17.0.0",
