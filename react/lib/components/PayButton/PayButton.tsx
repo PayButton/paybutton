@@ -38,7 +38,19 @@ export interface PayButtonProps extends ButtonProps {
   apiBaseUrl?: string;
 }
 
+const defaultPaybuttonProps: PayButtonProps = {
+  animation: 'slide',
+  hideToasts: false,
+  randomSatoshis: false,
+  successText: 'Thank you!',
+  disableEnforceFocus: false,
+  disabled: false,
+  editable: false,
+  to: ''
+}
+
 export function PayButton(props: PayButtonProps) {
+  props = { ...defaultPaybuttonProps, ...props };
   const [dialogOpen, setDialogOpen] = useState(false);
   const [disabled, setDisabled] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');

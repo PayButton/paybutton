@@ -17,7 +17,7 @@ export enum ButtonThemeName {
   XEC = 'xec',
 }
 
-const DEFAULT_THEME = ButtonThemeName.PAYBUTTON;
+export const DEFAULT_THEME = ButtonThemeName.PAYBUTTON;
 
 export const getButtonTheme = (name: ButtonThemeName = DEFAULT_THEME): ButtonTheme =>
   buttonThemes[name];

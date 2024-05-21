@@ -4,7 +4,7 @@ import { styled } from '@mui/system'
 
 import  { useRef, useState, useLayoutEffect } from 'react';
 
-import { ButtonTheme, ButtonThemeName, useButtonTheme, getThemeFromButtonTheme } from '../../buttonThemes';
+import { ButtonTheme, ButtonThemeName, useButtonTheme, getThemeFromButtonTheme, DEFAULT_THEME } from '../../buttonThemes';
 import { DEFAULT_HOVER_TEXT } from '../../util/constants';
 
 export type animation = 'slide' | 'invert' | 'none' | undefined;
@@ -70,20 +70,21 @@ const StyledButton = styled(MuiButton)(({ theme, ...props }: StyleProps) => ({
 })
 )
 
-export function Button(props: ButtonProps =  {
-  animation: 'slide',
-  text: 'Donate',
-  hoverText: DEFAULT_HOVER_TEXT,
-  disabled: false,
-}) {
-  const { animation, text, hoverText, disabled } = props
+export function Button({
+  animation = 'slide',
+  text = 'Donate',
+  hoverText = DEFAULT_HOVER_TEXT,
+  disabled = false,
+  buttonTheme = DEFAULT_THEME,
+  onClick,
+}: ButtonProps) {
 
   const [hovering, setHovering] = useState(false);
   const [transitioning, setTransitioning] = useState(false);
   const timer = useRef<number>();
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-  const buttonTheme = useButtonTheme(props.buttonTheme);
+  buttonTheme = useButtonTheme(buttonTheme);
   const theme = getThemeFromButtonTheme(buttonTheme)
   const styleProps: StyleProps = { animation, theme };
 
@@ -114,7 +115,6 @@ export function Button(props: ButtonProps =  {
     clearTimeout(timer.current);
     timer.current = window.setTimeout(() => setTransitioning(false), 150);
   };
-  console.log('ué', styleProps)
 
   return (
     <div style={{ fontSize: '0.8rem' }}>
@@ -122,7 +122,7 @@ export function Button(props: ButtonProps =  {
         {...styleProps}
         disabled={disabled}
         className={"button"}
-        onClick={props.onClick}
+        onClick={onClick}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         ref={buttonRef}
