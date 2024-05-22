@@ -10,10 +10,8 @@ import {
   Currency,
   CryptoCurrency,
   FiatCurrency,
-  BroadcastTxData
 } from './types';
 import { FIAT_CURRENCIES, CRYPTO_CURRENCIES } from './constants';
-import { Socket } from 'socket.io-client';
 
 export const getAddressDetails = async (
   address: string,
@@ -22,14 +20,6 @@ export const getAddressDetails = async (
   const res = await fetch(`${rootUrl}/address/transactions/${address}`);
   return res.json();
 };
-export const setListener = (socket: Socket, setNewTxs: Function): void => {
-  socket.on('incoming-txs', (broadcastedTxData: BroadcastTxData) => {
-    const unconfirmedTxs = broadcastedTxData.txs.filter(tx => tx.confirmed === false)
-    if (broadcastedTxData.messageType === 'NewTx' && unconfirmedTxs.length !== 0) {
-      setNewTxs(unconfirmedTxs)
-    }
-  })
-}
 
 export const getAddressBalance = async (
   address: string,
