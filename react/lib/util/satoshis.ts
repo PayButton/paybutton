@@ -2,7 +2,7 @@ import { formatPrice, formatBCH, formatXEC } from './format';
 import { DECIMALS } from './constants'
 
 
-import { isCrypto } from './api-client';
+import { isCrypto } from './currency';
 import { randomizeSatoshis } from './randomizeSats';
 import { Currency, CurrencyObject } from './types';
 import { resolveNumber } from './number';
