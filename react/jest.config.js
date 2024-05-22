@@ -20,4 +20,7 @@ module.exports = {
   transformIgnorePatterns: [
     'node_modules/(?!(@babylonjs/core|@babylonjs/loaders)).+.[t|j]sx?$',
   ],
+  moduleNameMapper: {
+    "^@/(.*)$": "<rootDir>"
+  }
 };
