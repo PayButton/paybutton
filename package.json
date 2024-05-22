@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "cd paybutton && yarn dev",
     "test": "cd react && yarn test",
+    "test:coverage": "cd react && yarn test:coverage",
     "build:react": "cd react && yarn && yarn build",
     "build:paybutton": "cd paybutton && yarn && yarn build",
     "start:paybutton": "cd paybutton && yarn && yarn start",

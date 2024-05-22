@@ -2,3 +2,4 @@ node_modules
 dist
 .env.local
 paybutton/dev/demo/paybutton.js
+react/coverage
