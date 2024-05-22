@@ -1,9 +1,7 @@
-import { isCrypto, isFiat, isValidCurrency } from '../util/api-client';
-import { FIAT_CURRENCIES } from '../util/constants'
+import { FIAT_CURRENCIES } from "../util/constants";
+import { isCrypto, isFiat, isValidCurrency } from "../util/currency";
 
-
-describe('API Client Util Tests', () => {
-  describe('isCrypto', () => {
+describe('isCrypto', () => {
     it('recognizes valid crypto currencies', () => {
       expect(isCrypto('BCH')).toBeTruthy();
       expect(isCrypto('XEC')).toBeTruthy();
@@ -78,4 +76,3 @@ describe('API Client Util Tests', () => {
       });
     });
   });
-});

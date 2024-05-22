@@ -26,10 +26,11 @@ import BarChart from '../BarChart/BarChart';
 import PencilIcon from '../../assets/edit-pencil';
 import io, { Socket } from 'socket.io-client';
 import { encodeOpReturnProps } from '../../util/opReturn';
-import { getAddressDetails, getAddressBalance, isFiat, getCashtabProviderStatus } from '../../util/api-client';
+import { getAddressDetails, getAddressBalance, getCashtabProviderStatus } from '../../util/api-client';
 import { getCurrencyObject } from '../../util/satoshis';
 import { Currency, CurrencyObject, Transaction, CryptoCurrency } from '../../util/types';
 import { setListener } from '../../util/socket';
+import { isFiat } from '../../util/currency';
 
 type QRCodeProps = BaseQRCodeProps & { renderAs: 'svg' };
 
