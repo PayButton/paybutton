@@ -73,7 +73,9 @@ const Root = styled(Box)({
   background: '#f5f5f7 !important',
 });
 
-const QRCodeStyled = styled(Box)<StyleProps>(({ success, loading, buttontheme }) => ({
+const QRCodeStyled = styled(Box, {
+  shouldForwardProp: (prop) => prop !== 'loading' && prop !== 'success'
+})<StyleProps>(({ success, loading, buttontheme }) => ({
   background: '#fff !important',
   border: '1px solid #eee !important',
   borderRadius: '4px !important',
@@ -98,7 +100,9 @@ const QRCodeStyled = styled(Box)<StyleProps>(({ success, loading, buttontheme })
   },
 }));
 
-const CopyTextContainer = styled(Box)<{loading: boolean}>(({ loading }) => ({
+const CopyTextContainer = styled(Box, {
+  shouldForwardProp: (prop) => prop !== 'loading'
+})<{loading: boolean}>(({ loading }) => ({
   display: loading ? 'none' : 'block',
   background: '#ffffffcc !important',
   padding: '0 0.15rem 0.15rem 0 !important',
@@ -121,7 +125,7 @@ const Spinner = styled(CircularProgress)<{buttontheme: ButtonTheme}>(({ buttonth
   color: `${buttontheme.palette.primary} !important`,
 }));
 
-const Footer = styled('div')({
+const Footer = styled(Typography)({
   fontSize: '0.6rem !important',
   color: '#a8a8a8 !important',
   fontWeight: 'normal',
