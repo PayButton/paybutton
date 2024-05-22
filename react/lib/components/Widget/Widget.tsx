@@ -6,10 +6,10 @@ import {
   TextField,
   Grid,
 } from '@mui/material';
-import { makeStyles } from '@mui/styles';
+import { styled } from '@mui/material/styles';
 import React, { useEffect, useMemo, useState } from 'react';
 import copy from 'copy-to-clipboard';
-import QRCode, { BaseQRCodeProps } from 'qrcode.react';
+import QRCode from 'qrcode.react';
 import config from '../../config.json';
 
 import { ButtonTheme, ButtonThemeName, ButtonThemeProvider, useButtonTheme } from '../../buttonThemes';
@@ -32,7 +32,7 @@ import { Currency, CurrencyObject, Transaction, CryptoCurrency } from '../../uti
 import { setListener } from '../../util/socket';
 import { isFiat } from '../../util/currency';
 
-type QRCodeProps = BaseQRCodeProps & { renderAs: 'svg' };
+type QRCodeProps = Parameters<typeof QRCode>[0];
 
 export interface WidgetProps {
   to: string;
@@ -67,63 +67,67 @@ export interface WidgetProps {
 interface StyleProps {
   success: boolean;
   loading: boolean;
-  buttonTheme: ButtonTheme;
+  buttontheme: ButtonTheme;
 }
 
-const useStyles = makeStyles({
-  root: {
-    minWidth: '240px !important',
-    background: '#f5f5f7 !important',
+const Root = styled(Box)({
+  minWidth: '240px !important',
+  background: '#f5f5f7 !important',
+});
+
+const QRCodeStyled = styled(Box)<StyleProps>(({ success, loading, buttontheme }) => ({
+  background: '#fff !important',
+  border: '1px solid #eee !important',
+  borderRadius: '4px !important',
+  outline: 'none !important',
+  lineHeight: '0 !important',
+  maxWidth: '28vh !important',
+  maxHeight: '28vh !important',
+  position: 'relative',
+  padding: '1rem !important',
+  cursor: 'pointer !important',
+  userSelect: 'none',
+  '&:active': {
+    borderWidth: '2px !important',
+    margin: '-1px !important',
   },
-  qrCode: ({ success, loading, buttonTheme }: StyleProps) => ({
-    background: '#fff !important',
-    border: '1px solid #eee !important',
-    borderRadius: '4px !important',
-    outline: 'none !important',
-    lineHeight: '0 !important',
-    maxWidth: '28vh !important',
-    maxHeight: '28vh !important',
-    position: 'relative',
-    padding: '1rem !important',
-    cursor: 'pointer !important',
-    userSelect: 'none',
-    '&:active': {
-      borderWidth: '2px !important',
-      margin: '-1px !important',
-    },
-    '& path': {
-      opacity: loading ? 0 : success ? 0.35 : 1,
-      color: buttonTheme.palette.secondary,
-    },
-    '& image': {
-      opacity: loading ? 0 : 1,
-    },
-  }),
-  copyTextContainer: ({ loading }: StyleProps) => ({
-    display: loading ? 'none' : 'block',
-    background: '#ffffffcc !important',
-    padding: '0 0.15rem 0.15rem 0 !important',
-  }),
-  copyText: ({ buttonTheme }: StyleProps) => ({
+  '& path': {
+    opacity: loading ? 0 : success ? 0.35 : 1,
+    color: buttontheme.palette.secondary,
+  },
+  '& image': {
+    opacity: loading ? 0 : 1,
+  },
+}));
+
+const CopyTextContainer = styled(Box)<{loading: boolean}>(({ loading }) => ({
+  display: loading ? 'none' : 'block',
+  background: '#ffffffcc !important',
+  padding: '0 0.15rem 0.15rem 0 !important',
+}));
+
+const CopyText = styled(Typography)<{buttontheme: ButtonTheme}>(({ buttontheme }) => ({
     lineHeight: '1.2em !important',
     fontSize: '0.7em !important',
-    color: `${buttonTheme.palette.tertiary} !important`,
+    color: `${buttontheme.palette.tertiary} !important`,
     textShadow:
       '#fff -2px 0 1px, #fff 0 -2px 1px, #fff 0 2px 1px, #fff 2px 0 1px !important',
-  }),
-  text: ({ buttonTheme }: StyleProps) => ({
+}));
+
+const Text = styled(Typography)<{buttontheme: ButtonTheme}>(({ buttontheme }) => ({
     fontSize: '0.9rem !important',
-    color: `${buttonTheme.palette.tertiary} !important`,
-  }),
-  spinner: ({ buttonTheme }: StyleProps) => ({
-    color: `${buttonTheme.palette.primary} !important`,
-  }),
-  footer: () => ({
-    fontSize: '0.6rem !important',
-    color: '#a8a8a8 !important',
-    fontWeight: 'normal',
-    userSelect: 'none',
-  }),
+    color: `${buttontheme.palette.tertiary} !important`,
+}));
+
+const Spinner = styled(CircularProgress)<{buttontheme: ButtonTheme}>(({ buttontheme }) => ({
+  color: `${buttontheme.palette.primary} !important`,
+}));
+
+const Footer = styled('div')({
+  fontSize: '0.6rem !important',
+  color: '#a8a8a8 !important',
+  fontWeight: 'normal',
+  userSelect: 'none',
 });
 
 const defaultWidgetProps: Partial<WidgetProps> = {
@@ -179,8 +183,6 @@ export function Widget (props: WidgetProps) {
   const [opReturn, setOpReturn] = useState<string | undefined>();
 
   const buttonTheme = useButtonTheme(props.buttonTheme, isValidXecAddress(to));
-  const classes = useStyles({ success, loading, buttonTheme });
-
   const [thisAmount, setThisAmount] = useState(props.amount);
   const [hasPrice, setHasPrice] = useState(props.price !== undefined && props.price > 0);
   const [thisCurrencyObject, setThisCurrencyObject] = useState(
@@ -518,8 +520,7 @@ export function Widget (props: WidgetProps) {
 
   return (
     <ButtonThemeProvider value={buttonTheme}>
-      <Box
-        className={classes.root}
+      <Root
         pt={0}
         display="flex"
         flexDirection="column"
@@ -533,13 +534,17 @@ export function Widget (props: WidgetProps) {
           textAlign="center"
         >
           {errorMsg ? (
-            <Typography className={classes.text} style={{ color: '#EB3B3B' }}>
+            <Text style={{ color: '#EB3B3B' }}
+            buttontheme={buttonTheme}
+              >
               {errorMsg}
-            </Typography>
+            </Text>
           ) : (
-            <Typography className={classes.text}>
+            <Text
+                buttontheme={buttonTheme}
+              >
               {loading ? 'Loading...' : success ? successText : text}
-            </Typography>
+            </Text>
           )}
         </Box>
         <Box
@@ -550,27 +555,27 @@ export function Widget (props: WidgetProps) {
           pt={2}
         >
           {loading && shouldDisplayGoal ? (
-            <Typography
-              className={classes.text}
+            <Text
+                buttontheme={buttonTheme}
               style={{ margin: '10px auto 20px' }}
             >
-              <CircularProgress
+              <Spinner
+                buttontheme={buttonTheme}
                 size={15}
                 thickness={4}
-                className={classes.spinner}
               />
-            </Typography>
+            </Text>
           ) : (
             <>
               {shouldDisplayGoal && (
                 <>
-                  <Typography
-                    className={classes.copyText}
+                  <CopyText
+                    buttontheme={buttonTheme}
                     style={{ marginBottom: '0.61rem' }}
                   >
                     {goalText}
                     <strong>&nbsp;{currency}</strong>
-                  </Typography>
+                  </CopyText>
                   <BarChart
                     color={buttonTheme.palette.primary}
                     value={Math.round(goalPercent)}
@@ -579,10 +584,12 @@ export function Widget (props: WidgetProps) {
               )}
             </>
           )}
-          <Box
+          <QRCodeStyled
+            success={success}
+            loading={loading}
+            buttontheme={buttonTheme}
             flex={1}
             position="relative"
-            className={classes.qrCode}
             onClick={handleQrCodeClick}
           >
             <Fade in={!loading && url !== ''}>
@@ -594,13 +601,17 @@ export function Widget (props: WidgetProps) {
                     in={!copied || recentlyCopied}
                     timeout={{ enter: 0, exit: 2000 }}
                   >
-                    <Box className={classes.copyTextContainer}>
+                    <CopyTextContainer
+                    loading={loading}
+                    >
                       {!disabled && (
-                        <Typography className={classes.copyText}>
+                        <CopyText
+                          buttontheme={buttonTheme}
+                          >
                           {copied ? 'Payment copied!' : 'Click to copy'}
-                        </Typography>
+                        </CopyText>
                       )}
-                    </Box>
+                    </CopyTextContainer>
                   </Fade>
                 </Box>
               </div>
@@ -616,14 +627,14 @@ export function Widget (props: WidgetProps) {
                 justifyContent="center"
                 alignItems="center"
               >
-                <CircularProgress
+                <Spinner
+                  buttontheme={buttonTheme}
                   size={70}
                   thickness={4}
-                  className={classes.spinner}
                 />
               </Box>
             )}
-          </Box>
+          </QRCodeStyled>
 
           {editable && (
             <Grid
@@ -667,12 +678,12 @@ export function Widget (props: WidgetProps) {
             </Box>
           )}
           <Box py={0.8}>
-            <Typography className={classes.footer}>
+            <Footer>
               Powered by PayButton.org
-            </Typography>
+            </Footer>
           </Box>
         </Box>
-      </Box>
+      </Root>
     </ButtonThemeProvider>
   );
 };
