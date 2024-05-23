@@ -8,8 +8,7 @@
   "dependencies": {
     "@paybutton/react": "link:../react",
     "camelcase": "^8.0.0",
-    "preact": "^10.22.0",
-    "preact-compat": "^3.19.0"
+    "preact": "^10.22.0"
   },
   "devDependencies": {
     "@rollup/plugin-alias": "^5.1.0",
@@ -26,7 +25,6 @@
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.6.0",
     "json-loader": "^0.5.7",
-    "preact-compat": "^3.19.0",
     "preact-jsx-runtime": "^1.2.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
