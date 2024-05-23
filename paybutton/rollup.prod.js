@@ -6,8 +6,10 @@ const config = common( 'production' );
 
 module.exports = config;
 
+/*
 config.plugins.push(
   terser( {
     mangle: true,
   } ),
 );
+*/
