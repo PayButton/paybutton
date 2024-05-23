@@ -2,7 +2,7 @@ import {
   exportedForTesting,
   encodeOpReturnProps,
   EncodeOpReturnParams,
-} from '../util/opReturn';
+} from '../../util/opReturn';
 
 const {
   stringToHex,
