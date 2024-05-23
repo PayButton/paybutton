@@ -8,10 +8,8 @@ import {
   PriceData,
   TransactionDetails,
   Currency,
-  CryptoCurrency,
-  FiatCurrency,
 } from './types';
-import { FIAT_CURRENCIES, CRYPTO_CURRENCIES } from './constants';
+import { isFiat } from './currency';
 
 export const getAddressDetails = async (
   address: string,
@@ -98,22 +96,6 @@ export default {
   getXecFiatPrice,
   getAddressBalance,
 };
-
-export function isFiat(unknownString: string): unknownString is FiatCurrency {
-  return FIAT_CURRENCIES.includes(unknownString as FiatCurrency);
-}
-
-export function isCrypto(
-  unknownString: string,
-): unknownString is CryptoCurrency {
-  return CRYPTO_CURRENCIES.includes(unknownString as CryptoCurrency)
-}
-
-export function isValidCurrency(
-  unknownString: string,
-): unknownString is CryptoCurrency {
-  return isFiat(unknownString) || isCrypto(unknownString)
-}
 
 export const getCashtabProviderStatus = () => {
   const windowAny = window as any

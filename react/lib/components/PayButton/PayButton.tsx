@@ -2,12 +2,13 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
 import Button, { ButtonProps } from '../Button/Button';
-import { isFiat, getFiatPrice } from '../../util/api-client';
+import { getFiatPrice } from '../../util/api-client';
 import { PaymentDialog } from '../PaymentDialog/PaymentDialog';
 import { getCurrencyTypeFromAddress, isValidCashAddress, isValidXecAddress } from '../../util/address';
 import { getCurrencyObject } from '../../util/satoshis';
 import { generatePaymentId } from '../../util/opReturn';
 import { Currency, Transaction, CurrencyObject } from '../../util/types';
+import { isFiat } from '../../util/currency';
 
 export interface PayButtonProps extends ButtonProps {
   to: string;

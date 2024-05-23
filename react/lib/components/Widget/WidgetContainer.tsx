@@ -6,15 +6,14 @@ import {
   getCurrencyTypeFromAddress,
 } from '../../util/address';
 import {
-  isCrypto,
-  isValidCurrency,
-  isFiat,
   getFiatPrice,
 } from '../../util/api-client';
+
 import Widget, { WidgetProps } from './Widget';
 import { generatePaymentId } from '../../util/opReturn';
 import { Currency, CurrencyObject, Transaction } from '../../util/types';
 import { isGreaterThanZero, resolveNumber } from '../../util/number';
+import { isCrypto, isFiat, isValidCurrency } from '../../util/currency';
 
 export interface WidgetContainerProps
   extends Omit<WidgetProps, 'success' | 'setNewTxs' | 'setCurrencyObject'> {
