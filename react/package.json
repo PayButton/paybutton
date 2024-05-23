@@ -28,10 +28,6 @@
     "test": "jest",
     "test:coverage": "jest --coverage"
   },
-  "peerDependencies": {
-    "react": "^17.0.0 || ^18.0.0",
-    "react-dom": "^17.0.0 || ^18.0.0"
-  },
   "devDependencies": {
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
@@ -63,7 +59,9 @@
     "@types/lodash": "4.14.202",
     "@types/mini-css-extract-plugin": "~1.4.3",
     "@types/node": "20.11.5",
-    "@types/qrcode.react": "1.0.5",
+    "@types/qrcode.react": "^1.0.5",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
     "@typescript-eslint/eslint-plugin": "^7.0.2",
     "@typescript-eslint/parser": "^7.0.2",
     "@vitejs/plugin-react": "^4.2.1",
@@ -86,7 +84,9 @@
     "lint-staged": "15.2.0",
     "mini-css-extract-plugin": "~1.6.2",
     "prettier": "3.2.4",
-    "qrcode.react": "1.0.1",
+    "qrcode.react": "^3.1.0",
+    "react": "^18",
+    "react-dom": "^18",
     "react-is": "18.2.0",
     "react-refresh": "^0.14.0",
     "storybook": "8.0.0-alpha.14",
