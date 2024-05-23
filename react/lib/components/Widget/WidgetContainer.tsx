@@ -6,17 +6,14 @@ import {
   getCurrencyTypeFromAddress,
 } from '../../util/address';
 import {
-  Transaction,
-  isCrypto,
-  currency,
-  isValidCurrency,
-  isFiat,
   getFiatPrice,
 } from '../../util/api-client';
-import { currencyObject } from '../../util/satoshis';
+
 import Widget, { WidgetProps } from './Widget';
-import BigNumber from 'bignumber.js';
 import { generatePaymentId } from '../../util/opReturn';
+import { Currency, CurrencyObject, Transaction } from '../../util/types';
+import { isGreaterThanZero, resolveNumber } from '../../util/number';
+import { isCrypto, isFiat, isValidCurrency } from '../../util/currency';
 
 export interface WidgetContainerProps
   extends Omit<WidgetProps, 'success' | 'setNewTxs' | 'setCurrencyObject'> {
@@ -25,8 +22,8 @@ export interface WidgetContainerProps
   opReturn?: string;
   paymentId?: string;
   disablePaymentId?: boolean;
-  currency?: currency;
-  currencyObj?: currencyObject;
+  currency?: Currency;
+  currencyObj?: CurrencyObject;
   cryptoAmount?: string;
   price?: number;
   setCurrencyObj: Function;
@@ -61,7 +58,6 @@ export interface Output {
   disassembledScript: string;
 }
 
-const zero = new BigNumber(0);
 const withSnackbar =
   <T extends object>(Component: React.ComponentType<T>): React.FC<T> =>
   (props): React.ReactElement =>
@@ -84,7 +80,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
       setAmount,
       setCurrencyObj,
       currencyObj,
-      currency = '' as currency,
+      currency = '' as Currency,
       cryptoAmount,
       price,
       animation,
@@ -137,7 +133,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
         const {
           amount: transactionAmount,
           paymentId: transactionPaymentId } = transaction;
-        const receivedAmount = new BigNumber(transactionAmount);
+        const receivedAmount = resolveNumber(transactionAmount);
 
         const currencyTicker = getCurrencyTypeFromAddress(to);
         if (!hideToasts)
@@ -148,7 +144,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
             snackbarOptions,
           );
         const txPaymentId = transactionPaymentId
-        const isCryptoAmountValid = (cryptoAmount && receivedAmount.isEqualTo(new BigNumber(cryptoAmount))) || !cryptoAmount;
+        const isCryptoAmountValid = (cryptoAmount && receivedAmount.isEqualTo(resolveNumber(cryptoAmount))) || !cryptoAmount;
         const isPaymentIdValid = thisPaymentId ? txPaymentId === thisPaymentId : true;
 
         if (isCryptoAmountValid && isPaymentIdValid)
@@ -202,7 +198,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = withSnackbar(
       (tx: Transaction) => {
         if (
           tx.confirmed === false &&
-          zero.isLessThan(new BigNumber(tx.amount))
+          isGreaterThanZero(resolveNumber(tx.amount))
         ) {
           handlePayment(tx);
         }

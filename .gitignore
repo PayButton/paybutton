@@ -3,3 +3,4 @@ dist
 .env.local
 */.yarn
 paybutton/dev/demo/paybutton.js
+react/coverage

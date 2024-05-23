@@ -1,6 +1,6 @@
 {
   "name": "@paybutton/react",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "The easiest way to accept eCash online",
   "author": "Blockchain Ventures Corp.",
   "license": "MIT",
@@ -17,11 +17,16 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --p ./tsconfig-build.json && vite build",
+    "oldBuildWIP": "tsc --p ./tsconfig-build.json && microbundle --jsx React.createElement --format modern,cjs",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "lintOldWIP": "eslint 'lib/**/*.{ts,tsx}' --fix",
     "preview": "vite preview",
     "prepublishOnly": "yarn build",
     "lint:prettier": "prettier --write 'src/**/*.{ts,tsx}'",
-    "storybook": "storybook dev"
+    "storybook": "storybook dev",
+    "storybookOldWIP": "start-storybook -p 6006",
+    "test": "jest",
+    "test:coverage": "jest --coverage"
   },
   "peerDependencies": {
     "react": "^17.0.0 || ^18.0.0",
