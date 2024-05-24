@@ -1,5 +1,5 @@
-import BigNumber from 'bignumber.js';
-import { zero, resolveNumber, isGreaterThanZero } from '../util/number'; // Adjust the import path
+import BigNumber from "bignumber.js";
+import { zero, resolveNumber, isGreaterThanZero } from "../../util/number";
 
 describe('zero', () => {
     it('zero should be an instance of BigNumber and equal to 0', () => {

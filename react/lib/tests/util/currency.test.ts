@@ -1,5 +1,5 @@
-import { FIAT_CURRENCIES } from "../util/constants";
-import { isCrypto, isFiat, isValidCurrency } from "../util/currency";
+import { FIAT_CURRENCIES } from "../../util/constants";
+import { isCrypto, isValidCurrency, isFiat } from "../../util/currency";
 
 describe('isCrypto', () => {
     it('recognizes valid crypto currencies', () => {
