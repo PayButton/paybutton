@@ -18,8 +18,5 @@ export default defineConfig({
       formats: ['es'],
       fileName: 'app'
     },
-    rollupOptions: {
-      external: [...Object.keys(packageJson.peerDependencies)],
-    },
   }
 })
