@@ -83,7 +83,7 @@ export function PayButton(props: PayButtonProps) {
     editable,
     wsBaseUrl,
     apiBaseUrl,
-  } = Object.assign({}, PayButton.defaultProps, props);
+  } = props
 
   const [paymentId] = useState(!disablePaymentId ? generatePaymentId(8) : undefined);
 

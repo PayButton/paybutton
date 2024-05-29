@@ -133,13 +133,4 @@ export function Button({
   );
 };
 
-const buttonDefaultProps: ButtonProps = {
-  animation: 'slide',
-  text: 'Donate',
-  hoverText: 'Send Payment',
-  disabled: false,
-};
-
-Button.defaultProps = buttonDefaultProps;
-
 export default Button;

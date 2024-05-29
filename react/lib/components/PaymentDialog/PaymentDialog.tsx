@@ -85,7 +85,7 @@ export function PaymentDialog(props: PaymentDialogProps){
     wsBaseUrl,
     apiBaseUrl,
     hoverText
-  } = Object.assign({}, PaymentDialog.defaultProps, props);
+  } = props
 
   const handleWidgetClose = (): void => {
     if (onClose) onClose(success, paymentId);

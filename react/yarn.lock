@@ -3012,8 +3012,9 @@ __metadata:
     "@types/lodash": "npm:4.14.202"
     "@types/mini-css-extract-plugin": "npm:~1.4.3"
     "@types/node": "npm:20.11.5"
-    "@types/qrcode.react": "npm:1.0.5"
-    "@types/react-dom": "npm:^18.2.22"
+    "@types/qrcode.react": "npm:^1.0.5"
+    "@types/react": "npm:^18"
+    "@types/react-dom": "npm:^18"
     "@typescript-eslint/eslint-plugin": "npm:^7.0.2"
     "@typescript-eslint/parser": "npm:^7.0.2"
     "@vitejs/plugin-react": "npm:^4.2.1"
@@ -3042,7 +3043,9 @@ __metadata:
     mini-css-extract-plugin: "npm:~1.6.2"
     notistack: "npm:^3.0.1"
     prettier: "npm:3.2.4"
-    qrcode.react: "npm:1.0.1"
+    qrcode.react: "npm:^3.1.0"
+    react: "npm:^18"
+    react-dom: "npm:^18"
     react-is: "npm:18.2.0"
     react-refresh: "npm:^0.14.0"
     socket.io-client: "npm:4.7.4"
@@ -3056,9 +3059,6 @@ __metadata:
     vite-plugin-dts: "npm:^3.7.3"
     xecaddrjs: "npm:^0.0.1"
     yarn-run-all: "npm:^3.1.1"
-  peerDependencies:
-    react: ^17.0.0 || ^18.0.0
-    react-dom: ^17.0.0 || ^18.0.0
   languageName: unknown
   linkType: soft
 
@@ -5273,7 +5273,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/qrcode.react@npm:1.0.5":
+"@types/qrcode.react@npm:^1.0.5":
   version: 1.0.5
   resolution: "@types/qrcode.react@npm:1.0.5"
   dependencies:
@@ -12905,7 +12905,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.6.0, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
+"prop-types@npm:^15.6.2, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -12996,23 +12996,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"qr.js@npm:0.0.0":
-  version: 0.0.0
-  resolution: "qr.js@npm:0.0.0"
-  checksum: 10c0/1c6a4c7a58d04e52ec2fee99e39b680fdc5b2a510a981df42c36b716a8eac6634d130fc4d65af8f030f2a07dbf5fa046b97cdfa7456c250ebb50a73916efdcb5
-  languageName: node
-  linkType: hard
-
-"qrcode.react@npm:1.0.1":
-  version: 1.0.1
-  resolution: "qrcode.react@npm:1.0.1"
-  dependencies:
-    loose-envify: "npm:^1.4.0"
-    prop-types: "npm:^15.6.0"
-    qr.js: "npm:0.0.0"
+"qrcode.react@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "qrcode.react@npm:3.1.0"
   peerDependencies:
-    react: ^15.5.3 || ^16.0.0 || ^17.0.0
-  checksum: 10c0/adf488690634883cafaa0688723b8a7eb6297fe3cb99468a72bf62cdf0ca2a19e42df803b31930d0b814e6e0d98e042ee0be05d4c8d5aef5377db08f848eab2a
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0
+  checksum: 10c0/af183e99ecaad90f7ef14bd027510ae7866935693c53ccf81b172438abbbf7f29c283c5dc7c2141b420d2413960b8f8dca8d9949646475afe669ed638e8fb722
   languageName: node
   linkType: hard
 
@@ -13136,6 +13125,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-dom@npm:^18":
+  version: 18.3.1
+  resolution: "react-dom@npm:18.3.1"
+  dependencies:
+    loose-envify: "npm:^1.1.0"
+    scheduler: "npm:^0.23.2"
+  peerDependencies:
+    react: ^18.3.1
+  checksum: 10c0/a752496c1941f958f2e8ac56239172296fcddce1365ce45222d04a1947e0cc5547df3e8447f855a81d6d39f008d7c32eab43db3712077f09e3f67c4874973e85
+  languageName: node
+  linkType: hard
+
 "react-element-to-jsx-string@npm:^15.0.0":
   version: 15.0.0
   resolution: "react-element-to-jsx-string@npm:15.0.0"
@@ -13213,6 +13214,15 @@ __metadata:
   dependencies:
     loose-envify: "npm:^1.1.0"
   checksum: 10c0/b562d9b569b0cb315e44b48099f7712283d93df36b19a39a67c254c6686479d3980b7f013dc931f4a5a3ae7645eae6386b4aa5eea933baa54ecd0f9acb0902b8
+  languageName: node
+  linkType: hard
+
+"react@npm:^18":
+  version: 18.3.1
+  resolution: "react@npm:18.3.1"
+  dependencies:
+    loose-envify: "npm:^1.1.0"
+  checksum: 10c0/283e8c5efcf37802c9d1ce767f302dd569dd97a70d9bb8c7be79a789b9902451e0d16334b05d73299b20f048cbc3c7d288bbbde10b701fa194e2089c237dbea3
   languageName: node
   linkType: hard
 
@@ -13761,6 +13771,15 @@ __metadata:
   dependencies:
     loose-envify: "npm:^1.1.0"
   checksum: 10c0/b777f7ca0115e6d93e126ac490dbd82642d14983b3079f58f35519d992fa46260be7d6e6cede433a92db70306310c6f5f06e144f0e40c484199e09c1f7be53dd
+  languageName: node
+  linkType: hard
+
+"scheduler@npm:^0.23.2":
+  version: 0.23.2
+  resolution: "scheduler@npm:0.23.2"
+  dependencies:
+    loose-envify: "npm:^1.1.0"
+  checksum: 10c0/26383305e249651d4c58e6705d5f8425f153211aef95f15161c151f7b8de885f24751b377e4a0b3dd42cce09aad3f87a61dab7636859c0d89b7daf1a1e2a5c78
   languageName: node
   linkType: hard
 
