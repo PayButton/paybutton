@@ -3044,8 +3044,8 @@ __metadata:
     notistack: "npm:^3.0.1"
     prettier: "npm:3.2.4"
     qrcode.react: "npm:^3.1.0"
-    react: "npm:^18"
-    react-dom: "npm:^18"
+    react: "npm:^18.3.1"
+    react-dom: "npm:^18.3.1"
     react-is: "npm:18.2.0"
     react-refresh: "npm:^0.14.0"
     socket.io-client: "npm:4.7.4"
@@ -13125,7 +13125,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-dom@npm:^18":
+"react-dom@npm:^18.3.1":
   version: 18.3.1
   resolution: "react-dom@npm:18.3.1"
   dependencies:
@@ -13217,7 +13217,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react@npm:^18":
+"react@npm:^18.3.1":
   version: 18.3.1
   resolution: "react@npm:18.3.1"
   dependencies:
