@@ -26,7 +26,7 @@ export interface PaymentDialogProps extends ButtonProps {
   hideToasts?: boolean;
   goalAmount?: number | string;
   disableEnforceFocus?: boolean;
-  editable?: boolean;
+  editable: boolean;
   dialogOpen: boolean;
   disableScrollLock?: boolean;
   active?: boolean;
