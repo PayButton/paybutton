@@ -5,7 +5,7 @@ import resolve from '@rollup/plugin-node-resolve';
 import typescript from '@rollup/plugin-typescript';
 import json from "@rollup/plugin-json";
 import progress from "rollup-plugin-progress";
-import nodePolyfills from 'rollup-plugin-polyfill-node';
+import nodePolyfills from 'rollup-plugin-node-polyfills';
 
 export default (env) => ({
   makeAbsoluteExternalsRelative: true,
@@ -40,7 +40,7 @@ export default (env) => ({
       transformMixedEsModules: true
     }),
     json(),
-    nodePolyfills({sourceMap: true}),
+    nodePolyfills({ sourceMap: true }),
     typescript({
       compilerOptions: {
         lib: ["es5", "es6", "ES2020", "ESnext", "dom"],
