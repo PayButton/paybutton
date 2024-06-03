@@ -104,4 +104,3 @@ export const getCashtabProviderStatus = () => {
   }
   return false;
 };
-

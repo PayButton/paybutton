@@ -10,27 +10,30 @@ import {
 import React, { useEffect, useMemo, useState } from 'react';
 import copy from 'copy-to-clipboard';
 import QRCode, { BaseQRCodeProps } from 'qrcode.react';
+import io, { Socket } from 'socket.io-client';
+import PencilIcon from '../../assets/edit-pencil';
 import config from '../../config.json';
-
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
+import { Button, animation } from '../Button/Button';
+import BarChart from '../BarChart/BarChart';
 import {
+  Currency,
+  getAddressBalance,
+  getAddressDetails,
+  isFiat,
+  Transaction,
+  getCashtabProviderStatus,
+  CryptoCurrency,
+  DECIMALS,
+  CurrencyObject,
+  getCurrencyObject,
+  formatPrice,
+  setListener,
+  encodeOpReturnProps,
   isValidCashAddress,
   isValidXecAddress,
   getCurrencyTypeFromAddress,
-} from '../../util/address';
-import { formatPrice } from '../../util/format';
-import { DECIMALS } from '../../util/constants';
-import { Button, animation } from '../Button/Button';
-import BarChart from '../BarChart/BarChart';
-
-import PencilIcon from '../../assets/edit-pencil';
-import io, { Socket } from 'socket.io-client';
-import { encodeOpReturnProps } from '../../util/opReturn';
-import { getAddressDetails, getAddressBalance, getCashtabProviderStatus } from '../../util/api-client';
-import { getCurrencyObject } from '../../util/satoshis';
-import { Currency, CurrencyObject, Transaction, CryptoCurrency } from '../../util/types';
-import { setListener } from '../../util/socket';
-import { isFiat } from '../../util/currency';
+} from '../../util';
 
 type QRCodeProps = BaseQRCodeProps & { renderAs: 'svg' };
 

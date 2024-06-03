@@ -1,11 +1,9 @@
-import { formatPrice, formatBCH, formatXEC } from './format';
-import { DECIMALS } from './constants'
-
-
+import { DECIMALS } from './constants';
 import { isCrypto } from './currency';
-import { randomizeSatoshis } from './randomizeSats';
-import { Currency, CurrencyObject } from './types';
+import { formatBCH, formatPrice, formatXEC } from './format';
 import { resolveNumber } from './number';
+import randomizeSatoshis from './randomizeSats';
+import { Currency, CurrencyObject } from './types';
 
 
 export const getCurrencyObject = (
@@ -42,7 +40,6 @@ export const getCurrencyObject = (
     currency: currencyType,
   };
 };
-
 
 export default {
   getCurrencyObject,
