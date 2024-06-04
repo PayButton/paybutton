@@ -1,0 +1,130 @@
+.navbar {
+  color: #333333;
+  display: flex;
+  justify-content: center;
+  padding: 10px 20px;
+}
+.navbar a {
+  color: #333333;
+  text-decoration: none;
+  padding: 10px;
+}
+.buttons-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 20px;
+  padding: 50px;
+  align-items: center;
+}
+.widgets-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 40px;
+  padding: 50px;
+  align-items: center;
+}
+.btn {
+  padding: 20px;
+  display: flex;
+}
+.btn button {
+  text-transform: none;
+  color: #fff;
+  border: 1px solid rgb(58, 48, 166);
+  margin: auto !important;
+  padding: 0.618em 1.618em !important;
+  min-width: 14em !important;
+  background: #518efe;
+  transition: background-position 0.8s ease 0s, color 0.15s ease 0s,
+    border-color 0.4s ease 0s;
+  border-radius: 10px !important;
+}
+.btn button:hover {
+  cursor: pointer !important;
+  background: #518efeb7;
+  color: #101563;
+}
+.btn.purple button {
+  border: 2px solid #7a33ff;
+  background: #9a55ff;
+}
+.btn.purple button:hover {
+  background: #ebe0fb;
+  color: #5805f3;
+}
+
+.toggle {
+    margin-bottom: 0 !important;
+}
+.toggle input[type="checkbox"] {
+    visibility: hidden;
+}
+
+.toggle label {
+    display: block;
+    cursor: pointer;
+    position: relative;
+    padding-left: 40px;
+    font-size: 12px;
+}
+
+.toggle label::before, .toggle label::after {
+    content: "";
+    position: absolute;
+    transition: all 0.3s ease;
+}
+
+.toggle label::before {
+    width: 34px;
+    height: 20px;
+    background-color: #e7e5e5;
+    border-radius: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 0;
+}
+
+.toggle label::after {
+    width: 20px;
+    height: 20px;
+    background-color: #c3c2c2;
+    border-radius: 50%;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 2px;
+    box-shadow: 0 0 2px rgba(0,0,0,0.4);
+}
+
+.toggle input[type="checkbox"]:checked + label::before {
+    background-color: #ccc;
+}
+
+.toggle input[type="checkbox"]:checked + label::after {
+    left: 12px;
+    background-color: #2186fa ;
+}
+
+form {
+    width: 300px;
+}
+.card { 
+    border: 1px solid #ccc;
+    padding: 20px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.169);
+    border-radius: 10px;
+    min-height: 650px;
+    min-width: 310px;
+    height: 100%;
+    align-self: center;
+    margin: 10px;
+}
+.form-input {
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    min-width: 25px;
+    font-size: 12px;
+}
+label {
+    padding-bottom: 6px;
+}
