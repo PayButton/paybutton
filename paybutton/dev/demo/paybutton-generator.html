@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Paybutton Generator Test</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <style>
+       body {
+        padding: auto;
+        font-family: Arial, sans-serif;
+      }
+      input,
+      button {
+        padding: 8px;
+        border-radius: 6px !important;
+        border: 1px solid #ccc;
+        color: #767676;
+      }
+
+      button {
+        background-color: #2186fa;
+        color: white;
+        border: none;
+        cursor: pointer;
+        margin-top: 35px;
+        float: right;
+      }
+
+      button:hover {
+        background-color: #767676;
+      }
+
+      #playground {
+        display: flex;
+        flex-grow: 1;
+        justify-content: space-around;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="navbar">
+      <a href="./index.html#buttons-section">Buttons</a>
+      <a href="./index.html#widgets-section">Widgets</a>
+      <a href="./paybutton-generator.html#playground">Generator</a>
+    </div>
+    <script src="https://unpkg.com/vue@3"></script>
+
+    <script src="./paybutton.js"></script>
+
+    <div id="playground">
+      <form @submit.prevent="updateProps" class="card">
+        <div>
+          <div class="form-input">
+            <label for="to">To:</label>
+            <input id="to" v-model="paybuttonProps.to" type="text">
+          </div>
+          <div style="display: flex; justify-content: space-between; gap:10px">
+            <div class="form-input">
+              <label for="amount">Amount:</label>
+              <input id="amount" v-model.number="paybuttonProps.amount" type="number" step="0.01">
+            </div>
+            <div class="form-input">
+              <label for="goalAmount">Goal Amount:</label>
+              <input id="goalAmount" v-model.number="paybuttonProps.goalAmount" type="number">
+            </div>
+            <div class="form-input">
+              <label for="currency">Currency:</label>
+              <input id="currency" v-model.number="paybuttonProps.currency" type="text">
+            </div>
+          </div>
+          <div style="display: flex; justify-content: space-between; gap:10px">
+            <div class="form-input" style="flex-basis: 80%;">
+              <label for="text">Text:</label>
+              <input id="text" v-model="paybuttonProps.text" type="text">
+            </div>
+            <div class="form-input">
+              <label for="successText">Success Text:</label>
+              <input id="successText" v-model="paybuttonProps.successText" type="text">
+            </div>
+          </div>
+          <div class="form-input">
+            <label for="hoverText">Hover Text:</label>
+            <input id="hoverText" v-model="paybuttonProps.hoverText" type="text">
+          </div>
+          <div class="form-input">
+            <label for="theme">Theme:</label>
+            <input id="theme" style="height: 100px;" v-model="paybuttonProps.theme" type="text">
+          </div>
+          <div class="form-input">
+            <label for="animation">Animation:</label>
+            <input id="animation" v-model="paybuttonProps.animation" type="text">
+          </div>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+          <div>
+            <div class="form-input toggle">
+              <input type="checkbox" id="editable" v-model="paybuttonProps.editable" true-value="true"
+                false-value="false">
+              <label for="editable">Editable</label>
+            </div>
+            <div class="form-input toggle">
+              <input type="checkbox" id="disable-payment-id" v-model="paybuttonProps.disablePaymentId" true-value="true"
+                false-value="false">
+              <label for="disable-payment-id">Disable PaymentId</label>
+            </div>
+            <div class="form-input toggle">
+              <input type="checkbox" id="random-satoshis" v-model="paybuttonProps.randomSatoshis" true-value="true"
+                false-value="false">
+              <label for="random-satoshis">Random Satoshis</label>
+            </div>
+          </div>
+          <div>
+            <div class="form-input toggle">
+              <input type="checkbox" id="hide-toasts" v-model="paybuttonProps.hideToasts" true-value="true"
+                false-value="false">
+              <label for="hide-toasts">Hide Toasts</label>
+            </div>
+            <div class="form-input toggle">
+              <input type="checkbox" id="disable-enforce-focus" v-model="paybuttonProps.disableEnforceFocus"
+                true-value="true" false-value="false">
+              <label for="disable-enforce-focus">Disable enforce focus</label>
+            </div>
+            <div class="form-input toggle">
+              <input type="checkbox" id="disabled" v-model="paybuttonProps.disabled" true-value="1" false-value="0">
+              <label for="disabled">Disabled</label>
+            </div>
+          </div>
+        </div>
+        <div style="display: flex;
+        justify-content: right;">
+          <button type="submit">Generate</button>
+        </div>
+          
+      </form>
+      <div class="card" style="display: flex; flex-basis: 70%; justify-content: center; align-items: center;">
+        <div id="paybutton-generator" class="paybutton"
+          :to="paybuttonProps.to"
+          :amount="paybuttonProps.amount"
+          :goal-amount="paybuttonProps.goalAmount"
+          :currency="paybuttonProps.currency"
+          :text="paybuttonProps.text"
+          :hover-text="paybuttonProps.hoverText"
+          :success-text="paybuttonProps.successText"
+          :theme="paybuttonProps.theme"
+          :animation="paybuttonProps.animation"
+          :editable="paybuttonProps.editable"
+          :disable-payment-id="paybuttonProps.disablePaymentId"
+          :random-satoshis="paybuttonProps.randomSatoshis"
+          :hide-toasts="paybuttonProps.hideToasts"
+          :disable-enforce-focus="paybuttonProps.disableEnforceFocus"
+          :on-success="mySuccessFuction"
+          :on-transaction="myTransactionFuction">
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const { createApp, reactive } = Vue;
+      const mySuccessFuction = (tx) => (console.log("Success", {tx}))
+      const myTransactionFuction = (tx) => (console.log("Transaction", {tx}))
+      createApp({
+        setup() {
+          //todo - add the missing props once it is fixed
+          const paybuttonProps = reactive({
+            to: "ecash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7quss2vxek",
+            amount: undefined,
+            goalAmount: undefined,
+            currency: undefined,
+            text: "Donate",
+            hoverText: undefined,
+            successText: "Payment Successful!",
+            theme: `{"palette":{"primary": "#9d00ff","secondary": "#FFF", "tertiary": "#000"}}`,
+            animation: "slide",
+            editable: true,
+            disablePaymentId: false,
+            randomSatoshis: false,
+            hideToasts: false,
+            disableEnforceFocus: false,
+            onSuccess: mySuccessFuction,
+            onTransaction: myTransactionFuction
+          });
+
+          const updateProps = () => {
+            PayButton.render(document.getElementById("paybutton-generator"), { ...paybuttonProps });
+          };
+
+          return { paybuttonProps, updateProps };
+        }
+      }).mount('#playground');
+    </script>
+  </body>
+
+</html>
