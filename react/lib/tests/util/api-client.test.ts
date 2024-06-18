@@ -1,5 +1,5 @@
 import { shouldTriggerOnSuccess } from '../../util/api-client';
-import { Transaction } from '../../util';
+import { Transaction, resolveNumber } from '../../util';
 
 jest.mock('axios');
 
@@ -16,7 +16,7 @@ describe('API Client Util Tests', () => {
           timestamp: 0,
           address: ''
       };
-      expect(shouldTriggerOnSuccess(transaction, '123', '100.00', 'test message')).toBe(true);
+      expect(shouldTriggerOnSuccess(transaction, resolveNumber('100.00'), '123', resolveNumber('100.00'), 'test message')).toBe(true);
     
     });
 
@@ -29,7 +29,7 @@ describe('API Client Util Tests', () => {
             timestamp: 0,
             address: ''
         };
-        expect(shouldTriggerOnSuccess(transaction, undefined, '101.00', 'test opReturn message')).toBe(true);
+        expect(shouldTriggerOnSuccess(transaction, resolveNumber('101.00'), undefined, resolveNumber('101.00'), 'test opReturn message')).toBe(true);
     });
 
     it('returns true when tx paymentId is empty and component paymentId is empty', () => {
@@ -41,7 +41,7 @@ describe('API Client Util Tests', () => {
             timestamp: 0,
             address: ''
         };
-        expect(shouldTriggerOnSuccess(transaction, '', '101.00', 'test opReturn message')).toBe(true);
+        expect(shouldTriggerOnSuccess(transaction, resolveNumber('101.00'),'',  resolveNumber('101.00'), 'test opReturn message')).toBe(true);
     });
 
     it('returns false when the payment ID does not match', () => {
@@ -53,7 +53,7 @@ describe('API Client Util Tests', () => {
           timestamp: 0,
           address: ''
       };
-      expect(shouldTriggerOnSuccess(transaction, '999', '100.00', 'test opReturn message')).toBe(false);
+      expect(shouldTriggerOnSuccess(transaction, resolveNumber('100.00'), '999', resolveNumber('100.00'), 'test opReturn message')).toBe(false);
     });
     
     it('returns false when crypto amounts do not match', () => {
@@ -65,7 +65,7 @@ describe('API Client Util Tests', () => {
             timestamp: 0,
             address: ''
         };
-        expect(shouldTriggerOnSuccess(transaction, '123', '100.00', 'test opReturn message')).toBe(false);
+        expect(shouldTriggerOnSuccess(transaction, resolveNumber('101.00'), '123', resolveNumber('100.00'), 'test opReturn message')).toBe(false);
     });
 
     it('returns false when OpReturn data does not match', () => {
@@ -77,7 +77,7 @@ describe('API Client Util Tests', () => {
             timestamp: 0,
             address: ''
         };
-        expect(shouldTriggerOnSuccess(transaction, '123', '101.00', 'test opReturn')).toBe(false);
+        expect(shouldTriggerOnSuccess(transaction, resolveNumber('101.00'), '123', resolveNumber('101.00'), 'test opReturn')).toBe(false);
     });
 
     it('should ignore amount validation when amount is not set', () => {
@@ -89,7 +89,7 @@ describe('API Client Util Tests', () => {
             timestamp: 0,
             address: ''
         };
-        expect(shouldTriggerOnSuccess(transaction, '123', undefined, 'test opReturn')).toBe(true);
+        expect(shouldTriggerOnSuccess(transaction, resolveNumber('101.00'), '123', undefined, 'test opReturn')).toBe(true);
     });
 
     it('should ignore paymentId validation when paymentId does not exists', () => {
@@ -101,7 +101,7 @@ describe('API Client Util Tests', () => {
             timestamp: 0,
             address: ''
         };
-        expect(shouldTriggerOnSuccess(transaction, undefined, '101.00', 'test opReturn')).toBe(true);
+        expect(shouldTriggerOnSuccess(transaction, resolveNumber('101.00'), undefined, resolveNumber('101.00'), 'test opReturn')).toBe(true);
     });
 
     it('should fail when there is a message but opReturn is not enabled', () => {
@@ -113,7 +113,7 @@ describe('API Client Util Tests', () => {
             timestamp: 0,
             address: ''
         };
-        expect(shouldTriggerOnSuccess(transaction, '123', '101.00', undefined)).toBe(false);
+        expect(shouldTriggerOnSuccess(transaction, resolveNumber('101.00'), '123', resolveNumber('101.00'), undefined)).toBe(false);
     });
   });
 });

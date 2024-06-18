@@ -133,15 +133,15 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
 
     const handlePayment = useCallback(
       (transaction: Transaction) => {
-        const { amount } = transaction;
+        const expectedAmount = cryptoAmount ? resolveNumber(cryptoAmount) : undefined;
+        const receivedAmount = resolveNumber(transaction.amount);
 
-        if (shouldTriggerOnSuccess(transaction, paymentId, cryptoAmount, opReturn)) {
+        if (shouldTriggerOnSuccess(transaction, receivedAmount, paymentId, expectedAmount, opReturn)) {
           if (sound) {
             txSound.play().catch(() => {});
           }
           
           const currencyTicker = getCurrencyTypeFromAddress(to);
-          const receivedAmount = resolveNumber(amount)
           if (!hideToasts)
             enqueueSnackbar(
               `${
