@@ -10,6 +10,30 @@ import {
   Currency,
 } from './types';
 import { isFiat } from './currency';
+import BigNumber from 'bignumber.js';
+
+export const shouldTriggerOnSuccess = (
+  transaction: Transaction,
+  amount: BigNumber,
+  expectedPaymentId?: string,
+  expectedAmount?: BigNumber,
+  expectedOpReturn?: string,
+) => {
+  const { paymentId, message } = transaction;
+
+  const isAmountValid = expectedAmount ? expectedAmount.isEqualTo(amount) : true;
+  
+  const paymentIdsMatch = expectedPaymentId === paymentId
+  const isPaymentIdValid = expectedPaymentId ? paymentIdsMatch : true;
+
+  const opReturn = JSON.stringify(message);
+  const opReturnIsEmpty = message === ''
+  const opReturnsMatch = opReturn === JSON.stringify(expectedOpReturn)
+  
+  const isOpReturnValid = expectedOpReturn ? opReturnsMatch : opReturnIsEmpty;
+
+  return isAmountValid && isPaymentIdValid && isOpReturnValid;
+};
 
 export const getAddressDetails = async (
   address: string,

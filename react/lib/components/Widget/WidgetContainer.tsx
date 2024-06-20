@@ -14,7 +14,8 @@ import {
   isFiat,
   isGreaterThanZero,
   isValidCurrency,
-  resolveNumber
+  resolveNumber,
+  shouldTriggerOnSuccess
 } from '../../util';
 
 import Widget, { WidgetProps } from './Widget';
@@ -132,32 +133,29 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
 
     const handlePayment = useCallback(
       (transaction: Transaction) => {
-        if (sound && !hideToasts) txSound.play().catch(() => {});
+        const expectedAmount = cryptoAmount ? resolveNumber(cryptoAmount) : undefined;
+        const receivedAmount = resolveNumber(transaction.amount);
 
-        const {
-          amount: transactionAmount,
-          paymentId: transactionPaymentId } = transaction;
-        const receivedAmount = resolveNumber(transactionAmount);
+        if (shouldTriggerOnSuccess(transaction, receivedAmount, paymentId, expectedAmount, opReturn)) {
+          if (sound) {
+            txSound.play().catch(() => {});
+          }
+          
+          const currencyTicker = getCurrencyTypeFromAddress(to);
+          if (!hideToasts)
+            enqueueSnackbar(
+              `${
+                successText ? successText + ' | ' : ''
+              }Received ${receivedAmount} ${currencyTicker}`,
+              snackbarOptions,
+            );
 
-        const currencyTicker = getCurrencyTypeFromAddress(to);
-        if (!hideToasts)
-          enqueueSnackbar(
-            `${
-              successText ? successText + ' | ' : ''
-            }Received ${receivedAmount} ${currencyTicker}`,
-            snackbarOptions,
-          );
-        const txPaymentId = transactionPaymentId
-        const isCryptoAmountValid = (cryptoAmount && receivedAmount.isEqualTo(resolveNumber(cryptoAmount))) || !cryptoAmount;
-        const isPaymentIdValid = thisPaymentId ? txPaymentId === thisPaymentId : true;
-
-        if (isCryptoAmountValid && isPaymentIdValid)
-        {
           setSuccess(true);
           onSuccess?.(transaction);
         } else {
           onTransaction?.(transaction);
         }
+
         setNewTxs([]);
       },
       [
