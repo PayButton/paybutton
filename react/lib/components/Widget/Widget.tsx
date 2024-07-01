@@ -6,6 +6,8 @@ import {
   makeStyles,
   TextField,
   Grid,
+  Select,
+  MenuItem
 } from '@material-ui/core';
 import React, { useEffect, useMemo, useState } from 'react';
 import copy from 'copy-to-clipboard';
@@ -33,7 +35,9 @@ import {
   isValidCashAddress,
   isValidXecAddress,
   getCurrencyTypeFromAddress,
+  resolveNumber,
 } from '../../util';
+import { Coin, getCoins, getXecPair, Pair } from '../../util/sideshift';
 
 type QRCodeProps = BaseQRCodeProps & { renderAs: 'svg' };
 
@@ -173,6 +177,14 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const [widgetButtonText, setWidgetButtonText] = useState('Send Payment');
   const [opReturn, setOpReturn] = useState<string | undefined>();
 
+  const [useSideshift, setUseSideshift] = useState(false);
+  const [selectedCoin, setSelectedCoin] = useState<Coin|undefined>();
+  const [coins, setCoins] = useState<Coin[]>([]);
+  const [loadingPair, setLoadingPair] = useState<boolean>(false);
+  const [coinPair, setCoinPair] = useState<Pair | undefined>();
+  const [pairAmount, setPairAmount] = useState<string | undefined>(undefined);
+  const [pairButtonText, setPairButtonText] = useState('Send Payment');
+
   const theme = useTheme(props.theme, isValidXecAddress(to));
   const classes = useStyles({ success, loading, theme });
 
@@ -200,6 +212,14 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       color,
     )}' stroke='%23fff' stroke-width='.6'/%3E%3Cpath d='m7.2979 14.697-2.6964-2.6966 0.89292-0.8934c0.49111-0.49137 0.90364-0.88958 0.91675-0.88491 0.013104 0.0047 0.71923 0.69866 1.5692 1.5422 0.84994 0.84354 1.6548 1.6397 1.7886 1.7692l0.24322 0.23547 7.5834-7.5832 1.8033 1.8033-9.4045 9.4045z' fill='%23fff' stroke-width='.033708'/%3E%3C/svg%3E%0A`;
   }, [theme]);
+  useEffect(() => {
+    (async () => {
+    if (useSideshift === true) {
+      const coins = await getCoins()
+      setCoins(coins)
+    }
+    })()
+  }, [useSideshift])
 
   useEffect((): (() => void) | undefined => {
     if (!recentlyCopied) return;
@@ -354,6 +374,39 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       }
     }
   }, [to, thisCurrencyObject, price, thisAmount, opReturn, hasPrice]);
+  const handleSideshiftButtonClick = () => {
+    console.log('WIP')
+  }
+  const handleCoinChange = async (e: React.ChangeEvent<{ name?: string; value: unknown }>) => {
+    const coinName = e.target.value as string
+    const selectedCoin = coins.find(c => c.coin === coinName)
+    setSelectedCoin(selectedCoin)
+    setLoadingPair(true)
+    const pair = await getXecPair(`${coinName}-${selectedCoin?.networks[0]}`)
+    setCoinPair(pair)
+    const bigNumber = resolveNumber(thisAmount ? +thisAmount / parseFloat(pair.rate) : 0)
+    if (selectedCoin !== undefined) {
+      const tokenDetails = selectedCoin.tokenDetails
+      const decimals = tokenDetails ? tokenDetails[selectedCoin.networks[0]].decimals : 12
+      const amountString = bigNumber.toFixed(decimals)
+      setPairAmount(amountString)
+      setPairButtonText(`Send ${selectedCoin.coin}`)
+    }
+    setLoadingPair(false)
+  }
+
+  const handlePairAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let pairAmount = e.target.value;
+    if (pairAmount === '') {
+      pairAmount = '0';
+    }
+    setPairAmount(pairAmount)
+
+    if (coinPair !== undefined) {
+      const xecAmount = +coinPair.rate * +pairAmount
+      updateAmount(xecAmount.toString())
+    }
+  };
 
   const handleButtonClick = () => {
     if (addressType === 'XEC') {
@@ -387,6 +440,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     if (disabled || to === undefined) return;
     const address = to;
     let thisAmount: number | undefined;
+
     if (convertedCurrencyObj) {
       thisAmount = convertedCurrencyObj.float;
     } else {
@@ -447,11 +501,15 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     const userEdited = getCurrencyObject(+amount, currency, false);
 
     setUserEditedAmount(userEdited);
+    updateAmount(amount)
+  };
+
+  const updateAmount = (amount: string) => {
     setThisAmount(amount);
     if (props.setAmount) {
       props.setAmount(amount);
     }
-  };
+  }
 
   useEffect(() => {
     try {
@@ -573,87 +631,155 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
               )}
             </>
           )}
-          <Box
-            flex={1}
-            position="relative"
-            className={classes.qrCode}
-            onClick={handleQrCodeClick}
-          >
-            <Fade in={!loading && url !== ''}>
-              <React.Fragment>
-                {qrCode}
-                <Box position="absolute" bottom={0} right={0}>
-                  <Fade
-                    appear={false}
-                    in={!copied || recentlyCopied}
-                    timeout={{ enter: 0, exit: 2000 }}
-                  >
-                    <Box className={classes.copyTextContainer}>
-                      {!disabled && (
-                        <Typography className={classes.copyText}>
-                          {copied ? 'Payment copied!' : 'Click to copy'}
-                        </Typography>
-                      )}
-                    </Box>
-                  </Fade>
-                </Box>
-              </React.Fragment>
-            </Fade>
-            {loading && (
-              <Box
-                position="absolute"
-                top={0}
-                bottom={0}
-                left={0}
-                right={0}
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
+
+          {// Sideshift region
+            useSideshift ?
+            <>
+
+              { coins.length > 0 && <>
+                <br/>
+                {
+                  loadingPair ?  'Loading...' : (
+                  (coinPair && selectedCoin) && <>
+                  Send {selectedCoin.name}
+                    <br/>
+                    1 {selectedCoin.coin} ~= {resolveNumber(coinPair.rate).toFixed(2)} {currency}
+                  </>
+                  )
+                }
+                <Select
+                  value={selectedCoin}
+                  onChange={(e) => {handleCoinChange(e)} }
+                >
+                  {coins.map(coin => <MenuItem key ={coin.coin} value={coin.coin}>{coin.coin}</MenuItem>)}
+                </Select>
+              </> }
+              {editable ? (
+              <Grid
+                container
+                spacing={2}
+                justify="center"
+                alignItems="flex-end"
+                style={{ margin: '6px auto' }}
               >
-                <CircularProgress
-                  size={70}
-                  thickness={4}
-                  className={classes.spinner}
+                <Grid item xs={6}>
+                  <TextField
+                    label="Amount"
+                    disabled={loadingPair || pairAmount === undefined}
+                    value={pairAmount ?? 0}
+                    onChange={handlePairAmountChange}
+                    inputProps={{ maxLength: 12 }}
+                  />
+                </Grid>
+                <Grid item xs={2}>
+                  <PencilIcon width={20} height={20} fill="#333" />
+                </Grid>
+              </Grid>
+              ) : (
+                <Typography>{pairAmount}</Typography>
+              )}
+              <ButtonComponent
+                text={pairButtonText}
+                disabled={loadingPair || pairAmount === undefined}
+                hoverText={'Send with SideShift'}
+                onClick={handleSideshiftButtonClick}
+                animation={animation}
+              />
+
+              <Typography>
+                <a onClick={() => {setUseSideshift(false)}}>Trade with xec</a>
+              </Typography>
+            </>
+              // END: Sideshift region
+            : <>
+            <Box
+              flex={1}
+              position="relative"
+              className={classes.qrCode}
+              onClick={handleQrCodeClick}
+            >
+              <Fade in={!loading && url !== ''}>
+                <React.Fragment>
+                  {qrCode}
+                  <Box position="absolute" bottom={0} right={0}>
+                    <Fade
+                      appear={false}
+                      in={!copied || recentlyCopied}
+                      timeout={{ enter: 0, exit: 2000 }}
+                    >
+                      <Box className={classes.copyTextContainer}>
+                        {!disabled && (
+                          <Typography className={classes.copyText}>
+                            {copied ? 'Payment copied!' : 'Click to copy'}
+                          </Typography>
+                        )}
+                      </Box>
+                    </Fade>
+                  </Box>
+                </React.Fragment>
+              </Fade>
+              {loading && (
+                <Box
+                  position="absolute"
+                  top={0}
+                  bottom={0}
+                  left={0}
+                  right={0}
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                >
+                  <CircularProgress
+                    size={70}
+                    thickness={4}
+                    className={classes.spinner}
+                  />
+                </Box>
+              )}
+            </Box>
+
+            {editable && (
+              <Grid
+                container
+                spacing={2}
+                justify="center"
+                alignItems="flex-end"
+                style={{ margin: '6px auto' }}
+              >
+                <Grid item xs={6}>
+                  <TextField
+                    label={currency}
+                    value={thisAmount || 0}
+                    onChange={handleAmountChange}
+                    inputProps={{ maxlength: '12' }}
+                    name="Amount"
+                    id="userEditedAmount"
+                  />
+                </Grid>
+                <Grid item xs={2}>
+                  <PencilIcon width={20} height={20} fill="#333" />
+                </Grid>
+              </Grid>
+            )}
+
+            {success || (
+              <Box pt={2} flex={1}>
+                <ButtonComponent
+                  text={widgetButtonText}
+                  hoverText={hoverText}
+                  onClick={handleButtonClick}
+                  disabled={disabled}
+                  animation={animation}
                 />
               </Box>
             )}
+          <Box py={1}>
+            <Typography>
+              <a onClick={() => {setUseSideshift(true)}}>Don't have any XEC?</a>
+            </Typography>
           </Box>
-
-          {editable && (
-            <Grid
-              container
-              spacing={2}
-              justify="center"
-              alignItems="flex-end"
-              style={{ margin: '6px auto' }}
-            >
-              <Grid item xs={6}>
-                <TextField
-                  label={currency}
-                  value={thisAmount || 0}
-                  onChange={handleAmountChange}
-                  inputProps={{ maxlength: '12' }}
-                  name="Amount"
-                  id="userEditedAmount"
-                />
-              </Grid>
-              <Grid item xs={2}>
-                <PencilIcon width={20} height={20} fill="#333" />
-              </Grid>
-            </Grid>
-          )}
-
-          {success || (
-            <Box pt={2} flex={1}>
-              <ButtonComponent
-                text={widgetButtonText}
-                hoverText={hoverText}
-                onClick={handleButtonClick}
-                disabled={disabled}
-                animation={animation}
-              />
-            </Box>
-          )}
+          </>
+          }
           {foot && (
             <Box pt={2} flex={1}>
               {foot}

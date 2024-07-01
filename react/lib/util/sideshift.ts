@@ -1,24 +1,49 @@
+const BASE_SIDESHIFT_URL='https://sideshift.ai/api/v2/'
+
 interface TokenDetails {
-    network: {
-        contractAddress: string;
-    };
+  [network: string]: {
+    contractAddress: string;
     decimals: number;
-    depositOffline?: string[] | boolean;
-    settleOffline?: string[] | boolean;
+  }
 }
 
-interface Coin {
+export interface Coin {
     networks: string[];
     coin: string;
     name: string;
     hasMemo: boolean;
     fixedOnly: string[] | boolean;
     variableOnly: string[] | boolean;
-    tokenDetails: TokenDetails[];
+    tokenDetails: TokenDetails;
+    depositOffline?: string[] | boolean;
+    settleOffline?: string[] | boolean;
 }
 
 export async function getCoins(): Promise<Coin[]> {
-  const res = await fetch('https://sideshift.ai/api/v2/coins')
+  const res = await fetch(BASE_SIDESHIFT_URL + 'coins')
   const data = await res.json()
-  return data as Coin[]
+
+  const coins = data as Coin[]
+  coins.sort((a, b) => a.name < b.name ? -1 : 1)
+  return coins
+}
+
+export interface Pair {
+  min: string;
+  max: string;
+  rate: string;
+  depositCoin: string;
+  settleCoin: string;
+  depositNetwork: string;
+  settleNetwork: string;
+}
+
+async function getPair(from: string, to: string): Promise<Pair> {
+  const res = await fetch(BASE_SIDESHIFT_URL + `pair/${from}/${to}`)
+  const data = await res.json()
+  return data as Pair
+}
+
+export async function getXecPair(from: string): Promise<Pair> {
+  return getPair(from, 'ecash-xec')
 }
