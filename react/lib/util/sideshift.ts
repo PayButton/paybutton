@@ -19,13 +19,13 @@ export interface Coin {
     settleOffline?: string[] | boolean;
 }
 
-export async function getCoins(): Promise<Coin[]> {
+export async function getCoins(originCoin: string): Promise<Coin[]> {
   const res = await fetch(BASE_SIDESHIFT_URL + 'coins')
   const data = await res.json()
 
   const coins = data as Coin[]
   coins.sort((a, b) => a.name < b.name ? -1 : 1)
-  return coins
+  return coins.filter(coin => coin.coin.toLowerCase() !== originCoin.toLowerCase())
 }
 
 export interface Pair {

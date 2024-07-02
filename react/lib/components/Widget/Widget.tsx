@@ -215,7 +215,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   useEffect(() => {
     (async () => {
     if (useSideshift === true) {
-      const coins = await getCoins()
+      const coins = await getCoins(addressType)
       setCoins(coins)
     }
     })()
