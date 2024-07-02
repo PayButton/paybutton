@@ -687,7 +687,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
               />
 
               <Typography>
-                <a onClick={() => {setUseSideshift(false)}}>Trade with xec</a>
+                <a onClick={() => {setUseSideshift(false)}}>Trade with {addressType}</a>
               </Typography>
             </>
               // END: Sideshift region
@@ -775,7 +775,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
             )}
           <Box py={1}>
             <Typography>
-              <a onClick={() => {setUseSideshift(true)}}>Don't have any XEC?</a>
+              <a onClick={() => {setUseSideshift(true)}}>Don't have any {addressType}?</a>
             </Typography>
           </Box>
           </>
