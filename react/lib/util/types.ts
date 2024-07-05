@@ -128,7 +128,7 @@ export interface TransactionDetails {
 }
 
 type FiatCurrenciesTuple = typeof FIAT_CURRENCIES;
-type CyptoCurrenciesTuple = typeof CRYPTO_CURRENCIES;            
+type CyptoCurrenciesTuple = typeof CRYPTO_CURRENCIES;
 type TxBroadcast = 'NewTx' | 'OldTx'
 
 export type CryptoCurrency = FiatCurrenciesTuple[number];
@@ -140,4 +140,47 @@ export interface BroadcastTxData {
   address: string
   txs: Transaction[]
   messageType: TxBroadcast
+}
+
+interface SideshiftTokenDetails {
+  [network: string]: {
+    contractAddress: string;
+    decimals: number;
+  }
+}
+
+export interface SideshiftCoin {
+    networks: string[];
+    coin: string;
+    name: string;
+    hasMemo: boolean;
+    fixedOnly: string[] | boolean;
+    variableOnly: string[] | boolean;
+    tokenDetails: SideshiftTokenDetails;
+    depositOffline?: string[] | boolean;
+    settleOffline?: string[] | boolean;
+}
+
+export interface SideshiftQuote {
+  id: string;
+  createdAt: string;
+  depositCoin: string;
+  settleCoin: string;
+  depositNetwork: string;
+  settleNetwork: string;
+  expiresAt: string;
+  depositAmount: string;
+  settleAmount: string;
+  rate: string;
+  affiliateId: string;
+}
+
+export interface SideshiftPair {
+  min: string;
+  max: string;
+  rate: string;
+  depositCoin: string;
+  settleCoin: string;
+  depositNetwork: string;
+  settleNetwork: string;
 }

@@ -21,5 +21,9 @@
     "clean:paybutton": "rm -rf paybutton/node_modules paybutton/dist",
     "clean:app": "yarn clean:react && yarn clean:paybutton",
     "clean:build": "yarn clean:app && yarn build"
+  },
+  "dependencies": {
+    "@types/uuid": "^10.0.0",
+    "uuid": "^10.0.0"
   }
 }

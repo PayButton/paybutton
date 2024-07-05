@@ -1,4 +1,6 @@
 {
-  "wsBaseUrl": "https://socket.paybutton.org",
-  "apiBaseUrl": "https://paybutton.org"
+  "wsBaseUrl": "http://localhost:5000",
+  "apiBaseUrl": "http://localhost:3000",
+  "sideshiftPrivateKey": "ec365d2231eb4da49f7e241c363847dc",
+  "sideshiftAffiliateId": "JPk84U3xN"
 }
