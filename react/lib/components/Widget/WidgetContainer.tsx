@@ -105,6 +105,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
 
     const [thisPaymentId, setThisPaymentId] = useState<string | undefined>();
     const [thisPrice, setThisPrice] = useState(0);
+    const [usdPrice, setUsdPrice] = useState(0);
     useEffect(() => {
       if ((paymentId === undefined || paymentId === '') && !disablePaymentId) {
         const newPaymentId = generatePaymentId(8);
@@ -177,24 +178,21 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
     const getPrice = useCallback(
       async () => {
         const price = await getFiatPrice(currency, to, apiBaseUrl)
+        const usdPrice = await getFiatPrice('USD', to, apiBaseUrl)
         if (price !== null) setThisPrice(price)
+        if (usdPrice !== null) setUsdPrice(usdPrice)
       }
       , [currency, to, apiBaseUrl]
     );
-
-    useEffect(() => {
-      if (price === undefined) {
-          getPrice();
-      } else {
-        setThisPrice(price)
-      }
-    }, [currency, price]);
 
     useEffect(() => {
       if (isFiat(currency) && price === undefined) {
         (async () => {
           getPrice();
         })()
+      }
+      if (price !== undefined) {
+        setThisPrice(price)
       }
     }, [currency, price]);
 
@@ -233,6 +231,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
           setCurrencyObject={setCurrencyObj}
           randomSatoshis={randomSatoshis}
           price={thisPrice}
+          usdPrice={usdPrice}
           success={success}
           disabled={disabled}
           editable={editable}

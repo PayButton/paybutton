@@ -63,6 +63,7 @@ export interface WidgetProps {
   setCurrencyObject?: Function;
   randomSatoshis?: boolean | number;
   price?: number | undefined;
+  usdPrice?: number | undefined;
   editable?: boolean;
   setNewTxs: Function; // function parent WidgetContainer passes down to be updated
   newTxs?: Transaction[]; // function parent WidgetContainer passes down to be updated
@@ -151,6 +152,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     setNewTxs,
     newTxs,
     apiBaseUrl,
+    usdPrice,
     wsBaseUrl,
     hoverText = Button.defaultProps.hoverText
   } = Object.assign({}, Widget.defaultProps, props);
@@ -293,6 +295,20 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       }
     }
   }, [to, useSideshift]);
+
+  const tradeWithSideshift = () => {
+    if (isAboveMinimumSideshiftAmount !== false) {
+      setUseSideshift(true)
+    }
+  }
+
+  useEffect(() => {
+    if (thisAmount && usdPrice) {
+    setIsAboveMinimumSideshiftAmount(
+       usdPrice * +thisAmount >= 10 // WIP config
+    )
+    }
+  }, [thisAmount, usdPrice])
 
   useEffect(() => {
     (async (): Promise<void> => {
