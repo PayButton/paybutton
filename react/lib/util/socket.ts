@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io-client';
 
-import { BroadcastTxData, SideshiftCoin } from './types';
+import { BroadcastTxData, SideshiftCoin, SideshiftPair, SideshiftShift } from './types';
 
 export const txsListener = (socket: Socket, setNewTxs: Function): void => {
   socket.on('incoming-txs', (broadcastedTxData: BroadcastTxData) => {
@@ -16,12 +16,26 @@ export const txsListener = (socket: Socket, setNewTxs: Function): void => {
   });
 };
 
-export const shiftListener = (socket: Socket, setCoins: Function): void => {
-  socket.on('send-sideshift-coins-info', (coins: SideshiftCoin[]) => {
-    console.log('setting coins pra', coins)
-    setCoins(coins)
+interface ShiftListenerParams {
+  addressType: string
+  socket: Socket
+  setCoins: Function
+  setCoinPair: Function
+  setLoadingPair: Function
+  setShift: Function
+  setLoadingShift: Function
+}
+
+export const sideshiftListener = (params: ShiftListenerParams): void => {
+  params.socket.on('send-sideshift-coins-info', (coins: SideshiftCoin[]) => {
+    params.setCoins(coins.filter(c => c.coin !== params.addressType))
   })
-  socket.on('shift-created', (wip: any) => {
-    console.log('wip chegou', wip)
+  params.socket.on('shift-created', (shift: SideshiftShift) => {
+    params.setShift(shift)
+    params.setLoadingShift(false)
   });
+  params.socket.on('send-sideshift-rate', (pair: SideshiftPair) => {
+    params.setCoinPair(pair)
+    params.setLoadingPair(false)
+  })
 };

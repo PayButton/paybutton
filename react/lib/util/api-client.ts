@@ -8,8 +8,10 @@ import {
   PriceData,
   TransactionDetails,
   Currency,
+  SideshiftShift,
 } from './types';
 import { isFiat } from './currency';
+import { BASE_SIDESHIFT_URL } from './constants';
 
 export const getAddressDetails = async (
   address: string,
@@ -104,3 +106,8 @@ export const getCashtabProviderStatus = () => {
   }
   return false;
 };
+
+export const getShiftStatus = async (shiftId: string): Promise<SideshiftShift> => {
+  const res = await fetch(`${BASE_SIDESHIFT_URL}/shifts/${shiftId}`);
+  return (await res.json()) as SideshiftShift;
+}

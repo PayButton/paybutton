@@ -184,3 +184,26 @@ export interface SideshiftPair {
   depositNetwork: string;
   settleNetwork: string;
 }
+
+export interface SideshiftShift {
+    id: string;
+    createdAt: string;
+    depositCoin: string;
+    settleCoin: string;
+    depositNetwork: string;
+    settleNetwork: string;
+    depositAddress: string;
+    settleAddress: string;
+    depositMin: string;
+    depositMax: string;
+    averageShiftSeconds: string;
+    depositAmount: string;
+    expiresAt: string;
+    quoteId: string;
+    rate: string;
+    settleAmount: string;
+    status: string;
+    type: string;
+}
+
+
