@@ -38,7 +38,6 @@ import {
   shiftListener,
   SideshiftCoin,
 } from '../../util';
-import { v4 as uuidv4Generate } from 'uuid';
 
 type QRCodeProps = BaseQRCodeProps & { renderAs: 'svg' };
 
@@ -157,7 +156,6 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     hoverText = Button.defaultProps.hoverText
   } = Object.assign({}, Widget.defaultProps, props);
 
-  const uuid = uuidv4Generate()
 
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
@@ -239,7 +237,6 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const sideshiftSocketEmit = (amountString: string, coinName: string, network: string): void => {
     socket?.emit('create-quote', {
       query: {
-        uuid,
         settleAmount: amountString,
         settleCoin:  addressType,
         depositCoin: coinName,
@@ -257,7 +254,6 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       }
       const newSocket = io(`${wsBaseUrl ?? config.wsBaseUrl}/sideshift`, {
         forceNew: true,
-        query: { uuid }
       });
       setSocket(newSocket);
       shiftListener(newSocket, setCoins)
