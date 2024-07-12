@@ -108,6 +108,6 @@ export const getCashtabProviderStatus = () => {
 };
 
 export const getShiftStatus = async (shiftId: string): Promise<SideshiftShift> => {
-  const res = await fetch(`${BASE_SIDESHIFT_URL}/shifts/${shiftId}`);
+  const res = await fetch(`${BASE_SIDESHIFT_URL}/shifts/${shiftId}?t=${(new Date()).getTime()}`);
   return (await res.json()) as SideshiftShift;
 }
