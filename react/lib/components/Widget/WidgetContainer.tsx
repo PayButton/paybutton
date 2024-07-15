@@ -187,7 +187,8 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
         cryptoAmount,
         successText,
         to,
-        thisPaymentId
+        thisPaymentId,
+        sideshiftShift
       ],
     );
 
