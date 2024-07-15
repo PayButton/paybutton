@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io-client';
 
-import { BroadcastTxData, SideshiftCoin, SideshiftPair, SideshiftShift } from './types';
+import { BroadcastTxData, SideshiftCoin, SideshiftError, SideshiftPair, SideshiftShift } from './types';
 
 export const txsListener = (socket: Socket, setNewTxs: Function): void => {
   socket.on('incoming-txs', (broadcastedTxData: BroadcastTxData) => {
@@ -22,16 +22,25 @@ interface ShiftListenerParams {
   setCoins: Function
   setCoinPair: Function
   setLoadingPair: Function
-  setShift: Function
+  setSideshiftShift: Function
   setLoadingShift: Function
+  setSideshiftError: Function
 }
 
 export const sideshiftListener = (params: ShiftListenerParams): void => {
   params.socket.on('send-sideshift-coins-info', (coins: SideshiftCoin[]) => {
     params.setCoins(coins.filter(c => c.coin !== params.addressType))
   })
+  params.socket.on('shift-creation-error', (error: SideshiftError) => {
+    params.setSideshiftError(error)
+    return
+  });
+  params.socket.on('quote-creation-error', (error: SideshiftError) => {
+    params.setSideshiftError(error)
+    return
+  });
   params.socket.on('shift-created', (shift: SideshiftShift) => {
-    params.setShift(shift)
+    params.setSideshiftShift(shift)
     params.setLoadingShift(false)
   });
   params.socket.on('send-sideshift-rate', (pair: SideshiftPair) => {

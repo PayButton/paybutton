@@ -11,16 +11,17 @@ import {
   generatePaymentId,
   getCurrencyTypeFromAddress,
   isCrypto,
-  isFiat,
   isGreaterThanZero,
   isValidCurrency,
-  resolveNumber
+  resolveNumber,
+  SideshiftShift,
+  getShiftStatus
 } from '../../util';
 
 import Widget, { WidgetProps } from './Widget';
 
 export interface WidgetContainerProps
-  extends Omit<WidgetProps, 'success' | 'setNewTxs' | 'setCurrencyObject'> {
+  extends Omit<WidgetProps, 'success' | 'setNewTxs' | 'setCurrencyObject' | 'setSideshiftShift' | 'useSideshift' | 'setUseSideshift' | 'shiftCompleted'   > {
   active?: boolean;
   amount?: number;
   opReturn?: string;
@@ -118,6 +119,10 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
     const { enqueueSnackbar } = useSnackbar();
 
     const [newTxs, setNewTxs] = useState<Transaction[] | undefined>();
+    const [useSideshift, setUseSideshift] = useState(false);
+    const [sideshiftShift, setSideshiftShift] = useState<SideshiftShift | undefined>();
+    const [shiftCompleted, setShiftCompleted] = useState(false);
+
     const addrType = getCurrencyTypeFromAddress(to);
     if (
       !isValidCurrency(currency) ||
@@ -132,7 +137,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
     );
 
     const handlePayment = useCallback(
-      (transaction: Transaction) => {
+      async (transaction: Transaction) => {
         if (sound && !hideToasts) txSound.play().catch(() => {});
 
         const {
@@ -152,14 +157,25 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
         const isCryptoAmountValid = (cryptoAmount && receivedAmount.isEqualTo(resolveNumber(cryptoAmount))) || !cryptoAmount;
         const isPaymentIdValid = thisPaymentId ? txPaymentId === thisPaymentId : true;
 
-        if (isCryptoAmountValid && isPaymentIdValid)
-        {
-          setSuccess(true);
-          onSuccess?.(transaction);
+        if (sideshiftShift) {
+          console.log('getting status')
+          const shiftStatus = await getShiftStatus(sideshiftShift.id)
+          console.log('just got sideshift status:', shiftStatus)
+          if (shiftStatus.status === 'settled') {
+            onSuccess?.(transaction);
+            setShiftCompleted(true)
+          }
         } else {
-          onTransaction?.(transaction);
+          console.log('handle payment no sideshiftShift', sideshiftShift)
+          if (isCryptoAmountValid && isPaymentIdValid)
+          {
+            setSuccess(true);
+            onSuccess?.(transaction);
+          } else {
+            onTransaction?.(transaction);
+          }
+          setNewTxs([]);
         }
-        setNewTxs([]);
       },
       [
         onSuccess,
@@ -186,12 +202,11 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
     );
 
     useEffect(() => {
-      if (isFiat(currency) && price === undefined) {
+      if (price === undefined) {
         (async () => {
           getPrice();
         })()
-      }
-      if (price !== undefined) {
+      } else {
         setThisPrice(price)
       }
     }, [currency, price]);
@@ -241,6 +256,11 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
           apiBaseUrl={apiBaseUrl}
           successText={successText}
           hoverText={hoverText}
+          sideshiftShift={sideshiftShift}
+          setSideshiftShift={setSideshiftShift}
+          useSideshift={useSideshift}
+          setUseSideshift={setUseSideshift}
+          shiftCompleted={shiftCompleted}
         />
       </React.Fragment>
     );

@@ -35,8 +35,12 @@ import {
   isValidCashAddress,
   isValidXecAddress,
   getCurrencyTypeFromAddress,
-  shiftListener,
+  sideshiftListener,
   SideshiftCoin,
+  SideshiftPair,
+  resolveNumber,
+  SideshiftShift,
+  SideshiftError,
 } from '../../util';
 
 type QRCodeProps = BaseQRCodeProps & { renderAs: 'svg' };
@@ -70,6 +74,11 @@ export interface WidgetProps {
   apiBaseUrl?: string;
   loading?: boolean;
   hoverText?: string;
+  setSideshiftShift: Function;
+  sideshiftShift?: SideshiftShift | undefined,
+  useSideshift: boolean
+  setUseSideshift: Function;
+  shiftCompleted: boolean
 }
 
 interface StyleProps {
@@ -117,7 +126,7 @@ const useStyles = makeStyles({
     fontSize: '0.7em !important',
     color: `${theme.palette.tertiary} !important`,
     textShadow:
-      '#fff -2px 0 1px, #fff 0 -2px 1px, #fff 0 2px 1px, #fff 2px 0 1px !important',
+    '#fff -2px 0 1px, #fff 0 -2px 1px, #fff 0 2px 1px, #fff 2px 0 1px !important',
   }),
   text: ({ theme }: StyleProps) => ({
     fontSize: '0.9rem !important',
@@ -153,9 +162,13 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     apiBaseUrl,
     usdPrice,
     wsBaseUrl,
-    hoverText = Button.defaultProps.hoverText
+    hoverText = Button.defaultProps.hoverText,
+    setSideshiftShift,
+    sideshiftShift,
+    useSideshift,
+    setUseSideshift,
+    shiftCompleted,
   } = Object.assign({}, Widget.defaultProps, props);
-
 
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
@@ -180,13 +193,17 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const [widgetButtonText, setWidgetButtonText] = useState('Send Payment');
   const [opReturn, setOpReturn] = useState<string | undefined>();
 
-  const [useSideshift, setUseSideshift] = useState(false);
+  const [sideshiftSocket, setSideshiftSocket] = useState<Socket | undefined>(undefined);
+  const [isAboveMinimumSideshiftAmount, setIsAboveMinimumSideshiftAmount] = useState<boolean | null>(null);
   const [selectedCoin, setSelectedCoin] = useState<SideshiftCoin|undefined>();
   const [coins, setCoins] = useState<SideshiftCoin[]>([]);
-  //const [loadingPair, setLoadingPair] = useState<boolean>(false);
-  //const [coinPair, setCoinPair] = useState<SideshiftPair | undefined>();
-  //const [pairAmount, setPairAmount] = useState<string | undefined>(undefined);
-  const [pairButtonText, setPairButtonText] = useState('Send Payment');
+  const [loadingPair, setLoadingPair] = useState<boolean>(false);
+  const [coinPair, setCoinPair] = useState<SideshiftPair | undefined>();
+  const [pairAmount, setPairAmount] = useState<string | undefined>(undefined);
+  const [loadingShift, setLoadingShift] = useState(false);
+  const [selectedCoinNetwork, setSelectedCoinNetwork] = useState<string | undefined>(undefined);
+  const [sideshiftError, setSideshiftError] = useState<SideshiftError | undefined>(undefined);
+  const [sideshiftEditable, setSideshiftEditable] = useState<boolean>(false);
 
   const theme = useTheme(props.theme, isValidXecAddress(to));
   const classes = useStyles({ success, loading, theme });
@@ -233,30 +250,57 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   }, [price])
   let prefixedAddress: string;
 
-  /* WIP
-  const sideshiftSocketEmit = (amountString: string, coinName: string, network: string): void => {
-    socket?.emit('create-quote', {
-      query: {
-        settleAmount: amountString,
-        settleCoin:  addressType,
-        depositCoin: coinName,
-        depositNetwork: network
-      },
-    });
+  const requestPairRate = (): void => {
+    if (selectedCoin !== undefined) {
+      const from = `${selectedCoin.coin}-${selectedCoin?.networks[0]}`
+      const to = addressType === 'XEC' ? `ecash-mainnet` : `bitcoincash-mainnet`
+      if (sideshiftSocket !== undefined) {
+        sideshiftSocket.emit('get-sideshift-rate', {from, to})
+      }
+    }
   }
-   */
+
+  useEffect(() => {
+    if (selectedCoin?.networks.length === 1) {
+      setSelectedCoinNetwork(selectedCoin.networks[0])
+    }
+  }, [selectedCoin])
+
+  useEffect(() => {
+    if (coinPair && thisAmount && selectedCoin && selectedCoinNetwork) {
+      const bigNumber = resolveNumber(+thisAmount / +coinPair.rate)
+      const tokenDetails = selectedCoin.tokenDetails
+      let decimals: number
+      if (tokenDetails !== undefined) {
+        decimals = tokenDetails[selectedCoinNetwork].decimals
+      } else {
+        decimals = coinPair.min.split('.')[1].length
+      }
+
+      const amountString = bigNumber.toFixed(decimals)
+      setPairAmount(amountString)
+    }
+  }, [coinPair, selectedCoin, thisAmount, pairAmount, selectedCoinNetwork])
 
   useEffect(() => {
     const setupSideshiftSocket = async (): Promise<void> => {
-      if (socket !== undefined) {
-        socket.disconnect();
-        socket.disconnected
+      if (sideshiftSocket !== undefined) {
+        sideshiftSocket.disconnect();
       }
       const newSocket = io(`${wsBaseUrl ?? config.wsBaseUrl}/sideshift`, {
         forceNew: true,
       });
-      setSocket(newSocket);
-      shiftListener(newSocket, setCoins)
+      setSideshiftSocket(newSocket);
+      sideshiftListener({
+        addressType,
+        socket: newSocket,
+        setCoins,
+        setCoinPair,
+        setLoadingPair,
+        setSideshiftShift,
+        setLoadingShift,
+        setSideshiftError
+      })
     }
 
     const setupTxsSocket = async (): Promise<void> => {
@@ -272,16 +316,12 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       txsListener(newSocket, setNewTxs);
     }
 
-    if (socket !== undefined) {
-      socket.disconnect();
-      setSocket(undefined)
-    }
-
     (async () => {
+      await setupTxsSocket()
       if (useSideshift) {
         await setupSideshiftSocket()
-      } else {
-        await setupTxsSocket()
+      } else if (sideshiftSocket) {
+        sideshiftSocket.disconnect()
       }
     })()
 
@@ -289,22 +329,38 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       if (socket !== undefined) {
         socket.disconnect();
       }
+      if (sideshiftSocket !== undefined) {
+        sideshiftSocket.disconnect();
+      }
     }
   }, [to, useSideshift]);
 
   const tradeWithSideshift = () => {
-    if (isAboveMinimumSideshiftAmount !== false) {
+    if (isAboveMinimumSideshiftAmount !== false && setUseSideshift) {
       setUseSideshift(true)
     }
   }
 
   useEffect(() => {
+    console.log('umgm', thisAmount, usdPrice)
     if (thisAmount && usdPrice) {
-    setIsAboveMinimumSideshiftAmount(
-       usdPrice * +thisAmount >= 10 // WIP config
-    )
+      const usdAmount = usdPrice * +thisAmount
+      console.log('iA', usdAmount)
+      setIsAboveMinimumSideshiftAmount(usdAmount >= 10) // WIP config
     }
   }, [thisAmount, usdPrice])
+
+  useEffect(() => {
+    console.log('rolow', thisAmount, editable)
+    if (thisAmount === undefined || thisAmount === null) {
+      console.log('seta true carai')
+      setSideshiftEditable(true)
+    }
+    if (editable) {
+      console.log('seta true caraiedit')
+      setSideshiftEditable(true)
+    }
+  }, [])
 
   useEffect(() => {
     (async (): Promise<void> => {
@@ -396,10 +452,10 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     if (thisCurrencyObject && hasPrice) {
       const convertedObj = price
         ? getCurrencyObject(
-            thisCurrencyObject.float / price,
-            addressType,
-            randomSatoshis,
-          )
+          thisCurrencyObject.float / price,
+          addressType,
+          randomSatoshis,
+        )
         : null;
 
       if (convertedObj) {
@@ -429,34 +485,23 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     }
   }, [to, thisCurrencyObject, price, thisAmount, opReturn, hasPrice]);
 
-  const handleSideshiftButtonClick = () => {
-    //setDisabledSideshiftButton(true)
-    console.log('WIP')
+  const handleGetRateButtonClick = () => {
+    setLoadingPair(true)
+    requestPairRate()
+  }
+
+  const handleNetworkChange = async (e: React.ChangeEvent<{ name?: string; value: unknown }>) => {
+    const networkName = e.target.value as string
+    setSelectedCoinNetwork(networkName)
   }
 
   const handleCoinChange = async (e: React.ChangeEvent<{ name?: string; value: unknown }>) => {
     const coinName = e.target.value as string
     const selectedCoin = coins.find(c => c.coin === coinName)
+    setSelectedCoinNetwork(undefined)
     setSelectedCoin(selectedCoin)
-    if (selectedCoin !== undefined) {
-      setPairButtonText(`Send ${selectedCoin.coin}`)
-    }
-    /* WIP
-    setLoadingPair(true)
-    const pair = await getXecPair(`${coinName}-${selectedCoin?.networks[0]}`)
-    setCoinPair(pair)
-    const bigNumber = resolveNumber(thisAmount ? +thisAmount / parseFloat(pair.rate) : 0)
-      const tokenDetails = selectedCoin.tokenDetails
-      const network = selectedCoin.networks[0]
-      const decimals = tokenDetails ? tokenDetails[network].decimals : 12
-      const amountString = bigNumber.toFixed(decimals)
-      setPairAmount(amountString)
-      sideshiftSocketEmit(amountString, coinName, network)
-    setLoadingPair(false)
-   */
   }
 
-  /* WIP
   const handlePairAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let pairAmount = e.target.value;
     if (pairAmount === '') {
@@ -467,10 +512,21 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     if (coinPair !== undefined) {
       const xecAmount = +coinPair.rate * +pairAmount
       updateAmount(xecAmount.toString())
-      sideshiftSocketEmit(pairAmount, coinPair.depositCoin, coinPair.depositNetwork)
     }
   };
-   */
+
+  const handleCreateQuoteButtonClick = () => {
+    if (sideshiftSocket !== undefined && selectedCoin !== undefined) {
+      setLoadingShift(true)
+      sideshiftSocket.emit('create-sideshift-quote', {
+        depositAmount: pairAmount,
+        settleCoin:  addressType,
+        depositCoin: selectedCoin?.coin,
+        depositNetwork: selectedCoinNetwork,
+        settleAddress: to
+      });
+    }
+  }
 
   const handleButtonClick = () => {
     if (addressType === 'XEC') {
@@ -665,187 +721,224 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
           px={3}
           pt={2}
         >
-          {loading && shouldDisplayGoal ? (
-            <Typography
-              className={classes.text}
-              style={{ margin: '10px auto 20px' }}
-            >
-              <CircularProgress
-                size={15}
-                thickness={4}
-                className={classes.spinner}
-              />
-            </Typography>
-          ) : (
-            <>
-              {shouldDisplayGoal && (
-                <>
-                  <Typography
-                    className={classes.copyText}
-                    style={{ marginBottom: '0.61rem' }}
-                  >
-                    {goalText}
-                    <strong>&nbsp;{currency}</strong>
-                  </Typography>
-                  <BarChart
-                    color={theme.palette.primary}
-                    value={Math.round(goalPercent)}
-                  />
-                </>
-              )}
-            </>
-          )}
-
           {// Sideshift region
             useSideshift ?
-            <>
-
-              { coins.length > 0 && <>
-                <br/>
+              (sideshiftError ? <p>Error: {sideshiftError.errorMessage}</p> :
+              (sideshiftShift ? (shiftCompleted ?
+                <p> shift completed!</p>
+                :
+                <>
+                  <p> Deposit</p> {sideshiftShift.depositAmount} {sideshiftShift.depositCoin} to the address:
+                  <p>{sideshiftShift.depositAddress}</p>
+                  on the {selectedCoinNetwork} network.
+                </>
+              )
+              :
+              (loadingShift ?
+                <p> loading shift...</p> :
+              (coinPair ? <>
+                <p> 1 {selectedCoin?.name} ~= {resolveNumber(coinPair.rate).toFixed(2)} XEC </p>
                 {
-                   (
-                  (selectedCoin) && <>
-                  Send {selectedCoin.name}
-                    <br/>
-                    {
-                      // WIP 1 {selectedCoin.coin} ~= {resolveNumber(coinPair.rate).toFixed(2)} {currency}
-                    }
-                  </>
+                  (sideshiftEditable) ? (
+                    <Grid
+                      container
+                      spacing={2}
+                      alignItems="flex-end"
+                      style={{ margin: '6px auto' }}
+                    >
+                      <Grid item xs={6}>
+                        <TextField
+                          label="Amount"
+                          value={pairAmount ?? 0}
+                          onChange={handlePairAmountChange}
+                          inputProps={{ maxLength: 12 }}
+                        />
+                      </Grid>
+                      <Grid item xs={2}>
+                        <PencilIcon width={20} height={20} fill="#333" />
+                      </Grid>
+                    </Grid>
+                  ) : (
+                    <Typography>Send {pairAmount} {selectedCoin?.name}</Typography>
                   )
                 }
-                <Select
-                  value={selectedCoin}
-                  onChange={(e) => {handleCoinChange(e)} }
-                >
-                  {coins.map(coin => <MenuItem key ={coin.coin} value={coin.coin}>{coin.coin}</MenuItem>)}
-                </Select>
-              </> }
-              {/* WIP
-              editable ? (
-              <Grid
-                container
-                spacing={2}
-                justify="center"
-                alignItems="flex-end"
-                style={{ margin: '6px auto' }}
-              >
-                <Grid item xs={6}>
-                  <TextField
-                    label="Amount"
-                    disabled={loadingPair || pairAmount === undefined}
-                    value={pairAmount ?? 0}
-                    onChange={handlePairAmountChange}
-                    inputProps={{ maxLength: 12 }}
-                  />
-                </Grid>
-                <Grid item xs={2}>
-                  <PencilIcon width={20} height={20} fill="#333" />
-                </Grid>
-              </Grid>
-              ) : (
-                <Typography>{pairAmount}</Typography>
-              )
-                */}
-              <ButtonComponent
-                text={pairButtonText}
-                hoverText={'Send with SideShift'}
-                onClick={handleSideshiftButtonClick}
-                animation={animation}
-              />
+                <ButtonComponent
+                  text={`Send ${selectedCoin?.name}`}
+                  hoverText={`Send ${selectedCoin?.name}`}
+                  onClick={handleCreateQuoteButtonClick}
+                  disabled={loadingPair || selectedCoinNetwork === undefined || !pairAmount}
+                  animation={animation}
+                />
+              </>
+              :
+              <>
+                { coins.length > 0 && <>
+                  <br/>
+                  {
+                    (
+                    (selectedCoin) && <>
+                      Send {selectedCoin.name}
+                      <br/>
+                    </>
+                    )
+                  }
+                  <h3> Select a coin </h3>
+                  <Select
+                    value={selectedCoin}
+                    onChange={(e) => {handleCoinChange(e)} }
+                  >
+                    {coins.map(coin => <MenuItem key ={coin.coin} value={coin.coin}>{coin.coin}</MenuItem>)}
+                  </Select>
+                  {selectedCoin &&
+                  <>
+                    <h3> Select a network </h3>
+                    {
+                      selectedCoin.networks.length > 1 ?
+                        <Select
+                          value={selectedCoinNetwork}
+                          onChange={(e) => {handleNetworkChange(e)} }
+                        >
+                          {selectedCoin.networks.map(network => <MenuItem key ={network} value={network}>{network}</MenuItem>)}
+                        </Select> :
+                          <p>{selectedCoinNetwork}</p>
+                    }
+                  </>
+                  }
+                </> }
+                <ButtonComponent
+                  text={'Trade with SideShift'}
+                  hoverText={'Trade with SideShift'}
+                  onClick={handleGetRateButtonClick}
+                  disabled={loadingPair || selectedCoin === undefined || selectedCoinNetwork === undefined}
+                  animation={animation}
+                />
 
-              <Typography>
-                <a onClick={() => {setUseSideshift(false)}}>Trade with {addressType}</a>
-              </Typography>
-            </>
-              // END: Sideshift region
-            : <>
-            <Box
-              flex={1}
-              position="relative"
-              className={classes.qrCode}
-              onClick={handleQrCodeClick}
-            >
-              <Fade in={!loading && url !== ''}>
-                <React.Fragment>
-                  {qrCode}
-                  <Box position="absolute" bottom={0} right={0}>
-                    <Fade
-                      appear={false}
-                      in={!copied || recentlyCopied}
-                      timeout={{ enter: 0, exit: 2000 }}
-                    >
-                      <Box className={classes.copyTextContainer}>
-                        {!disabled && (
-                          <Typography className={classes.copyText}>
-                            {copied ? 'Payment copied!' : 'Click to copy'}
-                          </Typography>
-                        )}
-                      </Box>
-                    </Fade>
-                  </Box>
-                </React.Fragment>
-              </Fade>
-              {loading && (
-                <Box
-                  position="absolute"
-                  top={0}
-                  bottom={0}
-                  left={0}
-                  right={0}
-                  display="flex"
-                  justifyContent="center"
-                  alignItems="center"
+                <Typography>
+                  <a onClick={() => {setUseSideshift(false)}}>Trade with {addressType}</a>
+                </Typography>
+              </>
+              ))
+            // END: Sideshift region
+            )) : <>
+              {loading && shouldDisplayGoal ? (
+                <Typography
+                  className={classes.text}
+                  style={{ margin: '10px auto 20px' }}
                 >
                   <CircularProgress
-                    size={70}
+                    size={15}
                     thickness={4}
                     className={classes.spinner}
                   />
+                </Typography>
+              ) : (
+                <>
+                  {shouldDisplayGoal && (
+                    <>
+                      <Typography
+                        className={classes.copyText}
+                        style={{ marginBottom: '0.61rem' }}
+                      >
+                        {goalText}
+                        <strong>&nbsp;{currency}</strong>
+                      </Typography>
+                      <BarChart
+                        color={theme.palette.primary}
+                        value={Math.round(goalPercent)}
+                      />
+                    </>
+                  )}
+                </>
+              )}
+
+              <Box
+                flex={1}
+                position="relative"
+                className={classes.qrCode}
+                onClick={handleQrCodeClick}
+              >
+                <Fade in={!loading && url !== ''}>
+                  <React.Fragment>
+                    {qrCode}
+                    <Box position="absolute" bottom={0} right={0}>
+                      <Fade
+                        appear={false}
+                        in={!copied || recentlyCopied}
+                        timeout={{ enter: 0, exit: 2000 }}
+                      >
+                        <Box className={classes.copyTextContainer}>
+                          {!disabled && (
+                            <Typography className={classes.copyText}>
+                              {copied ? 'Payment copied!' : 'Click to copy'}
+                            </Typography>
+                          )}
+                        </Box>
+                      </Fade>
+                    </Box>
+                  </React.Fragment>
+                </Fade>
+                {loading && (
+                  <Box
+                    position="absolute"
+                    top={0}
+                    bottom={0}
+                    left={0}
+                    right={0}
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                  >
+                    <CircularProgress
+                      size={70}
+                      thickness={4}
+                      className={classes.spinner}
+                    />
+                  </Box>
+                )}
+              </Box>
+
+              {editable && (
+                <Grid
+                  container
+                  spacing={2}
+                  alignItems="flex-end"
+                  style={{ margin: '6px auto' }}
+                >
+                  <Grid item xs={6}>
+                    <TextField
+                      label={currency}
+                      value={thisAmount || 0}
+                      onChange={handleAmountChange}
+                      inputProps={{ maxlength: '12' }}
+                      name="Amount"
+                      id="userEditedAmount"
+                    />
+                  </Grid>
+                  <Grid item xs={2}>
+                    <PencilIcon width={20} height={20} fill="#333" />
+                  </Grid>
+                </Grid>
+              )}
+
+              {success || (
+                <Box pt={2} flex={1}>
+                  <ButtonComponent
+                    text={widgetButtonText}
+                    hoverText={hoverText}
+                    onClick={handleButtonClick}
+                    disabled={disabled}
+                    animation={animation}
+                  />
                 </Box>
               )}
-            </Box>
-
-            {editable && (
-              <Grid
-                container
-                spacing={2}
-                justify="center"
-                alignItems="flex-end"
-                style={{ margin: '6px auto' }}
-              >
-                <Grid item xs={6}>
-                  <TextField
-                    label={currency}
-                    value={thisAmount || 0}
-                    onChange={handleAmountChange}
-                    inputProps={{ maxlength: '12' }}
-                    name="Amount"
-                    id="userEditedAmount"
-                  />
-                </Grid>
-                <Grid item xs={2}>
-                  <PencilIcon width={20} height={20} fill="#333" />
-                </Grid>
-              </Grid>
-            )}
-
-            {success || (
-              <Box pt={2} flex={1}>
-                <ButtonComponent
-                  text={widgetButtonText}
-                  hoverText={hoverText}
-                  onClick={handleButtonClick}
-                  disabled={disabled}
-                  animation={animation}
-                />
+              <Box py={1}>
+                <Typography>
+                  {
+                    (isAboveMinimumSideshiftAmount || sideshiftEditable)   && <a onClick={tradeWithSideshift}>Don't have any {addressType}?</a>
+                  }
+                </Typography>
               </Box>
-            )}
-          <Box py={1}>
-            <Typography>
-              <a onClick={() => {setUseSideshift(true)}}>Don't have any {addressType}?</a>
-            </Typography>
-          </Box>
-          </>
+            </>
           }
           {foot && (
             <Box pt={2} flex={1}>
@@ -854,7 +947,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
           )}
           <Box py={0.8}>
             <Typography className={classes.footer}>
-              Powered by PayButton.org
+              Powered by PayButton.org tA{thisAmount} pA{pairAmount} sE{sideshiftEditable}
             </Typography>
           </Box>
         </Box>
