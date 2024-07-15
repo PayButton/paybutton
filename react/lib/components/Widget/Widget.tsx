@@ -728,7 +728,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                 <p> shift completed!</p>
                 :
                 <>
-                  <p> Deposit</p> {sideshiftShift.depositAmount} {sideshiftShift.depositCoin} to the address:
+                  <p> Deposit at least</p> {sideshiftShift.depositAmount} {sideshiftShift.depositCoin} to the address:
                   <p>{sideshiftShift.depositAddress}</p>
                   on the {selectedCoinNetwork} network.
                 </>
@@ -766,7 +766,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                   text={`Send ${selectedCoin?.name}`}
                   hoverText={`Send ${selectedCoin?.name}`}
                   onClick={handleCreateQuoteButtonClick}
-                  disabled={loadingPair || selectedCoinNetwork === undefined || !pairAmount}
+                  disabled={loadingPair || selectedCoinNetwork === undefined || !pairAmount || !isAboveMinimumSideshiftAmount}
                   animation={animation}
                 />
               </>
@@ -784,7 +784,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                   }
                   <h3> Select a coin </h3>
                   <Select
-                    value={selectedCoin}
+                    value={selectedCoin?.coin}
                     onChange={(e) => {handleCoinChange(e)} }
                   >
                     {coins.map(coin => <MenuItem key ={coin.coin} value={coin.coin}>{coin.coin}</MenuItem>)}
