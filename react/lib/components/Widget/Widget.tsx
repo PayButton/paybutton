@@ -952,7 +952,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
           )}
           <Box py={0.8}>
             <Typography className={classes.footer}>
-              Powered by PayButton.org tA{thisAmount} pA{pairAmount} sE{sideshiftEditable}
+              Powered by PayButton.org
             </Typography>
           </Box>
         </Box>
