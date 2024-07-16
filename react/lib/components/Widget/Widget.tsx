@@ -345,7 +345,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   }, [to, useSideshift]);
 
   const tradeWithSideshift = () => {
-    if (isAboveMinimumSideshiftAmount !== false && setUseSideshift) {
+    if (setUseSideshift) {
       setUseSideshift(true)
     }
   }
