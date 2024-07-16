@@ -773,6 +773,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                   disabled={loadingPair || selectedCoinNetwork === undefined || !pairAmount || !isAboveMinimumSideshiftAmount}
                   animation={animation}
                 />
+                {!isAboveMinimumSideshiftAmount && <p>Amount is below minimum.</p>}
               </>
               :
               <>
