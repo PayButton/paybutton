@@ -158,15 +158,12 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
         const isPaymentIdValid = thisPaymentId ? txPaymentId === thisPaymentId : true;
 
         if (sideshiftShift) {
-          console.log('getting status')
           const shiftStatus = await getShiftStatus(sideshiftShift.id)
-          console.log('just got sideshift status:', shiftStatus)
           if (shiftStatus.status === 'settled') {
             onSuccess?.(transaction);
             setShiftCompleted(true)
           }
         } else {
-          console.log('handle payment no sideshiftShift', sideshiftShift)
           if (isCryptoAmountValid && isPaymentIdValid)
           {
             setSuccess(true);

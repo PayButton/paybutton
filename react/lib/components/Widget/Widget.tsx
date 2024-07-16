@@ -200,7 +200,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const [loadingPair, setLoadingPair] = useState<boolean>(false);
   const [coinPair, setCoinPair] = useState<SideshiftPair | undefined>();
   const [pairAmount, setPairAmount] = useState<string | undefined>(undefined);
-  const [pairDecimals, setPairDecimals] = useState<number | undefined>(undefined);
+  const [pairAmountMaxLength, setPairAmountMaxLength] = useState<number | undefined>(undefined);
   const [loadingShift, setLoadingShift] = useState(false);
   const [selectedCoinNetwork, setSelectedCoinNetwork] = useState<string | undefined>(undefined);
   const [sideshiftError, setSideshiftError] = useState<SideshiftError | undefined>(undefined);
@@ -278,10 +278,15 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       } else {
         decimals = coinPair.min.split('.')[1].length
       }
-      setPairDecimals(decimals)
 
       const amountString = bigNumber.toFixed(decimals)
       setPairAmountFixedDecimals(amountString)
+
+      // Besides decimals, account for the non-decimal part of the bigNumber
+      // plus the '.' character.
+      const floorAmount = pairAmount ? Math.floor(+pairAmount) : 1
+      const nonDecimalCharCount = 1 + Math.ceil(Math.log10(floorAmount + 1))
+      setPairAmountMaxLength(nonDecimalCharCount + decimals)
     }
   }, [coinPair, selectedCoin, thisAmount, pairAmount, selectedCoinNetwork])
 
@@ -345,22 +350,17 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   }
 
   useEffect(() => {
-    console.log('umgm', thisAmount, usdPrice)
     if (thisAmount && usdPrice) {
       const usdAmount = usdPrice * +thisAmount
-      console.log('iA', usdAmount)
       setIsAboveMinimumSideshiftAmount(usdAmount >= 10) // WIP config
     }
   }, [thisAmount, usdPrice])
 
   useEffect(() => {
-    console.log('rolow', thisAmount, editable)
     if (thisAmount === undefined || thisAmount === null || thisAmount === 0) {
-      console.log('seta true carai')
       setSideshiftEditable(true)
     }
     if (editable) {
-      console.log('seta true caraiedit')
       setSideshiftEditable(true)
     }
   }, [])
@@ -578,7 +578,6 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const handleCreateQuoteButtonClick = () => {
     if (sideshiftSocket !== undefined && selectedCoin !== undefined) {
       setLoadingShift(true)
-      console.log('miting', pairAmountFixedDecimals)
       sideshiftSocket.emit('create-sideshift-quote', {
         depositAmount: pairAmountFixedDecimals,
         settleCoin:  addressType,
@@ -755,7 +754,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                           label="Amount"
                           value={pairAmount ?? 0}
                           onChange={handlePairAmountChange}
-                          inputProps={{ maxLength: pairDecimals ?? 12 }}
+                          inputProps={{ maxLength: pairAmountMaxLength}}
                         />
                       </Grid>
                       <Grid item xs={2}>
