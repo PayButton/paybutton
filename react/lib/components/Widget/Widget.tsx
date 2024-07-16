@@ -41,6 +41,7 @@ import {
   resolveNumber,
   SideshiftShift,
   SideshiftError,
+  MINIMUM_SIDESHIFT_DOLLAR_AMOUNT,
 } from '../../util';
 
 type QRCodeProps = BaseQRCodeProps & { renderAs: 'svg' };
@@ -352,7 +353,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   useEffect(() => {
     if (thisAmount && usdPrice) {
       const usdAmount = usdPrice * +thisAmount
-      setIsAboveMinimumSideshiftAmount(usdAmount >= 10) // WIP config
+      setIsAboveMinimumSideshiftAmount(usdAmount >= MINIMUM_SIDESHIFT_DOLLAR_AMOUNT)
     }
   }, [thisAmount, usdPrice])
 
