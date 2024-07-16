@@ -199,8 +199,8 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const [coins, setCoins] = useState<SideshiftCoin[]>([]);
   const [loadingPair, setLoadingPair] = useState<boolean>(false);
   const [coinPair, setCoinPair] = useState<SideshiftPair | undefined>();
-  const [pairAmount, setPairAmount] = useState<number | undefined>(undefined);
-  const [pairDecimalStep, setPairDecimalStep] = useState<number>(0.00000001);
+  const [pairAmount, setPairAmount] = useState<string | undefined>(undefined);
+  const [pairDecimals, setPairDecimals] = useState<number | undefined>(undefined);
   const [loadingShift, setLoadingShift] = useState(false);
   const [selectedCoinNetwork, setSelectedCoinNetwork] = useState<string | undefined>(undefined);
   const [sideshiftError, setSideshiftError] = useState<SideshiftError | undefined>(undefined);
@@ -278,7 +278,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       } else {
         decimals = coinPair.min.split('.')[1].length
       }
-      setPairDecimalStep(10 ** (-decimals))
+      setPairDecimals(decimals)
 
       const amountString = bigNumber.toFixed(decimals)
       setPairAmountFixedDecimals(amountString)
@@ -563,10 +563,14 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   }
 
   const handlePairAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let pairAmountValue = e.target.value;
-    setPairAmount(+pairAmountValue)
-    if (coinPair !== undefined && pairAmount !== undefined) {
-      const xecAmount = +coinPair.rate * +pairAmountValue
+    let pairAmount = e.target.value;
+    if (pairAmount === '') {
+      pairAmount = '0';
+    }
+    setPairAmount(pairAmount)
+
+    if (coinPair !== undefined) {
+      const xecAmount = +coinPair.rate * +pairAmount
       updateAmount(xecAmount.toString())
     }
   };
@@ -750,12 +754,8 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                         <TextField
                           label="Amount"
                           value={pairAmount ?? 0}
-                          type="number"
                           onChange={handlePairAmountChange}
-                          inputProps={{
-                              min: 0,
-                              step: pairDecimalStep
-                          }}
+                          inputProps={{ maxLength: pairDecimals ?? 12 }}
                         />
                       </Grid>
                       <Grid item xs={2}>
@@ -951,7 +951,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
           )}
           <Box py={0.8}>
             <Typography className={classes.footer}>
-              Powered by PayButton.org
+              Powered by PayButton.org tA{thisAmount} pA{pairAmount} sE{sideshiftEditable}
             </Typography>
           </Box>
         </Box>
