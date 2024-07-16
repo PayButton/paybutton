@@ -199,11 +199,13 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const [coins, setCoins] = useState<SideshiftCoin[]>([]);
   const [loadingPair, setLoadingPair] = useState<boolean>(false);
   const [coinPair, setCoinPair] = useState<SideshiftPair | undefined>();
-  const [pairAmount, setPairAmount] = useState<string | undefined>(undefined);
+  const [pairAmount, setPairAmount] = useState<number | undefined>(undefined);
+  const [pairDecimalStep, setPairDecimalStep] = useState<number>(0.00000001);
   const [loadingShift, setLoadingShift] = useState(false);
   const [selectedCoinNetwork, setSelectedCoinNetwork] = useState<string | undefined>(undefined);
   const [sideshiftError, setSideshiftError] = useState<SideshiftError | undefined>(undefined);
   const [sideshiftEditable, setSideshiftEditable] = useState<boolean>(false);
+  const [pairAmountFixedDecimals, setPairAmountFixedDecimals] = useState<string | undefined>(undefined);
 
   const theme = useTheme(props.theme, isValidXecAddress(to));
   const classes = useStyles({ success, loading, theme });
@@ -276,9 +278,10 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       } else {
         decimals = coinPair.min.split('.')[1].length
       }
+      setPairDecimalStep(10 ** (-decimals))
 
       const amountString = bigNumber.toFixed(decimals)
-      setPairAmount(amountString)
+      setPairAmountFixedDecimals(amountString)
     }
   }, [coinPair, selectedCoin, thisAmount, pairAmount, selectedCoinNetwork])
 
@@ -352,7 +355,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
 
   useEffect(() => {
     console.log('rolow', thisAmount, editable)
-    if (thisAmount === undefined || thisAmount === null) {
+    if (thisAmount === undefined || thisAmount === null || thisAmount === 0) {
       console.log('seta true carai')
       setSideshiftEditable(true)
     }
@@ -485,6 +488,63 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     }
   }, [to, thisCurrencyObject, price, thisAmount, opReturn, hasPrice]);
 
+  useEffect(() => {
+    try {
+      setOpReturn(
+        encodeOpReturnProps({
+          opReturn: props.opReturn,
+          paymentId,
+          disablePaymentId: disablePaymentId ?? false,
+        }),
+      );
+    } catch (err) {
+      setErrorMsg((err as Error).message);
+    }
+  }, [props.opReturn, paymentId, disablePaymentId]);
+
+  useEffect(() => {
+    setThisAmount(props.amount);
+  }, [props.amount]);
+
+  useEffect(() => {
+    if (totalReceived !== undefined) {
+      const progress = getCurrencyObject(totalReceived, currency, false);
+
+      const goal = getCurrencyObject(cleanGoalAmount, currency, false);
+      if (!isFiat(currency)) {
+        if (goal !== undefined) {
+          setGoalPercent((100 * progress.float) / goal.float);
+          setGoalText(`${progress.float} / ${cleanGoalAmount}`);
+          setLoading(false);
+        }
+      } else {
+        if (hasPrice) {
+          const receivedVal: number = totalReceived * price;
+          const receivedText: string = formatPrice(
+            receivedVal,
+            currency,
+            DECIMALS.FIAT,
+          );
+          const goalText: string = formatPrice(
+            cleanGoalAmount,
+            currency,
+            DECIMALS.FIAT,
+          );
+          const receivedRatio = `${receivedText} / ${goalText}`;
+          const receivedPercentage: number =
+            100 * (receivedVal / cleanGoalAmount);
+          setLoading(false);
+          setGoalPercent(receivedPercentage);
+          setGoalText(receivedRatio);
+        }
+      }
+      if (shouldDisplayGoal && goal.float !== undefined && goal.float <= 0) {
+        setDisabled(true);
+        setErrorMsg('Goal Value must be a number');
+      }
+    }
+  }, [totalReceived, currency, goalAmount, price, hasPrice]);
+
   const handleGetRateButtonClick = () => {
     setLoadingPair(true)
     requestPairRate()
@@ -503,14 +563,10 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   }
 
   const handlePairAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let pairAmount = e.target.value;
-    if (pairAmount === '') {
-      pairAmount = '0';
-    }
-    setPairAmount(pairAmount)
-
-    if (coinPair !== undefined) {
-      const xecAmount = +coinPair.rate * +pairAmount
+    let pairAmountValue = e.target.value;
+    setPairAmount(+pairAmountValue)
+    if (coinPair !== undefined && pairAmount !== undefined) {
+      const xecAmount = +coinPair.rate * +pairAmountValue
       updateAmount(xecAmount.toString())
     }
   };
@@ -518,8 +574,9 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const handleCreateQuoteButtonClick = () => {
     if (sideshiftSocket !== undefined && selectedCoin !== undefined) {
       setLoadingShift(true)
+      console.log('miting', pairAmountFixedDecimals)
       sideshiftSocket.emit('create-sideshift-quote', {
-        depositAmount: pairAmount,
+        depositAmount: pairAmountFixedDecimals,
         settleCoin:  addressType,
         depositCoin: selectedCoin?.coin,
         depositNetwork: selectedCoinNetwork,
@@ -631,63 +688,6 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     }
   }
 
-  useEffect(() => {
-    try {
-      setOpReturn(
-        encodeOpReturnProps({
-          opReturn: props.opReturn,
-          paymentId,
-          disablePaymentId: disablePaymentId ?? false,
-        }),
-      );
-    } catch (err) {
-      setErrorMsg((err as Error).message);
-    }
-  }, [props.opReturn, paymentId, disablePaymentId]);
-
-  useEffect(() => {
-    setThisAmount(props.amount);
-  }, [props.amount]);
-
-  useEffect(() => {
-    if (totalReceived !== undefined) {
-      const progress = getCurrencyObject(totalReceived, currency, false);
-
-      const goal = getCurrencyObject(cleanGoalAmount, currency, false);
-      if (!isFiat(currency)) {
-        if (goal !== undefined) {
-          setGoalPercent((100 * progress.float) / goal.float);
-          setGoalText(`${progress.float} / ${cleanGoalAmount}`);
-          setLoading(false);
-        }
-      } else {
-        if (hasPrice) {
-          const receivedVal: number = totalReceived * price;
-          const receivedText: string = formatPrice(
-            receivedVal,
-            currency,
-            DECIMALS.FIAT,
-          );
-          const goalText: string = formatPrice(
-            cleanGoalAmount,
-            currency,
-            DECIMALS.FIAT,
-          );
-          const receivedRatio = `${receivedText} / ${goalText}`;
-          const receivedPercentage: number =
-            100 * (receivedVal / cleanGoalAmount);
-          setLoading(false);
-          setGoalPercent(receivedPercentage);
-          setGoalText(receivedRatio);
-        }
-      }
-      if (shouldDisplayGoal && goal.float !== undefined && goal.float <= 0) {
-        setDisabled(true);
-        setErrorMsg('Goal Value must be a number');
-      }
-    }
-  }, [totalReceived, currency, goalAmount, price, hasPrice]);
-
   return (
     <ThemeProvider value={theme}>
       <Box
@@ -750,8 +750,12 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                         <TextField
                           label="Amount"
                           value={pairAmount ?? 0}
+                          type="number"
                           onChange={handlePairAmountChange}
-                          inputProps={{ maxLength: 12 }}
+                          inputProps={{
+                              min: 0,
+                              step: pairDecimalStep
+                          }}
                         />
                       </Grid>
                       <Grid item xs={2}>
@@ -947,7 +951,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
           )}
           <Box py={0.8}>
             <Typography className={classes.footer}>
-              Powered by PayButton.org tA{thisAmount} pA{pairAmount} sE{sideshiftEditable}
+              Powered by PayButton.org
             </Typography>
           </Box>
         </Box>
