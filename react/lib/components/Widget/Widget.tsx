@@ -741,6 +741,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                   <p> Deposit at least</p> {sideshiftShift.depositAmount} {sideshiftShift.depositCoin} to the address:
                   <p>{sideshiftShift.depositAddress}</p>
                   on the {selectedCoinNetwork} network.
+                  The id of your sideshift operation is {sideshiftShift.id}
                 </>
               )
               :
