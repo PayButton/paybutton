@@ -196,6 +196,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
 
   const [sideshiftSocket, setSideshiftSocket] = useState<Socket | undefined>(undefined);
   const [isAboveMinimumSideshiftAmount, setIsAboveMinimumSideshiftAmount] = useState<boolean | null>(null);
+  const [isBelowMaximumSideshiftAmount, setIsBelowMaximumSideshiftAmount] = useState<boolean | null>(null);
   const [selectedCoin, setSelectedCoin] = useState<SideshiftCoin|undefined>();
   const [coins, setCoins] = useState<SideshiftCoin[]>([]);
   const [loadingPair, setLoadingPair] = useState<boolean>(false);
@@ -354,8 +355,13 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     if (thisAmount && usdPrice) {
       const usdAmount = usdPrice * +thisAmount
       setIsAboveMinimumSideshiftAmount(usdAmount >= MINIMUM_SIDESHIFT_DOLLAR_AMOUNT)
+      if (pairAmount && coinPair) {
+        setIsBelowMaximumSideshiftAmount(+pairAmount <= +coinPair.max)
+      } else {
+        setIsBelowMaximumSideshiftAmount(true)
+      }
     }
-  }, [thisAmount, usdPrice])
+  }, [thisAmount, usdPrice, pairAmount, coinPair])
 
   useEffect(() => {
     if (thisAmount === undefined || thisAmount === null || thisAmount === 0) {
@@ -770,10 +776,11 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                   text={`Send ${selectedCoin?.name}`}
                   hoverText={`Send ${selectedCoin?.name}`}
                   onClick={handleCreateQuoteButtonClick}
-                  disabled={loadingPair || selectedCoinNetwork === undefined || !pairAmount || !isAboveMinimumSideshiftAmount}
+                  disabled={loadingPair || selectedCoinNetwork === undefined || !pairAmount || !isAboveMinimumSideshiftAmount || !isBelowMaximumSideshiftAmount}
                   animation={animation}
                 />
                 {!isAboveMinimumSideshiftAmount && <p>Amount is below minimum.</p>}
+                {!isBelowMaximumSideshiftAmount && <p>Amount is above maximum.</p>}
               </>
               :
               <>
