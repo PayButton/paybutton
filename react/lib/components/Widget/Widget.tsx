@@ -39,7 +39,6 @@ import {
   resolveNumber,
   SideshiftShift,
   SideshiftError,
-  MINIMUM_SIDESHIFT_DOLLAR_AMOUNT,
 } from '../../util';
 import SideshiftWidget from './SideshiftWidget';
 
@@ -66,7 +65,6 @@ export interface WidgetProps {
   setCurrencyObject?: Function;
   randomSatoshis?: boolean | number;
   price?: number | undefined;
-  usdPrice?: number | undefined;
   editable?: boolean;
   setNewTxs: Function; // function parent WidgetContainer passes down to be updated
   newTxs?: Transaction[]; // function parent WidgetContainer passes down to be updated
@@ -160,7 +158,6 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     setNewTxs,
     newTxs,
     apiBaseUrl,
-    usdPrice,
     wsBaseUrl,
     hoverText = Button.defaultProps.hoverText,
     setSideshiftShift,
@@ -351,16 +348,14 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   }
 
   useEffect(() => {
-    if (thisAmount && usdPrice) {
-      const usdAmount = usdPrice * +thisAmount
-      setIsAboveMinimumSideshiftAmount(usdAmount >= MINIMUM_SIDESHIFT_DOLLAR_AMOUNT)
-      if (pairAmount && coinPair) {
-        setIsBelowMaximumSideshiftAmount(+pairAmount <= +coinPair.max)
-      } else {
-        setIsBelowMaximumSideshiftAmount(true)
-      }
+    if (pairAmount && coinPair) {
+      setIsBelowMaximumSideshiftAmount(+pairAmount <= +coinPair.max)
+      setIsAboveMinimumSideshiftAmount(+pairAmount >= +coinPair.min)
+    } else {
+      setIsBelowMaximumSideshiftAmount(true)
+      setIsAboveMinimumSideshiftAmount(true)
     }
-  }, [thisAmount, usdPrice, pairAmount, coinPair])
+  }, [pairAmount, coinPair])
 
   useEffect(() => {
     if (thisAmount === undefined || thisAmount === null || thisAmount === 0) {
