@@ -1,9 +1,9 @@
 import { AltpaymentClient, AltpaymentPayment } from ".";
-const BASE_MOCKED_URL = 'WIP'
+import config from '../config.json'
 
 export class MockedPaymentClient implements AltpaymentClient {
-  public async getPaymentStatus (id: string): Promise<AltpaymentPayment> {
-  const res = await fetch(`${BASE_MOCKED_URL}/shifts/${id}?t=${(new Date()).getTime()}`);
+  public async getPaymentStatus (_id: string): Promise<AltpaymentPayment> {
+  const res = await fetch(`${config.apiBaseUrl}/sideshift/mocked`);
   return (await res.json()) as AltpaymentPayment;
   }
 }
