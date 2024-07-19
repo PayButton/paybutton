@@ -33,10 +33,12 @@ export const sideshiftListener = (params: ShiftListenerParams): void => {
   })
   params.socket.on('shift-creation-error', (error: SideshiftError) => {
     params.setSideshiftError(error)
+    params.setLoadingShift(false)
     return
   });
   params.socket.on('quote-creation-error', (error: SideshiftError) => {
     params.setSideshiftError(error)
+    params.setLoadingShift(false)
     return
   });
   params.socket.on('shift-created', (shift: SideshiftShift) => {

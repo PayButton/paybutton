@@ -20,17 +20,21 @@ import { Button, animation } from '../Button/Button';
 interface SideshiftProps {
   setUseSideshift: Function;
   sideshiftShift?: SideshiftShift;
+  setSideshiftShift: Function;
   shiftCompleted: boolean;
   sideshiftError?: SideshiftError;
+  setSideshiftError: Function;
   coins: SideshiftCoin[];
   selectedCoin?: SideshiftCoin;
   selectedCoinNetwork?: string;
   loadingPair: boolean;
   pairAmount?: string;
+  setPairAmount: Function;
   isAboveMinimumSideshiftAmount: boolean | null;
   isBelowMaximumSideshiftAmount: boolean | null;
   loadingShift: boolean;
   coinPair?: SideshiftPair;
+  setCoinPair: Function;
   sideshiftEditable: boolean;
   pairAmountMaxLength?: number;
   handleGetRateButtonClick: () => void;
@@ -46,17 +50,21 @@ export const SideshiftWidget: React.FunctionComponent<SideshiftProps> = props =>
   const {
   setUseSideshift,
   sideshiftShift,
+  setSideshiftShift,
   shiftCompleted,
   sideshiftError,
+  setSideshiftError,
   coins,
   selectedCoin,
   selectedCoinNetwork,
   loadingPair,
   pairAmount,
+  setPairAmount,
   isAboveMinimumSideshiftAmount,
   isBelowMaximumSideshiftAmount,
   loadingShift,
   coinPair,
+  setCoinPair,
   sideshiftEditable,
   pairAmountMaxLength,
   handleGetRateButtonClick,
@@ -68,9 +76,21 @@ export const SideshiftWidget: React.FunctionComponent<SideshiftProps> = props =>
   addressType,
   } = Object.assign({}, props);
 
+  const resetTrade = () => {
+    setCoinPair(undefined)
+    setSideshiftError(undefined)
+    setSideshiftShift(undefined)
+    setPairAmount(undefined)
+  }
+
   return <>
-    {sideshiftError ? <p>Error: {sideshiftError.errorMessage}</p> :
-              (sideshiftShift ? (shiftCompleted ?
+    {sideshiftError ? <>
+      <button onClick={resetTrade}> Go back</button>
+      <p>Error: {sideshiftError.errorMessage}</p></>
+        :
+    <>
+      {(coinPair && !loadingShift )&& <button onClick={resetTrade}> Go back</button>}
+              {sideshiftShift ? (shiftCompleted ?
                 <p> shift completed!</p>
                 :
                 <>
@@ -168,7 +188,9 @@ export const SideshiftWidget: React.FunctionComponent<SideshiftProps> = props =>
               </>
               ))
             // END: Sideshift region
-            )}
+            }
+    </>
+    }
     </>
 };
 

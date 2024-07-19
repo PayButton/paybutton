@@ -735,17 +735,21 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
               <SideshiftWidget
                 setUseSideshift={setUseSideshift}
                 sideshiftShift={sideshiftShift}
+                setSideshiftShift={setSideshiftShift}
                 shiftCompleted={shiftCompleted}
                 sideshiftError={sideshiftError}
+                setSideshiftError={setSideshiftError}
                 coins={coins}
                 selectedCoin={selectedCoin}
                 selectedCoinNetwork={selectedCoinNetwork}
                 loadingPair={loadingPair}
                 pairAmount={pairAmount}
+                setPairAmount={setPairAmount}
                 isAboveMinimumSideshiftAmount={isAboveMinimumSideshiftAmount}
                 isBelowMaximumSideshiftAmount={isBelowMaximumSideshiftAmount}
                 loadingShift={loadingShift}
                 coinPair={coinPair}
+                setCoinPair={setCoinPair}
                 sideshiftEditable={sideshiftEditable}
                 pairAmountMaxLength={pairAmountMaxLength}
                 handleGetRateButtonClick={handleGetRateButtonClick}
