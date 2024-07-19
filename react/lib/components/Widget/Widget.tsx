@@ -36,9 +36,9 @@ import {
   sideshiftListener,
   SideshiftCoin,
   SideshiftPair,
-  resolveNumber,
   SideshiftShift,
   SideshiftError,
+  MINIMUM_SIDESHIFT_DOLLAR_AMOUNT,
 } from '../../util';
 import SideshiftWidget from './SideshiftWidget';
 
@@ -65,6 +65,7 @@ export interface WidgetProps {
   setCurrencyObject?: Function;
   randomSatoshis?: boolean | number;
   price?: number | undefined;
+  usdPrice?: number | undefined;
   editable?: boolean;
   setNewTxs: Function; // function parent WidgetContainer passes down to be updated
   newTxs?: Transaction[]; // function parent WidgetContainer passes down to be updated
@@ -158,6 +159,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     setNewTxs,
     newTxs,
     apiBaseUrl,
+    usdPrice,
     wsBaseUrl,
     hoverText = Button.defaultProps.hoverText,
     setSideshiftShift,
@@ -191,19 +193,14 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const [opReturn, setOpReturn] = useState<string | undefined>();
 
   const [sideshiftSocket, setSideshiftSocket] = useState<Socket | undefined>(undefined);
-  const [isAboveMinimumSideshiftAmount, setIsAboveMinimumSideshiftAmount] = useState<boolean | null>(null);
-  const [isBelowMaximumSideshiftAmount, setIsBelowMaximumSideshiftAmount] = useState<boolean | null>(null);
-  const [selectedCoin, setSelectedCoin] = useState<SideshiftCoin|undefined>();
   const [coins, setCoins] = useState<SideshiftCoin[]>([]);
   const [loadingPair, setLoadingPair] = useState<boolean>(false);
   const [coinPair, setCoinPair] = useState<SideshiftPair | undefined>();
   const [pairAmount, setPairAmount] = useState<string | undefined>(undefined);
-  const [pairAmountMaxLength, setPairAmountMaxLength] = useState<number | undefined>(undefined);
   const [loadingShift, setLoadingShift] = useState(false);
-  const [selectedCoinNetwork, setSelectedCoinNetwork] = useState<string | undefined>(undefined);
   const [sideshiftError, setSideshiftError] = useState<SideshiftError | undefined>(undefined);
   const [sideshiftEditable, setSideshiftEditable] = useState<boolean>(false);
-  const [pairAmountFixedDecimals, setPairAmountFixedDecimals] = useState<string | undefined>(undefined);
+  const [isAboveMinimumSideshiftUSDAmount, setIsAboveMinimumSideshiftUSDAmount] = useState<boolean | null>(null);
 
   const theme = useTheme(props.theme, isValidXecAddress(to));
   const classes = useStyles({ success, loading, theme });
@@ -249,44 +246,6 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     setHasPrice(price !== undefined && price > 0)
   }, [price])
   let prefixedAddress: string;
-
-  const requestPairRate = (): void => {
-    if (selectedCoin !== undefined) {
-      const from = `${selectedCoin.coin}-${selectedCoin?.networks[0]}`
-      const to = addressType === 'XEC' ? `ecash-mainnet` : `bitcoincash-mainnet`
-      if (sideshiftSocket !== undefined) {
-        sideshiftSocket.emit('get-sideshift-rate', {from, to})
-      }
-    }
-  }
-
-  useEffect(() => {
-    if (selectedCoin?.networks.length === 1) {
-      setSelectedCoinNetwork(selectedCoin.networks[0])
-    }
-  }, [selectedCoin])
-
-  useEffect(() => {
-    if (coinPair && thisAmount && selectedCoin && selectedCoinNetwork) {
-      const bigNumber = resolveNumber(+thisAmount / +coinPair.rate)
-      const tokenDetails = selectedCoin.tokenDetails
-      let decimals: number
-      if (tokenDetails !== undefined) {
-        decimals = tokenDetails[selectedCoinNetwork].decimals
-      } else {
-        decimals = coinPair.min.split('.')[1].length
-      }
-
-      const amountString = bigNumber.toFixed(decimals)
-      setPairAmountFixedDecimals(amountString)
-
-      // Besides decimals, account for the non-decimal part of the bigNumber
-      // plus the '.' character.
-      const floorAmount = pairAmount ? Math.floor(+pairAmount) : 1
-      const nonDecimalCharCount = 1 + Math.ceil(Math.log10(floorAmount + 1))
-      setPairAmountMaxLength(nonDecimalCharCount + decimals)
-    }
-  }, [coinPair, selectedCoin, thisAmount, pairAmount, selectedCoinNetwork])
 
   useEffect(() => {
     const setupSideshiftSocket = async (): Promise<void> => {
@@ -348,16 +307,6 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   }
 
   useEffect(() => {
-    if (pairAmount && coinPair) {
-      setIsBelowMaximumSideshiftAmount(+pairAmount <= +coinPair.max)
-      setIsAboveMinimumSideshiftAmount(+pairAmount >= +coinPair.min)
-    } else {
-      setIsBelowMaximumSideshiftAmount(true)
-      setIsAboveMinimumSideshiftAmount(true)
-    }
-  }, [pairAmount, coinPair])
-
-  useEffect(() => {
     if (thisAmount === undefined || thisAmount === null || thisAmount === 0) {
       setSideshiftEditable(true)
     }
@@ -387,6 +336,10 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     } else {
       setDisabled(true);
       setErrorMsg('Invalid Recipient');
+    }
+    if (usdPrice && thisAmount) {
+      const usdAmount = usdPrice * +thisAmount
+      setIsAboveMinimumSideshiftUSDAmount(usdAmount >= MINIMUM_SIDESHIFT_DOLLAR_AMOUNT)
     }
   }, [to, thisAmount]);
 
@@ -546,49 +499,6 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     }
   }, [totalReceived, currency, goalAmount, price, hasPrice]);
 
-  const handleGetRateButtonClick = () => {
-    setLoadingPair(true)
-    requestPairRate()
-  }
-
-  const handleNetworkChange = async (e: React.ChangeEvent<{ name?: string; value: unknown }>) => {
-    const networkName = e.target.value as string
-    setSelectedCoinNetwork(networkName)
-  }
-
-  const handleCoinChange = async (e: React.ChangeEvent<{ name?: string; value: unknown }>) => {
-    const coinName = e.target.value as string
-    const selectedCoin = coins.find(c => c.coin === coinName)
-    setSelectedCoinNetwork(undefined)
-    setSelectedCoin(selectedCoin)
-  }
-
-  const handlePairAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let pairAmount = e.target.value;
-    if (pairAmount === '') {
-      pairAmount = '0';
-    }
-    setPairAmount(pairAmount)
-
-    if (coinPair !== undefined) {
-      const xecAmount = +coinPair.rate * +pairAmount
-      updateAmount(xecAmount.toString())
-    }
-  };
-
-  const handleCreateQuoteButtonClick = () => {
-    if (sideshiftSocket !== undefined && selectedCoin !== undefined) {
-      setLoadingShift(true)
-      sideshiftSocket.emit('create-sideshift-quote', {
-        depositAmount: pairAmountFixedDecimals,
-        settleCoin:  addressType,
-        depositCoin: selectedCoin?.coin,
-        depositNetwork: selectedCoinNetwork,
-        settleAddress: to
-      });
-    }
-  }
-
   const handleButtonClick = () => {
     if (addressType === 'XEC') {
       const hasExtension = getCashtabProviderStatus();
@@ -728,6 +638,9 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
           {// Sideshift region
             useSideshift ?
               <SideshiftWidget
+                sideshiftSocket={sideshiftSocket}
+                thisAmount={thisAmount}
+                updateAmount={updateAmount}
                 setUseSideshift={setUseSideshift}
                 sideshiftShift={sideshiftShift}
                 setSideshiftShift={setSideshiftShift}
@@ -735,25 +648,18 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                 sideshiftError={sideshiftError}
                 setSideshiftError={setSideshiftError}
                 coins={coins}
-                selectedCoin={selectedCoin}
-                selectedCoinNetwork={selectedCoinNetwork}
                 loadingPair={loadingPair}
+                setLoadingPair={setLoadingPair}
                 pairAmount={pairAmount}
                 setPairAmount={setPairAmount}
-                isAboveMinimumSideshiftAmount={isAboveMinimumSideshiftAmount}
-                isBelowMaximumSideshiftAmount={isBelowMaximumSideshiftAmount}
                 loadingShift={loadingShift}
+                setLoadingShift={setLoadingShift}
                 coinPair={coinPair}
                 setCoinPair={setCoinPair}
                 sideshiftEditable={sideshiftEditable}
-                pairAmountMaxLength={pairAmountMaxLength}
-                handleGetRateButtonClick={handleGetRateButtonClick}
-                handleNetworkChange={handleNetworkChange}
-                handleCoinChange={handleCoinChange}
-                handlePairAmountChange={handlePairAmountChange}
-                handleCreateQuoteButtonClick={handleCreateQuoteButtonClick}
                 animation={animation}
                 addressType={addressType}
+                to={to}
               />
                : <>
               {loading && shouldDisplayGoal ? (
@@ -870,7 +776,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
               <Box py={1}>
                 <Typography>
                   {
-                    (isAboveMinimumSideshiftAmount || sideshiftEditable)   && <a onClick={tradeWithSideshift}>Don't have any {addressType}?</a>
+                    (isAboveMinimumSideshiftUSDAmount || sideshiftEditable)   && <a onClick={tradeWithSideshift}>Don't have any {addressType}?</a>
                   }
                 </Typography>
               </Box>
