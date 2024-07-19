@@ -1,5 +1,6 @@
 import { OptionsObject, SnackbarProvider, useSnackbar } from 'notistack';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { AltpaymentShift, getAltpaymentClient } from '../../altpayment';
 
 import successSound from '../../assets/success.mp3.json';
 
@@ -14,14 +15,12 @@ import {
   isGreaterThanZero,
   isValidCurrency,
   resolveNumber,
-  SideshiftShift,
-  getShiftStatus
 } from '../../util';
 
 import Widget, { WidgetProps } from './Widget';
 
 export interface WidgetContainerProps
-  extends Omit<WidgetProps, 'success' | 'setNewTxs' | 'setCurrencyObject' | 'setSideshiftShift' | 'useSideshift' | 'setUseSideshift' | 'shiftCompleted'   > {
+  extends Omit<WidgetProps, 'success' | 'setNewTxs' | 'setCurrencyObject' | 'setAltpaymentShift' | 'useAltpayment' | 'setUseAltpayment' | 'shiftCompleted'   > {
   active?: boolean;
   amount?: number;
   opReturn?: string;
@@ -119,9 +118,11 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
     const { enqueueSnackbar } = useSnackbar();
 
     const [newTxs, setNewTxs] = useState<Transaction[] | undefined>();
-    const [useSideshift, setUseSideshift] = useState(false);
-    const [sideshiftShift, setSideshiftShift] = useState<SideshiftShift | undefined>();
+    const [useAltpayment, setUseAltpayment] = useState(false);
+    const [altpaymentShift, setAltpaymentShift] = useState<AltpaymentShift | undefined>();
     const [shiftCompleted, setShiftCompleted] = useState(false);
+
+    const paymentClient = getAltpaymentClient()
 
     const addrType = getCurrencyTypeFromAddress(to);
     if (
@@ -157,8 +158,8 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
         const isCryptoAmountValid = (cryptoAmount && receivedAmount.isEqualTo(resolveNumber(cryptoAmount))) || !cryptoAmount;
         const isPaymentIdValid = thisPaymentId ? txPaymentId === thisPaymentId : true;
 
-        if (sideshiftShift) {
-          const shiftStatus = await getShiftStatus(sideshiftShift.id)
+        if (altpaymentShift) {
+          const shiftStatus = await paymentClient.getPaymentStatus(altpaymentShift.id)
           if (shiftStatus.status === 'settled') {
             onSuccess?.(transaction);
             setShiftCompleted(true)
@@ -185,7 +186,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
         successText,
         to,
         thisPaymentId,
-        sideshiftShift
+        altpaymentShift
       ],
     );
 
@@ -254,10 +255,10 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
           apiBaseUrl={apiBaseUrl}
           successText={successText}
           hoverText={hoverText}
-          sideshiftShift={sideshiftShift}
-          setSideshiftShift={setSideshiftShift}
-          useSideshift={useSideshift}
-          setUseSideshift={setUseSideshift}
+          altpaymentShift={altpaymentShift}
+          setAltpaymentShift={setAltpaymentShift}
+          useAltpayment={useAltpayment}
+          setUseAltpayment={setUseAltpayment}
           shiftCompleted={shiftCompleted}
         />
       </React.Fragment>

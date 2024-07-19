@@ -7,33 +7,30 @@ import {
   MenuItem
 } from '@material-ui/core';
 import {
-  SideshiftCoin,
-  SideshiftPair,
-  SideshiftShift,
-  SideshiftError,
   resolveNumber,
   CryptoCurrency
 } from '../../util';
 import PencilIcon from '../../assets/edit-pencil';
 import { Button, animation } from '../Button/Button';
 import { Socket } from 'socket.io-client';
+import { AltpaymentCoin, AltpaymentError, AltpaymentPair, AltpaymentShift } from '../../altpayment';
 
-interface SideshiftProps {
-  sideshiftSocket?: Socket;
-  setUseSideshift: Function;
-  sideshiftShift?: SideshiftShift;
-  setSideshiftShift: Function;
+interface AltpaymentProps {
+  altpaymentSocket?: Socket;
+  setUseAltpayment: Function;
+  altpaymentShift?: AltpaymentShift;
+  setAltpaymentShift: Function;
   shiftCompleted: boolean;
-  sideshiftError?: SideshiftError;
-  setSideshiftError: Function;
-  coins: SideshiftCoin[];
+  altpaymentError?: AltpaymentError;
+  setAltpaymentError: Function;
+  coins: AltpaymentCoin[];
   loadingPair: boolean;
   setLoadingPair: Function;
   loadingShift: boolean;
   setLoadingShift: Function;
-  coinPair?: SideshiftPair;
+  coinPair?: AltpaymentPair;
   setCoinPair: Function;
-  sideshiftEditable: boolean;
+  altpaymentEditable: boolean;
   animation?: animation;
   addressType: CryptoCurrency;
   to: string;
@@ -41,22 +38,22 @@ interface SideshiftProps {
   updateAmount: Function;
 }
 
-export const SideshiftWidget: React.FunctionComponent<SideshiftProps> = props => {
+export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props => {
 
   const {
-    sideshiftSocket,
-    setUseSideshift,
-    sideshiftShift,
-    setSideshiftShift,
+    altpaymentSocket,
+    setUseAltpayment,
+    altpaymentShift,
+    setAltpaymentShift,
     shiftCompleted,
-    sideshiftError,
-    setSideshiftError,
+    altpaymentError,
+    setAltpaymentError,
     coins,
     loadingPair,
     loadingShift,
     coinPair,
     setCoinPair,
-    sideshiftEditable,
+    altpaymentEditable,
     animation,
     addressType,
     thisAmount,
@@ -67,20 +64,20 @@ export const SideshiftWidget: React.FunctionComponent<SideshiftProps> = props =>
   } = Object.assign({}, props);
 
   const [pairAmountMaxLength, setPairAmountMaxLength] = useState<number | undefined>(undefined);
-  const [isAboveMinimumSideshiftAmount, setIsAboveMinimumSideshiftAmount] = useState<boolean | null>(null);
-  const [isBelowMaximumSideshiftAmount, setIsBelowMaximumSideshiftAmount] = useState<boolean | null>(null);
-  const [selectedCoin, setSelectedCoin] = useState<SideshiftCoin|undefined>();
+  const [isAboveMinimumAltpaymentAmount, setIsAboveMinimumAltpaymentAmount] = useState<boolean | null>(null);
+  const [isBelowMaximumAltpaymentAmount, setIsBelowMaximumAltpaymentAmount] = useState<boolean | null>(null);
+  const [selectedCoin, setSelectedCoin] = useState<AltpaymentCoin|undefined>();
   const [selectedCoinNetwork, setSelectedCoinNetwork] = useState<string | undefined>(undefined);
   const [pairAmountFixedDecimals, setPairAmountFixedDecimals] = useState<string | undefined>(undefined);
   const [pairAmount, setPairAmount] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     if (pairAmount && coinPair) {
-      setIsBelowMaximumSideshiftAmount(+pairAmount <= +coinPair.max)
-      setIsAboveMinimumSideshiftAmount(+pairAmount >= +coinPair.min)
+      setIsBelowMaximumAltpaymentAmount(+pairAmount <= +coinPair.max)
+      setIsAboveMinimumAltpaymentAmount(+pairAmount >= +coinPair.min)
     } else {
-      setIsBelowMaximumSideshiftAmount(true)
-      setIsAboveMinimumSideshiftAmount(true)
+      setIsBelowMaximumAltpaymentAmount(true)
+      setIsAboveMinimumAltpaymentAmount(true)
     }
   }, [pairAmount, coinPair])
 
@@ -116,8 +113,8 @@ export const SideshiftWidget: React.FunctionComponent<SideshiftProps> = props =>
     if (selectedCoin !== undefined) {
       const from = `${selectedCoin.coin}-${selectedCoin?.networks[0]}`
       const to = addressType === 'XEC' ? `ecash-mainnet` : `bitcoincash-mainnet`
-      if (sideshiftSocket !== undefined) {
-        sideshiftSocket.emit('get-sideshift-rate', {from, to})
+      if (altpaymentSocket !== undefined) {
+        altpaymentSocket.emit('get-altpayment-rate', {from, to})
       }
     }
   }
@@ -153,9 +150,9 @@ export const SideshiftWidget: React.FunctionComponent<SideshiftProps> = props =>
   };
 
   const handleCreateQuoteButtonClick = () => {
-    if (sideshiftSocket !== undefined && selectedCoin !== undefined) {
+    if (altpaymentSocket !== undefined && selectedCoin !== undefined) {
       setLoadingShift(true)
-      sideshiftSocket.emit('create-sideshift-quote', {
+      altpaymentSocket.emit('create-altpayment-quote', {
         depositAmount: pairAmountFixedDecimals,
         settleCoin:  addressType,
         depositCoin: selectedCoin?.coin,
@@ -167,26 +164,26 @@ export const SideshiftWidget: React.FunctionComponent<SideshiftProps> = props =>
 
   const resetTrade = () => {
     setCoinPair(undefined)
-    setSideshiftError(undefined)
-    setSideshiftShift(undefined)
+    setAltpaymentError(undefined)
+    setAltpaymentShift(undefined)
     setPairAmount(undefined)
   }
 
   return <>
-    {sideshiftError ? <>
+    {altpaymentError ? <>
       <button onClick={resetTrade}> Go back</button>
-      <p>Error: {sideshiftError.errorMessage}</p></>
+      <p>Error: {altpaymentError.errorMessage}</p></>
       :
       <>
         {(coinPair && !loadingShift )&& <button onClick={resetTrade}> Go back</button>}
-        {sideshiftShift ? (shiftCompleted ?
+        {altpaymentShift ? (shiftCompleted ?
           <p> shift completed!</p>
           :
           <>
-            <p> Deposit at least</p> {sideshiftShift.depositAmount} {sideshiftShift.depositCoin} to the address:
-            <p>{sideshiftShift.depositAddress}</p>
+            <p> Deposit at least</p> {altpaymentShift.depositAmount} {altpaymentShift.depositCoin} to the address:
+            <p>{altpaymentShift.depositAddress}</p>
             on the {selectedCoinNetwork} network.
-            The id of your sideshift operation is {sideshiftShift.id}
+            The id of your SideShift operation is {altpaymentShift.id}
           </>
         )
         :
@@ -195,7 +192,7 @@ export const SideshiftWidget: React.FunctionComponent<SideshiftProps> = props =>
             (coinPair ? <>
               <p> 1 {selectedCoin?.name} ~= {resolveNumber(coinPair.rate).toFixed(2)} XEC </p>
               {
-                (sideshiftEditable) ? (
+                (altpaymentEditable) ? (
                   <Grid
                     container
                     spacing={2}
@@ -222,11 +219,11 @@ export const SideshiftWidget: React.FunctionComponent<SideshiftProps> = props =>
                 text={`Send ${selectedCoin?.name}`}
                 hoverText={`Send ${selectedCoin?.name}`}
                 onClick={handleCreateQuoteButtonClick}
-                disabled={loadingPair || selectedCoinNetwork === undefined || !pairAmount || !isAboveMinimumSideshiftAmount || !isBelowMaximumSideshiftAmount}
+                disabled={loadingPair || selectedCoinNetwork === undefined || !pairAmount || !isAboveMinimumAltpaymentAmount || !isBelowMaximumAltpaymentAmount}
                 animation={animation}
               />
-              {!isAboveMinimumSideshiftAmount && <p>Amount is below minimum.</p>}
-              {!isBelowMaximumSideshiftAmount && <p>Amount is above maximum.</p>}
+              {!isAboveMinimumAltpaymentAmount && <p>Amount is below minimum.</p>}
+              {!isBelowMaximumAltpaymentAmount && <p>Amount is above maximum.</p>}
             </>
             :
             <>
@@ -272,15 +269,15 @@ export const SideshiftWidget: React.FunctionComponent<SideshiftProps> = props =>
               />
 
               <Typography>
-                <a onClick={() => {setUseSideshift(false)}}>Trade with {addressType}</a>
+                <a onClick={() => {setUseAltpayment(false)}}>Trade with {addressType}</a>
               </Typography>
             </>
             ))
-          // END: Sideshift region
+          // END: Altpayment region
         }
       </>
     }
   </>
 };
 
-export default SideshiftWidget;
+export default AltpaymentWidget;

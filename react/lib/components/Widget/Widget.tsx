@@ -33,14 +33,10 @@ import {
   isValidCashAddress,
   isValidXecAddress,
   getCurrencyTypeFromAddress,
-  sideshiftListener,
-  SideshiftCoin,
-  SideshiftPair,
-  SideshiftShift,
-  SideshiftError,
-  MINIMUM_SIDESHIFT_DOLLAR_AMOUNT,
+  altpaymentListener,
 } from '../../util';
-import SideshiftWidget from './SideshiftWidget';
+import AltpaymentWidget from './AltpaymentWidget';
+import { AltpaymentPair, AltpaymentShift, AltpaymentError, AltpaymentCoin, MINIMUM_ALTPAYMENT_DOLLAR_AMOUNT } from '../../altpayment';
 
 type QRCodeProps = BaseQRCodeProps & { renderAs: 'svg' };
 
@@ -73,10 +69,10 @@ export interface WidgetProps {
   apiBaseUrl?: string;
   loading?: boolean;
   hoverText?: string;
-  setSideshiftShift: Function;
-  sideshiftShift?: SideshiftShift | undefined,
-  useSideshift: boolean
-  setUseSideshift: Function;
+  setAltpaymentShift: Function;
+  altpaymentShift?: AltpaymentShift | undefined,
+  useAltpayment: boolean
+  setUseAltpayment: Function;
   shiftCompleted: boolean
 }
 
@@ -162,10 +158,10 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     usdPrice,
     wsBaseUrl,
     hoverText = Button.defaultProps.hoverText,
-    setSideshiftShift,
-    sideshiftShift,
-    useSideshift,
-    setUseSideshift,
+    setAltpaymentShift,
+    altpaymentShift,
+    useAltpayment,
+    setUseAltpayment,
     shiftCompleted,
   } = Object.assign({}, Widget.defaultProps, props);
 
@@ -192,14 +188,14 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const [widgetButtonText, setWidgetButtonText] = useState('Send Payment');
   const [opReturn, setOpReturn] = useState<string | undefined>();
 
-  const [sideshiftSocket, setSideshiftSocket] = useState<Socket | undefined>(undefined);
-  const [coins, setCoins] = useState<SideshiftCoin[]>([]);
+  const [altpaymentSocket, setAltpaymentSocket] = useState<Socket | undefined>(undefined);
+  const [coins, setCoins] = useState<AltpaymentCoin[]>([]);
   const [loadingPair, setLoadingPair] = useState<boolean>(false);
-  const [coinPair, setCoinPair] = useState<SideshiftPair | undefined>();
+  const [coinPair, setCoinPair] = useState<AltpaymentPair | undefined>();
   const [loadingShift, setLoadingShift] = useState(false);
-  const [sideshiftError, setSideshiftError] = useState<SideshiftError | undefined>(undefined);
-  const [sideshiftEditable, setSideshiftEditable] = useState<boolean>(false);
-  const [isAboveMinimumSideshiftUSDAmount, setIsAboveMinimumSideshiftUSDAmount] = useState<boolean | null>(null);
+  const [altpaymentError, setAltpaymentError] = useState<AltpaymentError | undefined>(undefined);
+  const [altpaymentEditable, setAltpaymentEditable] = useState<boolean>(false);
+  const [isAboveMinimumAltpaymentUSDAmount, setIsAboveMinimumAltpaymentUSDAmount] = useState<boolean | null>(null);
 
   const theme = useTheme(props.theme, isValidXecAddress(to));
   const classes = useStyles({ success, loading, theme });
@@ -247,23 +243,23 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   let prefixedAddress: string;
 
   useEffect(() => {
-    const setupSideshiftSocket = async (): Promise<void> => {
-      if (sideshiftSocket !== undefined) {
-        sideshiftSocket.disconnect();
+    const setupAltpaymentSocket = async (): Promise<void> => {
+      if (altpaymentSocket !== undefined) {
+        altpaymentSocket.disconnect();
       }
-      const newSocket = io(`${wsBaseUrl ?? config.wsBaseUrl}/sideshift`, {
+      const newSocket = io(`${wsBaseUrl ?? config.wsBaseUrl}/altpayment`, {
         forceNew: true,
       });
-      setSideshiftSocket(newSocket);
-      sideshiftListener({
+      setAltpaymentSocket(newSocket);
+      altpaymentListener({
         addressType,
         socket: newSocket,
         setCoins,
         setCoinPair,
         setLoadingPair,
-        setSideshiftShift,
+        setAltpaymentShift,
         setLoadingShift,
-        setSideshiftError
+        setAltpaymentError,
       })
     }
 
@@ -282,10 +278,10 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
 
     (async () => {
       await setupTxsSocket()
-      if (useSideshift) {
-        await setupSideshiftSocket()
-      } else if (sideshiftSocket) {
-        sideshiftSocket.disconnect()
+      if (useAltpayment) {
+        await setupAltpaymentSocket()
+      } else if (altpaymentSocket) {
+        altpaymentSocket.disconnect()
       }
     })()
 
@@ -293,24 +289,24 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       if (socket !== undefined) {
         socket.disconnect();
       }
-      if (sideshiftSocket !== undefined) {
-        sideshiftSocket.disconnect();
+      if (altpaymentSocket !== undefined) {
+        altpaymentSocket.disconnect();
       }
     }
-  }, [to, useSideshift]);
+  }, [to, useAltpayment]);
 
-  const tradeWithSideshift = () => {
-    if (setUseSideshift) {
-      setUseSideshift(true)
+  const tradeWithAltpayment = () => {
+    if (setUseAltpayment) {
+      setUseAltpayment(true)
     }
   }
 
   useEffect(() => {
     if (thisAmount === undefined || thisAmount === null || thisAmount === 0) {
-      setSideshiftEditable(true)
+      setAltpaymentEditable(true)
     }
     if (editable) {
-      setSideshiftEditable(true)
+      setAltpaymentEditable(true)
     }
   }, [])
 
@@ -338,7 +334,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     }
     if (usdPrice && thisAmount) {
       const usdAmount = usdPrice * +thisAmount
-      setIsAboveMinimumSideshiftUSDAmount(usdAmount >= MINIMUM_SIDESHIFT_DOLLAR_AMOUNT)
+      setIsAboveMinimumAltpaymentUSDAmount(usdAmount >= MINIMUM_ALTPAYMENT_DOLLAR_AMOUNT)
     }
   }, [to, thisAmount]);
 
@@ -634,18 +630,18 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
           px={3}
           pt={2}
         >
-          {// Sideshift region
-            useSideshift ?
-              <SideshiftWidget
-                sideshiftSocket={sideshiftSocket}
+          {// Altpayment region
+            useAltpayment ?
+              <AltpaymentWidget
+                altpaymentSocket={altpaymentSocket}
                 thisAmount={thisAmount}
                 updateAmount={updateAmount}
-                setUseSideshift={setUseSideshift}
-                sideshiftShift={sideshiftShift}
-                setSideshiftShift={setSideshiftShift}
+                setUseAltpayment={setUseAltpayment}
+                altpaymentShift={altpaymentShift}
+                setAltpaymentShift={setAltpaymentShift}
                 shiftCompleted={shiftCompleted}
-                sideshiftError={sideshiftError}
-                setSideshiftError={setSideshiftError}
+                altpaymentError={altpaymentError}
+                setAltpaymentError={setAltpaymentError}
                 coins={coins}
                 loadingPair={loadingPair}
                 setLoadingPair={setLoadingPair}
@@ -653,7 +649,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                 setLoadingShift={setLoadingShift}
                 coinPair={coinPair}
                 setCoinPair={setCoinPair}
-                sideshiftEditable={sideshiftEditable}
+                altpaymentEditable={altpaymentEditable}
                 animation={animation}
                 addressType={addressType}
                 to={to}
@@ -773,7 +769,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
               <Box py={1}>
                 <Typography>
                   {
-                    (isAboveMinimumSideshiftUSDAmount || sideshiftEditable)   && <a onClick={tradeWithSideshift}>Don't have any {addressType}?</a>
+                    (isAboveMinimumAltpaymentUSDAmount || altpaymentEditable)   && <a onClick={tradeWithAltpayment}>Don't have any {addressType}?</a>
                   }
                 </Typography>
               </Box>

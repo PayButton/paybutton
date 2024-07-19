@@ -1,7 +1,8 @@
-import { Socket } from "socket.io-client"
 import { MockedPaymentClient } from "./mocked"
 import { SideshiftClient, SideshiftCoin, SideshiftError, SideshiftPair, SideshiftQuote, SideshiftShift } from "./sideshift"
 import config from '../config.json'
+
+export const MINIMUM_ALTPAYMENT_DOLLAR_AMOUNT = 10
 
 export const SOCKET_MESSAGES = {
   GET_ALTPAYMENT_RATE: 'get-altpayment-rate',
@@ -18,11 +19,11 @@ export type AltpaymentClientOptions = 'sideshift' | 'mocked'
 export type AltpaymentCoin = SideshiftCoin
 export type AltpaymentQuote = SideshiftQuote
 export type AltpaymentPair = SideshiftPair
-export type AltpaymentPayment = SideshiftShift
+export type AltpaymentShift = SideshiftShift
 export type AltpaymentError = SideshiftError
 
 export interface AltpaymentClient {
-  getPaymentStatus: (id: string) => Promise<AltpaymentPayment>
+  getPaymentStatus: (id: string) => Promise<AltpaymentShift>
 }
 
 export function getAltpaymentClient (): AltpaymentClient {

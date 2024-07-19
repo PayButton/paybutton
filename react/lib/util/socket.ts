@@ -1,5 +1,5 @@
 import { Socket } from 'socket.io-client';
-import { AltpaymentCoin, AltpaymentError, AltpaymentPair, AltpaymentPayment } from '../altpayment';
+import { AltpaymentCoin, AltpaymentError, AltpaymentPair, AltpaymentShift } from '../altpayment';
 
 import { BroadcastTxData } from './types';
 
@@ -29,7 +29,7 @@ interface AltpaymentListenerParams {
 }
 
 export const altpaymentListener = (params: AltpaymentListenerParams): void => {
-  params.socket.on('send-sideshift-coins-info', (coins: AltpaymentCoin[]) => {
+  params.socket.on('send-altpayment-coins-info', (coins: AltpaymentCoin[]) => {
     params.setCoins(coins.filter(c => c.coin !== params.addressType))
   })
   params.socket.on('shift-creation-error', (error: AltpaymentError) => {
@@ -42,11 +42,11 @@ export const altpaymentListener = (params: AltpaymentListenerParams): void => {
     params.setLoadingShift(false)
     return
   });
-  params.socket.on('shift-created', (shift: AltpaymentPayment) => {
+  params.socket.on('shift-created', (shift: AltpaymentShift) => {
     params.setAltpaymentShift(shift)
     params.setLoadingShift(false)
   });
-  params.socket.on('send-sideshift-rate', (pair: AltpaymentPair) => {
+  params.socket.on('send-altpayment-rate', (pair: AltpaymentPair) => {
     params.setCoinPair(pair)
     params.setLoadingPair(false)
   })
