@@ -7,6 +7,3 @@ export const DECIMALS: { [key: string]: number } = {
     XEC: 2,
     FIAT: 2,
 };
-
-export const BASE_SIDESHIFT_URL = 'https://sideshift.ai/api/v2/'
-export const MINIMUM_SIDESHIFT_DOLLAR_AMOUNT = 10
