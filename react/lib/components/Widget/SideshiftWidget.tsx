@@ -29,8 +29,6 @@ interface SideshiftProps {
   coins: SideshiftCoin[];
   loadingPair: boolean;
   setLoadingPair: Function;
-  pairAmount?: string;
-  setPairAmount: Function;
   loadingShift: boolean;
   setLoadingShift: Function;
   coinPair?: SideshiftPair;
@@ -55,8 +53,6 @@ export const SideshiftWidget: React.FunctionComponent<SideshiftProps> = props =>
     setSideshiftError,
     coins,
     loadingPair,
-    pairAmount,
-    setPairAmount,
     loadingShift,
     coinPair,
     setCoinPair,
@@ -76,6 +72,7 @@ export const SideshiftWidget: React.FunctionComponent<SideshiftProps> = props =>
   const [selectedCoin, setSelectedCoin] = useState<SideshiftCoin|undefined>();
   const [selectedCoinNetwork, setSelectedCoinNetwork] = useState<string | undefined>(undefined);
   const [pairAmountFixedDecimals, setPairAmountFixedDecimals] = useState<string | undefined>(undefined);
+  const [pairAmount, setPairAmount] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     if (pairAmount && coinPair) {

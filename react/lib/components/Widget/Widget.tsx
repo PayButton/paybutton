@@ -196,7 +196,6 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const [coins, setCoins] = useState<SideshiftCoin[]>([]);
   const [loadingPair, setLoadingPair] = useState<boolean>(false);
   const [coinPair, setCoinPair] = useState<SideshiftPair | undefined>();
-  const [pairAmount, setPairAmount] = useState<string | undefined>(undefined);
   const [loadingShift, setLoadingShift] = useState(false);
   const [sideshiftError, setSideshiftError] = useState<SideshiftError | undefined>(undefined);
   const [sideshiftEditable, setSideshiftEditable] = useState<boolean>(false);
@@ -650,8 +649,6 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                 coins={coins}
                 loadingPair={loadingPair}
                 setLoadingPair={setLoadingPair}
-                pairAmount={pairAmount}
-                setPairAmount={setPairAmount}
                 loadingShift={loadingShift}
                 setLoadingShift={setLoadingShift}
                 coinPair={coinPair}
