@@ -172,8 +172,8 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
           } else {
             onTransaction?.(transaction);
           }
-          setNewTxs([]);
         }
+        setNewTxs([]);
       },
       [
         onSuccess,
