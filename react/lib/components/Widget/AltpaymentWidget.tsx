@@ -21,6 +21,7 @@ interface AltpaymentProps {
   altpaymentShift?: AltpaymentShift;
   setAltpaymentShift: Function;
   shiftCompleted: boolean;
+  setShiftCompleted: Function;
   altpaymentError?: AltpaymentError;
   setAltpaymentError: Function;
   coins: AltpaymentCoin[];
@@ -46,6 +47,7 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     altpaymentShift,
     setAltpaymentShift,
     shiftCompleted,
+    setShiftCompleted,
     altpaymentError,
     setAltpaymentError,
     coins,
@@ -167,6 +169,7 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     setAltpaymentError(undefined)
     setAltpaymentShift(undefined)
     setPairAmount(undefined)
+    setShiftCompleted(false)
   }
 
   return <>

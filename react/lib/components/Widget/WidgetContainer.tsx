@@ -260,6 +260,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
           useAltpayment={useAltpayment}
           setUseAltpayment={setUseAltpayment}
           shiftCompleted={shiftCompleted}
+          setShiftCompleted={setShiftCompleted}
         />
       </React.Fragment>
     );

@@ -74,6 +74,7 @@ export interface WidgetProps {
   useAltpayment: boolean
   setUseAltpayment: Function;
   shiftCompleted: boolean
+  setShiftCompleted: Function;
 }
 
 interface StyleProps {
@@ -163,6 +164,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     useAltpayment,
     setUseAltpayment,
     shiftCompleted,
+    setShiftCompleted,
   } = Object.assign({}, Widget.defaultProps, props);
 
   const [loading, setLoading] = useState(true);
@@ -640,6 +642,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                 altpaymentShift={altpaymentShift}
                 setAltpaymentShift={setAltpaymentShift}
                 shiftCompleted={shiftCompleted}
+                setShiftCompleted={setShiftCompleted}
                 altpaymentError={altpaymentError}
                 setAltpaymentError={setAltpaymentError}
                 coins={coins}
