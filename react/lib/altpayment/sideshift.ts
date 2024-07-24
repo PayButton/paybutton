@@ -1,6 +1,6 @@
 import { AltpaymentClient } from ".";
 
-export const BASE_SIDESHIFT_URL = 'https://sideshift.ai/api/v2/'
+export const SIDESHIFT_BASE_URL = 'https://sideshift.ai/api/v2/'
 
 interface SideshiftTokenDetails {
   [network: string]: {
@@ -76,7 +76,7 @@ export interface SideshiftError {
 
 export class SideshiftClient implements AltpaymentClient {
   public async getPaymentStatus (shiftId: string): Promise<SideshiftShift> {
-  const res = await fetch(`${BASE_SIDESHIFT_URL}/shifts/${shiftId}?t=${(new Date()).getTime()}`);
+  const res = await fetch(`${SIDESHIFT_BASE_URL}/shifts/${shiftId}?t=${(new Date()).getTime()}`);
   return (await res.json()) as SideshiftShift;
   }
 }
