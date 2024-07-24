@@ -20,7 +20,7 @@ import {
 import Widget, { WidgetProps } from './Widget';
 
 export interface WidgetContainerProps
-  extends Omit<WidgetProps, 'success' | 'setNewTxs' | 'setCurrencyObject' | 'setAltpaymentShift' | 'useAltpayment' | 'setUseAltpayment' | 'shiftCompleted'   > {
+  extends Omit<WidgetProps, 'success' | 'setNewTxs' | 'setCurrencyObject' | 'setAltpaymentShift' | 'useAltpayment' | 'setUseAltpayment' | 'shiftCompleted' | 'setShiftCompleted'  > {
   active?: boolean;
   amount?: number;
   opReturn?: string;
