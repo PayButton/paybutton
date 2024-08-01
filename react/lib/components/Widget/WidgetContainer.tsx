@@ -1,5 +1,6 @@
 import { OptionsObject, SnackbarProvider, useSnackbar } from 'notistack';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { AltpaymentShift, getAltpaymentClient } from '../../altpayment';
 
 import successSound from '../../assets/success.mp3.json';
 
@@ -11,16 +12,15 @@ import {
   generatePaymentId,
   getCurrencyTypeFromAddress,
   isCrypto,
-  isFiat,
   isGreaterThanZero,
   isValidCurrency,
-  resolveNumber
+  resolveNumber,
 } from '../../util';
 
 import Widget, { WidgetProps } from './Widget';
 
 export interface WidgetContainerProps
-  extends Omit<WidgetProps, 'success' | 'setNewTxs' | 'setCurrencyObject'> {
+  extends Omit<WidgetProps, 'success' | 'setNewTxs' | 'setCurrencyObject' | 'setAltpaymentShift' | 'useAltpayment' | 'setUseAltpayment' | 'shiftCompleted' | 'setShiftCompleted'  > {
   active?: boolean;
   amount?: number;
   opReturn?: string;
@@ -105,6 +105,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
 
     const [thisPaymentId, setThisPaymentId] = useState<string | undefined>();
     const [thisPrice, setThisPrice] = useState(0);
+    const [usdPrice, setUsdPrice] = useState(0);
     useEffect(() => {
       if ((paymentId === undefined || paymentId === '') && !disablePaymentId) {
         const newPaymentId = generatePaymentId(8);
@@ -117,6 +118,12 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
     const { enqueueSnackbar } = useSnackbar();
 
     const [newTxs, setNewTxs] = useState<Transaction[] | undefined>();
+    const [useAltpayment, setUseAltpayment] = useState(false);
+    const [altpaymentShift, setAltpaymentShift] = useState<AltpaymentShift | undefined>();
+    const [shiftCompleted, setShiftCompleted] = useState(false);
+
+    const paymentClient = getAltpaymentClient()
+
     const addrType = getCurrencyTypeFromAddress(to);
     if (
       !isValidCurrency(currency) ||
@@ -131,7 +138,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
     );
 
     const handlePayment = useCallback(
-      (transaction: Transaction) => {
+      async (transaction: Transaction) => {
         if (sound && !hideToasts) txSound.play().catch(() => {});
 
         const {
@@ -151,12 +158,20 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
         const isCryptoAmountValid = (cryptoAmount && receivedAmount.isEqualTo(resolveNumber(cryptoAmount))) || !cryptoAmount;
         const isPaymentIdValid = thisPaymentId ? txPaymentId === thisPaymentId : true;
 
-        if (isCryptoAmountValid && isPaymentIdValid)
-        {
-          setSuccess(true);
-          onSuccess?.(transaction);
+        if (altpaymentShift) {
+          const shiftStatus = await paymentClient.getPaymentStatus(altpaymentShift.id)
+          if (shiftStatus.status === 'settled') {
+            onSuccess?.(transaction);
+            setShiftCompleted(true)
+          }
         } else {
-          onTransaction?.(transaction);
+          if (isCryptoAmountValid && isPaymentIdValid)
+          {
+            setSuccess(true);
+            onSuccess?.(transaction);
+          } else {
+            onTransaction?.(transaction);
+          }
         }
         setNewTxs([]);
       },
@@ -170,31 +185,28 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
         cryptoAmount,
         successText,
         to,
-        thisPaymentId
+        thisPaymentId,
+        altpaymentShift
       ],
     );
 
     const getPrice = useCallback(
       async () => {
         const price = await getFiatPrice(currency, to, apiBaseUrl)
+        const usdPrice = await getFiatPrice('USD', to, apiBaseUrl)
         if (price !== null) setThisPrice(price)
+        if (usdPrice !== null) setUsdPrice(usdPrice)
       }
       , [currency, to, apiBaseUrl]
     );
 
     useEffect(() => {
       if (price === undefined) {
-          getPrice();
-      } else {
-        setThisPrice(price)
-      }
-    }, [currency, price]);
-
-    useEffect(() => {
-      if (isFiat(currency) && price === undefined) {
         (async () => {
           getPrice();
         })()
+      } else {
+        setThisPrice(price)
       }
     }, [currency, price]);
 
@@ -233,6 +245,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
           setCurrencyObject={setCurrencyObj}
           randomSatoshis={randomSatoshis}
           price={thisPrice}
+          usdPrice={usdPrice}
           success={success}
           disabled={disabled}
           editable={editable}
@@ -242,6 +255,12 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
           apiBaseUrl={apiBaseUrl}
           successText={successText}
           hoverText={hoverText}
+          altpaymentShift={altpaymentShift}
+          setAltpaymentShift={setAltpaymentShift}
+          useAltpayment={useAltpayment}
+          setUseAltpayment={setUseAltpayment}
+          shiftCompleted={shiftCompleted}
+          setShiftCompleted={setShiftCompleted}
         />
       </React.Fragment>
     );

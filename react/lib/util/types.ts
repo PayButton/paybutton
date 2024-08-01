@@ -128,7 +128,7 @@ export interface TransactionDetails {
 }
 
 type FiatCurrenciesTuple = typeof FIAT_CURRENCIES;
-type CyptoCurrenciesTuple = typeof CRYPTO_CURRENCIES;            
+type CyptoCurrenciesTuple = typeof CRYPTO_CURRENCIES;
 type TxBroadcast = 'NewTx' | 'OldTx'
 
 export type CryptoCurrency = FiatCurrenciesTuple[number];

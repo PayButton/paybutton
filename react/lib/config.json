@@ -1,4 +1,5 @@
 {
-  "wsBaseUrl": "https://socket.paybutton.org",
-  "apiBaseUrl": "https://paybutton.org"
+  "wsBaseUrl": "http://localhost:5000",
+  "apiBaseUrl": "http://localhost:3000",
+  "altpaymentClient": "mocked"
 }
