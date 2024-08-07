@@ -1,4 +1,4 @@
-import { shouldTriggerOnSuccess } from '../../util/api-client';
+import { shouldTriggerOnSuccess } from '../../util';
 import { Transaction, resolveNumber } from '../../util';
 
 jest.mock('axios');
