@@ -6,7 +6,7 @@ jest.mock('axios');
 global.fetch = jest.fn();
 
 
-describe('API Client Util Tests', () => {
+describe('Validate Util Tests', () => {
     describe('shouldTriggerOnSuccess', () => {
   
       it('true when amount, opReturn, and paymentId match the ones received in transaction', async () => {
