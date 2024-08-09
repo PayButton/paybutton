@@ -1,15 +1,18 @@
 import BigNumber from "bignumber.js";
 import { getCurrencyTypeFromAddress } from "./address";
 import { resolveNumber } from "./number";
-import { Currency, Transaction } from "./types";
+import { Currency, CurrencyObject, Transaction } from "./types";
+import { DECIMALS } from "./constants";
 
-export const shouldTriggerOnSuccess = (
+export const shouldTriggerOnSuccess = async (
     transaction: Transaction,
-    price: number,
     currency: string,
+    price: number,
+    disablePaymentId?: boolean,
     expectedPaymentId?: string,
     expectedAmount?: BigNumber,
     expectedOpReturn?: string,
+    currencyObject?: CurrencyObject,
   ) => {
     const {
       paymentId,
@@ -17,14 +20,17 @@ export const shouldTriggerOnSuccess = (
       message,
       amount, 
       address } = transaction; 
+      
     let isAmountValid = true;
+
     if(expectedAmount) {
       const transactionCurrency: Currency = getCurrencyTypeFromAddress(address);
-      if ((transactionCurrency !== currency)) {
-        const value = resolveNumber(amount).times(price)
-        const expectedValue = resolveNumber(amount).times(price)
-        if(value) {
-          isAmountValid = expectedValue.isEqualTo(value);
+      if (transactionCurrency !== currency) {
+        if (currencyObject){
+          const value = (currencyObject.float / price).toFixed(DECIMALS[transactionCurrency])
+          isAmountValid = resolveNumber(value).isEqualTo(amount) 
+        }else {
+          isAmountValid = false
         }
       } else {
         isAmountValid = expectedAmount.isEqualTo(amount)
@@ -32,14 +38,14 @@ export const shouldTriggerOnSuccess = (
     } 
   
     const paymentIdsMatch = expectedPaymentId === paymentId;
-    const isPaymentIdValid = expectedPaymentId ? paymentIdsMatch : true;
-  
+    const isPaymentIdValid = disablePaymentId ? true : paymentIdsMatch;
+
     const rawOpReturnIsEmptyOrUndefined = rawOpReturn === '' || rawOpReturn === undefined;
     const opReturn = rawOpReturnIsEmptyOrUndefined ? message : rawOpReturn
     const opReturnIsEmptyOrUndefined = opReturn === '' || opReturn === undefined;
   
     const opReturnsMatch = opReturn === expectedOpReturn;
     const isOpReturnValid = expectedOpReturn ? opReturnsMatch : opReturnIsEmptyOrUndefined;
-  
+    
     return isAmountValid && isPaymentIdValid && isOpReturnValid;
 };
