@@ -63,8 +63,8 @@ export interface WidgetProps {
   price?: number | undefined;
   usdPrice?: number | undefined;
   editable?: boolean;
-  setNewTxs: Function; // function parent WidgetContainer passes down to be updated
-  newTxs?: Transaction[]; // function parent WidgetContainer passes down to be updated
+  setNewTxs: Function;
+  newTxs?: Transaction[];
   wsBaseUrl?: string;
   apiBaseUrl?: string;
   loading?: boolean;

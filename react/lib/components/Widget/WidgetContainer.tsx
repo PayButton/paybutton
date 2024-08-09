@@ -15,6 +15,7 @@ import {
   isGreaterThanZero,
   isValidCurrency,
   resolveNumber,
+  shouldTriggerOnSuccess
 } from '../../util';
 
 import Widget, { WidgetProps } from './Widget';
@@ -139,34 +140,40 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
 
     const handlePayment = useCallback(
       async (transaction: Transaction) => {
-        if (sound && !hideToasts) txSound.play().catch(() => {});
-
-        const {
-          amount: transactionAmount,
-          paymentId: transactionPaymentId } = transaction;
-        const receivedAmount = resolveNumber(transactionAmount);
-
-        const currencyTicker = getCurrencyTypeFromAddress(to);
-        if (!hideToasts)
-          enqueueSnackbar(
-            `${
-              successText ? successText + ' | ' : ''
-            }Received ${receivedAmount} ${currencyTicker}`,
-            snackbarOptions,
-          );
-        const txPaymentId = transactionPaymentId
-        const isCryptoAmountValid = (cryptoAmount && receivedAmount.isEqualTo(resolveNumber(cryptoAmount))) || !cryptoAmount;
-        const isPaymentIdValid = thisPaymentId ? txPaymentId === thisPaymentId : true;
-
         if (altpaymentShift) {
           const shiftStatus = await paymentClient.getPaymentStatus(altpaymentShift.id)
           if (shiftStatus.status === 'settled') {
+            if (sound) txSound.play().catch(() => {});
             onSuccess?.(transaction);
             setShiftCompleted(true)
           }
         } else {
-          if (isCryptoAmountValid && isPaymentIdValid)
-          {
+          const expectedAmount = amount ? resolveNumber(amount) : undefined;
+          const receivedAmount = resolveNumber(transaction.amount);
+        
+          if (await shouldTriggerOnSuccess(
+            transaction,
+            currency,
+            thisPrice,
+            disablePaymentId,
+            paymentId,
+            expectedAmount,
+            opReturn,
+            currencyObj,
+          )) {
+            if (sound) {
+              txSound.play().catch(() => {});
+            }
+            
+            const currencyTicker = getCurrencyTypeFromAddress(to);
+            if (!hideToasts)
+              enqueueSnackbar(
+                `${
+                  successText ? successText + ' | ' : ''
+                }Received ${receivedAmount} ${currencyTicker}`,
+                snackbarOptions,
+              );
+
             setSuccess(true);
             onSuccess?.(transaction);
           } else {
@@ -186,7 +193,9 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
         successText,
         to,
         thisPaymentId,
-        altpaymentShift
+        altpaymentShift,
+        thisPrice,
+        currencyObj
       ],
     );
 
