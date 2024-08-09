@@ -150,13 +150,16 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
         } else {
           const expectedAmount = amount ? resolveNumber(amount) : undefined;
           const receivedAmount = resolveNumber(transaction.amount);
-          if (shouldTriggerOnSuccess(
+        
+          if (await shouldTriggerOnSuccess(
             transaction,
-            thisPrice,
             currency,
+            thisPrice,
+            disablePaymentId,
             paymentId,
             expectedAmount,
             opReturn,
+            currencyObj,
           )) {
             if (sound) {
               txSound.play().catch(() => {});
@@ -190,7 +193,9 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
         successText,
         to,
         thisPaymentId,
-        altpaymentShift
+        altpaymentShift,
+        thisPrice,
+        currencyObj
       ],
     );
 
