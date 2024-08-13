@@ -28,7 +28,7 @@ export const shouldTriggerOnSuccess = async (
       if (transactionCurrency !== currency) {
         if (currencyObject){
           const value = (currencyObject.float / price).toFixed(DECIMALS[transactionCurrency])
-          isAmountValid = resolveNumber(value).isEqualTo(amount) 
+          isAmountValid = resolveNumber(value).isEqualTo(amount)
         }else {
           isAmountValid = false
         }

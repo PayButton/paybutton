@@ -15,7 +15,8 @@ import {
   isGreaterThanZero,
   isValidCurrency,
   resolveNumber,
-  shouldTriggerOnSuccess
+  shouldTriggerOnSuccess,
+  getCurrencyObject
 } from '../../util';
 
 import Widget, { WidgetProps } from './Widget';
@@ -150,16 +151,20 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
         } else {
           const expectedAmount = amount ? resolveNumber(amount) : undefined;
           const receivedAmount = resolveNumber(transaction.amount);
-        
+          
           if (await shouldTriggerOnSuccess(
             transaction,
             currency,
             thisPrice,
             disablePaymentId,
-            paymentId,
+            thisPaymentId,
             expectedAmount,
             opReturn,
-            currencyObj,
+            currencyObj ?? getCurrencyObject(
+              Number(props.amount),
+              currency,
+              randomSatoshis,
+            ),
           )) {
             if (sound) {
               txSound.play().catch(() => {});
@@ -195,7 +200,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
         thisPaymentId,
         altpaymentShift,
         thisPrice,
-        currencyObj
+        currencyObj,
       ],
     );
 
