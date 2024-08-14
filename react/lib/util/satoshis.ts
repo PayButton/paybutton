@@ -5,7 +5,6 @@ import { resolveNumber } from './number';
 import randomizeSatoshis from './randomizeSats';
 import { Currency, CurrencyObject } from './types';
 
-
 export const getCurrencyObject = (
   amount: number,
   currencyType: Currency,
