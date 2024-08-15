@@ -535,7 +535,9 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       thisAmount = thisCurrencyObject ? thisCurrencyObject.float : undefined;
     }
     if (isValidCashAddress(address)) {
-      prefixedAddress = `bitcoincash:${address.replace(/^.*:/, '')}`;
+      prefixedAddress = `bitcoincash:${address.replace(/^.*:/, '')}${
+        thisAmount ? `?amount=${thisAmount}` : ''
+      }`;
     } else {
       prefixedAddress = `ecash:${address.replace(/^.*:/, '')}${
         thisAmount ? `?amount=${thisAmount}` : ''
