@@ -7,3 +7,8 @@ export const DECIMALS: { [key: string]: number } = {
     XEC: 2,
     FIAT: 2,
 };
+
+export const CURRENCY_PREFIXES_MAP: Record<typeof CRYPTO_CURRENCIES[number], string> = {
+    bch: 'bitcoincash',
+    xec: 'ecash',
+};
