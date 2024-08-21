@@ -143,10 +143,11 @@ const useStyles = makeStyles({
 
 const isTruthy = (value?: string | boolean) => {
   if (typeof value === "string" && (value === "true" || value === "false")) {
-    return value === "true"
-  } else {
-    return value
+    return value === "true";
+  } else if (typeof value === "boolean") {
+    return value;
   }
+  return false;
 }
 
 export const Widget: React.FunctionComponent<WidgetProps> = props => {
@@ -217,7 +218,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     props.currencyObject,
   );
 
-  const blurCSS = disabled ? { filter: 'blur(5px)' } : {};
+  const blurCSS = isTruthy(disabled) ? { filter: 'blur(5px)' } : {};
 
   const bchSvg = useMemo((): string => {
     const color = theme.palette.logo ?? theme.palette.primary;
@@ -331,7 +332,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       thisAmount !== undefined && thisAmount && isNaN(+thisAmount);
 
     if (isValidCashAddress(to) || isValidXecAddress(to)) {
-      setDisabled(!!props.disabled);
+      setDisabled(isTruthy(props.disabled));
       setErrorMsg('');
     } else if (invalidAmount) {
       setDisabled(true);
@@ -689,7 +690,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                         timeout={{ enter: 0, exit: 2000 }}
                       >
                         <Box className={classes.copyTextContainer}>
-                          {!disabled && (
+                          {!isTruthy(disabled) && (
                             <Typography className={classes.copyText}>
                               {copied ? 'Payment copied!' : 'Click to copy'}
                             </Typography>
