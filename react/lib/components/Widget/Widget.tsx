@@ -35,7 +35,8 @@ import {
   getCurrencyTypeFromAddress,
   altpaymentListener,
   CURRENCY_PREFIXES_MAP,
-  CRYPTO_CURRENCIES
+  CRYPTO_CURRENCIES,
+  isTruthy
 } from '../../util';
 import AltpaymentWidget from './AltpaymentWidget';
 import { AltpaymentPair, AltpaymentShift, AltpaymentError, AltpaymentCoin, MINIMUM_ALTPAYMENT_DOLLAR_AMOUNT } from '../../altpayment';
@@ -141,14 +142,6 @@ const useStyles = makeStyles({
   }),
 });
 
-const isTruthy = (value?: string | boolean) => {
-  if (typeof value === "string" && (value === "true" || value === "false")) {
-    return value === "true";
-  } else if (typeof value === "boolean") {
-    return value;
-  }
-  return false;
-}
 
 export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const {

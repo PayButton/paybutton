@@ -63,6 +63,15 @@ export const formatXEC = (xec: string) => {
   return formattedString;
 };
 
+export const isTruthy = (value?: string | boolean) => {
+  if (typeof value === "string" && (value === "true" || value === "false")) {
+    return value === "true";
+  } else if (typeof value === "boolean") {
+    return value;
+  }
+  return false;
+} 
+
 export default {
   amount,
   formatPrice,
