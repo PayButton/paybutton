@@ -139,6 +139,14 @@ const useStyles = makeStyles({
   }),
 });
 
+const isTruthy = (value?: string | boolean) => {
+  if (typeof value === "string" && (value === "true" || value === "false")) {
+    return value === "true"
+  } else {
+    return value
+  }
+}
+
 export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const {
     to,
@@ -307,7 +315,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     if (thisAmount === undefined || thisAmount === null || thisAmount === 0) {
       setAltpaymentEditable(true)
     }
-    if (editable) {
+    if (isTruthy(editable)) {
       setAltpaymentEditable(true)
     }
   }, [])
@@ -735,7 +743,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                 )}
               </Box>
 
-              {editable && (
+              {isTruthy(editable) && (
                 <Grid
                   container
                   spacing={2}
