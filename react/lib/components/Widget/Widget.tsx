@@ -7,7 +7,7 @@ import {
   TextField,
   Grid,
 } from '@material-ui/core';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import copy from 'copy-to-clipboard';
 import QRCode, { BaseQRCodeProps } from 'qrcode.react';
 import io, { Socket } from 'socket.io-client';
@@ -502,14 +502,14 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     }
   };
 
-  const handleQrCodeClick = (): void => {
+  const handleQrCodeClick = useCallback((): void => {
     if (disabled || to === undefined) return;
     if (!url || !copy(url)) return;
     setCopied(true);
     setRecentlyCopied(true);
-  };
+  }, [disabled, to, url, copy, setCopied, setRecentlyCopied]);
 
-  const resolveUrl = (currency: string, amount?: number): string | undefined => {
+  const resolveUrl = useCallback((currency: string, amount?: number) => {
     if (disabled || !to) return;
 
     const prefix = CURRENCY_PREFIXES_MAP[currency.toLowerCase() as typeof CRYPTO_CURRENCIES[number]];
@@ -527,7 +527,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     }
 
     return thisUrl;
-  };
+  }, [disabled, to, currency, opReturn]);
 
   const qrCodeProps: QRCodeProps = {
     renderAs: 'svg',
