@@ -5,10 +5,11 @@
     <title>Paybutton Generator Test</title>
     <link rel="stylesheet" type="text/css" href="style.css">
     <style>
-       body {
+      body {
         padding: auto;
         font-family: Arial, sans-serif;
       }
+
       input,
       button {
         padding: 8px;
@@ -34,6 +35,32 @@
         display: flex;
         flex-grow: 1;
         justify-content: space-around;
+      }
+
+      .loading-overlay {
+        top: 0;
+        left: 0;
+        background-color: rgba(255, 255, 255, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 8px;
+        display: none;
+      }
+
+      .spinner {
+        border: 4px solid rgba(0, 0, 0, 0.1);
+        border-left-color: #2186fa;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        animation: spin 0.6s linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
       }
     </style>
   </head>
@@ -65,7 +92,7 @@
             </div>
             <div class="form-input">
               <label for="currency">Currency:</label>
-              <input id="currency" v-model.number="paybuttonProps.currency" type="text">
+              <input id="currency" v-model="paybuttonProps.currency" type="text">
             </div>
           </div>
           <div style="display: flex; justify-content: space-between; gap:10px">
@@ -127,42 +154,45 @@
             </div>
           </div>
         </div>
-        <div style="display: flex;
-        justify-content: right;">
+        <div style="display: flex; justify-content: right; position: relative;">
           <button type="submit">Generate</button>
         </div>
-          
       </form>
       <div class="card" style="display: flex; flex-basis: 70%; justify-content: center; align-items: center;">
-        <div id="paybutton-generator" class="paybutton"
-          :to="paybuttonProps.to"
-          :amount="paybuttonProps.amount"
-          :goal-amount="paybuttonProps.goalAmount"
-          :currency="paybuttonProps.currency"
-          :text="paybuttonProps.text"
-          :hover-text="paybuttonProps.hoverText"
-          :success-text="paybuttonProps.successText"
-          :theme="paybuttonProps.theme"
-          :animation="paybuttonProps.animation"
-          :editable="paybuttonProps.editable"
-          :disable-payment-id="paybuttonProps.disablePaymentId"
-          :random-satoshis="paybuttonProps.randomSatoshis"
-          :hide-toasts="paybuttonProps.hideToasts"
-          :disable-enforce-focus="paybuttonProps.disableEnforceFocus"
-          :disabled="paybuttonProps.disabled"
-          :on-success="mySuccessFuction"
-          :on-transaction="myTransactionFuction">
+        <div class="loading-overlay" id="loading-overlay">
+          <div class="spinner"></div>
+        </div>
+        <div id="paybutton-generator-container">
+          <div id="paybutton-generator" class="paybutton"
+            :to="paybuttonProps.to"
+            :amount="paybuttonProps.amount"
+            :goal-amount="paybuttonProps.goalAmount"
+            :currency="paybuttonProps.currency"
+            :text="paybuttonProps.text"
+            :hover-text="paybuttonProps.hoverText"
+            :success-text="paybuttonProps.successText"
+            :theme="paybuttonProps.theme"
+            :animation="paybuttonProps.animation"
+            :editable="paybuttonProps.editable"
+            :disable-payment-id="paybuttonProps.disablePaymentId"
+            :random-satoshis="paybuttonProps.randomSatoshis"
+            :hide-toasts="paybuttonProps.hideToasts"
+            :disable-enforce-focus="paybuttonProps.disableEnforceFocus"
+            :disabled="paybuttonProps.disabled"
+            :on-success="mySuccessFuction"
+            :on-transaction="myTransactionFuction">
+          </div>
         </div>
       </div>
     </div>
 
     <script>
       const { createApp, reactive } = Vue;
-      const mySuccessFuction = (tx) => (console.log("Success", {tx}))
-      const myTransactionFuction = (tx) => (console.log("Transaction", {tx}))
+      const mySuccessFuction = (tx) => (console.log("Success", { tx }))
+      const myTransactionFuction = (tx) => (console.log("Transaction", { tx }))
+
       createApp({
         setup() {
-          //todo - add the missing props once it is fixed
           const paybuttonProps = reactive({
             to: "ecash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7quss2vxek",
             amount: undefined,
@@ -173,7 +203,7 @@
             successText: "Payment Successful!",
             theme: `{"palette":{"primary": "#9d00ff","secondary": "#FFF", "tertiary": "#000"}}`,
             animation: "slide",
-            editable: true,
+            editable: false,
             disabled: false,
             disablePaymentId: false,
             randomSatoshis: false,
@@ -184,13 +214,24 @@
           });
 
           const updateProps = () => {
-            PayButton.render(document.getElementById("paybutton-generator"), { ...paybuttonProps });
-          };
+          const loadingOverlay = document.getElementById("loading-overlay");
+          const paybuttonGenerator = document.getElementById("paybutton-generator");
+
+
+          loadingOverlay.style.display = "flex";
+          paybuttonGenerator.hidden = true
+          setTimeout(() => {
+            paybuttonGenerator.hidden = false
+            
+            PayButton.render(paybuttonGenerator, { ...paybuttonProps });
+            loadingOverlay.style.display = "none";
+
+          }, 600);
+  };
 
           return { paybuttonProps, updateProps };
         }
       }).mount('#playground');
     </script>
   </body>
-
 </html>
