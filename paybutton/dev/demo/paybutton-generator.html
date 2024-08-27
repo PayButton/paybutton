@@ -121,7 +121,8 @@
               <label for="disable-enforce-focus">Disable enforce focus</label>
             </div>
             <div class="form-input toggle">
-              <input type="checkbox" id="disabled" v-model="paybuttonProps.disabled" true-value="1" false-value="0">
+              <input type="checkbox" id="disabled" v-model="paybuttonProps.disabled" true-value="true"
+                false-value="false">
               <label for="disabled">Disabled</label>
             </div>
           </div>
@@ -173,6 +174,7 @@
             theme: `{"palette":{"primary": "#9d00ff","secondary": "#FFF", "tertiary": "#000"}}`,
             animation: "slide",
             editable: true,
+            disabled: false,
             disablePaymentId: false,
             randomSatoshis: false,
             hideToasts: false,
