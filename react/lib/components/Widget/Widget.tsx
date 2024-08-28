@@ -7,7 +7,7 @@ import {
   TextField,
   Grid,
 } from '@material-ui/core';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import copy from 'copy-to-clipboard';
 import QRCode, { BaseQRCodeProps } from 'qrcode.react';
 import io, { Socket } from 'socket.io-client';
@@ -34,6 +34,8 @@ import {
   isValidXecAddress,
   getCurrencyTypeFromAddress,
   altpaymentListener,
+  CURRENCY_PREFIXES_MAP,
+  CRYPTO_CURRENCIES
 } from '../../util';
 import AltpaymentWidget from './AltpaymentWidget';
 import { AltpaymentPair, AltpaymentShift, AltpaymentError, AltpaymentCoin, MINIMUM_ALTPAYMENT_DOLLAR_AMOUNT } from '../../altpayment';
@@ -189,8 +191,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const [addressType, setAddressType] = useState<CryptoCurrency>(
     getCurrencyTypeFromAddress(to),
   );
-  const [convertedCurrencyObj, setConvertedCurrencyObj] =
-    useState<CurrencyObject | null>();
+
   const price = props.price ?? 0;
   const [url, setUrl] = useState('');
   const [userEditedAmount, setUserEditedAmount] = useState<CurrencyObject>();
@@ -235,7 +236,6 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     )}' stroke='%23fff' stroke-width='.6'/%3E%3Cpath d='m7.2979 14.697-2.6964-2.6966 0.89292-0.8934c0.49111-0.49137 0.90364-0.88958 0.91675-0.88491 0.013104 0.0047 0.71923 0.69866 1.5692 1.5422 0.84994 0.84354 1.6548 1.6397 1.7886 1.7692l0.24322 0.23547 7.5834-7.5832 1.8033 1.8033-9.4045 9.4045z' fill='%23fff' stroke-width='.033708'/%3E%3C/svg%3E%0A`;
   }, [theme]);
 
-
   useEffect((): (() => void) | undefined => {
     if (!recentlyCopied) return;
 
@@ -246,11 +246,9 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     return (): void => clearTimeout(timer);
   }, [recentlyCopied]);
 
-  const query: string[] = [];
   useEffect(() => {
     setHasPrice(price !== undefined && price > 0)
   }, [price])
-  let prefixedAddress: string;
 
   useEffect(() => {
     const setupAltpaymentSocket = async (): Promise<void> => {
@@ -396,54 +394,34 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     setAddressType(addressType);
     setWidgetButtonText(`Send with ${addressType} wallet`);
 
-    switch (addressType) {
-      case 'BCH':
-        prefixedAddress = `bitcoincash:${address.replace(/^.*:/, '')}`;
-        break;
-      case 'XEC':
-        prefixedAddress = `ecash:${address.replace(/^.*:/, '')}`;
-        break;
-    }
-
-    if (opReturn !== undefined && opReturn !== '') {
-      query.push(`op_return_raw=${opReturn}`);
-    }
-
-    url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
-
     if (thisCurrencyObject && hasPrice) {
+      const convertedAmount = thisCurrencyObject.float / price
       const convertedObj = price
         ? getCurrencyObject(
-          thisCurrencyObject.float / price,
+          convertedAmount,
           addressType,
           randomSatoshis,
         )
         : null;
-
       if (convertedObj) {
-        setConvertedCurrencyObj(convertedObj);
         setText(
           `Send ${thisCurrencyObject.string} ${thisCurrencyObject.currency} = ${convertedObj.string} ${addressType}`,
         );
-        query.push(`amount=${convertedObj.float}`);
+        url = resolveUrl(addressType, convertedObj.float);
+        setUrl(url ?? "");
       }
-
-      url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
-      setUrl(url);
     } else {
       const notZeroValue: boolean =
         thisCurrencyObject?.float !== undefined && thisCurrencyObject.float > 0;
       if (!isFiat(currency) && thisCurrencyObject && notZeroValue) {
-        const bchType: string = thisCurrencyObject.currency;
-        setText(`Send ${thisCurrencyObject.string} ${bchType}`);
-        query.push(`amount=${thisCurrencyObject.float}`);
-        url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
-        setUrl(url);
+        const currency: string = thisCurrencyObject.currency;
+        setText(`Send ${thisCurrencyObject.string} ${currency}`);
+        url = resolveUrl(currency, thisCurrencyObject?.float);
       } else {
         setText(`Send any amount of ${addressType}`);
-        url = prefixedAddress + (query.length ? `?${query.join('&')}` : '');
-        setUrl(url);
+        url = resolveUrl(addressType);
       }
+      setUrl(url ?? "");
     }
   }, [to, thisCurrencyObject, price, thisAmount, opReturn, hasPrice]);
 
@@ -532,34 +510,32 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     }
   };
 
-  const handleQrCodeClick = (): void => {
+  const handleQrCodeClick = useCallback((): void => {
     if (disabled || to === undefined) return;
-    const address = to;
-    let thisAmount: number | undefined;
-
-    if (convertedCurrencyObj) {
-      thisAmount = convertedCurrencyObj.float;
-    } else {
-      thisAmount = thisCurrencyObject ? thisCurrencyObject.float : undefined;
-    }
-    if (isValidCashAddress(address)) {
-      prefixedAddress = `bitcoincash:${address.replace(/^.*:/, '')}`;
-    } else {
-      prefixedAddress = `ecash:${address.replace(/^.*:/, '')}${
-        thisAmount ? `?amount=${thisAmount}` : ''
-      }`;
-    }
-    if (opReturn !== undefined && opReturn !== '') {
-      if (prefixedAddress.includes('?')) {
-        prefixedAddress += `&op_return_raw=${opReturn}`;
-      } else {
-        prefixedAddress += `?op_return_raw=${opReturn}`;
-      }
-    }
-    if (!copy(prefixedAddress)) return;
+    if (!url || !copy(url)) return;
     setCopied(true);
     setRecentlyCopied(true);
-  };
+  }, [disabled, to, url, copy, setCopied, setRecentlyCopied]);
+
+  const resolveUrl = useCallback((currency: string, amount?: number) => {
+    if (disabled || !to) return;
+
+    const prefix = CURRENCY_PREFIXES_MAP[currency.toLowerCase() as typeof CRYPTO_CURRENCIES[number]];
+    if (!prefix) return;
+
+    let thisUrl = `${prefix}:${to.replace(/^.*:/, '')}`;
+
+    if (amount) {
+      thisUrl += `?amount=${amount}`;
+    }
+
+    if (opReturn) {
+      const separator = thisUrl.includes('?') ? '&' : '?';
+      thisUrl += `${separator}op_return_raw=${opReturn}`;
+    }
+
+    return thisUrl;
+  }, [disabled, to, currency, opReturn]);
 
   const qrCodeProps: QRCodeProps = {
     renderAs: 'svg',
