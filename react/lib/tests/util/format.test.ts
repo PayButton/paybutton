@@ -22,4 +22,7 @@ describe('isPropsTrue', () => {
     it('returns false for "null" string', () => {
       expect(isTruthy("null")).toBe(false)
     })
+    it('returns false for undefined', () => {
+      expect(isTruthy(undefined)).toBe(false)
+    })
 })
