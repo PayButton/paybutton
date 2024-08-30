@@ -64,13 +64,15 @@ export const formatXEC = (xec: string) => {
 };
 
 export const isTruthy = (value?: string | boolean) => {
-  if (typeof value === "string" && (value === "true" || value === "false")) {
-    return value === "true";
-  } else if (typeof value === "boolean") {
-    return value;
+  switch (typeof value) {
+    case "string":
+      return value === "true"
+    case "boolean":
+      return value
+    case "undefined":
+      return false
   }
-  return false;
-} 
+}
 
 export default {
   amount,
