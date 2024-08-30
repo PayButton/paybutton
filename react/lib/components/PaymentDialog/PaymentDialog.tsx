@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
 import Button, { ButtonProps } from '../Button/Button';
 import { WidgetContainer } from '../Widget/WidgetContainer';
-import { Currency, CurrencyObject, Transaction, isTruthy, isValidCashAddress, isValidXecAddress } from '../../util';
+import { Currency, CurrencyObject, Transaction, isPropsTrue, isValidCashAddress, isValidXecAddress } from '../../util';
 
 export interface PaymentDialogProps extends ButtonProps {
   to: string;
@@ -84,7 +84,7 @@ export const PaymentDialog = (
     const invalidAmount = amount !== undefined && isNaN(+amount);
 
     if (to !== undefined && (isValidCashAddress(to) || isValidXecAddress(to))) {
-      setDisabled(isTruthy(props.disabled));
+      setDisabled(isPropsTrue(props.disabled));
     } else if (invalidAmount) {
       setDisabled(true);
     } else {

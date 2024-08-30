@@ -63,7 +63,7 @@ export const formatXEC = (xec: string) => {
   return formattedString;
 };
 
-export const isTruthy = (value?: string | boolean) => {
+export const isPropsTrue = (value?: string | boolean) => {
   switch (typeof value) {
     case "string":
       return value === "true"

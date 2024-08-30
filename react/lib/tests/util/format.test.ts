@@ -1,28 +1,28 @@
-import { isTruthy } from "../../util"
+import { isPropsTrue } from "../../util"
 
 describe('isPropsTrue', () => {
     it('returns true for "true" string', () => {
-      expect(isTruthy("true")).toBe(true)
+      expect(isPropsTrue("true")).toBe(true)
     })
     it('returns true for true boolean', () => {
-      expect(isTruthy(true)).toBe(true)
+      expect(isPropsTrue(true)).toBe(true)
     })
     it('returns false for "false" string', () => {
-      expect(isTruthy("false")).toBe(false)
+      expect(isPropsTrue("false")).toBe(false)
     })
     it('returns false for false boolean', () => {
-      expect(isTruthy(false)).toBe(false)
+      expect(isPropsTrue(false)).toBe(false)
     })
     it('returns false for other string', () => {
-      expect(isTruthy("1")).toBe(false)
+      expect(isPropsTrue("1")).toBe(false)
     })
     it('returns false for empty string', () => {
-      expect(isTruthy("")).toBe(false)
+      expect(isPropsTrue("")).toBe(false)
     })
     it('returns false for "null" string', () => {
-      expect(isTruthy("null")).toBe(false)
+      expect(isPropsTrue("null")).toBe(false)
     })
     it('returns false for undefined', () => {
-      expect(isTruthy(undefined)).toBe(false)
+      expect(isPropsTrue(undefined)).toBe(false)
     })
 })
