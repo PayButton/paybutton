@@ -13,7 +13,8 @@ import {
   isValidXecAddress,
   CurrencyObject,
   generatePaymentId,
-  getCurrencyObject
+  getCurrencyObject,
+  isPropsTrue
 } from '../../util';
 import { PaymentDialog } from '../PaymentDialog';
 export interface PayButtonProps extends ButtonProps {
@@ -121,7 +122,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
     const invalidAmount = props.amount !== undefined && isNaN(+props.amount);
 
     if (to !== undefined) {
-      setDisabled(!!props.disabled);
+      setDisabled(isPropsTrue(props.disabled));
       setErrorMsg('');
     } else if (invalidAmount) {
       setDisabled(true);

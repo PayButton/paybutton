@@ -63,6 +63,17 @@ export const formatXEC = (xec: string) => {
   return formattedString;
 };
 
+export const isPropsTrue = (value?: string | boolean) => {
+  switch (typeof value) {
+    case "string":
+      return value === "true"
+    case "boolean":
+      return value
+    case "undefined":
+      return false
+  }
+}
+
 export default {
   amount,
   formatPrice,

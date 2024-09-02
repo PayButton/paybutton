@@ -35,7 +35,8 @@ import {
   getCurrencyTypeFromAddress,
   altpaymentListener,
   CURRENCY_PREFIXES_MAP,
-  CRYPTO_CURRENCIES
+  CRYPTO_CURRENCIES,
+  isPropsTrue
 } from '../../util';
 import AltpaymentWidget from './AltpaymentWidget';
 import { AltpaymentPair, AltpaymentShift, AltpaymentError, AltpaymentCoin, MINIMUM_ALTPAYMENT_DOLLAR_AMOUNT } from '../../altpayment';
@@ -141,13 +142,6 @@ const useStyles = makeStyles({
   }),
 });
 
-const isTruthy = (value?: string | boolean) => {
-  if (typeof value === "string" && (value === "true" || value === "false")) {
-    return value === "true"
-  } else {
-    return value
-  }
-}
 
 export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const {
@@ -217,7 +211,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     props.currencyObject,
   );
 
-  const blurCSS = disabled ? { filter: 'blur(5px)' } : {};
+  const blurCSS = isPropsTrue(disabled) ? { filter: 'blur(5px)' } : {};
 
   const bchSvg = useMemo((): string => {
     const color = theme.palette.logo ?? theme.palette.primary;
@@ -313,7 +307,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     if (thisAmount === undefined || thisAmount === null || thisAmount === 0) {
       setAltpaymentEditable(true)
     }
-    if (isTruthy(editable)) {
+    if (isPropsTrue(editable)) {
       setAltpaymentEditable(true)
     }
   }, [])
@@ -331,7 +325,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       thisAmount !== undefined && thisAmount && isNaN(+thisAmount);
 
     if (isValidCashAddress(to) || isValidXecAddress(to)) {
-      setDisabled(!!props.disabled);
+      setDisabled(isPropsTrue(props.disabled));
       setErrorMsg('');
     } else if (invalidAmount) {
       setDisabled(true);
@@ -689,7 +683,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                         timeout={{ enter: 0, exit: 2000 }}
                       >
                         <Box className={classes.copyTextContainer}>
-                          {!disabled && (
+                          {!isPropsTrue(disabled) && (
                             <Typography className={classes.copyText}>
                               {copied ? 'Payment copied!' : 'Click to copy'}
                             </Typography>
@@ -719,7 +713,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                 )}
               </Box>
 
-              {isTruthy(editable) && (
+              {isPropsTrue(editable) && (
                 <Grid
                   container
                   spacing={2}
