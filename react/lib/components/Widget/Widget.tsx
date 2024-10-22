@@ -140,6 +140,13 @@ const useStyles = makeStyles({
     fontWeight: 'normal',
     userSelect: 'none',
   }),
+  sideShiftLink: ({ theme }: StyleProps) => ({
+    fontSize: '14px',
+    cursor: 'pointer',
+    '&:hover': {
+      color: `${theme.palette.primary}`,
+    },
+  }),
 });
 
 
@@ -750,7 +757,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
               <Box py={1}>
                 <Typography>
                   {
-                    (isAboveMinimumAltpaymentUSDAmount || altpaymentEditable)   && <a onClick={tradeWithAltpayment}>Don't have any {addressType}?</a>
+                    (isAboveMinimumAltpaymentUSDAmount || altpaymentEditable)   && <a className={classes.sideShiftLink} onClick={tradeWithAltpayment}>Don't have any {addressType}?</a>
                   }
                 </Typography>
               </Box>
