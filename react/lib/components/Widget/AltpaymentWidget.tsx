@@ -17,7 +17,7 @@ import PencilIcon from '../../assets/edit-pencil';
 import { Button, animation } from '../Button/Button';
 import { Socket } from 'socket.io-client';
 import { AltpaymentCoin, AltpaymentError, AltpaymentPair, AltpaymentShift } from '../../altpayment';
-import { sideShiftLogo } from './SideShiftLogo'
+import { sideShiftLogo, copyIcon } from './SideShiftLogo'
 
 interface AltpaymentProps {
   altpaymentSocket?: Socket;
@@ -176,6 +176,34 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     setShiftCompleted(false)
   }
 
+  const copyToClipboard = (elementId: string) => {
+    const contentElement = document.getElementById(elementId);
+    const copiedMessage = document.createElement("div");
+          copiedMessage.textContent = "Copied!";
+          copiedMessage.style.position = "absolute";
+          copiedMessage.style.width = "100%";
+          copiedMessage.style.top = "-5px";
+          copiedMessage.style.left = "0";
+          copiedMessage.style.backgroundColor = "rgb(232 232 237)";
+          copiedMessage.style.padding = "5px 0 5px 5px";
+          copiedMessage.style.zIndex = "10";
+          copiedMessage.style.display = "none";
+  
+    if (contentElement) {
+      const content = contentElement.textContent || "";
+      navigator.clipboard.writeText(content);
+        contentElement.appendChild(copiedMessage);
+        copiedMessage.style.display = "inline-block";
+
+        setTimeout(() => {
+          copiedMessage.style.display = "none";
+          if (copiedMessage.parentElement === contentElement) {
+            contentElement.removeChild(copiedMessage);
+          }
+        }, 2000);
+      }
+  };
+
   const useStyles = makeStyles({
     select_box: {
       minWidth: '300px'
@@ -234,6 +262,32 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
       '&:hover': {
         opacity: '1'
       },
+    },
+    shift_ready: {
+      width: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      '& h4': {
+       margin: '0',
+       fontSize: '20px',
+      },
+      '& span': {
+        marginTop: '20px',
+        marginBottom: '2px',
+        fontSize: '16px',
+        fontWeight: '600'
+       },
+    },
+    copy_ctn: {
+      display: 'flex',
+      alignItems: 'center',
+      '& > div': {
+        position: 'relative'
+       },
+       '& img': {
+       width: '15px',
+       marginLeft: '5px'
+       },
     }
   });
 
@@ -264,13 +318,23 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
               shiftCompleted ? (
                 <p>Shift Completed!</p>
               ) : (
-                <>
-                  <p>Deposit at least</p> {altpaymentShift.depositAmount}{' '}
-                  {altpaymentShift.depositCoin} to the address:
-                  <p>{altpaymentShift.depositAddress}</p>
-                  on the {selectedCoinNetwork} network. The id of your SideShift
-                  operation is {altpaymentShift.id}
-                </>
+                <div className={classes.shift_ready}>
+                  <h4>Shift Ready!</h4>
+                  <span>Send</span>
+                  <div>{altpaymentShift.depositAmount}{' '}{altpaymentShift.depositCoin}</div>
+                  <span>To</span>
+                  <div className={classes.copy_ctn}>
+                    <div id="to_address">{altpaymentShift.depositAddress}</div>
+                    <img src={copyIcon} alt="Copy" onClick={() => copyToClipboard('to_address')}/>
+                  </div>
+                  <span>Network</span>
+                  <div>{selectedCoinNetwork}</div>
+                  <span>SideShift ID</span>
+                  <div className={classes.copy_ctn}>
+                    <div id="sideshift_id">{altpaymentShift.id}</div>
+                    <img src={copyIcon} alt="Copy" onClick={() => copyToClipboard('sideshift_id')}/>
+                  </div>
+                </div> 
               )
             ) : loadingShift ? (
               <p>Loading Shift...</p>
@@ -377,7 +441,7 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                       </Select>
                     </FormControl>
                     <div className={classes.spacer} />
-                    {selectedCoin && (
+                    {selectedCoin && selectedCoin.networks.length > 1 && (
                       <>
                         {
                           <FormControl>
@@ -418,8 +482,8 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                 selectedCoin === undefined ||
                 selectedCoinNetwork === undefined ? null : (
                   <Button
-                    text={'Trade with SideShift'}
-                    hoverText={'Trade with SideShift'}
+                    text={'Send with SideShift'}
+                    hoverText={'Send with SideShift'}
                     onClick={handleGetRateButtonClick}
                     disabled={
                       loadingPair ||
@@ -429,17 +493,6 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                     animation={animation}
                   />
                 )}
-
-                <Typography>
-                  <a
-                    style={{ display: 'none' }}
-                    onClick={() => {
-                      setUseAltpayment(false);
-                    }}
-                  >
-                    Trade with {addressType}
-                  </a>
-                </Typography>
                 <div className={classes.back_link} onClick={() => {setUseAltpayment(false)}}>Back</div>
               </>
             )
