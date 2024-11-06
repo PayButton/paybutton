@@ -98,7 +98,8 @@ const allowedProps = [
   'goalAmount',
   'editable',
   'wsBaseUrl',
-  'apiBaseUrl'
+  'apiBaseUrl',
+  'enableAltpayment'
 ];
 
 const requiredProps = [
