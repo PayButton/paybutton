@@ -44,7 +44,7 @@ export interface WidgetContainerProps
   wsBaseUrl?: string;
   apiBaseUrl?: string;
   successText?: string;
-  enableAltpayment: boolean
+  enableAltpayment?: boolean
 }
 
 const snackbarOptions: OptionsObject = {

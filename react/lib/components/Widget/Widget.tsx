@@ -78,7 +78,7 @@ export interface WidgetProps {
   setUseAltpayment: Function;
   shiftCompleted: boolean
   setShiftCompleted: Function;
-  enableAltpayment: boolean
+  enableAltpayment?: boolean
 }
 
 interface StyleProps {
