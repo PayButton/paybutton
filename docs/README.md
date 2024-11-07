@@ -889,6 +889,33 @@ apiBaseUrl: 'https://paybutton.org'
 apiBaseUrl = "https://paybutton.org"
 ```
 
+## enable-altpayment
+
+> **The ‘enableAltpayment’ parameter controls wether altpayment logic is active or not.**
+
+?> This parameter is optional. Default value is false. Possible values are true or false.
+
+**Example:**
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+enable-altpayment="true"
+```
+
+#### ** JavaScript **
+
+```javascript
+enableAltpayment: 'true'
+```
+
+#### ** React **
+
+```react
+enableAltpayment = "true"
+```
+
 <!-- tabs:end -->
 
 # Contribute
