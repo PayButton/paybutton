@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import {
   Typography,
   TextField,
-  Grid,
   Select,
   MenuItem,
   makeStyles,
@@ -13,7 +12,6 @@ import {
   resolveNumber,
   CryptoCurrency
 } from '../../util';
-import PencilIcon from '../../assets/edit-pencil';
 import { Button, animation } from '../Button/Button';
 import { Socket } from 'socket.io-client';
 import { AltpaymentCoin, AltpaymentError, AltpaymentPair, AltpaymentShift } from '../../altpayment';
@@ -288,6 +286,19 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
        width: '15px',
        marginLeft: '5px'
        },
+    },
+    editAmount: {
+      width: '100%',
+      margin: '12px auto 10px',
+      display: 'flex',
+      alignItems: 'flex-end',
+      '& > div': {
+       width: '100%',
+      },
+      '& span': {
+        marginLeft: '4px',
+        fontSize: '16px',
+      }
     }
   });
 
@@ -303,7 +314,6 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     }
     return coinString;
   }
-
   return (
     <div className={classes.sideshift_ctn}>
       {altpaymentError ? (
@@ -346,24 +356,15 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                   {resolveNumber(coinPair.rate).toFixed(2)} XEC{' '}
                 </p>
                 {altpaymentEditable ? (
-                  <Grid
-                    container
-                    spacing={2}
-                    alignItems="flex-end"
-                    style={{ margin: '6px auto' }}
-                  >
-                    <Grid item xs={6}>
-                      <TextField
-                        label="Amount"
-                        value={pairAmount ?? 0}
-                        onChange={handlePairAmountChange}
-                        inputProps={{ maxLength: pairAmountMaxLength }}
-                      />
-                    </Grid>
-                    <Grid item xs={2}>
-                      <PencilIcon width={20} height={20} fill="#333" />
-                    </Grid>
-                  </Grid>
+                  <div className={classes.editAmount}>
+                    <TextField
+                      label='Edit amount'
+                      value={pairAmount ?? 0}
+                      onChange={handlePairAmountChange}
+                      inputProps={{ maxLength: pairAmountMaxLength }}
+                    />
+                    <span>{selectedCoin?.coin}</span>
+                  </div>
                 ) : (
                   <Typography>
                     Send {pairAmount} {selectedCoin?.name}

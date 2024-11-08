@@ -5,13 +5,11 @@ import {
   Typography,
   makeStyles,
   TextField,
-  Grid,
 } from '@material-ui/core';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import copy from 'copy-to-clipboard';
 import QRCode, { BaseQRCodeProps } from 'qrcode.react';
 import io, { Socket } from 'socket.io-client';
-import PencilIcon from '../../assets/edit-pencil';
 import config from '../../config.json';
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
 import { Button, animation } from '../Button/Button';
@@ -147,6 +145,19 @@ const useStyles = makeStyles({
       color: `${theme.palette.primary}`,
     },
   }),
+  editAmount: {
+    width: '100%',
+    margin: '12px auto 10px',
+    display: 'flex',
+    alignItems: 'flex-end',
+    '& > div': {
+     width: '100%',
+    },
+    '& span': {
+      marginLeft: '4px',
+      fontSize: '16px',
+    }
+  }
 });
 
 
@@ -721,26 +732,18 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
               </Box>
 
               {isPropsTrue(editable) && (
-                <Grid
-                  container
-                  spacing={2}
-                  alignItems="flex-end"
-                  style={{ margin: '6px auto' }}
-                >
-                  <Grid item xs={6}>
-                    <TextField
-                      label={currency}
-                      value={thisAmount || 0}
-                      onChange={handleAmountChange}
-                      inputProps={{ maxlength: '12' }}
-                      name="Amount"
-                      id="userEditedAmount"
-                    />
-                  </Grid>
-                  <Grid item xs={2}>
-                    <PencilIcon width={20} height={20} fill="#333" />
-                  </Grid>
-                </Grid>
+                <div className={classes.editAmount}>
+                  <TextField
+                    label='Edit amount'
+                    value={thisAmount || 0}
+                    onChange={handleAmountChange}
+                    inputProps={{ maxlength: '12' }}
+                    name="Amount"
+                    placeholder='Enter Amount'
+                    id="userEditedAmount"
+                  />
+                  <span>{currency}</span>
+                </div>
               )}
 
               {success || (
