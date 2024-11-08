@@ -889,7 +889,7 @@ apiBaseUrl = "https://paybutton.org"
 
 ## enable-altpayment
 
-“enableAltpayment” 參數控制是否啟用替代付款邏輯。
+> **“enableAltpayment” 參數控制是否啟用替代付款邏輯。**
 
 ?> 該參數為可選項，預設值為 false。可選值為 true 或 false。
 

@@ -890,7 +890,7 @@ apiBaseUrl = "https://paybutton.org"
 
 ## enable-altpayment
 
-“enableAltpayment” 参数控制是否启用备用支付逻辑。
+> **“enableAltpayment” 参数控制是否启用备用支付逻辑。**
 
 ?> 该参数为可选项，默认值为 false。可选值为 true 或 false。
 
