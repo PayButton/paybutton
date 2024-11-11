@@ -78,7 +78,8 @@ export interface WidgetProps {
   setUseAltpayment: Function;
   shiftCompleted: boolean
   setShiftCompleted: Function;
-  enableAltpayment?: boolean
+  enableAltpayment?: boolean;
+  contributionOffset?: number
 }
 
 interface StyleProps {
@@ -171,6 +172,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     shiftCompleted,
     setShiftCompleted,
     enableAltpayment,
+    contributionOffset
   } = Object.assign({}, Widget.defaultProps, props);
 
   const [loading, setLoading] = useState(true);
@@ -446,12 +448,16 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       const goal = getCurrencyObject(cleanGoalAmount, currency, false);
       if (!isFiat(currency)) {
         if (goal !== undefined) {
-          setGoalPercent((100 * progress.float) / goal.float);
-          setGoalText(`${progress.float} / ${cleanGoalAmount}`);
+          let progressFloat = progress.float;
+          if(contributionOffset !== undefined){
+            progressFloat = Number(progressFloat) + Number(contributionOffset)
+          };
+          setGoalPercent((100 * progressFloat) / goal.float);
+          setGoalText(`${progressFloat} / ${cleanGoalAmount}`);
           setLoading(false);
         }
       } else {
-        if (hasPrice) {
+        if (hasPrice) { 
           const receivedVal: number = totalReceived * price;
           const receivedText: string = formatPrice(
             receivedVal,
@@ -476,7 +482,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         setErrorMsg('Goal Value must be a number');
       }
     }
-  }, [totalReceived, currency, goalAmount, price, hasPrice]);
+  }, [totalReceived, currency, goalAmount, price, hasPrice, contributionOffset]);
 
   const handleButtonClick = () => {
     if (addressType === 'XEC') {
