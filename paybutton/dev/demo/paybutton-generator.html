@@ -135,6 +135,11 @@
                 false-value="false">
               <label for="random-satoshis">Random Satoshis</label>
             </div>
+            <div class="form-input toggle">
+              <input type="checkbox" id="disabled" v-model="paybuttonProps.enableAltpayment" true-value="true"
+                false-value="false">
+              <label for="disabled">Enable Altpayment</label>
+            </div>
           </div>
           <div>
             <div class="form-input toggle">
@@ -180,7 +185,8 @@
             :disable-enforce-focus="paybuttonProps.disableEnforceFocus"
             :disabled="paybuttonProps.disabled"
             :on-success="mySuccessFuction"
-            :on-transaction="myTransactionFuction">
+            :on-transaction="myTransactionFuction"
+            :enable-altpayment="paybuttonProps.enableAltpayment">
           </div>
         </div>
       </div>
@@ -209,6 +215,7 @@
             randomSatoshis: false,
             hideToasts: false,
             disableEnforceFocus: false,
+            enableAltpayment: false,
             onSuccess: mySuccessFuction,
             onTransaction: myTransactionFuction
           });
