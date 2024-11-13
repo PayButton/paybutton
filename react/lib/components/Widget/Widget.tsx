@@ -78,6 +78,7 @@ export interface WidgetProps {
   setUseAltpayment: Function;
   shiftCompleted: boolean
   setShiftCompleted: Function;
+  enableAltpayment?: boolean
 }
 
 interface StyleProps {
@@ -169,6 +170,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     setUseAltpayment,
     shiftCompleted,
     setShiftCompleted,
+    enableAltpayment,
   } = Object.assign({}, Widget.defaultProps, props);
 
   const [loading, setLoading] = useState(true);
@@ -747,6 +749,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                   />
                 </Box>
               )}
+              {isPropsTrue(enableAltpayment) && (
               <Box py={1}>
                 <Typography>
                   {
@@ -754,6 +757,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                   }
                 </Typography>
               </Box>
+              )}
             </>
           }
           {foot && (

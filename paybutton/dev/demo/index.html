@@ -38,7 +38,7 @@
       currency="BCH" text="Purchase" on-transaction="myTransactionFunction"></div>
 
     <div class="paybutton" to="ecash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7quss2vxek" goal-amount="2500.05" currency="USD"
-      text="Donate (other dev)" on-success="mySuccessFunction" on-transaction="myTransactionFunction"></div>
+      text="Donate (other dev)" on-success="mySuccessFunction" on-transaction="myTransactionFunction" enable-altpayment="false"></div>
 
     <div class="paybutton" to="ecash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7quss2vxek" goal-amount="2500000.05"
       on-close="myClose" on-open="myOpen" amount="50" currency="USD" text="Random Sats" random-satoshis="true"
@@ -82,7 +82,7 @@
       <div id="the_widget" class="paybutton-widget" to="ecash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7quss2vxek"
         goal-amount="500000" hover-text="BLARG" amount="1000.69" success-text="WOW!" text="Purchase"
         on-success="mySuccessFunction" editable="true" on-transaction="myTransactionFunction"
-        theme='{ "palette": { "primary": "#F18F01", "secondary": "#C3F3FD", "tertiary": "#2E4057"} }'></div>
+        theme='{ "palette": { "primary": "#F18F01", "secondary": "#C3F3FD", "tertiary": "#2E4057"} }' enable-altpayment="true"></div>
       <div class="btn">
         <button onclick="buttonClick()">Switch up widget!</button>
       </div>
