@@ -87,12 +87,18 @@
               <input id="amount" v-model.number="paybuttonProps.amount" type="number" step="0.01">
             </div>
             <div class="form-input">
+              <label for="currency">Currency:</label>
+              <input id="currency" v-model="paybuttonProps.currency" type="text">
+            </div>
+          </div>
+          <div style="display: flex; justify-content: space-between; gap:10px">
+            <div class="form-input">
               <label for="goalAmount">Goal Amount:</label>
               <input id="goalAmount" v-model.number="paybuttonProps.goalAmount" type="number">
             </div>
             <div class="form-input">
-              <label for="currency">Currency:</label>
-              <input id="currency" v-model="paybuttonProps.currency" type="text">
+              <label for="contributionOffset">Contribution Offset:</label>
+              <input id="contributionOffset" v-model.number="paybuttonProps.contributionOffset" type="number">
             </div>
           </div>
           <div style="display: flex; justify-content: space-between; gap:10px">
@@ -216,6 +222,7 @@
             hideToasts: false,
             disableEnforceFocus: false,
             enableAltpayment: false,
+            contributionOffset: undefined,
             onSuccess: mySuccessFuction,
             onTransaction: myTransactionFuction
           });
