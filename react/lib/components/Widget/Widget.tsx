@@ -451,7 +451,8 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         }),
       );
     } catch (err) {
-      setErrorMsg((err as Error).message);
+      console.error((err as Error).message);
+      setDisabled(true)
     }
   }, [props.opReturn, paymentId, disablePaymentId]);
 
