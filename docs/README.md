@@ -918,6 +918,34 @@ enableAltpayment = "true"
 
 <!-- tabs:end -->
 
+## contribution-offset
+
+> **The ‘contributionOffset’  parameter sets an initial amount to add to the total contributions displayed, simulating prior contributions.**
+
+?> This parameter is optional. Default value is 0. Possible values are positive integers between 0 and the goal-amount.
+
+**Example:**
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+contribution-offset="10"
+```
+
+#### ** JavaScript **
+
+```javascript
+contribution-offset: 10
+```
+
+#### ** React **
+
+```react
+contributionOffset = 10
+```
+<!-- tabs:end -->
+
 # Contribute
 
 PayButton is a community-driven open-source initiative. Contributions from the community are _crucial_ to the success of the project.
