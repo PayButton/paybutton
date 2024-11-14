@@ -45,6 +45,7 @@ export interface WidgetContainerProps
   apiBaseUrl?: string;
   successText?: string;
   enableAltpayment?: boolean
+  contributionOffset?: number
 }
 
 const snackbarOptions: OptionsObject = {
@@ -104,6 +105,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
       successText,
       hoverText,
       enableAltpayment,
+      contributionOffset,
       ...widgetProps
     } = props;
 
@@ -278,6 +280,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
           shiftCompleted={shiftCompleted}
           setShiftCompleted={setShiftCompleted}
           enableAltpayment={enableAltpayment}
+          contributionOffset={contributionOffset}
         />
       </React.Fragment>
     );

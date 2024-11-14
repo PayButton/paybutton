@@ -912,9 +912,36 @@ enableAltpayment: 'true'
 
 ```react
 enableAltpayment = "true"
-``
+```
 <!-- tabs:end -->
 
+## contribution-offset
+
+> **"contributionOffset" 參數用於設定一個初始數額，將其加至顯示的總貢獻額，以模擬先前的貢獻。**
+
+?> 此參數是可選的，預設值為 0。可能的值是介於 0 和目標金額之間的正整數。
+
+**Example:**
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+contribution-offset="10"
+```
+
+#### ** JavaScript **
+
+```javascript
+contribution-offset: 10
+```
+
+#### ** React **
+
+```react
+contributionOffset = 10
+```
+<!-- tabs:end -->
 # 貢獻
 
 PayButton是一個社區主導的開放源代碼促進會。此項目的成功關鍵在於對社區的貢獻。

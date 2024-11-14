@@ -887,7 +887,7 @@ apiBaseUrl: 'https://paybutton.org'
 ```react
 apiBaseUrl = "https://paybutton.org"
 ```
-
+<!-- tabs:end -->
 ## enable-altpayment
 
 > **“enableAltpayment” 参数控制是否启用备用支付逻辑。**
@@ -916,6 +916,33 @@ enableAltpayment = "true"
 ```
 <!-- tabs:end -->
 
+## contribution-offset
+
+> **"contributionOffset" 参数用于设置一个初始金额，将其加到显示的总贡献额中，以模拟先前的贡献。**
+
+?> 此参数是可选的，默认值为 0。可能的值是介于 0 和目标金额之间的正整数。
+
+**Example:**
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+contribution-offset="10"
+```
+
+#### ** JavaScript **
+
+```javascript
+contribution-offset: 10
+```
+
+#### ** React **
+
+```react
+contributionOffset = 10
+```
+<!-- tabs:end -->
 # 贡献
 
 PayButton是一个社群主导的开放源代码促进会。此项目的成功关键在于对社群的贡献。
