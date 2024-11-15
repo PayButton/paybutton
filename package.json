@@ -10,6 +10,7 @@
     "dev": "cd paybutton && yarn dev",
     "predev": "[ -f ./paybutton-config.json ] || cp ./example-config.json ./paybutton-config.json",
     "prebuild": "[ -f ./paybutton-config.json ] || cp ./example-config.json ./paybutton-config.json",
+    "pretest": "[ -f ./paybutton-config.json ] || cp ./example-config.json ./paybutton-config.json",
     "build:dev": "yarn build:react && yarn dev",
     "test": "cd react && yarn test",
     "test:coverage": "cd react && yarn test:coverage",

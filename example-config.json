@@ -1,5 +1,5 @@
 {
   "wsBaseUrl": "http://localhost:5000",
   "apiBaseUrl": "http://localhost:3000",
-  "altpaymentClient": "sideshift"
+  "altpaymentClient": "mocked"
 }
