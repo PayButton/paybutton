@@ -2,18 +2,20 @@ import React, { useEffect, useState } from 'react';
 import {
   Typography,
   TextField,
-  Grid,
   Select,
-  MenuItem
+  MenuItem,
+  makeStyles,
+  InputLabel,
+  FormControl
 } from '@material-ui/core';
 import {
   resolveNumber,
   CryptoCurrency
 } from '../../util';
-import PencilIcon from '../../assets/edit-pencil';
 import { Button, animation } from '../Button/Button';
 import { Socket } from 'socket.io-client';
 import { AltpaymentCoin, AltpaymentError, AltpaymentPair, AltpaymentShift } from '../../altpayment';
+import { sideShiftLogo, copyIcon } from './SideShiftLogo'
 
 interface AltpaymentProps {
   altpaymentSocket?: Socket;
@@ -124,7 +126,7 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
   const handleCoinChange = async (e: React.ChangeEvent<{ name?: string; value: unknown }>) => {
     const coinName = e.target.value as string
     const selectedCoin = coins.find(c => c.coin === coinName)
-    setSelectedCoinNetwork(undefined)
+    setSelectedCoinNetwork(selectedCoin?.networks[0])
     setSelectedCoin(selectedCoin)
   }
 
@@ -172,115 +174,338 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     setShiftCompleted(false)
   }
 
-  return <>
-    {altpaymentError ? <>
-      <button onClick={resetTrade}> Go back</button>
-      <p>Error: {altpaymentError.errorMessage}</p></>
-      :
-      <>
-        {(coinPair && !loadingShift )&& <button onClick={resetTrade}> Go back</button>}
-        {altpaymentShift ? (shiftCompleted ?
-          <p> shift completed!</p>
-          :
-          <>
-            <p> Deposit at least</p> {altpaymentShift.depositAmount} {altpaymentShift.depositCoin} to the address:
-            <p>{altpaymentShift.depositAddress}</p>
-            on the {selectedCoinNetwork} network.
-            The id of your SideShift operation is {altpaymentShift.id}
-          </>
-        )
-        :
-          (loadingShift ?
-            <p> loading shift...</p> :
-            (coinPair ? <>
-              <p> 1 {selectedCoin?.name} ~= {resolveNumber(coinPair.rate).toFixed(2)} XEC </p>
-              {
-                (altpaymentEditable) ? (
-                  <Grid
-                    container
-                    spacing={2}
-                    alignItems="flex-end"
-                    style={{ margin: '6px auto' }}
-                  >
-                    <Grid item xs={6}>
-                      <TextField
-                        label="Amount"
-                        value={pairAmount ?? 0}
-                        onChange={handlePairAmountChange}
-                        inputProps={{ maxLength: pairAmountMaxLength}}
-                      />
-                    </Grid>
-                    <Grid item xs={2}>
-                      <PencilIcon width={20} height={20} fill="#333" />
-                    </Grid>
-                  </Grid>
-                ) : (
-                  <Typography>Send {pairAmount} {selectedCoin?.name}</Typography>
-                )
-              }
-              <Button
-                text={`Send ${selectedCoin?.name}`}
-                hoverText={`Send ${selectedCoin?.name}`}
-                onClick={handleCreateQuoteButtonClick}
-                disabled={loadingPair || selectedCoinNetwork === undefined || !pairAmount || !isAboveMinimumAltpaymentAmount || !isBelowMaximumAltpaymentAmount}
-                animation={animation}
-              />
-              {!isAboveMinimumAltpaymentAmount && <p>Amount is below minimum.</p>}
-              {!isBelowMaximumAltpaymentAmount && <p>Amount is above maximum.</p>}
-            </>
-            :
-            <>
-              { coins.length > 0 && <>
-                <br/>
-                {
-                  (
-                  (selectedCoin) && <>
-                    Send {selectedCoin.name}
-                    <br/>
-                  </>
-                  )
-                }
-                <h3> Select a coin </h3>
-                <Select
-                  value={selectedCoin?.coin}
-                  onChange={(e) => {handleCoinChange(e)} }
-                >
-                  {coins.map(coin => <MenuItem key ={coin.coin} value={coin.coin}>{coin.coin}</MenuItem>)}
-                </Select>
-                {selectedCoin &&
-                <>
-                  <h3> Select a network </h3>
-                  {
-                    selectedCoin.networks.length > 1 ?
-                      <Select
-                        value={selectedCoinNetwork}
-                        onChange={(e) => {handleNetworkChange(e)} }
-                      >
-                        {selectedCoin.networks.map(network => <MenuItem key ={network} value={network}>{network}</MenuItem>)}
-                      </Select> :
-                        <p>{selectedCoinNetwork}</p>
-                  }
-                </>
-                }
-              </> }
-              <Button
-                text={'Trade with SideShift'}
-                hoverText={'Trade with SideShift'}
-                onClick={handleGetRateButtonClick}
-                disabled={loadingPair || selectedCoin === undefined || selectedCoinNetwork === undefined}
-                animation={animation}
-              />
+  const copyToClipboard = (elementId: string) => {
+    const contentElement = document.getElementById(elementId);
+    const copiedMessage = document.createElement("div");
+          copiedMessage.textContent = "Copied!";
+          copiedMessage.style.position = "absolute";
+          copiedMessage.style.width = "100%";
+          copiedMessage.style.top = "-5px";
+          copiedMessage.style.left = "0";
+          copiedMessage.style.backgroundColor = "rgb(232 232 237)";
+          copiedMessage.style.padding = "5px 0 5px 5px";
+          copiedMessage.style.zIndex = "10";
+          copiedMessage.style.display = "none";
+  
+    if (contentElement) {
+      const content = contentElement.textContent || "";
+      navigator.clipboard.writeText(content);
+        contentElement.appendChild(copiedMessage);
+        copiedMessage.style.display = "inline-block";
 
-              <Typography>
-                <a onClick={() => {setUseAltpayment(false)}}>Trade with {addressType}</a>
-              </Typography>
-            </>
-            ))
-          // END: Altpayment region
-        }
-      </>
+        setTimeout(() => {
+          copiedMessage.style.display = "none";
+          if (copiedMessage.parentElement === contentElement) {
+            contentElement.removeChild(copiedMessage);
+          }
+        }, 2000);
+      }
+  };
+
+  const useStyles = makeStyles({
+    select_box: {
+      minWidth: '300px'
+    },
+    option_outer_ctn: {
+      display: 'flex',
+      alignItems: 'center'
+    },
+    option_ctn: {
+      display: 'flex',
+      flexDirection: 'column',
+      margin: '5px 0'
+    },
+    list_icon: {
+      width: '28px',
+      height: '28px',
+      marginRight: '10px'
+    },
+    coin: {
+      fontWeight: 'bold',
+      lineHeight: '1em'
+    },
+    coin_name: {
+      fontSize: '14px'
+    },
+    spacer: {
+      height: '20px'
+    },
+    sideshift_ctn: {
+      padding: '20px 0',
+      alignItems: 'center',
+      display: 'flex',
+      flexDirection: 'column'
+    },
+    header: {
+      marginBottom:'30px',
+      display: 'flex',
+      alignItems: 'center',
+      flexDirection: 'column',
+      color: 'rgb(35, 31, 32)',
+      fontSize: '0.9rem',
+
+      '& img': {
+        width: '150px',
+        marginTop: '10px'
+      },
+    },
+    back_link: {
+      fontSize: '14px',
+      marginTop: '20px',
+      cursor: 'pointer',
+      border: '1px solid #000',
+      opacity: '0.7',
+      padding: '2px 20px',
+      borderRadius: '3px',
+      '&:hover': {
+        opacity: '1'
+      },
+    },
+    shift_ready: {
+      width: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      '& h4': {
+       margin: '0',
+       fontSize: '20px',
+      },
+      '& span': {
+        marginTop: '20px',
+        marginBottom: '2px',
+        fontSize: '16px',
+        fontWeight: '600'
+       },
+    },
+    copy_ctn: {
+      display: 'flex',
+      alignItems: 'center',
+      '& > div': {
+        position: 'relative'
+       },
+       '& img': {
+       width: '15px',
+       marginLeft: '5px'
+       },
+    },
+    editAmount: {
+      width: '100%',
+      margin: '12px auto 10px',
+      display: 'flex',
+      alignItems: 'flex-end',
+      '& > div': {
+       width: '100%',
+      },
+      '& span': {
+        marginLeft: '4px',
+        fontSize: '16px',
+      }
     }
-  </>
+  });
+
+  const classes = useStyles();
+
+  const checkCoin = (coin:string) => {
+    let coinString = coin.toLowerCase();
+    if (coinString.includes('.')) {
+      return 'btc';
+    }
+    if (coinString === 'bitcoin') {
+    return 'harrypotterobamasonic10inu';
+    }
+    return coinString;
+  }
+  return (
+    <div className={classes.sideshift_ctn}>
+      {altpaymentError ? (
+        <>
+          <p>Error: {altpaymentError.errorMessage}</p>
+          <div className={classes.back_link} onClick={resetTrade}>Back</div>
+        </>
+      ) : (
+        <>
+          {
+            altpaymentShift ? (
+              shiftCompleted ? (
+                <p>Shift Completed!</p>
+              ) : (
+                <div className={classes.shift_ready}>
+                  <h4>Shift Ready!</h4>
+                  <span>Send</span>
+                  <div>{altpaymentShift.depositAmount}{' '}{altpaymentShift.depositCoin}</div>
+                  <span>To</span>
+                  <div className={classes.copy_ctn}>
+                    <div id="to_address">{altpaymentShift.depositAddress}</div>
+                    <img src={copyIcon} alt="Copy" onClick={() => copyToClipboard('to_address')}/>
+                  </div>
+                  <span>Network</span>
+                  <div>{selectedCoinNetwork}</div>
+                  <span>SideShift ID</span>
+                  <div className={classes.copy_ctn}>
+                    <div id="sideshift_id">{altpaymentShift.id}</div>
+                    <img src={copyIcon} alt="Copy" onClick={() => copyToClipboard('sideshift_id')}/>
+                  </div>
+                </div> 
+              )
+            ) : loadingShift ? (
+              <p>Loading Shift...</p>
+            ) : coinPair ? (
+              <>
+                <p>
+                  {' '}
+                  1 {selectedCoin?.name} ~={' '}
+                  {resolveNumber(coinPair.rate).toFixed(2)} XEC{' '}
+                </p>
+                {altpaymentEditable ? (
+                  <div className={classes.editAmount}>
+                    <TextField
+                      label='Edit amount'
+                      value={pairAmount ?? 0}
+                      onChange={handlePairAmountChange}
+                      inputProps={{ maxLength: pairAmountMaxLength }}
+                    />
+                    <span>{selectedCoin?.coin}</span>
+                  </div>
+                ) : (
+                  <Typography>
+                    Send {pairAmount} {selectedCoin?.name}
+                  </Typography>
+                )}
+                <div style={loadingPair ||
+                    selectedCoinNetwork === undefined ||
+                    !pairAmount ||
+                    !isAboveMinimumAltpaymentAmount ||
+                    !isBelowMaximumAltpaymentAmount ? {opacity: '0.5', cursor: 'not-allowed'} : {}}>
+                <Button
+                  text={`Send ${selectedCoin?.name}`}
+                  hoverText={`Send ${selectedCoin?.name}`}
+                  onClick={handleCreateQuoteButtonClick}
+                  disabled={
+                    loadingPair ||
+                    selectedCoinNetwork === undefined ||
+                    !pairAmount ||
+                    !isAboveMinimumAltpaymentAmount ||
+                    !isBelowMaximumAltpaymentAmount
+                  }
+                  animation={animation}
+                />
+                </div>
+                {!isAboveMinimumAltpaymentAmount && (
+                  <p>Amount is below minimum.</p>
+                )}
+                {!isBelowMaximumAltpaymentAmount && (
+                  <p>Amount is above maximum.</p>
+                )}
+              </>
+            ) : (
+              <>
+                {coins.length === 0 && <div>Loading...</div>}
+                {coins.length > 0 && (
+                  <>
+                    <div className={classes.header}>
+                      Swap coins with
+                      <a href="https://sideshift.ai" target="_blank">
+                        <img src={sideShiftLogo} alt='SideShift' />
+                      </a>
+                    </div>
+                    <FormControl>
+                      <InputLabel id="select-coin-label">
+                        Select a coin
+                      </InputLabel>
+                      <Select
+                        labelId="select-coin-label"
+                        className={classes.select_box}
+                        value={selectedCoin?.coin}
+                        onChange={e => {
+                          handleCoinChange(e);
+                        }}
+                      >
+                        {coins.map(coin => (
+                          <MenuItem key={coin.coin} value={coin.coin}>
+                            <div className={classes.option_outer_ctn}>
+                              <img
+                                className={classes.list_icon}
+                                src={`https://sideshift.ai/coin-icons/${checkCoin(
+                                  coin.coin,
+                                )}.svg`}
+                              />
+                              <div className={classes.option_ctn}>
+                                <span className={classes.coin}>
+                                  {coin.coin}
+                                </span>
+                                <span className={classes.coin_name}>
+                                  {coin.name}
+                                </span>
+                              </div>
+                            </div>
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                    <div className={classes.spacer} />
+                    {selectedCoin && selectedCoin.networks.length > 1 && (
+                      <>
+                        {
+                          <FormControl>
+                            <InputLabel id="select-network-label">
+                              Select a network
+                            </InputLabel>
+
+                            <Select
+                              labelId="select-network-label"
+                              className={classes.select_box}
+                              value={selectedCoinNetwork}
+                              onChange={e => {
+                                handleNetworkChange(e);
+                              }}
+                            >
+                              {selectedCoin.networks.map(network => (
+                                <MenuItem key={network} value={network}>
+                                  <div className={classes.option_outer_ctn}>
+                                    <div className={classes.option_ctn}>
+                                      <span className={classes.coin}>
+                                        {network.charAt(0).toUpperCase() +
+                                          network.slice(1)}
+                                      </span>
+                                    </div>
+                                  </div>
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          </FormControl>
+                        }
+                      </>
+                    )}
+                  </>
+                )}
+                <div className={classes.spacer} />
+                <div className={classes.spacer} />
+                {loadingPair ||
+                selectedCoin === undefined ||
+                selectedCoinNetwork === undefined ? null : (
+                  <Button
+                    text={'Send with SideShift'}
+                    hoverText={'Send with SideShift'}
+                    onClick={handleGetRateButtonClick}
+                    disabled={
+                      loadingPair ||
+                      selectedCoin === undefined ||
+                      selectedCoinNetwork === undefined
+                    }
+                    animation={animation}
+                  />
+                )}
+                <div className={classes.back_link} onClick={() => {setUseAltpayment(false)}}>Back</div>
+              </>
+            )
+            // END: Altpayment region
+          }
+           {coinPair && !loadingShift && (
+              <div className={classes.back_link} onClick={resetTrade}>Back</div>
+            )}
+        </>
+      )}
+    </div>
+  );
 };
 
 export default AltpaymentWidget;

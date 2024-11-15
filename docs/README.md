@@ -889,6 +889,61 @@ apiBaseUrl: 'https://paybutton.org'
 apiBaseUrl = "https://paybutton.org"
 ```
 
+## enable-altpayment
+
+> **The ‘enableAltpayment’ parameter controls wether altpayment logic is active or not.**
+
+?> This parameter is optional. Default value is false. Possible values are true or false.
+
+**Example:**
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+enable-altpayment="true"
+```
+
+#### ** JavaScript **
+
+```javascript
+enableAltpayment: 'true'
+```
+
+#### ** React **
+
+```react
+enableAltpayment = "true"
+```
+
+<!-- tabs:end -->
+
+## contribution-offset
+
+> **The ‘contributionOffset’  parameter sets an initial amount to add to the total contributions displayed, simulating prior contributions.**
+
+?> This parameter is optional. Default value is 0. Possible values are positive integers between 0 and the goal-amount.
+
+**Example:**
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+contribution-offset="10"
+```
+
+#### ** JavaScript **
+
+```javascript
+contribution-offset: 10
+```
+
+#### ** React **
+
+```react
+contributionOffset = 10
+```
 <!-- tabs:end -->
 
 # Contribute
