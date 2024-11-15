@@ -10,7 +10,6 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import copy from 'copy-to-clipboard';
 import QRCode, { BaseQRCodeProps } from 'qrcode.react';
 import io, { Socket } from 'socket.io-client';
-import PencilIcon from '../../assets/edit-pencil';
 import config from '../../../../paybutton-config.json';
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
 import { Button, animation } from '../Button/Button';
