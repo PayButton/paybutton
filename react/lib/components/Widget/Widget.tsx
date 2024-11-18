@@ -159,7 +159,11 @@ const useStyles = makeStyles({
       marginLeft: '4px',
       fontSize: '16px',
     }
-  }
+  },
+  error: () => ({
+    fontSize: '0.9rem !important',
+    color: '#EB3B3B !important',
+  }),
 });
 
 
@@ -451,8 +455,13 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         }),
       );
     } catch (err) {
-      console.error((err as Error).message);
+      console.error(err);
+      setErrorMsg((err as Error).message);
       setDisabled(true)
+      setTimeout((): void => {
+        setErrorMsg('')
+        setText(`Send any amount of ${addressType}`);
+      }, 5000);
     }
   }, [props.opReturn, paymentId, disablePaymentId]);
 
@@ -621,7 +630,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
           textAlign="center"
         >
           {errorMsg ? (
-            <Typography className={classes.text} style={{ color: '#EB3B3B' }}>
+            <Typography className={classes.error}>
               {errorMsg}
             </Typography>
           ) : (
