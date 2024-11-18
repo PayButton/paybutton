@@ -11,7 +11,8 @@
       }
 
       input,
-      button {
+      button,
+      select {
         padding: 8px;
         border-radius: 6px !important;
         border: 1px solid #ccc;
@@ -77,6 +78,13 @@
     <div id="playground">
       <form @submit.prevent="updateProps" class="card">
         <div>
+          <div class="form-input">
+            <label for="paybutton-type">Type:</label>
+            <select id="paybutton-type" v-model="paybuttonType" class="selector">
+              <option value="paybutton-widget">Widget</option>
+              <option value="paybutton">Button</option>
+            </select>
+          </div>
           <div class="form-input">
             <label for="to">To:</label>
             <input id="to" v-model="paybuttonProps.to" type="text">
@@ -178,7 +186,8 @@
           <div class="spinner"></div>
         </div>
         <div id="paybutton-generator-container">
-          <div id="paybutton-generator" class="paybutton"
+          <div id="paybutton-generator" 
+            :class="paybuttonType"
             :to="paybuttonProps.to"
             :amount="paybuttonProps.amount"
             :goal-amount="paybuttonProps.goalAmount"
@@ -204,7 +213,7 @@
     </div>
 
     <script>
-      const { createApp, reactive } = Vue;
+      const { createApp, reactive, ref } = Vue;
       const mySuccessFuction = (tx) => (console.log("Success", { tx }))
       const myTransactionFuction = (tx) => (console.log("Transaction", { tx }))
 
@@ -232,24 +241,32 @@
             onSuccess: mySuccessFuction,
             onTransaction: myTransactionFuction
           });
-
+          const paybuttonType = ref("paybutton-widget");
           const updateProps = () => {
-          const loadingOverlay = document.getElementById("loading-overlay");
-          const paybuttonGenerator = document.getElementById("paybutton-generator");
+            const loadingOverlay = document.getElementById("loading-overlay");
+            const paybuttonGenerator = document.getElementById("paybutton-generator");
 
 
-          loadingOverlay.style.display = "flex";
-          paybuttonGenerator.hidden = true
-          setTimeout(() => {
-            paybuttonGenerator.hidden = false
-            
-            PayButton.render(paybuttonGenerator, { ...paybuttonProps });
-            loadingOverlay.style.display = "none";
+            loadingOverlay.style.display = "flex";
+            paybuttonGenerator.hidden = true
 
-          }, 600);
-  };
+            setTimeout(() => {
+              paybuttonGenerator.hidden = false
+              switch (paybuttonType.value) {
+                case "paybutton-widget":
+                  PayButton.renderWidget(paybuttonGenerator, { ...paybuttonProps });
+                  break;
+                case "paybutton":
+                  PayButton.render(paybuttonGenerator, { ...paybuttonProps });
+                  break;
+              }
+              
+              loadingOverlay.style.display = "none";
 
-          return { paybuttonProps, updateProps };
+            }, 600);
+          };
+
+          return { paybuttonProps, updateProps, paybuttonType };
         }
       }).mount('#playground');
     </script>
