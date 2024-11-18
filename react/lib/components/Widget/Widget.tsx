@@ -10,7 +10,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import copy from 'copy-to-clipboard';
 import QRCode, { BaseQRCodeProps } from 'qrcode.react';
 import io, { Socket } from 'socket.io-client';
-import config from '../../config.json';
+import config from '../../../../paybutton-config.json';
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
 import { Button, animation } from '../Button/Button';
 import BarChart from '../BarChart/BarChart';
@@ -475,7 +475,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
           setLoading(false);
         }
       } else {
-        if (hasPrice) { 
+        if (hasPrice) {
           const receivedVal: number = totalReceived * price;
           const receivedText: string = formatPrice(
             receivedVal,

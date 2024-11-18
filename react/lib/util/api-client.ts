@@ -1,6 +1,6 @@
 import axios from 'axios';
 import _ from 'lodash';
-import config from '../config.json'
+import config from '../../../paybutton-config.json'
 import { isValidCashAddress, isValidXecAddress } from './address';
 import {
   Transaction,
