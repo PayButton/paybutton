@@ -117,11 +117,15 @@
           </div>
           <div class="form-input">
             <label for="theme">Theme:</label>
-            <input id="theme" style="height: 100px;" v-model="paybuttonProps.theme" type="text">
+            <input id="theme" v-model="paybuttonProps.theme" type="text">
           </div>
           <div class="form-input">
             <label for="animation">Animation:</label>
             <input id="animation" v-model="paybuttonProps.animation" type="text">
+          </div>
+          <div class="form-input">
+            <label for="theme">Op Return:</label>
+            <input id="theme" v-model="paybuttonProps.opReturn" type="text">
           </div>
         </div>
         <div style="display: flex; flex-wrap: wrap; gap: 10px;">
@@ -192,7 +196,8 @@
             :disabled="paybuttonProps.disabled"
             :on-success="mySuccessFuction"
             :on-transaction="myTransactionFuction"
-            :enable-altpayment="paybuttonProps.enableAltpayment">
+            :enable-altpayment="paybuttonProps.enableAltpayment"
+            :op-return="paybuttonProps.opReturn">
           </div>
         </div>
       </div>
@@ -223,6 +228,7 @@
             disableEnforceFocus: false,
             enableAltpayment: false,
             contributionOffset: undefined,
+            opReturn:undefined,
             onSuccess: mySuccessFuction,
             onTransaction: myTransactionFuction
           });
