@@ -12,6 +12,7 @@
     "prebuild": "[ -f ./paybutton-config.json ] || cp ./example-config.json ./paybutton-config.json",
     "pretest": "[ -f ./paybutton-config.json ] || cp ./example-config.json ./paybutton-config.json",
     "build:dev": "yarn build:react && yarn dev",
+    "watch": "(cd paybutton && yarn dev) & (cd react && yarn dev)",
     "test": "cd react && yarn test",
     "test:coverage": "cd react && yarn test:coverage",
     "build:react": "cd react && yarn && yarn build",
