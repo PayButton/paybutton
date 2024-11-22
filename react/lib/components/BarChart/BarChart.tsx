@@ -1,13 +1,18 @@
 import React, { useEffect, useState, CSSProperties } from 'react';
+import { isPropsTrue } from '../../util';
 
 export interface BarChartProps {
   value: number;
   color: string;
+  disabled: boolean;
 }
 
 export const BarChart = (props: BarChartProps): React.ReactElement => {
-  const { value, color } = props;
+  const { value, color, disabled } = props;
   const [barWidth, setBarWidth] = useState(0);
+
+
+  const blurCSS = isPropsTrue(disabled) ? { filter: 'blur(5px)' } : {};
 
   const containerStyle: CSSProperties = {
     width: '100%',
@@ -41,7 +46,7 @@ export const BarChart = (props: BarChartProps): React.ReactElement => {
   return (
     <div style={containerStyle}>
       <div style={barHolder}>
-        <div style={{ ...bar, width: `${barWidth}%` }} />
+        <div style={{ ...bar, width: `${barWidth}%`, ...blurCSS}} />
       </div>
     </div>
   );

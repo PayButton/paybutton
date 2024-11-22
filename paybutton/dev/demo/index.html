@@ -71,7 +71,12 @@
       api-base-url="http://localhost:3000"></div>
     <div class="paybutton" to="qpfx6l0x85kc5qaah4wx9nahezcgqefnss2sp0cy06"></div>
     <div class="dialogbutton btn purple">
-      <button onclick="PayButton.openDialog({ to: 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp' })">
+      <button onclick="PayButton.openDialog({ to: 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp', disabled: true })">
+        open payment dialog disabled
+      </button>
+    </div>
+    <div class="dialogbutton btn">
+      <button onclick="PayButton.openDialog({ to: 'bitcoincash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7q9ayphulp', disabled: false })">
         open payment dialog
       </button>
     </div>
@@ -188,6 +193,7 @@
       goalAmount: 25,
       text: 'Send (1 cent)',
       hoverText: 'For testing!!!',
+      
       theme: {
         palette: {
           primary: '#040404',

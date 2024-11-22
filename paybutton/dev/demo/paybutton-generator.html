@@ -154,9 +154,9 @@
               <label for="random-satoshis">Random Satoshis</label>
             </div>
             <div class="form-input toggle">
-              <input type="checkbox" id="disabled" v-model="paybuttonProps.enableAltpayment" true-value="true"
+              <input type="checkbox" id="enable-altpayment" v-model="paybuttonProps.enableAltpayment" true-value="true"
                 false-value="false">
-              <label for="disabled">Enable Altpayment</label>
+              <label for="enable-altpayment">Enable Altpayment</label>
             </div>
           </div>
           <div>
@@ -241,7 +241,7 @@
             onSuccess: mySuccessFuction,
             onTransaction: myTransactionFuction
           });
-          const paybuttonType = ref("paybutton-widget");
+          const paybuttonType = ref("paybutton");
           const updateProps = () => {
             const loadingOverlay = document.getElementById("loading-overlay");
             const paybuttonGenerator = document.getElementById("paybutton-generator");
@@ -249,7 +249,6 @@
 
             loadingOverlay.style.display = "flex";
             paybuttonGenerator.hidden = true
-
             setTimeout(() => {
               paybuttonGenerator.hidden = false
               switch (paybuttonType.value) {

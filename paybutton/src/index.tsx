@@ -121,13 +121,22 @@ function renderDialogButton(dialogbuttonExists: boolean): void {
 function openDialog(props: PaymentDialogProps): void {
   const container = document.createElement('div');
   document.body.appendChild(container);
-  const onClose = (success?: boolean, paymentId?:string) => {
+  const onClose = (success?: boolean, paymentId?: string) => {
     if (props.onClose !== undefined) {
-      props.onClose(success, paymentId)
+      props.onClose(success, paymentId);
     }
-    container.remove()
+    container.remove();
+  };
+
+  if (props.disabled) {
+    const buttonElement = document.activeElement;
+    if (buttonElement && buttonElement.tagName === 'BUTTON') {
+      buttonElement.textContent = 'Unavailable';
+    }
+    container.remove();
+  } else {
+    render(<PaymentDialog container={container} onClose={onClose} {...props} />, container);
   }
-  render(<PaymentDialog container={container} onClose={onClose} {...props} />, container)
 }
 
 function renderButtons(paybuttonExists: boolean): void {
