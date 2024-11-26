@@ -630,15 +630,13 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
           textAlign="center"
         >
           <Typography className={errorMsg ? classes.error : classes.text}>
-          {errorMsg 
-            ? errorMsg 
-            : disabled 
-            ? 'Not yet ready for payment' 
-            : loading 
-            ? 'Loading...' 
-            : success 
-            ? successText 
-            : text}
+            {(() => {
+              if (errorMsg) return errorMsg;
+              if (disabled) return 'Not yet ready for payment';
+              if (loading) return 'Loading...';
+              if (success) return successText;
+              return text;
+            })()}
         </Typography>
         </Box>
         <Box
