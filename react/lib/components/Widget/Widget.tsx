@@ -458,10 +458,6 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       console.error(err);
       setErrorMsg((err as Error).message);
       setDisabled(true)
-      setTimeout((): void => {
-        setErrorMsg('')
-        setText(`Send any amount of ${addressType}`);
-      }, 5000);
     }
   }, [props.opReturn, paymentId, disablePaymentId]);
 
