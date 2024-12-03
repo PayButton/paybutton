@@ -68,6 +68,10 @@ const useStyles = makeStyles({
       margin: -2,
       color: '#00000044 !important',
     },
+    '&:disabled span': {
+      filter: 'blur(2px)',
+      color: 'rgba(0, 0, 0, 0.5)',
+    },
   }),
 });
 

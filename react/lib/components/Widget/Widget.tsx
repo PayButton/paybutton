@@ -126,6 +126,10 @@ const useStyles = makeStyles({
     color: `${theme.palette.tertiary} !important`,
     textShadow:
     '#fff -2px 0 1px, #fff 0 -2px 1px, #fff 0 2px 1px, #fff 2px 0 1px !important',
+    '&:disabled span': {
+      filter: 'blur(2px)',
+      color: 'rgba(0, 0, 0, 0.5)',
+    },
   }),
   text: ({ theme }: StyleProps) => ({
     fontSize: '0.9rem !important',
@@ -625,15 +629,15 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
           py={1}
           textAlign="center"
         >
-          {errorMsg ? (
-            <Typography className={classes.error}>
-              {errorMsg}
-            </Typography>
-          ) : (
-            <Typography className={classes.text}>
-              {loading ? 'Loading...' : success ? successText : text}
-            </Typography>
-          )}
+          <Typography className={errorMsg ? classes.error : classes.text}>
+            {(() => {
+              if (errorMsg) return errorMsg;
+              if (disabled) return 'Not yet ready for payment';
+              if (loading) return 'Loading...';
+              if (success) return successText;
+              return text;
+            })()}
+        </Typography>
         </Box>
         <Box
           display="flex"
@@ -685,7 +689,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                     <>
                       <Typography
                         className={classes.copyText}
-                        style={{ marginBottom: '0.61rem' }}
+                        style={{ marginBottom: '0.61rem', ...blurCSS}}
                       >
                         {goalText}
                         <strong>&nbsp;{currency}</strong>
@@ -693,6 +697,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                       <BarChart
                         color={theme.palette.primary}
                         value={Math.round(goalPercent)}
+                        disabled={disabled}
                       />
                     </>
                   )}
@@ -766,7 +771,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                     text={widgetButtonText}
                     hoverText={hoverText}
                     onClick={handleButtonClick}
-                    disabled={disabled}
+                    disabled={isPropsTrue(disabled)}
                     animation={animation}
                   />
                 </Box>
