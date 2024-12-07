@@ -186,7 +186,7 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
           copiedMessage.style.padding = "5px 0 5px 5px";
           copiedMessage.style.zIndex = "10";
           copiedMessage.style.display = "none";
-  
+
     if (contentElement) {
       const content = contentElement.textContent || "";
       navigator.clipboard.writeText(content);
@@ -344,7 +344,7 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                     <div id="sideshift_id">{altpaymentShift.id}</div>
                     <img src={copyIcon} alt="Copy" onClick={() => copyToClipboard('sideshift_id')}/>
                   </div>
-                </div> 
+                </div>
               )
             ) : loadingShift ? (
               <p>Loading Shift...</p>
@@ -370,6 +370,7 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                     Send {pairAmount} {selectedCoin?.name}
                   </Typography>
                 )}
+                <div></div>
                 <div style={loadingPair ||
                     selectedCoinNetwork === undefined ||
                     !pairAmount ||
@@ -414,7 +415,7 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                       <Select
                         labelId="select-coin-label"
                         className={classes.select_box}
-                        value={selectedCoin?.coin}
+                        value={selectedCoin?.coin ?? null}
                         onChange={e => {
                           handleCoinChange(e);
                         }}
@@ -453,7 +454,7 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                             <Select
                               labelId="select-network-label"
                               className={classes.select_box}
-                              value={selectedCoinNetwork}
+                              value={selectedCoinNetwork ?? null}
                               onChange={e => {
                                 handleNetworkChange(e);
                               }}
