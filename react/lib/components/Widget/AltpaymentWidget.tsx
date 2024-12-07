@@ -414,7 +414,7 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                       <Select
                         labelId="select-coin-label"
                         className={classes.select_box}
-                        value={selectedCoin?.coin}
+                        value={selectedCoin?.coin ?? null}
                         onChange={e => {
                           handleCoinChange(e);
                         }}
@@ -453,7 +453,7 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                             <Select
                               labelId="select-network-label"
                               className={classes.select_box}
-                              value={selectedCoinNetwork}
+                              value={selectedCoinNetwork ?? null}
                               onChange={e => {
                                 handleNetworkChange(e);
                               }}
