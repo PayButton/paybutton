@@ -155,7 +155,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
         } else {
           const expectedAmount = amount ? resolveNumber(amount) : undefined;
           const receivedAmount = resolveNumber(transaction.amount);
-          
+
           if (await shouldTriggerOnSuccess(
             transaction,
             currency,
@@ -173,7 +173,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
             if (sound) {
               txSound.play().catch(() => {});
             }
-            
+
             const currencyTicker = getCurrencyTypeFromAddress(to);
             if (!hideToasts)
               enqueueSnackbar(
@@ -219,14 +219,14 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
     );
 
     useEffect(() => {
-      if (price === undefined) {
+      if (price === undefined || price === 0) {
         (async () => {
           getPrice();
         })()
       } else {
         setThisPrice(price)
       }
-    }, [currency, price]);
+    }, [currency, price, usdPrice]);
 
     const handleNewTransaction = useCallback(
       (tx: Transaction) => {

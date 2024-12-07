@@ -368,7 +368,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       const usdAmount = usdPrice * +thisAmount
       setIsAboveMinimumAltpaymentUSDAmount(usdAmount >= MINIMUM_ALTPAYMENT_DOLLAR_AMOUNT)
     }
-  }, [to, thisAmount]);
+  }, [to, thisAmount, usdPrice]);
 
   useEffect(() => {
     const invalidAmount =
