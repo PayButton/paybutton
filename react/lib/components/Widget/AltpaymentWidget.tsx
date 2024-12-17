@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {
   Typography,
   TextField,
+  Grid,
   Select,
   MenuItem,
   makeStyles,
@@ -186,7 +187,7 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
           copiedMessage.style.padding = "5px 0 5px 5px";
           copiedMessage.style.zIndex = "10";
           copiedMessage.style.display = "none";
-  
+
     if (contentElement) {
       const content = contentElement.textContent || "";
       navigator.clipboard.writeText(content);
@@ -314,6 +315,7 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     }
     return coinString;
   }
+
   return (
     <div className={classes.sideshift_ctn}>
       {altpaymentError ? (
@@ -344,7 +346,7 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                     <div id="sideshift_id">{altpaymentShift.id}</div>
                     <img src={copyIcon} alt="Copy" onClick={() => copyToClipboard('sideshift_id')}/>
                   </div>
-                </div> 
+                </div>
               )
             ) : loadingShift ? (
               <p>Loading Shift...</p>
@@ -356,15 +358,21 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                   {resolveNumber(coinPair.rate).toFixed(2)} XEC{' '}
                 </p>
                 {altpaymentEditable ? (
-                  <div className={classes.editAmount}>
-                    <TextField
-                      label='Edit amount'
-                      value={pairAmount ?? 0}
-                      onChange={handlePairAmountChange}
-                      inputProps={{ maxLength: pairAmountMaxLength }}
-                    />
-                    <span>{selectedCoin?.coin}</span>
-                  </div>
+                  <Grid
+                    container
+                    spacing={2}
+                    alignItems="flex-end"
+                    style={{ margin: '6px auto' }}
+                  >
+                    <Grid item xs={6}>
+                      <TextField
+                        label="Amount"
+                        value={pairAmount ?? 0}
+                        onChange={handlePairAmountChange}
+                        inputProps={{ maxLength: pairAmountMaxLength }}
+                      />
+                    </Grid>
+                  </Grid>
                 ) : (
                   <Typography>
                     Send {pairAmount} {selectedCoin?.name}
