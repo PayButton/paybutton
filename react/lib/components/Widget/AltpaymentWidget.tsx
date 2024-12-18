@@ -378,6 +378,7 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                     Send {pairAmount} {selectedCoin?.name}
                   </Typography>
                 )}
+                <div></div>
                 <div style={loadingPair ||
                     selectedCoinNetwork === undefined ||
                     !pairAmount ||
