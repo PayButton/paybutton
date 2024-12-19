@@ -129,8 +129,8 @@ export const Button = (props: ButtonProps): React.ReactElement => {
         onMouseLeave={handleMouseLeave}
         ref={buttonRef}
       >
-        
-        <span>{transitioning !== hovering ? hoverText : (text ? text : <div>&nbsp;</div>)}</span>
+        <span> {transitioning !== hovering ? hoverText : (text && text.trim() !== "" ? text : <div>&nbsp;</div>)}
+        </span>
       </MuiButton>
     </div>
   );
