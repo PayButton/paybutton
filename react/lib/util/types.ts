@@ -15,6 +15,7 @@ export interface Transaction {
     timestamp: number
     address: string
     rawMessage?: string
+    inputAddresses?: (string | undefined)[]
 }
 
 export interface UtxoDetails {
