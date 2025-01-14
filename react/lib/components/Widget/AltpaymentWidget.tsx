@@ -180,11 +180,14 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     const copiedMessage = document.createElement("div");
           copiedMessage.textContent = "Copied!";
           copiedMessage.style.position = "absolute";
-          copiedMessage.style.width = "100%";
-          copiedMessage.style.top = "-5px";
+          copiedMessage.style.width = "calc(100% - 10px)";
+          copiedMessage.style.height = "calc(100% - 20px)";
+          copiedMessage.style.alignItems = "center";
+          copiedMessage.style.top = "0";
           copiedMessage.style.left = "0";
-          copiedMessage.style.backgroundColor = "rgb(232 232 237)";
-          copiedMessage.style.padding = "5px 0 5px 5px";
+          copiedMessage.style.backgroundColor = "#fff";
+          copiedMessage.style.borderRadius = "5px";
+          copiedMessage.style.padding = "10px 0 10px 10px";
           copiedMessage.style.zIndex = "10";
           copiedMessage.style.display = "none";
 
@@ -192,7 +195,7 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
       const content = contentElement.textContent || "";
       navigator.clipboard.writeText(content);
         contentElement.appendChild(copiedMessage);
-        copiedMessage.style.display = "inline-block";
+        copiedMessage.style.display = "flex";
 
         setTimeout(() => {
           copiedMessage.style.display = "none";
@@ -235,7 +238,9 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
       padding: '20px 0',
       alignItems: 'center',
       display: 'flex',
-      flexDirection: 'column'
+      flexDirection: 'column',
+      minHeight: '300px',
+      position: 'relative'
     },
     header: {
       marginBottom:'30px',
@@ -269,23 +274,16 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
       '& h4': {
        margin: '0',
        fontSize: '20px',
+       borderBottom: '1px solid #000',
+       paddingBottom: '10px',
+       textAlign: 'center',
       },
-      '& span': {
-        marginTop: '20px',
-        marginBottom: '2px',
-        fontSize: '16px',
-        fontWeight: '600'
-       },
     },
     copy_ctn: {
       display: 'flex',
       alignItems: 'center',
       '& > div': {
         position: 'relative'
-       },
-       '& img': {
-       width: '15px',
-       marginLeft: '5px'
        },
     },
     editAmount: {
@@ -300,6 +298,63 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
         marginLeft: '4px',
         fontSize: '16px',
       }
+    },
+    amount_error: {
+      position: 'absolute',
+      bottom: '10px',
+      textAlign: 'center',
+      background: '#00000014',
+      padding: '10px',
+      borderRadius: '5px'
+    },
+    error_msg: {
+      textAlign: 'center',
+      background: '#ee010119',
+      padding: '10px',
+      borderRadius: '5px',
+      color: 'red'
+    },
+    shift_label: {
+      fontSize: '14px',
+      marginLeft: '5px',
+      marginTop: '20px',
+      marginBottom: '2px',
+      fontWeight: 600
+    },
+    shift_input: {
+      background: '#ffffff',
+      padding: '10px',
+      borderRadius: '5px',
+      fontSize: '14px',
+      border: '1px solid #b3b3b3',
+      wordBreak: 'break-all',
+      flexGrow: 1,
+      position: 'relative',
+    },
+    copy_btn: {
+      background: '#ffffff',
+      padding: '10px',
+      borderRadius: '5px',
+      border: '1px solid #b3b3b3',
+      marginLeft: '5px',
+      display: 'flex',
+      alignItems: 'center',
+      cursor: 'pointer',
+      alignSelf: 'stretch',
+      '& hover': {
+        background: '#f1f1f1'
+      },
+      '& img': {
+        width: '15px',
+        },
+    },
+    shift_complete: {
+      display: 'flex',
+      alignItems: 'center',
+      height: '100%',
+      flex: '1',
+      width: '100%',
+      fontSize: '18px'
     }
   });
 
@@ -320,7 +375,7 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     <div className={classes.sideshift_ctn}>
       {altpaymentError ? (
         <>
-          <p>Error: {altpaymentError.errorMessage}</p>
+          <p className={classes.error_msg}>Error: {altpaymentError.errorMessage}</p>
           <div className={classes.back_link} onClick={resetTrade}>Back</div>
         </>
       ) : (
@@ -328,23 +383,50 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
           {
             altpaymentShift ? (
               shiftCompleted ? (
-                <p>Shift Completed!</p>
+                <div className={classes.shift_complete}>Shift Completed!</div>
               ) : (
                 <div className={classes.shift_ready}>
                   <h4>Shift Ready!</h4>
-                  <span>Send</span>
-                  <div>{altpaymentShift.depositAmount}{' '}{altpaymentShift.depositCoin}</div>
-                  <span>To</span>
+                  <span className={classes.shift_label}>Send</span>
                   <div className={classes.copy_ctn}>
-                    <div id="to_address">{altpaymentShift.depositAddress}</div>
-                    <img src={copyIcon} alt="Copy" onClick={() => copyToClipboard('to_address')}/>
+                    <div className={classes.shift_input}>
+                      <span id="shift_amount">{altpaymentShift.depositAmount}</span>{' '}{altpaymentShift.depositCoin}
+                    </div>
+                    <div className={classes.copy_btn}>
+                      <img
+                        src={copyIcon}
+                        alt="Copy"
+                        onClick={() => copyToClipboard('shift_amount')}
+                      />
+                    </div>
                   </div>
-                  <span>Network</span>
-                  <div>{selectedCoinNetwork}</div>
-                  <span>SideShift ID</span>
+                  <span className={classes.shift_label}>To</span>
                   <div className={classes.copy_ctn}>
-                    <div id="sideshift_id">{altpaymentShift.id}</div>
-                    <img src={copyIcon} alt="Copy" onClick={() => copyToClipboard('sideshift_id')}/>
+                    <div id="to_address" className={classes.shift_input}>
+                      {altpaymentShift.depositAddress}
+                    </div>
+                    <div className={classes.copy_btn}>
+                      <img
+                        src={copyIcon}
+                        alt="Copy"
+                        onClick={() => copyToClipboard('to_address')}
+                      />
+                    </div>
+                  </div>
+                  <span className={classes.shift_label}>Network</span>
+                  <div className={classes.shift_input}>{selectedCoinNetwork}</div>
+                  <span className={classes.shift_label}>SideShift ID</span>
+                  <div className={classes.copy_ctn}>
+                    <div id="sideshift_id" className={classes.shift_input}>
+                      {altpaymentShift.id}
+                    </div>
+                    <div className={classes.copy_btn}>
+                      <img
+                        src={copyIcon}
+                        alt="Copy"
+                        onClick={() => copyToClipboard('sideshift_id')}
+                      />
+                    </div>
                   </div>
                 </div>
               )
@@ -364,12 +446,17 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                     alignItems="flex-end"
                     style={{ margin: '6px auto' }}
                   >
-                    <Grid item xs={6}>
+                    <Grid item>
                       <TextField
                         label="Amount"
                         value={pairAmount ?? 0}
                         onChange={handlePairAmountChange}
-                        inputProps={{ maxLength: pairAmountMaxLength }}
+                        inputProps={{
+                          maxLength: pairAmountMaxLength,
+                          type: 'number',
+                          pattern: '[0-9]*',
+                          inputMode: 'numeric'
+                        }}
                       />
                     </Grid>
                   </Grid>
@@ -399,10 +486,10 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                 />
                 </div>
                 {!isAboveMinimumAltpaymentAmount && (
-                  <p>Amount is below minimum.</p>
+                  <p className={classes.amount_error}>Amount is below minimum.</p>
                 )}
                 {!isBelowMaximumAltpaymentAmount && (
-                  <p>Amount is above maximum.</p>
+                  <p className={classes.amount_error}>Amount is above maximum.</p>
                 )}
               </>
             ) : (
@@ -486,7 +573,6 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                     )}
                   </>
                 )}
-                <div className={classes.spacer} />
                 <div className={classes.spacer} />
                 {loadingPair ||
                 selectedCoin === undefined ||
