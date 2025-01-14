@@ -147,8 +147,14 @@ const useStyles = makeStyles({
   sideShiftLink: ({ theme }: StyleProps) => ({
     fontSize: '14px',
     cursor: 'pointer',
+    padding: '6px 12px',
+    marginTop: '20px',
+    background: '#e9e9e9',
+    borderRadius: '5px',
+    transition: 'all ease-in-out 200ms',
     '&:hover': {
-      color: `${theme.palette.primary}`,
+      background: `${theme.palette.primary}`,
+      color: `${theme.palette.secondary}`,
     },
   }),
   editAmount: {
@@ -777,14 +783,8 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                 </Box>
               )}
               {isPropsTrue(enableAltpayment) && (
-              <Box py={1}>
-                <Typography>
-                  {
-                    (isAboveMinimumAltpaymentUSDAmount || altpaymentEditable)   && <a className={classes.sideShiftLink} onClick={tradeWithAltpayment}>Don't have any {addressType}?</a>
-                  }
-                </Typography>
-              </Box>
-              )}
+              isAboveMinimumAltpaymentUSDAmount || altpaymentEditable)   && <a className={classes.sideShiftLink} onClick={tradeWithAltpayment}>Don't have any {addressType}?</a>
+              }
             </>
           }
           {foot && (

@@ -239,7 +239,7 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
       alignItems: 'center',
       display: 'flex',
       flexDirection: 'column',
-      minHeight: '300px',
+      minHeight: '350px',
       position: 'relative',
       minWidth: '240px',
       maxWidth: '300px'
@@ -343,7 +343,8 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
       alignItems: 'center',
       cursor: 'pointer',
       alignSelf: 'stretch',
-      '& hover': {
+      transition: 'all ease-in-out 200ms',
+      '&:hover': {
         background: '#f1f1f1'
       },
       '& img': {
@@ -394,11 +395,10 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                     <div className={classes.shift_input}>
                       <span id="shift_amount">{altpaymentShift.depositAmount}</span>{' '}{altpaymentShift.depositCoin}
                     </div>
-                    <div className={classes.copy_btn}>
+                    <div className={classes.copy_btn} onClick={() => copyToClipboard('shift_amount')}>
                       <img
                         src={copyIcon}
                         alt="Copy"
-                        onClick={() => copyToClipboard('shift_amount')}
                       />
                     </div>
                   </div>
@@ -407,11 +407,10 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                     <div id="to_address" className={classes.shift_input}>
                       {altpaymentShift.depositAddress}
                     </div>
-                    <div className={classes.copy_btn}>
+                    <div className={classes.copy_btn} onClick={() => copyToClipboard('to_address')}>
                       <img
                         src={copyIcon}
                         alt="Copy"
-                        onClick={() => copyToClipboard('to_address')}
                       />
                     </div>
                   </div>
@@ -422,11 +421,10 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                     <div id="sideshift_id" className={classes.shift_input}>
                       {altpaymentShift.id}
                     </div>
-                    <div className={classes.copy_btn}>
+                    <div className={classes.copy_btn} onClick={() => copyToClipboard('sideshift_id')}>
                       <img
                         src={copyIcon}
                         alt="Copy"
-                        onClick={() => copyToClipboard('sideshift_id')}
                       />
                     </div>
                   </div>
