@@ -208,7 +208,7 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
 
   const useStyles = makeStyles({
     select_box: {
-      minWidth: '300px'
+      minWidth: '240px'
     },
     option_outer_ctn: {
       display: 'flex',
@@ -240,7 +240,9 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
       display: 'flex',
       flexDirection: 'column',
       minHeight: '300px',
-      position: 'relative'
+      position: 'relative',
+      minWidth: '240px',
+      maxWidth: '300px'
     },
     header: {
       marginBottom:'30px',
@@ -443,8 +445,9 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                   <Grid
                     container
                     spacing={2}
-                    alignItems="flex-end"
-                    style={{ margin: '6px auto' }}
+                    alignItems="center"
+                    justifyContent="center"
+                    style={{ margin: '6px auto', width: '100%' }}
                   >
                     <Grid item>
                       <TextField
