@@ -525,7 +525,8 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         window.location.href = url;
         const isMobile = window.matchMedia('(pointer:coarse)').matches;
         if (isMobile) {
-          window.location.href = `https://cashtab.com/#/send?bip21=${url}`;
+          const webUrl = `https://cashtab.com/#/send?bip21=${url}`;
+          window.open(webUrl, '_blank');
         } else {
           window.location.href = url;
         }
