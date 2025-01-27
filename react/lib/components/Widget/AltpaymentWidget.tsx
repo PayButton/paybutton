@@ -11,7 +11,8 @@ import {
 } from '@material-ui/core';
 import {
   resolveNumber,
-  CryptoCurrency
+  CryptoCurrency,
+  DECIMALS
 } from '../../util';
 import { Button, animation } from '../Button/Button';
 import { Socket } from 'socket.io-client';
@@ -149,8 +150,11 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     setPairAmount(pairAmount)
 
     if (coinPair !== undefined) {
-      const xecAmount = +coinPair.rate * +pairAmount
-      updateAmount(xecAmount.toString())
+      const settleCoinAmount = +coinPair.rate * +pairAmount
+
+      if(Object.keys(DECIMALS).includes(coinPair.settleCoin)){
+        updateAmount(settleCoinAmount.toFixed(DECIMALS[coinPair.settleCoin]))
+      }
     }
   };
 
@@ -437,7 +441,7 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                 <p>
                   {' '}
                   1 {selectedCoin?.name} ~={' '}
-                  {resolveNumber(coinPair.rate).toFixed(2)} XEC{' '}
+                  {resolveNumber(coinPair.rate).toFixed(DECIMALS[coinPair.settleCoin])} {coinPair.settleCoin}{' '}
                 </p>
                 {altpaymentEditable ? (
                   <Grid
