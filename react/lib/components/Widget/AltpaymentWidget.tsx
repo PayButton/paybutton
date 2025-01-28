@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Typography,
   TextField,
   Grid,
   Select,
@@ -466,14 +465,12 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                     </Grid>
                   </Grid>
                 ) : (
-                  <Typography>
-                    Send {pairAmount} {selectedCoin?.name}
-                  </Typography>
+                  null
                 )}
                 <div></div>
                 <div style={loadingPair ||
                     selectedCoinNetwork === undefined ||
-                    !pairAmount ||
+                    (altpaymentEditable && !pairAmount) ||
                     !isAboveMinimumAltpaymentAmount ||
                     !isBelowMaximumAltpaymentAmount ? {opacity: '0.5', cursor: 'not-allowed'} : {}}>
                 <Button
@@ -483,7 +480,7 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                   disabled={
                     loadingPair ||
                     selectedCoinNetwork === undefined ||
-                    !pairAmount ||
+                    (altpaymentEditable && !pairAmount) ||
                     !isAboveMinimumAltpaymentAmount ||
                     !isBelowMaximumAltpaymentAmount
                   }
