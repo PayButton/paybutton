@@ -770,7 +770,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                     placeholder='Enter Amount'
                     id="userEditedAmount"
                   />
-                  <span>{currency}</span>
+                 <Typography component="span">{currency}</Typography>
                 </div>
               )}
 
@@ -786,7 +786,8 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                 </Box>
               )}
               {!isPropsTrue(disableAltpayment) && (
-                <div
+                <Typography
+                  component="div"
                   className={classes.sideShiftLink}
                   onClick={isAboveMinimumAltpaymentUSDAmount || altpaymentEditable ? tradeWithAltpayment : undefined}
                   style={{
@@ -795,7 +796,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                   }}
                 >
                   Don't have any {addressType}?
-                </div>
+                </Typography>
               )}
             </>
           {foot && (

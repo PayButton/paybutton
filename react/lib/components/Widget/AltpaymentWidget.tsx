@@ -6,7 +6,8 @@ import {
   MenuItem,
   makeStyles,
   InputLabel,
-  FormControl
+  FormControl,
+  Typography
 } from '@material-ui/core';
 import {
   resolveNumber,
@@ -381,7 +382,7 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
   }
 
   return (
-    <div className={classes.sideshift_ctn}>
+    <Typography component="div" className={classes.sideshift_ctn}>
       {altpaymentError ? (
         <>
           <p className={classes.error_msg}>Error: {altpaymentError.errorMessage}</p>
@@ -604,7 +605,7 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
             )}
         </>
       )}
-    </div>
+    </Typography>
   );
 };
 
