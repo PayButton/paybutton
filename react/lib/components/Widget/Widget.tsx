@@ -786,8 +786,14 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                 </Box>
               )}
               {isPropsTrue(enableAltpayment) && (
-              isAboveMinimumAltpaymentUSDAmount || altpaymentEditable)   && <a className={classes.sideShiftLink} onClick={tradeWithAltpayment}>Don't have any {addressType}?</a>
-              }
+                <a
+                  className={classes.sideShiftLink}
+                  onClick={tradeWithAltpayment}
+                  style={{ opacity: isAboveMinimumAltpaymentUSDAmount || altpaymentEditable ? 1 : 0 }}
+                >
+                  Don't have any {addressType}?
+                </a>
+              )}
             </>
           {foot && (
             <Box pt={2} flex={1}>

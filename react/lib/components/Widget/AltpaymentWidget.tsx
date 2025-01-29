@@ -211,7 +211,7 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
 
   const useStyles = makeStyles({
     select_box: {
-      minWidth: '240px'
+      minWidth: '220px'
     },
     option_outer_ctn: {
       display: 'flex',
