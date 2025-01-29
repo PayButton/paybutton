@@ -90,6 +90,7 @@ const useStyles = makeStyles({
   root: {
     minWidth: '240px !important',
     background: '#f5f5f7 !important',
+    position: 'relative',
   },
   qrCode: ({ success, loading, theme }: StyleProps) => ({
     background: '#fff !important',
@@ -651,9 +652,10 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
           alignItems="center"
           px={3}
           pt={2}
+          position="relative"
         >
           {// Altpayment region
-            useAltpayment ?
+            useAltpayment &&
               <AltpaymentWidget
                 altpaymentSocket={altpaymentSocket}
                 thisAmount={thisAmount}
@@ -677,7 +679,8 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                 addressType={addressType}
                 to={to}
               />
-               : <>
+           }
+            <>
               {loading && shouldDisplayGoal ? (
                 <Typography
                   className={classes.text}
@@ -783,10 +786,15 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                 </Box>
               )}
               {isPropsTrue(enableAltpayment) && (
-              isAboveMinimumAltpaymentUSDAmount || altpaymentEditable)   && <a className={classes.sideShiftLink} onClick={tradeWithAltpayment}>Don't have any {addressType}?</a>
-              }
+                <a
+                  className={classes.sideShiftLink}
+                  onClick={tradeWithAltpayment}
+                  style={{ opacity: isAboveMinimumAltpaymentUSDAmount || altpaymentEditable ? 1 : 0 }}
+                >
+                  Don't have any {addressType}?
+                </a>
+              )}
             </>
-          }
           {foot && (
             <Box pt={2} flex={1}>
               {foot}
