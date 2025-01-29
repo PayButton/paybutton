@@ -99,7 +99,7 @@ const allowedProps = [
   'editable',
   'wsBaseUrl',
   'apiBaseUrl',
-  'enableAltpayment',
+  'disableAltpayment',
   'contributionOffset'
 ];
 
