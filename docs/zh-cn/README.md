@@ -888,9 +888,9 @@ apiBaseUrl: 'https://paybutton.org'
 apiBaseUrl = "https://paybutton.org"
 ```
 <!-- tabs:end -->
-## enable-altpayment
+## disable-altpayment
 
-> **“enableAltpayment” 参数控制是否启用备用支付逻辑。**
+> **“disableAltpayment” 参数用于禁用备用支付逻辑。**
 
 ?> 该参数为可选项，默认值为 false。可选值为 true 或 false。
 
@@ -900,19 +900,19 @@ apiBaseUrl = "https://paybutton.org"
 #### ** HTML **
 
 ```html
-enable-altpayment="true"
+disable-altpayment="true"
 ```
 
 #### ** JavaScript **
 
 ```javascript
-enableAltpayment: 'true'
+disableAltpayment: 'true'
 ```
 
 #### ** React **
 
 ```react
-enableAltpayment = "true"
+disableAltpayment = "true"
 ```
 <!-- tabs:end -->
 
