@@ -76,7 +76,7 @@ export interface WidgetProps {
   setUseAltpayment: Function;
   shiftCompleted: boolean
   setShiftCompleted: Function;
-  enableAltpayment?: boolean;
+  disableAltpayment?: boolean;
   contributionOffset?: number
 }
 
@@ -204,7 +204,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     setUseAltpayment,
     shiftCompleted,
     setShiftCompleted,
-    enableAltpayment,
+    disableAltpayment,
     contributionOffset
   } = Object.assign({}, Widget.defaultProps, props);
 
@@ -785,7 +785,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                   />
                 </Box>
               )}
-              {isPropsTrue(enableAltpayment) && (
+              {!isPropsTrue(disableAltpayment) && (
                 <a
                   className={classes.sideShiftLink}
                   onClick={tradeWithAltpayment}

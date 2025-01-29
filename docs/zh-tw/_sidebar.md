@@ -26,7 +26,7 @@
   - [disabled](/zh-tw/?id=disabled)
   - [ws-base-url](/zh-tw/?id=ws-base-url)
   - [api-base-url](/zh-tw/?id=api-base-url)
-  - [enable-altpayment](/zh-tw/?id=enable-altpayment)
+  - [disable-altpayment](/zh-tw/?id=disable-altpayment)
   - [contribution-offset](/zh-tw/?id=contribution-offset)
 - [貢獻](/zh-tw/?id=貢獻)
   - [開發人員快速入門](/zh-tw/?id=開發人員快速入門)

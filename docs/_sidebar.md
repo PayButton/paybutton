@@ -27,7 +27,7 @@
   - [disabled](/?id=disabled)
   - [ws-base-url](/?id=ws-base-url)
   - [api-base-url](/?id=api-base-url)
-  - [enable-altpayment](/?id=enable-altpayment)
+  - [disable-altpayment](/?id=disable-altpayment)
   - [contribution-offset](/?id=contribution-offset)
 - [Contribute](/?id=contribute)
   - [Developer Quick Start](/?id=developer-quick-start)

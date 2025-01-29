@@ -43,7 +43,7 @@ export interface PayButtonProps extends ButtonProps {
   onClose?: (success?: boolean, paymentId?:string) => void;
   wsBaseUrl?: string;
   apiBaseUrl?: string;
-  enableAltpayment?:boolean
+  disableAltpayment?:boolean
   contributionOffset?:number
 }
 
@@ -80,7 +80,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
     editable,
     wsBaseUrl,
     apiBaseUrl,
-    enableAltpayment,
+    disableAltpayment,
     contributionOffset
   } = Object.assign({}, PayButton.defaultProps, props);
 
@@ -235,7 +235,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
         wsBaseUrl={wsBaseUrl}
         apiBaseUrl={apiBaseUrl}
         hoverText={hoverText}
-        enableAltpayment={enableAltpayment}
+        disableAltpayment={disableAltpayment}
         contributionOffset={contributionOffset}
       />
       {errorMsg && (

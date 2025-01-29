@@ -44,7 +44,7 @@ export interface WidgetContainerProps
   wsBaseUrl?: string;
   apiBaseUrl?: string;
   successText?: string;
-  enableAltpayment?: boolean
+  disableAltpayment?: boolean
   contributionOffset?: number
 }
 
@@ -104,7 +104,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
       apiBaseUrl,
       successText,
       hoverText,
-      enableAltpayment,
+      disableAltpayment,
       contributionOffset,
       ...widgetProps
     } = props;
@@ -279,7 +279,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
           setUseAltpayment={setUseAltpayment}
           shiftCompleted={shiftCompleted}
           setShiftCompleted={setShiftCompleted}
-          enableAltpayment={enableAltpayment}
+          disableAltpayment={disableAltpayment}
           contributionOffset={contributionOffset}
         />
       </React.Fragment>
