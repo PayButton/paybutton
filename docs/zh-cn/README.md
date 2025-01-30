@@ -918,9 +918,9 @@ disableAltpayment = "true"
 
 ## contribution-offset
 
-> **"contributionOffset" 参数用于设置一个初始金额，将其加到显示的总贡献额中，以模拟先前的贡献。**
+> **"contributionOffset" 参数用于调整显示的总贡献额，可用于模拟先前的贡献或减少总额。**
 
-?> 此参数是可选的，默认值为 0。可能的值是介于 0 和目标金额之间的正整数。
+?> 此参数为可选（默认值：0）。接受正数或负数整数，且总贡献额上限为 goalAmount
 
 **Example:**
 <!-- tabs:start -->

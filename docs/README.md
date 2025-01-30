@@ -920,10 +920,9 @@ disableAltpayment = "true"
 
 ## contribution-offset
 
-> **The ‘contributionOffset’  parameter sets an initial amount to add to the total contributions displayed, simulating prior contributions.**
+> **The ‘contributionOffset’ parameter adjusts the total contributions displayed, simulating prior contributions or subtracting from the total.**
 
-?> This parameter is optional. Default value is 0. Possible values are positive integers between 0 and the goal-amount.
-
+?> This parameter is optional. Default value is 0. It accepts positive or negative integers, with the total contribution capped at goalAmount.
 **Example:**
 <!-- tabs:start -->
 
