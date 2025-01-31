@@ -29,47 +29,83 @@
 <div id="my_button"></div>
 
 <script>
-function mySuccessFunction(txid, amount) {
-  console.log( { txid, amount } );
-}
+  function mySuccessFunction(transaction) {
+    const transactionAttrs = { 
+      hash, 
+      amount, 
+      paymentId, 
+      confirmed, 
+      message, 
+      timestamp, 
+      address, 
+      rawMessage, 
+      inputAddresses 
+    } = transaction;
 
-function myTransactionFunction(txid, amount) {
-  console.log( 'Received: ' + amount );
-}
+    console.log(transactionAttrs);
+  }
 
-function myOpenFunction() {
-  console.log('Dialog opened.');
-}
+  function myTransactionFunction(transaction) {
+    const transactionAttrs = { 
+      hash, 
+      amount, 
+      paymentId, 
+      confirmed, 
+      message, 
+      timestamp, 
+      address, 
+      rawMessage, 
+      inputAddresses 
+    } = transaction;
 
-function myCloseFunction(success) {
-  console.log(`Dialog closed - user ${success ? 'did' : 'did not'} pay.`);
-}
+    console.log(transactionAttrs);
+    console.log( 'Received: ' + transactionAttrs.amount );
+  }
 
-var config = {
-  to: 'ecash:qrmm7ed0px8tydrlhgvu3putwpwzlfyr0uzfc0slxp',
-  amount: 4.5,
-  goalAmount: 300000,
-  editable: false,
-  currency: 'USD',
-  text: 'Tip Us a Coffee!',
-  hoverText: 'One coffee',
-  theme: {
-    palette: {
-      primary: '#ee8b2b',
-      secondary: '#fefbf8',
-      tertiary: '#504030'
-    }
-  },
-  animation: 'invert',
-  successText: 'Purchase Complete!',
-  onSuccess: mySuccessFunction,
-  onTransaction: myTransactionFunction,
-  onOpen: myOpenFunction,
-  onClose: myCloseFunction,
-  randomSatoshis: true
-};
+  function myCloseFunction(success, paymentId) {
+    console.log('Closed!')
+    console.log('Payment successful?: ' + success)
+    console.log('Payment ID: ' + paymentId)
+  }
 
-PayButton.render(document.getElementById('my_button'), config);
+  function myOpenFunction(amount, to, paymentId) {
+    console.log('Opened to: ' + to + ' for ' + amount + ' XEC')
+    console.log('Payment ID: ' + paymentId)
+  }
+
+
+  var config = {
+    to: 'ecash:qrmm7ed0px8tydrlhgvu3putwpwzlfyr0uzfc0slxp',
+    amount: 4.5,
+    goalAmount: 300000,
+    editable: false,
+    currency: 'USD',
+    text: 'Tip Us a Coffee!',
+    hoverText: 'One coffee',
+    theme: {
+      palette: {
+        primary: '#ee8b2b',
+        secondary: '#fefbf8',
+        tertiary: '#504030'
+      }
+    },
+    animation: 'invert',
+    successText: 'Purchase Complete!',
+    onSuccess: mySuccessFunction,
+    onTransaction: myTransactionFunction,
+    onOpen: myOpenFunction,
+    onClose: myCloseFunction,
+    randomSatoshis: true,
+    opReturn:"ABC",
+    disablePaymentId: true,
+    disabled: false,
+    wsBaseUrl: 'http://localhost:5000',
+    apiBaseUrl: 'http://localhost:3000'
+    disableAltpayment: true,
+    contributionOffset: 10
+  };
+
+  PayButton.render(document.getElementById('my_button'), config);
 </script>
 ```
 
