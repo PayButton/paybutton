@@ -523,13 +523,8 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     if (addressType === 'XEC') {
       const hasExtension = getCashtabProviderStatus();
       if (!hasExtension) {
-        const isMobile = window.matchMedia('(pointer:coarse)').matches;
-        if (isMobile) {
-          const webUrl = `https://cashtab.com/#/send?bip21=${url}`;
-          window.open(webUrl, '_blank');
-        } else {
-          window.location.href = url;
-        }
+        const webUrl = `https://cashtab.com/#/send?bip21=${url}`;
+        window.open(webUrl, '_blank');
       } else {
         return window.postMessage(
           {
