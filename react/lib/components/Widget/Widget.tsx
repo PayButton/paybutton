@@ -153,11 +153,19 @@ const useStyles = makeStyles({
     background: '#e9e9e9',
     borderRadius: '5px',
     transition: 'all ease-in-out 200ms',
+    opacity: 0,
     '&:hover': {
       background: `${theme.palette.primary}`,
       color: `${theme.palette.secondary}`,
     },
   }),
+  animate_sideshift: {
+    animation: 'button-slide 0.6s ease-in-out forwards',
+    animationDelay: '0.5s',
+  },
+  hide_sideshift: {
+    display: 'none',
+  },
   editAmount: {
     width: '100%',
     margin: '12px auto 10px',
@@ -175,6 +183,53 @@ const useStyles = makeStyles({
     fontSize: '0.9rem !important',
     color: '#EB3B3B !important',
   }),
+  '@global': {
+    '@keyframes radial-reveal': {
+      from: { clipPath: 'circle(0% at 50% 50%)', transform: 'rotate(-10deg)' },
+      to: { clipPath: 'circle(100% at 50% 50%)', transform: 'rotate(0deg)' },
+    },
+    '@keyframes fade-scale': {
+      from: {
+        opacity: 0,
+        transform: 'scale(0.3)',
+        transformOrigin: 'center center',
+      },
+      '80%': {
+        opacity: 1,
+        transform: 'scale(1.3)',
+        transformOrigin: 'center center',
+      },
+      to: {
+        opacity: 1,
+        transform: 'scale(1)',
+        transformOrigin: 'center center',
+      },
+    },
+    '@keyframes button-slide': {
+      from: {
+        opacity: 0,
+        transform: 'translateY(20px)',
+      },
+      to: {
+        opacity: 1,
+        transform: 'translateY(0px)',
+      },
+    },  
+  },
+  qrCodeAnimation: {
+    animation: 'radial-reveal 0.8s ease-in-out forwards',
+    '& image': {
+      animation: 'fade-scale 0.6s ease-in-out forwards',
+      opacity: 0, 
+      transform: 'scale(0.3)',
+      transformOrigin: 'center center',
+    },
+  },
+  button_container: {
+    opacity: 0,
+    animation: 'button-slide 0.6s ease-in-out forwards',
+    animationDelay: '0.4s'
+  }
 });
 
 
@@ -584,10 +639,12 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   };
 
   const qrCode = (
+    <div className={classes.qrCodeAnimation}>
     <QRCode
       {...qrCodeProps}
       style={{ flex: 1, width: '100%', height: 'auto', ...blurCSS }}
     />
+    </div>
   );
 
   let cleanGoalAmount: any;
@@ -770,7 +827,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
               )}
 
               {success || (
-                <Box pt={2} flex={1}>
+                <Box pt={2} flex={1} className={classes.button_container}>
                   <ButtonComponent
                     text={widgetButtonText}
                     hoverText={hoverText}
@@ -783,12 +840,9 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
               {!isPropsTrue(disableAltpayment) && (
                 <Typography
                   component="div"
-                  className={classes.sideShiftLink}
+                  className={`${classes.sideShiftLink} ${isAboveMinimumAltpaymentUSDAmount || altpaymentEditable ? classes.animate_sideshift : classes.hide_sideshift}`}
                   onClick={isAboveMinimumAltpaymentUSDAmount || altpaymentEditable ? tradeWithAltpayment : undefined}
-                  style={{
-                    opacity: isAboveMinimumAltpaymentUSDAmount || altpaymentEditable ? 1 : 0,
-                    cursor: isAboveMinimumAltpaymentUSDAmount || altpaymentEditable ? 'pointer' : 'default'
-                  }}
+                  style={{cursor: isAboveMinimumAltpaymentUSDAmount || altpaymentEditable ? 'pointer' : 'default'}}
                 >
                   Don't have any {addressType}?
                 </Typography>
