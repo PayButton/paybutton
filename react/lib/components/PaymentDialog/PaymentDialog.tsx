@@ -1,6 +1,5 @@
-import { Dialog } from '@material-ui/core';
+import { Dialog, Zoom } from '@material-ui/core';
 import React, { useState, useEffect } from 'react';
-
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
 import Button, { ButtonProps } from '../Button/Button';
 import { WidgetContainer } from '../Widget/WidgetContainer';
@@ -116,6 +115,8 @@ export const PaymentDialog = (
         onClose={handleWidgetClose}
         disableEnforceFocus={disableEnforceFocus}
         disableScrollLock
+        TransitionComponent={Zoom}
+        transitionDuration={{ enter: 300, exit: 300 }}
       >
         <WidgetContainer
           ButtonComponent={ButtonComponent}
