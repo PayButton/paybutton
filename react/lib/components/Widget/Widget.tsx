@@ -288,6 +288,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       }
       const newSocket = io(`${wsBaseUrl ?? config.wsBaseUrl}/altpayment`, {
         forceNew: true,
+        transports: ['websocket']
       });
       setAltpaymentSocket(newSocket);
       altpaymentListener({
