@@ -84,6 +84,8 @@ interface StyleProps {
   success: boolean;
   loading: boolean;
   theme: Theme;
+  recentlyCopied: boolean
+  copied: boolean
 }
 
 const useStyles = makeStyles({
@@ -126,7 +128,7 @@ const useStyles = makeStyles({
     fontSize: '0.7em !important',
     color: `${theme.palette.tertiary} !important`,
     textShadow:
-    '#fff -2px 0 1px, #fff 0 -2px 1px, #fff 0 2px 1px, #fff 2px 0 1px !important',
+      '#fff -2px 0 1px, #fff 0 -2px 1px, #fff 0 2px 1px, #fff 2px 0 1px !important',
     '&:disabled span': {
       filter: 'blur(2px)',
       color: 'rgba(0, 0, 0, 0.5)',
@@ -153,30 +155,132 @@ const useStyles = makeStyles({
     background: '#e9e9e9',
     borderRadius: '5px',
     transition: 'all ease-in-out 200ms',
+    opacity: 0,
     '&:hover': {
       background: `${theme.palette.primary}`,
       color: `${theme.palette.secondary}`,
     },
   }),
+  animate_sideshift: ({ success }: StyleProps) => ({
+    animation: success
+      ? 'button-slide-out 0.4s ease-in-out forwards'
+      : 'button-slide 0.6s ease-in-out forwards',
+    animationDelay: success ? '0' : '0.5s',
+  }),
+  hide_sideshift: {
+    display: 'none',
+  },
   editAmount: {
     width: '100%',
     margin: '12px auto 10px',
     display: 'flex',
     alignItems: 'flex-end',
     '& > div': {
-     width: '100%',
+      width: '100%',
     },
     '& span': {
       marginLeft: '4px',
       fontSize: '16px',
-    }
+    },
   },
   error: () => ({
     fontSize: '0.9rem !important',
     color: '#EB3B3B !important',
   }),
+  '@global': {
+    '@keyframes reveal-qr': {
+      from: { clipPath: 'circle(0% at 50% 50%)', transform: 'rotate(-10deg)' },
+      to: { clipPath: 'circle(100% at 50% 50%)', transform: 'rotate(0deg)' },
+    },
+    '@keyframes fade-scale': {
+      from: {
+        opacity: 0,
+        transform: 'scale(0.3)',
+      },
+      '80%': {
+        opacity: 1,
+        transform: 'scale(1.3)',
+      },
+      to: {
+        opacity: 1,
+        transform: 'scale(1)',
+      },
+    },
+    '@keyframes button-slide': {
+      from: {
+        opacity: 0,
+        transform: 'translateY(20px)',
+      },
+      to: {
+        opacity: 1,
+        transform: 'translateY(0px)',
+      },
+    },
+    '@keyframes button-slide-out': {
+      from: {
+        opacity: 1,
+        transform: 'translateY(0px)',
+      },
+      to: {
+        opacity: 0,
+        transform: 'translateY(20px)',
+      },
+    },
+    '@keyframes copy-qr': {
+      '0%': { transform: 'scale(1)' },
+      '50%': { transform: 'scale(1.1)' },
+      '100%': { transform: 'scale(1)' },
+    },
+    '@keyframes copy-svg': {
+      '0%': { opacity: 1 },
+      '50%': { opacity: 0 },
+      '100%': { opacity: 1 },
+    },
+    '@keyframes copy-icon': {
+      '0%': { transform: 'scale(1)' },
+      '50%': { transform: 'scale(0.7)' },
+      '100%': { transform: 'scale(1)' },
+    },
+    '@keyframes success-qr': {
+      '0%': { transform: 'scale(1)' },
+      '50%': { transform: 'scale(0.7)' },
+      '100%': { transform: 'scale(1)' },
+    },
+    '@keyframes success-icon': {
+      '0%': { transform: 'rotate(0deg)' },
+      '20%': { transform: 'rotate(-10deg)' },
+      '60%': { transform: 'rotate(370deg)' },
+      '100%': { transform: 'rotate(360deg)' },
+    },
+  },
+  qrAnimations: ({ success, loading, recentlyCopied, copied }: StyleProps) => ({
+    animation: success
+      ? 'success-qr 0.4s ease-in-out forwards'
+      : recentlyCopied
+      ? 'copy-qr 0.3s ease-in-out forwards'
+      : !loading && !copied
+      ? 'reveal-qr 0.8s ease-in-out forwards'
+      : 'none',
+    '& svg': {
+      animation: recentlyCopied ? 'copy-svg 0.3s ease-in-out forwards' : 'none',
+    },
+    '& image': {
+      animation: success
+        ? 'success-icon 1s ease-in-out forwards'
+        : recentlyCopied
+        ? 'copy-icon 0.3s ease-in-out forwards'
+        : !loading && !copied
+        ? 'fade-scale 0.6s ease-in-out forwards'
+        : 'none',
+      transformOrigin: 'center center',
+    },
+  }),
+  button_container: {
+    opacity: 0,
+    animation: 'button-slide 0.6s ease-in-out forwards',
+    animationDelay: '0.4s',
+  },
 });
-
 
 export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const {
@@ -240,7 +344,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const [isAboveMinimumAltpaymentUSDAmount, setIsAboveMinimumAltpaymentUSDAmount] = useState<boolean | null>(null);
 
   const theme = useTheme(props.theme, isValidXecAddress(to));
-  const classes = useStyles({ success, loading, theme });
+  const classes = useStyles({ success, loading, theme, recentlyCopied, copied });
 
   const [thisAmount, setThisAmount] = useState(props.amount);
   const [hasPrice, setHasPrice] = useState(props.price !== undefined && props.price > 0);
@@ -523,13 +627,8 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     if (addressType === 'XEC') {
       const hasExtension = getCashtabProviderStatus();
       if (!hasExtension) {
-        const isMobile = window.matchMedia('(pointer:coarse)').matches;
-        if (isMobile) {
-          const webUrl = `https://cashtab.com/#/send?bip21=${url}`;
-          window.open(webUrl, '_blank');
-        } else {
-          window.location.href = url;
-        }
+        const webUrl = `https://cashtab.com/#/send?bip21=${url}`;
+        window.open(webUrl, '_blank');
       } else {
         return window.postMessage(
           {
@@ -589,10 +688,12 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   };
 
   const qrCode = (
-    <QRCode
-      {...qrCodeProps}
-      style={{ flex: 1, width: '100%', height: 'auto', ...blurCSS }}
-    />
+    <div className={classes.qrAnimations}>
+      <QRCode
+        {...qrCodeProps}
+        style={{ flex: 1, width: '100%', height: 'auto', ...blurCSS }}
+      />
+    </div>
   );
 
   let cleanGoalAmount: any;
@@ -775,7 +876,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
               )}
 
               {success || (
-                <Box pt={2} flex={1}>
+                <Box pt={2} flex={1} className={classes.button_container}>
                   <ButtonComponent
                     text={widgetButtonText}
                     hoverText={hoverText}
@@ -788,12 +889,9 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
               {!isPropsTrue(disableAltpayment) && (
                 <Typography
                   component="div"
-                  className={classes.sideShiftLink}
+                  className={`${classes.sideShiftLink} ${isAboveMinimumAltpaymentUSDAmount || altpaymentEditable ? classes.animate_sideshift : classes.hide_sideshift}`}
                   onClick={isAboveMinimumAltpaymentUSDAmount || altpaymentEditable ? tradeWithAltpayment : undefined}
-                  style={{
-                    opacity: isAboveMinimumAltpaymentUSDAmount || altpaymentEditable ? 1 : 0,
-                    cursor: isAboveMinimumAltpaymentUSDAmount || altpaymentEditable ? 'pointer' : 'default'
-                  }}
+                  style={{cursor: isAboveMinimumAltpaymentUSDAmount || altpaymentEditable ? 'pointer' : 'default'}}
                 >
                   Don't have any {addressType}?
                 </Typography>
