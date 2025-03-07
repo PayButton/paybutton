@@ -1046,7 +1046,7 @@ docker-compose up
 
 ## OpReturn
 
-OP_RETURN is a [script](https://wiki.bitcoinsv.io/index.php/OP_RETURN) opcode that allows adding extra information to transactions beyond standard inputs and outputs. This can be useful for applications that want to include:
+OP_RETURN is a [script opcode](https://wiki.bitcoinsv.io/index.php/OP_RETURN) that allows adding extra information to transactions beyond standard inputs and outputs. This can be useful for applications that want to include:
 
 * Different transaction types related to events (e.g., gaming);
 
@@ -1054,36 +1054,43 @@ OP_RETURN is a [script](https://wiki.bitcoinsv.io/index.php/OP_RETURN) opcode th
 
 * Nonces to differentiate payments of the same amount;
 
-* Other use cases.
-
-### General Syntax Rules:
-
-OpReturn is composed by three mandatory components:
-
-1.  **Version**: A byte allowing future updates (currently always `0`).
-
-2.  **Data Payload**: Custom information in UTF-8 format with the indicated size (can be empty).
-
-3.  **Nonce**: Eight random bytes to differentiate payments (can be empty).
-
-If the **data payload** or **nonce** is empty, it is represented by the `OP_0` [code](https://wiki.bitcoinsv.io/index.php/Opcodes_used_in_Bitcoin_Script).
-
+* Other data.
 
 ### General OpReturn structure
 
-    <OP_RETURN hex> <pushdata for protocol identifier> <protocol identifier> <version> <data> <nonce>
+    <OP_RETURN opcode> <pushdata for protocol identifier> <protocol identifier> <version> <pushdata for data payload> <data payload> <pushdata for nonce> <nonce>
+
+### General Syntax Rules:
+
+The data following the OP_RETURN is composed by (n) mandatory components:
+
+1. **OP_RETURN opcode**: 6a
+
+2. Pushdata that will indicate the size of the protocol identifier (in bytes)
+
+3. **Protocol identifier**: `50415900` for Paybutton (ASCII `PAY` + `0x00`)
+
+4. **Version**: A byte allowing future updates (currently `0`).
+
+5. Pushdata that will indicate the size of data payload identifier (in bytes)
+
+6.  **Data Payload**: Custom information in UTF-8 format with the indicated size (can be empty).
+
+7. Pushdata that will indicate the size of nonce identifier (in bytes)
+
+8.  **Nonce**: Eight random bytes to differentiate payments (can be empty).
+
+If the **data payload** or **nonce** is empty, the pushdata of each will be 00 
+
 
   
-### How send data using OP_RETURN opcode in Paybutton
+### How to send data using OP_RETURN opcode in Paybutton
 
-To send data using the OP_RETURN opcode in Paybutton, you can use the `opReturn` prop. The content of the `OpReturn` prop will be encoded and will correspond to the **data payload**, mentioned above. Additionally, you may use the **payment ID** as a nonce. To disable sending the payment ID, use the `disablePaymentID` prop—Paybutton will automatically encode the message according to the rules specified bellow.
+To send data using the OP_RETURN opcode in Paybutton, you can use the `opReturn` prop. The content of the `opReturn` prop will be encoded and will correspond to the **data payload**, mentioned above. Additionally, you may use the **payment ID** as a nonce. To disable sending the payment ID, use the `disablePaymentID` prop — Paybutton will automatically encode the message according to the rules specified bellow.
 
 
 ### Paybutton OpReturn encode examples:
 
-    6a <pushdata for protocol identifier> 50415900 <version> <data> <paymentId>
-
-  
 
 #### 1. OpReturn message with 12 bytes of data and no nonce
   
@@ -1096,19 +1103,19 @@ Breaking this down:
 
   
 
--  `6a` → OP_RETURN hex
+-  `6a` → OP_RETURN opcode
 
--  `04` → 4 bytes hex value indicating size of data protocol identifier
+-  `04` → Pushdata indicating the size (in bytes) of the data protocol identifier
 
 -  `50415900` → PayButton identifier (ASCII `PAY` + `0x00`)
 
--  `00` → Version 0 pushed as `OP_0`
+-  `00` → Version 0
 
--  `0c` → Hex value indicating 12 bytes of data
+-  `0c` → Pushdata for the data payload, indicating 12 bytes of data.
 
 -  `0102030405060708090a0b0c` → Data payload
 
--  `00` → No payment ID (nonce)
+-  `00` → Pushdata for payment ID (nonce), indicating there will be none.
 
   
 
@@ -1118,19 +1125,19 @@ Breaking this down:
 
 
 
--  `6a` → OP_RETURN hex
+-  `6a` → OP_RETURN opcode
 
--  `04` → 4 bytes hex value indicating size of data protocol identifier `50415900`
+-  `04` → Pushdata indicating the size (in bytes) of the data protocol identifier `50415900`
 
 -  `50415900` → PayButton identifier (ASCII `PAY` + `0x00`)
 
 -  `00` → Version 0
 
--  `0c` → Hex indicating 12 bytes of data
+-  `0c` → Pushdata for the data payload, indicating 12 bytes of data.
 
 -  `0102030405060708090a0b0c` → Data payload
 
--  `00` → No payment ID (nonce)
+-  `00` → Pushdata for payment ID (nonce), indicating there will be none.
 
   
 
@@ -1139,9 +1146,9 @@ Breaking this down:
     6a04504159000000080102030405060708
   
 
--  `6a` → OP_RETURN hex
+-  `6a` → OP_RETURN opcode
 
--  `04` → 4 bytes hex value indicating size of data protocol identifier `50415900`
+-  `04` → Pushdata indicating the size (in bytes) of the data protocol identifier `50415900`
 
 -  `50415900` → PayButton identifier (ASCII `PAY` + `0x00`)
 
@@ -1157,17 +1164,17 @@ Breaking this down:
 
     6a0450415900000000
 
--  `6a` → OP_RETURN hex
+-  `6a` → OP_RETURN opcode
 
--  `04` → 4 bytes hex value indicating size of data protocol identifier `50415900`
+-  `04` → Pushdata indicating the size (in bytes) of the data protocol identifier `50415900`
 
 -  `50415900` → PayButton identifier (ASCII `PAY` + `0x00`)
 
 -  `00` → Version 0
 
--  `00` → No data payload
+-  `00` → Pushdata for data payload, indicating there will be none.
 
--  `00` → No payment ID (nonce)
+-  `00` → Pushdata for payment ID (nonce), indicating there will be none.
 
   
 
