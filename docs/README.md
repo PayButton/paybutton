@@ -1068,17 +1068,17 @@ The data is composed by the following hex-encoded mandatory components:
 
 1. **OP_RETURN opcode**: `6a`.
 
-2. Pushdata indicating the size of the protocol identifier (in bytes).
+2. Pushdata indicating the size (in bytes) of the protocol identifier. Always 4 (`04` in hex) in the case of the PayButton protocol
 
 3. **Protocol identifier**: `50415900` for PayButton (ASCII `PAY` + `0x00`).
 
 4. **Version**: A byte allowing future updates (currently `00`).
 
-5. Pushdata indicating the size of data payload identifier (in bytes).
+5. Pushdata indicating the size (in bytes) of data payload identifier.
 
 6.  **Data Payload**: Custom information in UTF-8 format with the indicated size (can be empty).
 
-7. Pushdata indicating the size of nonce identifier (in bytes).
+7. Pushdata indicating (in bytes) the size of nonce identifier.
 
 8.  **Nonce**: Eight random bytes to differentiate payments (can be empty).
 
@@ -1088,7 +1088,7 @@ If the **data payload** or **nonce** is empty, the pushdata of each will be `00`
   
 ### How to send data using the OP_RETURN opcode in PayButton
 
-To send data using the OP_RETURN opcode in PayButton, you can use the `opReturn` prop. The content of the `opReturn` prop will be encoded and will correspond to the **data payload**, mentioned above. Additionally, you may use the **payment ID** as a nonce. To disable sending the payment ID, use the `disablePaymentID` prop — PayButton will automatically encoding the message according to the rules specified bellow.
+To send data using the OP_RETURN opcode in PayButton, you can use the `opReturn` prop. The content of the `opReturn` prop will be encoded and will correspond to the **data payload**, mentioned above. Additionally, you may use the **payment ID** as a nonce. To disable sending the payment ID, use the `disablePaymentID` prop — PayButton will automatically encode the message according to the rules specified bellow.
 
 
 ### PayButton OpReturn encoding examples:
@@ -1107,7 +1107,7 @@ Breaking this down:
 
 -  `6a` → OP_RETURN opcode
 
--  `04` → Pushdata indicating the size (in bytes) of the protocol identifier. Always 4 (`04` in hex) in the case of the PayButton protocol
+-  `04` → Pushdata indicating the size (in bytes) of the protocol identifier.
 
 -  `50415900` → PayButton identifier (ASCII `PAY` + `0x00`)
 
@@ -1129,7 +1129,7 @@ Breaking this down:
 
 -  `6a` → OP_RETURN opcode
 
--  `04` → Pushdata indicating the size (in bytes) of the protocol identifier. Always 4 (`04` in hex) in the case of the PayButton protocol
+-  `04` → Pushdata indicating the size (in bytes) of the protocol identifier.
 
 -  `50415900` → PayButton identifier (ASCII `PAY` + `0x00`)
 
@@ -1150,7 +1150,7 @@ Breaking this down:
 
 -  `6a` → OP_RETURN opcode
 
--  `04` → Pushdata indicating the size (in bytes) of the protocol identifier. Always 4 (`04` in hex) in the case of the PayButton protocol
+-  `04` → Pushdata indicating the size (in bytes) of the protocol identifier.
 
 -  `50415900` → PayButton identifier (ASCII `PAY` + `0x00`)
 
@@ -1168,7 +1168,7 @@ Breaking this down:
 
 -  `6a` → OP_RETURN opcode
 
--  `04` → Pushdata indicating the size (in bytes) of the protocol identifier. Always 4 (`04` in hex) in the case of the PayButton protocol
+-  `04` → Pushdata indicating the size (in bytes) of the protocol identifier.
 
 -  `50415900` → PayButton identifier (ASCII `PAY` + `0x00`)
 
