@@ -1048,7 +1048,7 @@ docker-compose up
 
 OP_RETURN is a [script opcode](https://wiki.bitcoinsv.io/index.php/OP_RETURN) that allows adding extra information to transactions beyond standard inputs and outputs. This can be useful for applications that want to include:
 
-* Different transaction types related to events;
+* Different transaction types related to gameplay events;
 
 * Invoice numbers;
 
@@ -1068,7 +1068,7 @@ The data is composed by the following hex-encoded mandatory components:
 
 1. **OP_RETURN opcode**: `6a`.
 
-2. Pushdata indicating the size (in bytes) of the protocol identifier. Always 4 (`04` in hex) in the case of the PayButton protocol
+2. Pushdata indicating the size (in bytes) of the protocol identifier. Always 4 (`04` in hex) in the case of the PayButton protocol.
 
 3. **Protocol identifier**: `50415900` for PayButton (ASCII `PAY` + `0x00`).
 
@@ -1088,7 +1088,7 @@ If the **data payload** or **nonce** is empty, the pushdata of each will be `00`
   
 ### How to send data using the OP_RETURN opcode in PayButton
 
-To send data using the OP_RETURN opcode in PayButton, you can use the `opReturn` prop. The content of the `opReturn` prop will be encoded and will correspond to the **data payload**, mentioned above. Additionally, you may use the **payment ID** as a nonce. To disable sending the payment ID, use the `disablePaymentID` prop — PayButton will automatically encode the message according to the rules specified bellow.
+To send data using the OP_RETURN opcode in PayButton, you can use the `op-return` prop. The content of the `op-return` prop will be encoded and will correspond to the **data payload**, mentioned above. Additionally, you may use the **payment ID** as a nonce. To disable sending the **payment ID**, use the `disable-payment-id` prop — PayButton will automatically encode the message according to the rules specified bellow.
 
 
 ### PayButton OpReturn encoding examples:
@@ -1107,7 +1107,7 @@ Breaking this down:
 
 -  `6a` → OP_RETURN opcode
 
--  `04` → Pushdata indicating the size (in bytes) of the protocol identifier.
+-  `04` → Pushdata indicating the size (in bytes) of the protocol identifier
 
 -  `50415900` → PayButton identifier (ASCII `PAY` + `0x00`)
 
@@ -1129,7 +1129,7 @@ Breaking this down:
 
 -  `6a` → OP_RETURN opcode
 
--  `04` → Pushdata indicating the size (in bytes) of the protocol identifier.
+-  `04` → Pushdata indicating the size (in bytes) of the protocol identifier
 
 -  `50415900` → PayButton identifier (ASCII `PAY` + `0x00`)
 
@@ -1150,7 +1150,7 @@ Breaking this down:
 
 -  `6a` → OP_RETURN opcode
 
--  `04` → Pushdata indicating the size (in bytes) of the protocol identifier.
+-  `04` → Pushdata indicating the size (in bytes) of the protocol identifier
 
 -  `50415900` → PayButton identifier (ASCII `PAY` + `0x00`)
 
@@ -1168,7 +1168,7 @@ Breaking this down:
 
 -  `6a` → OP_RETURN opcode
 
--  `04` → Pushdata indicating the size (in bytes) of the protocol identifier.
+-  `04` → Pushdata indicating the size (in bytes) of the protocol identifier
 
 -  `50415900` → PayButton identifier (ASCII `PAY` + `0x00`)
 
