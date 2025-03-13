@@ -1107,13 +1107,13 @@ Breaking this down:
 
 -  `6a` → OP_RETURN opcode
 
--  `04` → Pushdata indicating the size (in bytes) of the protocol identifier
+-  `04` → Pushdata indicating the size of the protocol identifier
 
 -  `50415900` → PayButton identifier (ASCII `PAY` + `0x00`)
 
 -  `00` → Version 0
 
--  `0c` → Pushdata indicating the size (in bytes) of data payload identifier
+-  `0c` → Pushdata indicating the size of data payload identifier
 
 -  `0102030405060708090a0b0c` → Data payload
 
@@ -1129,28 +1129,30 @@ Breaking this down:
 
 -  `6a` → OP_RETURN opcode
 
--  `04` → Pushdata indicating the size (in bytes) of the protocol identifier
+-  `04` → Pushdata indicating the size of the protocol identifier
 
 -  `50415900` → PayButton identifier (ASCII `PAY` + `0x00`)
 
 -  `00` → Version 0
 
--  `0c` → Pushdata indicating the size (in bytes) of data payload identifier
+-  `0c` → Pushdata indicating the size of data payload identifier
 
 -  `0102030405060708090a0b0c` → Data payload
 
--  `00` → Pushdata for payment ID (nonce), indicating there will be none
+-  `08` → 8-byte value indicating that this transaction has an 8-byte payment ID
+
+-  `0102030405060708` → payment ID
 
   
 
-#### 2. OpReturn message with no data but an 8-byte payment ID (nonce)
+#### 3. OpReturn message with no data but an 8-byte payment ID (nonce)
 
     6a04504159000000080102030405060708
   
 
 -  `6a` → OP_RETURN opcode
 
--  `04` → Pushdata indicating the size (in bytes) of the protocol identifier
+-  `04` → Pushdata indicating the size of the protocol identifier
 
 -  `50415900` → PayButton identifier (ASCII `PAY` + `0x00`)
 
@@ -1158,17 +1160,17 @@ Breaking this down:
 
 -  `00` → No data payload
 
--  `08` → 8-byte value indicating that this transaction has an 8-byte payment ID (nonce)
+-  `08` → 8-byte value indicating that this transaction has an 8-byte payment ID
 
--  `0102030405060708` → payment ID (nonce)
+-  `0102030405060708` → payment ID
 
-### 4. Transaction with no data and no payment ID (nonce)
+#### 4. Transaction with no data and no payment ID
 
     6a0450415900000000
 
 -  `6a` → OP_RETURN opcode
 
--  `04` → Pushdata indicating the size (in bytes) of the protocol identifier
+-  `04` → Pushdata indicating the size of the protocol identifier
 
 -  `50415900` → PayButton identifier (ASCII `PAY` + `0x00`)
 
@@ -1176,7 +1178,7 @@ Breaking this down:
 
 -  `00` → Pushdata for data payload, indicating there will be none
 
--  `00` → Pushdata for payment ID (nonce), indicating there will be none
+-  `00` → Pushdata for payment ID, indicating there will be none
 
   
 
