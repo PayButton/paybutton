@@ -1048,7 +1048,7 @@ docker-compose up
 
 OP_RETURN is a [script opcode](https://wiki.bitcoinsv.io/index.php/OP_RETURN) that allows adding extra information to transactions beyond standard inputs and outputs. This can be useful for applications that want to include:
 
-* Different transaction types related to gameplay events;
+* Different transaction categories related e.g. to gameplay events;
 
 * Invoice numbers;
 
@@ -1064,7 +1064,7 @@ Hex-encoded bytes representing:
 
 ### General Syntax Rules:
 
-The data is composed by the following hex-encoded mandatory components:
+The data is composed by the following hex-encoded components:
 
 1. **OP_RETURN opcode**: `6a`.
 
@@ -1078,11 +1078,11 @@ The data is composed by the following hex-encoded mandatory components:
 
 6.  **Data Payload**: Custom information in UTF-8 format with the indicated size (can be empty).
 
-7. Pushdata indicating (in bytes) the size of nonce identifier.
+7. Pushdata indicating the size (in bytes) of nonce identifier.
 
 8.  **Nonce**: Eight random bytes to differentiate payments (can be empty).
 
-If the **data payload** or **nonce** is empty, the pushdata of each will be `00`.
+If the **data payload** or **nonce** is empty, the pushdata for each will be `00`.
 
 
   
