@@ -1039,6 +1039,135 @@ docker-compose up
 
 
 
+## OpReturn
+
+OP_RETURN 是一[script opcode](https://wiki.bitcoinsv.io/index.php/OP_RETURN)，允許在交易中添加額外資訊，超出標準的輸入和輸出範圍。這對於希望包含以下內容的應用程式來說可能很有用：
+
+與事件相關的不同交易類型（例如，遊戲）；
+
+發票號碼；
+
+用於區分相同金額支付的隨機數（Nonce）；
+
+其他數據。
+
+### 一般 OpReturn 結構
+
+    <OP_RETURN 操作碼><協議標識符的 pushdata><協議標識符><版本><數據負載的 pushdata><數據負載><隨機數的 pushdata><隨機數>
+
+### 一般語法規則：
+
+該數據由以下十六進制編碼的組件組成：
+
+1. **OP_RETURN opcode**: `6a`.
+
+2. Pushdata 指示協議標識符的大小（以位元組為單位）。在 PayButton 協議的情況下，始終為 4（十六進制為 04）。
+
+3. **協議標識符**: `50415900` 代表 PayButton (ASCII `PAY` + `0x00`).
+
+4. **版本**: 一個位元組，用於允許未來更新（目前為 `00`）。
+
+5. Pushdata 指示數據有效載荷標識符的大小（以位元組為單位）。
+
+6.  **數據有效負載**: 以 UTF-8 格式編碼的自定義信息，具有指示的大小（可以為空）。
+
+7. Pushdata 指示隨機數標識符的大小（以位元組為單位）。
+
+8.  **隨機數**: 八個隨機位元組，用於區分支付（可以為空）。
+
+如果 **數據有效載荷** 或 **隨機數** 為空，則每個的 Pushdata 為 00
+
+
+  
+### 如何使用 OP_RETURN opcode 在 PayButton 中發送數據
+
+要在 PayButton 中使用 OP_RETURN opcode 發送數據，您可以使用 op-return 屬性。 op-return 屬性的內容將被編碼，並將對應於上述提到的 **數據有效載荷**。 此外，您可以使用 payment ID 作為隨機數。 要禁用發送 payment ID，請使用 disable-payment-id 屬性—PayButton 將根據下面指定的規則自動編碼消息。
+
+
+### PayButton OpReturn 編碼範例：
+
+
+#### 1. 帶有 12 位元組數據且無隨機數的 OpReturn 消息
+  
+
+    6a0450415900000c0102030405060708090a0b0c00
+  
+
+-  `6a` → OP_RETURN opcode
+
+-  `04` → Pushdata 指示協議標識符的大小
+
+-  `50415900` → PayButton 標識符 (ASCII `PAY` + `0x00`)
+
+-  `00` → 版本 0
+
+-  `0c` → Pushdata 指示數據有效載荷標識符的大小
+
+-  `0102030405060708090a0b0c` → 數據有效載荷
+
+-  `00` → 支付 ID（隨機數）的 Pushdata，指示將不會有隨機數
+
+  
+
+#### 2. OpReturn message with 12 bytes of data and an 8-byte nonce
+
+    6a0450415900000c0102030405060708090a0b0c080102030405060708
+
+
+
+-  `6a` → OP_RETURN opcode
+
+-  `04` → Pushdata 指示協議標識符的大小
+
+-  `50415900` → PayButton 標識符 (ASCII `PAY` + `0x00`)
+
+-  `00` → 版本 0
+
+-  `0c` → Pushdata 指示數據有效載荷標識符的大小
+
+-  `0102030405060708090a0b0c` → 數據有效載荷
+
+-  `08` → 8 位元組數值，表示此交易具有 8 位元組的支付 ID
+
+-  `0102030405060708` → 付款ID
+  
+
+#### 3. OpReturn message with no data but an 8-byte payment ID (nonce)
+
+    6a04504159000000080102030405060708
+  
+
+-  `6a` → OP_RETURN opcode
+
+-  `04` → Pushdata 指示協議標識符的大小
+
+-  `50415900` → PayButton 標識符 (ASCII `PAY` + `0x00`)
+
+-  `00` → 版本 0
+
+-  `00` → 無數據有效載荷
+
+-  `08` → 8 位元組數值，表示此交易具有 8 位元組的支付 ID
+
+-  `0102030405060708` → 付款ID
+
+#### 4. Transaction with no data and no payment ID
+
+    6a0450415900000000
+
+-  `6a` → OP_RETURN opcode
+
+-  `04` → Pushdata 指示協議標識符的大小
+
+-  `50415900` → PayButton 標識符 (ASCII `PAY` + `0x00`)
+
+-  `00` → 版本 0
+
+-  `00` → 無數據有效載荷
+
+-  `00` → 支付 ID（隨機數）的 Pushdata，指示將不會有隨機數
+
+
 ## 捐款
 
 > 所有收到的PayButton捐款都直接用於資助PayButton的開發。
