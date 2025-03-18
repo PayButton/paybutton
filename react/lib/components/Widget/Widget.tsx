@@ -34,7 +34,8 @@ import {
   altpaymentListener,
   CURRENCY_PREFIXES_MAP,
   CRYPTO_CURRENCIES,
-  isPropsTrue
+  isPropsTrue,
+  getAddressPrefixed
 } from '../../util';
 import AltpaymentWidget from './AltpaymentWidget';
 import { AltpaymentPair, AltpaymentShift, AltpaymentError, AltpaymentCoin, MINIMUM_ALTPAYMENT_DOLLAR_AMOUNT } from '../../altpayment';
@@ -413,7 +414,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       }
       const newSocket = io(`${wsBaseUrl ?? config.wsBaseUrl}/addresses`, {
         forceNew: true,
-        query: { addresses: [to], dummy: 'hehe' },
+        query: { addresses: [getAddressPrefixed(to)] },
       });
       setSocket(newSocket);
       txsListener(newSocket, setNewTxs);
