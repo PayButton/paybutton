@@ -15,6 +15,7 @@
   - [theme](/?id=theme)
   - [animation](/?id=animation)
   - [success-text](/?id=success-text)
+  - [transaction-text](/?id=transaction-text)
   - [on-success](/?id=on-success)
   - [on-transaction](/?id=on-transaction)
   - [on-open](/?id=on-open)
