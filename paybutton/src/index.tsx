@@ -101,7 +101,8 @@ const allowedProps = [
   'apiBaseUrl',
   'disableAltpayment',
   'contributionOffset',
-  'autoClose'
+  'autoClose',
+  'transactionText',
 ];
 
 const requiredProps = [

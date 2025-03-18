@@ -46,6 +46,7 @@ export interface WidgetContainerProps
   successText?: string;
   disableAltpayment?: boolean
   contributionOffset?: number
+  transactionText?: string
 }
 
 const snackbarOptions: OptionsObject = {
@@ -106,6 +107,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
       hoverText,
       disableAltpayment,
       contributionOffset,
+      transactionText,
       ...widgetProps
     } = props;
 
@@ -127,6 +129,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
     const [useAltpayment, setUseAltpayment] = useState(false);
     const [altpaymentShift, setAltpaymentShift] = useState<AltpaymentShift | undefined>();
     const [shiftCompleted, setShiftCompleted] = useState(false);
+    const [newTxText, setNewTxText] = useState('');
 
     const paymentClient = getAltpaymentClient()
 
@@ -189,6 +192,13 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
             }, 3000);
           } else {
             onTransaction?.(transaction);
+            if (transactionText){
+              setNewTxText(transactionText)
+              setTimeout(() => {
+                setNewTxText('')
+              }, 10000)
+            }
+            
           }
         }
         setNewTxs([]);
@@ -283,6 +293,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
           setShiftCompleted={setShiftCompleted}
           disableAltpayment={disableAltpayment}
           contributionOffset={contributionOffset}
+          newTxText={newTxText}
         />
       </React.Fragment>
     );
