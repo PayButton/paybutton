@@ -77,7 +77,8 @@ export interface WidgetProps {
   shiftCompleted: boolean
   setShiftCompleted: Function;
   disableAltpayment?: boolean;
-  contributionOffset?: number
+  contributionOffset?: number;
+  newTxText?: string;
 }
 
 interface StyleProps {
@@ -309,7 +310,8 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     shiftCompleted,
     setShiftCompleted,
     disableAltpayment,
-    contributionOffset
+    contributionOffset,
+    newTxText
   } = Object.assign({}, Widget.defaultProps, props);
 
   const [loading, setLoading] = useState(true);
@@ -743,6 +745,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
               if (disabled) return 'Not yet ready for payment';
               if (loading) return 'Loading...';
               if (success) return successText;
+              if (newTxText) return newTxText;       
               return text;
             })()}
         </Typography>

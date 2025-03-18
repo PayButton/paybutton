@@ -36,6 +36,7 @@ export interface PaymentDialogProps extends ButtonProps {
   apiBaseUrl?: string;
   disableAltpayment?: boolean;
   contributionOffset?:number;
+  transactionText?: string
 }
 
 export const PaymentDialog = (
@@ -72,7 +73,8 @@ export const PaymentDialog = (
     apiBaseUrl,
     hoverText,
     disableAltpayment,
-    contributionOffset
+    contributionOffset,
+    transactionText,
   } = Object.assign({}, PaymentDialog.defaultProps, props);
 
   const handleWidgetClose = (): void => {
@@ -146,6 +148,7 @@ export const PaymentDialog = (
           hoverText={hoverText}
           disableAltpayment={disableAltpayment}
           contributionOffset={contributionOffset}
+          transactionText={transactionText}
           foot={success && (
             <ButtonComponent
               onClick={handleWidgetClose}
