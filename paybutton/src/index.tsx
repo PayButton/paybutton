@@ -100,7 +100,8 @@ const allowedProps = [
   'wsBaseUrl',
   'apiBaseUrl',
   'disableAltpayment',
-  'contributionOffset'
+  'contributionOffset',
+  'transactionText',
 ];
 
 const requiredProps = [
