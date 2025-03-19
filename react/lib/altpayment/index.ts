@@ -3,6 +3,8 @@ import { SideshiftClient, SideshiftCoin, SideshiftError, SideshiftPair, Sideshif
 import config from '../../../paybutton-config.json'
 
 export const MINIMUM_ALTPAYMENT_DOLLAR_AMOUNT = 10
+export const MINIMUM_ALTPAYMENT_CAD_AMOUNT = 15
+
 
 export const SOCKET_MESSAGES = {
   GET_ALTPAYMENT_RATE: 'get-altpayment-rate',
