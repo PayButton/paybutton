@@ -479,12 +479,12 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       const usdAmount = usdPrice * +thisAmount
       setIsAboveMinimumAltpaymentAmount(usdAmount >= MINIMUM_ALTPAYMENT_DOLLAR_AMOUNT)
     } else if (currency === 'USD'){
-      if (thisAmount && +thisAmount > MINIMUM_ALTPAYMENT_DOLLAR_AMOUNT){
+      if (thisAmount && +thisAmount >= MINIMUM_ALTPAYMENT_DOLLAR_AMOUNT){
         setIsAboveMinimumAltpaymentAmount(true)
       }
 
     } else if (currency === 'CAD'){
-      if (thisAmount && +thisAmount > MINIMUM_ALTPAYMENT_CAD_AMOUNT){
+      if (thisAmount && +thisAmount >= MINIMUM_ALTPAYMENT_CAD_AMOUNT){
         setIsAboveMinimumAltpaymentAmount(true)
       }
 
