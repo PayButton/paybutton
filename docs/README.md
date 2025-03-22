@@ -1076,7 +1076,7 @@ The data is composed by the following hex-encoded components:
 
 5. Pushdata indicating the size (in bytes) of data payload identifier.
 
-6.  **Data Payload**: Custom information in UTF-8 format with the indicated size (can be empty).
+6.  **Data Payload**: Custom information in UTF-8 format. The maximum size is 213 bytes (UTF-8 encoded) if there is no **payment ID** (nonce). If a **payment ID** is present, the limit is 205 bytes, as the **payment ID** occupies 8 bytes. Can be empty.
 
 7. Pushdata indicating the size (in bytes) of nonce identifier.
 
@@ -1139,9 +1139,9 @@ Breaking this down:
 
 -  `0102030405060708090a0b0c` → Data payload
 
--  `08` → 8-byte value indicating that this transaction has an 8-byte payment ID
+-  `08` → Pushdata indicating that this transaction has an 8-byte payment ID
 
--  `0102030405060708` → payment ID
+-  `0102030405060708` → Payment ID
 
   
 
@@ -1160,9 +1160,9 @@ Breaking this down:
 
 -  `00` → No data payload
 
--  `08` → 8-byte value indicating that this transaction has an 8-byte payment ID
+-  `08` → Pushdata indicating that this transaction has an 8-byte payment ID
 
--  `0102030405060708` → payment ID
+-  `0102030405060708` → Payment ID
 
 #### 4. Transaction with no data and no payment ID
 

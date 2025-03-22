@@ -1069,8 +1069,7 @@ OP_RETURN 是一[script opcode](https://wiki.bitcoinsv.io/index.php/OP_RETURN)�
 
 5. Pushdata 指示數據有效載荷標識符的大小（以位元組為單位）。
 
-6.  **數據有效負載**: 以 UTF-8 格式編碼的自定義信息，具有指示的大小（可以為空）。
-
+6.  **數據有效負載**: 自訂資訊採用 UTF-8 編碼格式。若無 payment ID（nonce），最大大小為 213 字節（UTF-8 編碼）。若包含 payment ID，則限制為 205 字節，因為 payment ID 佔用 8 字節。（可為空）。
 7. Pushdata 指示隨機數標識符的大小（以位元組為單位）。
 
 8.  **隨機數**: 八個隨機位元組，用於區分支付（可以為空）。
@@ -1127,7 +1126,7 @@ OP_RETURN 是一[script opcode](https://wiki.bitcoinsv.io/index.php/OP_RETURN)�
 
 -  `0102030405060708090a0b0c` → 數據有效載荷
 
--  `08` → 8 位元組數值，表示此交易具有 8 位元組的支付 ID
+-  `08` → Pushdata 指示此交易具有 8 位元組的 payment ID
 
 -  `0102030405060708` → 付款ID
   
@@ -1147,7 +1146,7 @@ OP_RETURN 是一[script opcode](https://wiki.bitcoinsv.io/index.php/OP_RETURN)�
 
 -  `00` → 無數據有效載荷
 
--  `08` → 8 位元組數值，表示此交易具有 8 位元組的支付 ID
+-  `08` → Pushdata 指示此交易具有 8 位元組的 payment ID
 
 -  `0102030405060708` → 付款ID
 
