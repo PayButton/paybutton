@@ -38,7 +38,7 @@ import {
   getAddressPrefixed
 } from '../../util';
 import AltpaymentWidget from './AltpaymentWidget';
-import { AltpaymentPair, AltpaymentShift, AltpaymentError, AltpaymentCoin, MINIMUM_ALTPAYMENT_DOLLAR_AMOUNT } from '../../altpayment';
+import { AltpaymentPair, AltpaymentShift, AltpaymentError, AltpaymentCoin, MINIMUM_ALTPAYMENT_DOLLAR_AMOUNT, MINIMUM_ALTPAYMENT_CAD_AMOUNT } from '../../altpayment';
 
 type QRCodeProps = BaseQRCodeProps & { renderAs: 'svg' };
 
@@ -342,7 +342,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const [loadingShift, setLoadingShift] = useState(false);
   const [altpaymentError, setAltpaymentError] = useState<AltpaymentError | undefined>(undefined);
   const [altpaymentEditable, setAltpaymentEditable] = useState<boolean>(false);
-  const [isAboveMinimumAltpaymentUSDAmount, setIsAboveMinimumAltpaymentUSDAmount] = useState<boolean | null>(null);
+  const [isAboveMinimumAltpaymentAmount, setIsAboveMinimumAltpaymentAmount] = useState<boolean | null>(null);
 
   const theme = useTheme(props.theme, isValidXecAddress(to));
   const classes = useStyles({ success, loading, theme, recentlyCopied, copied });
@@ -478,7 +478,17 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     }
     if (usdPrice && thisAmount) {
       const usdAmount = usdPrice * +thisAmount
-      setIsAboveMinimumAltpaymentUSDAmount(usdAmount >= MINIMUM_ALTPAYMENT_DOLLAR_AMOUNT)
+      setIsAboveMinimumAltpaymentAmount(usdAmount >= MINIMUM_ALTPAYMENT_DOLLAR_AMOUNT)
+    } else if (currency === 'USD'){
+      if (thisAmount && +thisAmount >= MINIMUM_ALTPAYMENT_DOLLAR_AMOUNT){
+        setIsAboveMinimumAltpaymentAmount(true)
+      }
+
+    } else if (currency === 'CAD'){
+      if (thisAmount && +thisAmount >= MINIMUM_ALTPAYMENT_CAD_AMOUNT){
+        setIsAboveMinimumAltpaymentAmount(true)
+      }
+
     }
   }, [to, thisAmount, usdPrice]);
 
@@ -890,9 +900,9 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
               {!isPropsTrue(disableAltpayment) && (
                 <Typography
                   component="div"
-                  className={`${classes.sideShiftLink} ${isAboveMinimumAltpaymentUSDAmount || altpaymentEditable ? classes.animate_sideshift : classes.hide_sideshift}`}
-                  onClick={isAboveMinimumAltpaymentUSDAmount || altpaymentEditable ? tradeWithAltpayment : undefined}
-                  style={{cursor: isAboveMinimumAltpaymentUSDAmount || altpaymentEditable ? 'pointer' : 'default'}}
+                  className={`${classes.sideShiftLink} ${isAboveMinimumAltpaymentAmount || altpaymentEditable ? classes.animate_sideshift : classes.hide_sideshift}`}
+                  onClick={isAboveMinimumAltpaymentAmount || altpaymentEditable ? tradeWithAltpayment : undefined}
+                  style={{cursor: isAboveMinimumAltpaymentAmount || altpaymentEditable ? 'pointer' : 'default'}}
                 >
                   Don't have any {addressType}?
                 </Typography>
