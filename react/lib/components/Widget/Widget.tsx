@@ -390,6 +390,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     const setupAltpaymentSocket = async (): Promise<void> => {
       if (altpaymentSocket !== undefined) {
         altpaymentSocket.disconnect();
+        setAltpaymentSocket(undefined);
       }
       const newSocket = io(`${wsBaseUrl ?? config.wsBaseUrl}/altpayment`, {
         forceNew: true,
@@ -411,6 +412,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       void getAddressDetails(to, apiBaseUrl);
       if (socket !== undefined) {
         socket.disconnect();
+        setSocket(undefined);
       }
       const newSocket = io(`${wsBaseUrl ?? config.wsBaseUrl}/addresses`, {
         forceNew: true,
@@ -426,15 +428,18 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         await setupAltpaymentSocket()
       } else if (altpaymentSocket) {
         altpaymentSocket.disconnect()
+        setAltpaymentSocket(undefined);
       }
     })()
 
     return () => {
       if (socket !== undefined) {
         socket.disconnect();
+        setSocket(undefined);
       }
       if (altpaymentSocket !== undefined) {
         altpaymentSocket.disconnect();
+        setAltpaymentSocket(undefined);
       }
     }
   }, [to, useAltpayment]);
