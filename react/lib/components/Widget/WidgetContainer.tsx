@@ -49,8 +49,16 @@ export interface WidgetContainerProps
   transactionText?: string
 }
 
-const snackbarOptions: OptionsObject = {
+const snackbarOptionsSuccess: OptionsObject = {
   variant: 'success',
+  autoHideDuration: 8000,
+  anchorOrigin: {
+    vertical: 'bottom',
+    horizontal: 'center',
+  },
+};
+
+const snackbarOptionsInfo: OptionsObject = {
   autoHideDuration: 8000,
   anchorOrigin: {
     vertical: 'bottom',
@@ -129,7 +137,6 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
     const [useAltpayment, setUseAltpayment] = useState(false);
     const [altpaymentShift, setAltpaymentShift] = useState<AltpaymentShift | undefined>();
     const [shiftCompleted, setShiftCompleted] = useState(false);
-    const [newTxText, setNewTxText] = useState('');
 
     const paymentClient = getAltpaymentClient()
 
@@ -158,6 +165,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
         } else {
           const expectedAmount = amount ? resolveNumber(amount) : undefined;
           const receivedAmount = resolveNumber(transaction.amount);
+          const currencyTicker = getCurrencyTypeFromAddress(to);
 
           if (await shouldTriggerOnSuccess(
             transaction,
@@ -177,13 +185,12 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
               txSound.play().catch(() => {});
             }
 
-            const currencyTicker = getCurrencyTypeFromAddress(to);
             if (!hideToasts)
               enqueueSnackbar(
                 `${
                   successText ? successText + ' | ' : ''
                 }Received ${receivedAmount} ${currencyTicker}`,
-                snackbarOptions,
+                snackbarOptionsSuccess,
               );
             setSuccess(true);
             onSuccess?.(transaction);
@@ -193,10 +200,12 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
           } else {
             onTransaction?.(transaction);
             if (transactionText){
-              setNewTxText(transactionText)
-              setTimeout(() => {
-                setNewTxText('')
-              }, 10000)
+              enqueueSnackbar(
+                `${
+                  transactionText ? transactionText : 'New transaction'
+                } | Received ${receivedAmount} ${currencyTicker}`,
+                snackbarOptionsInfo,
+              );
             }
             
           }
@@ -293,7 +302,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
           setShiftCompleted={setShiftCompleted}
           disableAltpayment={disableAltpayment}
           contributionOffset={contributionOffset}
-          newTxText={newTxText}
+          transactionText={transactionText}
         />
       </React.Fragment>
     );
