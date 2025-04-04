@@ -9,33 +9,30 @@ import {
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import copy from 'copy-to-clipboard';
 import QRCode, { BaseQRCodeProps } from 'qrcode.react';
-import io, { Socket } from 'socket.io-client';
-import config from '../../../../paybutton-config.json';
+import { Socket } from 'socket.io-client';
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
 import { Button, animation } from '../Button/Button';
 import BarChart from '../BarChart/BarChart';
 import {
   Currency,
   getAddressBalance,
-  getAddressDetails,
   isFiat,
   Transaction,
   getCashtabProviderStatus,
-  CryptoCurrency,
   DECIMALS,
   CurrencyObject,
   getCurrencyObject,
   formatPrice,
-  txsListener,
   encodeOpReturnProps,
   isValidCashAddress,
   isValidXecAddress,
   getCurrencyTypeFromAddress,
-  altpaymentListener,
   CURRENCY_PREFIXES_MAP,
   CRYPTO_CURRENCIES,
   isPropsTrue,
-  getAddressPrefixed
+  setupTxsSocket,
+  setupAltpaymentSocket,
+  CryptoCurrency
 } from '../../util';
 import AltpaymentWidget from './AltpaymentWidget';
 import { AltpaymentPair, AltpaymentShift, AltpaymentError, AltpaymentCoin, MINIMUM_ALTPAYMENT_DOLLAR_AMOUNT, MINIMUM_ALTPAYMENT_CAD_AMOUNT } from '../../altpayment';
@@ -71,14 +68,30 @@ export interface WidgetProps {
   apiBaseUrl?: string;
   loading?: boolean;
   hoverText?: string;
-  setAltpaymentShift: Function;
-  altpaymentShift?: AltpaymentShift | undefined,
-  useAltpayment: boolean
-  setUseAltpayment: Function;
-  shiftCompleted: boolean
-  setShiftCompleted: Function;
   disableAltpayment?: boolean;
-  contributionOffset?: number
+  contributionOffset?: number;
+  setAltpaymentShift?: Function;
+  altpaymentShift?: AltpaymentShift | undefined,
+  useAltpayment?: boolean
+  setUseAltpayment?: Function;
+  txsSocket?: Socket;
+  setTxsSocket?: Function;
+  altpaymentSocket?: Socket;
+  setAltpaymentSocket?: Function;
+  shiftCompleted?: boolean
+  setShiftCompleted?: Function;
+  setCoins?: Function;
+  coins?: AltpaymentCoin[];
+  setCoinPair?: Function;
+  coinPair?: AltpaymentPair;
+  setLoadingPair?: Function;
+  loadingPair?: boolean;
+  setLoadingShift?: Function;
+  loadingShift?: boolean;
+  setAltpaymentError?: Function;
+  altpaymentError?: AltpaymentError;
+  addressType?: Currency,
+  setAddressType?: Function,
 }
 
 interface StyleProps {
@@ -297,23 +310,90 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     animation,
     randomSatoshis = false,
     editable,
-    setNewTxs,
     newTxs,
+    setNewTxs,
     apiBaseUrl,
     usdPrice,
     wsBaseUrl,
     hoverText = Button.defaultProps.hoverText,
     setAltpaymentShift,
     altpaymentShift,
-    useAltpayment,
-    setUseAltpayment,
     shiftCompleted,
     setShiftCompleted,
     disableAltpayment,
-    contributionOffset
+    contributionOffset,
+    useAltpayment,
+    setUseAltpayment,
+    setTxsSocket,
+    txsSocket,
+    setAltpaymentSocket,
+    altpaymentSocket,
+    addressType,
+    setAddressType,
+    coins,
+    setCoins,
+    coinPair,
+    setCoinPair,
+    loadingPair,
+    setLoadingPair,
+    loadingShift,
+    setLoadingShift,
+    altpaymentError,
+    setAltpaymentError
   } = Object.assign({}, Widget.defaultProps, props);
 
   const [loading, setLoading] = useState(true);
+
+  // Define controlled websocket constants if standalone widget
+
+  const [internalTxsSocket, setInternalTxsSocket] = useState<Socket | undefined>(undefined);
+  const thisTxsSocket = txsSocket ?? internalTxsSocket
+  const setThisTxsSocket = setTxsSocket ?? setInternalTxsSocket
+
+  const [internalNewTxs, setInternalNewTxs] = useState<Transaction[] | undefined>();
+  const thisNewTxs = newTxs ?? internalNewTxs
+  const setThisNewTxs = setNewTxs ?? setInternalNewTxs
+
+  const [internalAltpaymentShift, setInternalAltpaymentShift] = useState<AltpaymentShift | undefined>(undefined);
+  const thisAltpaymentShift = altpaymentShift ?? internalAltpaymentShift;
+  const setThisAltpaymentShift = setAltpaymentShift ?? setInternalAltpaymentShift;
+
+  const [internalUseAltpayment, setInternalUseAltpayment] = useState<boolean>(false);
+  const thisUseAltpayment = useAltpayment ?? internalUseAltpayment;
+  const setThisUseAltpayment = setUseAltpayment ?? setInternalUseAltpayment;
+
+  const [internalAltpaymentSocket, setInternalAltpaymentSocket] = useState<Socket | undefined>(undefined);
+  const thisAltpaymentSocket = altpaymentSocket ?? internalAltpaymentSocket;
+  const setThisAltpaymentSocket = setAltpaymentSocket ?? setInternalAltpaymentSocket;
+
+  const [internalShiftCompleted, setInternalShiftCompleted] = useState<boolean>(false);
+  const thisShiftCompleted = shiftCompleted ?? internalShiftCompleted;
+  const setThisShiftCompleted = setShiftCompleted ?? setInternalShiftCompleted;
+
+  const [internalCoins, setInternalCoins] = useState<AltpaymentCoin[]>([]);
+  const thisCoins = coins ?? internalCoins;
+  const setThisCoins = setCoins ?? setInternalCoins;
+
+  const [internalCoinPair, setInternalCoinPair] = useState<AltpaymentPair | undefined>();
+  const thisCoinPair = coinPair ?? internalCoinPair;
+  const setThisCoinPair = setCoinPair ?? setInternalCoinPair;
+
+  const [internalLoadingPair, setInternalLoadingPair] = useState<boolean>(false);
+  const thisLoadingPair = loadingPair ?? internalLoadingPair;
+  const setThisLoadingPair = setLoadingPair ?? setInternalLoadingPair;
+
+  const [internalLoadingShift, setInternalLoadingShift] = useState<boolean>(false);
+  const thisLoadingShift = loadingShift ?? internalLoadingShift;
+  const setThisLoadingShift = setLoadingShift ?? setInternalLoadingShift;
+
+  const [internalAltpaymentError, setInternalAltpaymentError] = useState<AltpaymentError | undefined>();
+  const thisAltpaymentError = altpaymentError ?? internalAltpaymentError;
+  const setThisAltpaymentError = setAltpaymentError ?? setInternalAltpaymentError;
+
+  const [internalAddressType, setInternalAddressType] = useState<CryptoCurrency>(getCurrencyTypeFromAddress(to));
+  const thisAddressType = addressType ?? internalAddressType;
+  const setThisAddressType = setAddressType ?? setInternalAddressType;
+
   const [copied, setCopied] = useState(false);
   const [recentlyCopied, setRecentlyCopied] = useState(false);
   const [totalReceived, setTotalReceived] = useState<number | undefined>(
@@ -323,25 +403,15 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const [errorMsg, setErrorMsg] = useState('');
   const [goalText, setGoalText] = useState('');
   const [goalPercent, setGoalPercent] = useState(0);
-  const [socket, setSocket] = useState<Socket | undefined>(undefined);
-  const [addressType, setAddressType] = useState<CryptoCurrency>(
-    getCurrencyTypeFromAddress(to),
-  );
+  const [altpaymentEditable, setAltpaymentEditable] = useState<boolean>(false);
 
   const price = props.price ?? 0;
   const [url, setUrl] = useState('');
   const [userEditedAmount, setUserEditedAmount] = useState<CurrencyObject>();
-  const [text, setText] = useState(`Send any amount of ${addressType}`);
+  const [text, setText] = useState(`Send any amount of ${thisAddressType}`);
   const [widgetButtonText, setWidgetButtonText] = useState('Send Payment');
   const [opReturn, setOpReturn] = useState<string | undefined>();
 
-  const [altpaymentSocket, setAltpaymentSocket] = useState<Socket | undefined>(undefined);
-  const [coins, setCoins] = useState<AltpaymentCoin[]>([]);
-  const [loadingPair, setLoadingPair] = useState<boolean>(false);
-  const [coinPair, setCoinPair] = useState<AltpaymentPair | undefined>();
-  const [loadingShift, setLoadingShift] = useState(false);
-  const [altpaymentError, setAltpaymentError] = useState<AltpaymentError | undefined>(undefined);
-  const [altpaymentEditable, setAltpaymentEditable] = useState<boolean>(false);
   const [isAboveMinimumAltpaymentAmount, setIsAboveMinimumAltpaymentAmount] = useState<boolean | null>(null);
 
   const theme = useTheme(props.theme, isValidXecAddress(to));
@@ -387,66 +457,48 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   }, [price])
 
   useEffect(() => {
-    const setupAltpaymentSocket = async (): Promise<void> => {
-      if (altpaymentSocket !== undefined) {
-        altpaymentSocket.disconnect();
-        setAltpaymentSocket(undefined);
-      }
-      const newSocket = io(`${wsBaseUrl ?? config.wsBaseUrl}/altpayment`, {
-        forceNew: true,
-      });
-      setAltpaymentSocket(newSocket);
-      altpaymentListener({
-        addressType,
-        socket: newSocket,
-        setCoins,
-        setCoinPair,
-        setLoadingPair,
-        setAltpaymentShift,
-        setLoadingShift,
-        setAltpaymentError,
+    (async () => {
+    if (thisTxsSocket === undefined) {
+      await setupTxsSocket({
+        address: to,
+        txsSocket: thisTxsSocket,
+        apiBaseUrl,
+        wsBaseUrl,
+        setTxsSocket: setThisTxsSocket,
+        setNewTxs: setThisNewTxs,
       })
     }
-
-    const setupTxsSocket = async (): Promise<void> => {
-      void getAddressDetails(to, apiBaseUrl);
-      if (socket !== undefined) {
-        socket.disconnect();
-        setSocket(undefined);
-      }
-      const newSocket = io(`${wsBaseUrl ?? config.wsBaseUrl}/addresses`, {
-        forceNew: true,
-        query: { addresses: [getAddressPrefixed(to)] },
-      });
-      setSocket(newSocket);
-      txsListener(newSocket, setNewTxs);
+    if (thisAltpaymentSocket === undefined && thisUseAltpayment) {
+      await setupAltpaymentSocket({
+        addressType: thisAddressType,
+        wsBaseUrl,
+        altpaymentSocket: thisAltpaymentSocket,
+        setAltpaymentSocket: setThisAltpaymentSocket,
+        setCoins: setThisCoins,
+        setCoinPair: setThisCoinPair,
+        setLoadingPair: setThisLoadingPair,
+        setAltpaymentShift: setThisAltpaymentShift,
+        setLoadingShift: setThisLoadingShift,
+        setAltpaymentError: setThisAltpaymentError,
+      })
     }
-
-    (async () => {
-      await setupTxsSocket()
-      if (useAltpayment) {
-        await setupAltpaymentSocket()
-      } else if (altpaymentSocket) {
-        altpaymentSocket.disconnect()
-        setAltpaymentSocket(undefined);
-      }
     })()
 
     return () => {
-      if (socket !== undefined) {
-        socket.disconnect();
-        setSocket(undefined);
+      if (thisTxsSocket !== undefined) {
+        thisTxsSocket.disconnect();
+        setThisTxsSocket(undefined);
       }
-      if (altpaymentSocket !== undefined) {
-        altpaymentSocket.disconnect();
-        setAltpaymentSocket(undefined);
+      if (thisAltpaymentSocket !== undefined) {
+        thisAltpaymentSocket.disconnect();
+        setThisAltpaymentSocket(undefined);
       }
     }
-  }, [to, useAltpayment]);
+  }, [to, thisUseAltpayment]);
 
   const tradeWithAltpayment = () => {
-    if (setUseAltpayment) {
-      setUseAltpayment(true)
+    if (setThisUseAltpayment) {
+      setThisUseAltpayment(true)
     }
   }
 
@@ -465,7 +517,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       setTotalReceived(balance);
       setLoading(false);
     })();
-  }, [newTxs]);
+  }, [thisNewTxs]);
 
   useEffect(() => {
     const invalidAmount =
@@ -518,13 +570,13 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       }
     }
 
-    if (userEditedAmount !== undefined && thisAmount && addressType) {
+    if (userEditedAmount !== undefined && thisAmount && thisAddressType) {
       const obj = getCurrencyObject(+thisAmount, currency, false);
       setThisCurrencyObject(obj);
       if (props.setCurrencyObject) {
         props.setCurrencyObject(obj);
       }
-    } else if (thisAmount && addressType) {
+    } else if (thisAmount && thisAddressType) {
       cleanAmount = +thisAmount;
       const obj = getCurrencyObject(cleanAmount, currency, randomSatoshis);
       setThisCurrencyObject(obj);
@@ -538,27 +590,25 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     if (to === undefined) {
       return;
     }
-    const address = to;
     let url;
 
-    const addressType: Currency = getCurrencyTypeFromAddress(address);
-    setAddressType(addressType);
-    setWidgetButtonText(`Send with ${addressType} wallet`);
+    setThisAddressType(thisAddressType);
+    setWidgetButtonText(`Send with ${thisAddressType} wallet`);
 
     if (thisCurrencyObject && hasPrice) {
       const convertedAmount = thisCurrencyObject.float / price
       const convertedObj = price
         ? getCurrencyObject(
           convertedAmount,
-          addressType,
+          thisAddressType,
           randomSatoshis,
         )
         : null;
       if (convertedObj) {
         setText(
-          `Send ${thisCurrencyObject.string} ${thisCurrencyObject.currency} = ${convertedObj.string} ${addressType}`,
+          `Send ${thisCurrencyObject.string} ${thisCurrencyObject.currency} = ${convertedObj.string} ${thisAddressType}`,
         );
-        url = resolveUrl(addressType, convertedObj.float);
+        url = resolveUrl(thisAddressType, convertedObj.float);
         setUrl(url ?? "");
       }
     } else {
@@ -569,8 +619,8 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         setText(`Send ${thisCurrencyObject.string} ${currency}`);
         url = resolveUrl(currency, thisCurrencyObject?.float);
       } else {
-        setText(`Send any amount of ${addressType}`);
-        url = resolveUrl(addressType);
+        setText(`Send any amount of ${thisAddressType}`);
+        url = resolveUrl(thisAddressType);
       }
       setUrl(url ?? "");
     }
@@ -640,7 +690,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   }, [totalReceived, currency, goalAmount, price, hasPrice, contributionOffset]);
 
   const handleButtonClick = () => {
-    if (addressType === 'XEC') {
+    if (thisAddressType === 'XEC') {
       const hasExtension = getCashtabProviderStatus();
       if (!hasExtension) {
         const webUrl = `https://cashtab.com/#/send?bip21=${url}`;
@@ -772,28 +822,28 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
           position="relative"
         >
           {// Altpayment region
-            useAltpayment &&
+            thisUseAltpayment &&
               <AltpaymentWidget
-                altpaymentSocket={altpaymentSocket}
+                altpaymentSocket={thisAltpaymentSocket}
                 thisAmount={thisAmount}
                 updateAmount={updateAmount}
-                setUseAltpayment={setUseAltpayment}
-                altpaymentShift={altpaymentShift}
-                setAltpaymentShift={setAltpaymentShift}
-                shiftCompleted={shiftCompleted}
-                setShiftCompleted={setShiftCompleted}
-                altpaymentError={altpaymentError}
-                setAltpaymentError={setAltpaymentError}
-                coins={coins}
-                loadingPair={loadingPair}
-                setLoadingPair={setLoadingPair}
-                loadingShift={loadingShift}
-                setLoadingShift={setLoadingShift}
-                coinPair={coinPair}
-                setCoinPair={setCoinPair}
+                setUseAltpayment={setThisUseAltpayment}
+                altpaymentShift={thisAltpaymentShift}
+                setAltpaymentShift={setThisAltpaymentShift}
+                shiftCompleted={thisShiftCompleted}
+                setShiftCompleted={setThisShiftCompleted}
+                altpaymentError={thisAltpaymentError}
+                setAltpaymentError={setThisAltpaymentError}
+                coins={thisCoins}
+                loadingPair={thisLoadingPair}
+                setLoadingPair={setThisLoadingPair}
+                loadingShift={thisLoadingShift}
+                setLoadingShift={setThisLoadingShift}
+                coinPair={thisCoinPair}
+                setCoinPair={setThisCoinPair}
                 altpaymentEditable={altpaymentEditable}
                 animation={animation}
-                addressType={addressType}
+                addressType={thisAddressType}
                 to={to}
               />
            }
@@ -909,7 +959,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                   onClick={isAboveMinimumAltpaymentAmount || altpaymentEditable ? tradeWithAltpayment : undefined}
                   style={{cursor: isAboveMinimumAltpaymentAmount || altpaymentEditable ? 'pointer' : 'default'}}
                 >
-                  Don't have any {addressType}?
+                  Don't have any {thisAddressType}?
                 </Typography>
               )}
             </>
