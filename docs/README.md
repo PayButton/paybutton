@@ -560,7 +560,7 @@ successText = "Thanks!"
 
 ## transaction-text
 
-> **The ‘transaction-text’ parameter specifies the text displayed when a new transaction occurs.**
+> **The ‘transaction-text’ parameter specifies the text displayed when a new transaction occurs but the amount or OP_RETURN code are incorrect.**
 
 ?> This parameter is optional. Default value is empty. Possible values are any string.
 

@@ -555,7 +555,7 @@ successText = "Thanks!"
 
 ## transaction-text
 
-> **“transaction-text” 参数指定在新交易发生时显示的文本。**
+> **“transaction-text” 参数指定当发生新交易但金额或 OP_RETURN 代码不正确时显示的文本。**
 
 ?> 此参数为选填，默认值为空。可用值为任何字符串。
 
