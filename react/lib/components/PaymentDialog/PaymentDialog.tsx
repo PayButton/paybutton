@@ -35,7 +35,8 @@ export interface PaymentDialogProps extends ButtonProps {
   wsBaseUrl?: string;
   apiBaseUrl?: string;
   disableAltpayment?: boolean;
-  contributionOffset?:number;
+  contributionOffset?: number;
+  autoClose?: boolean
 }
 
 export const PaymentDialog = (
@@ -72,7 +73,8 @@ export const PaymentDialog = (
     apiBaseUrl,
     hoverText,
     disableAltpayment,
-    contributionOffset
+    contributionOffset,
+    autoClose
   } = Object.assign({}, PaymentDialog.defaultProps, props);
 
   const handleWidgetClose = (): void => {
@@ -82,6 +84,12 @@ export const PaymentDialog = (
   const handleSuccess = (transaction: Transaction): void => {
     setSuccess(true);
     onSuccess?.(transaction);
+    setTimeout(() => {
+      setSuccess(false);
+      if (autoClose === true) {
+        handleWidgetClose();
+      }
+    }, 3000);
   };
   useEffect(() => {
     const invalidAmount = amount !== undefined && isNaN(+amount);
@@ -167,6 +175,7 @@ PaymentDialog.defaultProps = {
   disabled: false,
   editable: false,
   dialogOpen: true,
+  autoClose: true,
 };
 
 export default PaymentDialog;
