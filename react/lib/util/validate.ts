@@ -10,7 +10,7 @@ export const shouldTriggerOnSuccess = async (
     price: number,
     disablePaymentId?: boolean,
     expectedPaymentId?: string,
-    expectedAmount?: BigNumber,
+    expectedAmount?: BigNumber | number,
     expectedOpReturn?: string,
     currencyObject?: CurrencyObject,
   ) => {
@@ -24,6 +24,9 @@ export const shouldTriggerOnSuccess = async (
     let isAmountValid = true;
 
     if(expectedAmount) {
+      if (typeof expectedAmount === 'number'){
+        expectedAmount = new BigNumber(expectedAmount);
+      }
       const transactionCurrency: Currency = getCurrencyTypeFromAddress(address);
       if (transactionCurrency !== currency) {
         if (currencyObject){
@@ -33,7 +36,7 @@ export const shouldTriggerOnSuccess = async (
           isAmountValid = false
         }
       } else {
-        isAmountValid = expectedAmount.isEqualTo(amount)
+        isAmountValid = expectedAmount.isEqualTo(amount);
       }
     } 
   

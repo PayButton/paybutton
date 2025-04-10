@@ -16,7 +16,6 @@ import {
   isValidCurrency,
   resolveNumber,
   shouldTriggerOnSuccess,
-  getCurrencyObject,
   isPropsTrue
 } from '../../util';
 
@@ -88,8 +87,6 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
       paymentId,
       amount,
       setAmount,
-      setCurrencyObj,
-      currencyObj,
       currency = '' as Currency,
       cryptoAmount,
       price,
@@ -111,6 +108,9 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
       disableSound,
       ...widgetProps
     } = props;
+    const [internalCurrencyObj, _setInternalCurrencyObj] = useState<CurrencyObject>();
+    const setCurrencyObj = props.setCurrencyObj || _setInternalCurrencyObj;
+    const currencyObj = props.currencyObj || internalCurrencyObj;
 
     const [thisPaymentId, setThisPaymentId] = useState<string | undefined>();
     const [thisPrice, setThisPrice] = useState(0);
@@ -156,7 +156,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
             setShiftCompleted(true)
           }
         } else {
-          const expectedAmount = amount ? resolveNumber(amount) : undefined;
+          const expectedAmount = currencyObj ? currencyObj?.float : undefined
           const receivedAmount = resolveNumber(transaction.amount);
 
           if (await shouldTriggerOnSuccess(
@@ -167,11 +167,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
             thisPaymentId,
             expectedAmount,
             opReturn,
-            currencyObj ?? getCurrencyObject(
-              Number(props.amount),
-              currency,
-              randomSatoshis,
-            ),
+            currencyObj
           )) {
             if (sound && !isPropsTrue(disableSound)) {
               txSound.play().catch(() => {});
