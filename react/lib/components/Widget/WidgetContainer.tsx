@@ -182,9 +182,11 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
                 }Received ${receivedAmount} ${currencyTicker}`,
                 snackbarOptions,
               );
-
             setSuccess(true);
             onSuccess?.(transaction);
+            setTimeout(() => {
+              setSuccess(false);
+            }, 3000);
           } else {
             onTransaction?.(transaction);
           }

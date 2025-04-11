@@ -29,6 +29,7 @@
   - [api-base-url](/?id=api-base-url)
   - [disable-altpayment](/?id=disable-altpayment)
   - [contribution-offset](/?id=contribution-offset)
+  - [auto-close](/?id=auto-close)
 - [Contribute](/?id=contribute)
   - [Developer Quick Start](/?id=developer-quick-start)
     - [Getting Started](/?id=getting-started)

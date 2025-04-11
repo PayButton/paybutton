@@ -102,7 +102,8 @@ Example using JavaScript to generate a PayButton:
     wsBaseUrl: 'http://localhost:5000',
     apiBaseUrl: 'http://localhost:3000'
     disableAltpayment: true,
-    contributionOffset: 10
+    contributionOffset: 10,
+    autoClose: true
   };
 
   PayButton.render(document.getElementById('my_button'), config);
@@ -980,6 +981,33 @@ contribution-offset: 10
 
 ```react
 contributionOffset = 10
+```
+<!-- tabs:end -->
+
+## auto-close
+
+> **The ‘autoClose’ parameter automatically closes the payment dialog after a payment is received.**
+
+?> This parameter is optional. Default value is true. Possible values are true or false.
+**Example:**
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+auto-close="false"
+```
+
+#### ** JavaScript **
+
+```javascript
+autoClose: false
+```
+
+#### ** React **
+
+```react
+autoClose = false
 ```
 <!-- tabs:end -->
 

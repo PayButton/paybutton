@@ -28,6 +28,7 @@
   - [api-base-url](/zh-tw/?id=api-base-url)
   - [disable-altpayment](/zh-tw/?id=disable-altpayment)
   - [contribution-offset](/zh-tw/?id=contribution-offset)
+  - [auto-close](/zh-tw/?id=auto-close)
 - [貢獻](/zh-tw/?id=貢獻)
   - [開發人員快速入門](/zh-tw/?id=開發人員快速入門)
     - [入門](/zh-tw/?id=入門)
