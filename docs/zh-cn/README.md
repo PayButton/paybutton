@@ -553,6 +553,37 @@ successText = "Thanks!"
 
 <!-- tabs:end -->
 
+## transaction-text
+
+> **“transaction-text” 参数指定当发生新交易但金额或 OP_RETURN 代码不正确时显示的文本。**
+
+?> 此参数为选填，默认值为空。可用值为任何字符串。
+
+**Example:**
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+transaction-text="New transaction!"
+```
+
+#### ** JavaScript **
+
+```javascript
+transactionText: 'New transaction!'
+```
+
+#### ** React **
+
+```react
+transactionText = "New transaction!"
+```
+
+<!-- tabs:end -->
+
+
+
 ## on-success
 
 > **参数'on-success'用来定义指定地址收款后运行的回调函数。**
