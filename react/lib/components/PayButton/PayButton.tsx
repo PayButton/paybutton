@@ -54,6 +54,7 @@ export interface PayButtonProps extends ButtonProps {
 }
 
 export const PayButton = (props: PayButtonProps): React.ReactElement => {
+  console.log('render PB')
   const [dialogOpen, setDialogOpen] = useState(false);
   const [disabled, setDisabled] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
@@ -170,11 +171,13 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
   }, [to]);
 
   useEffect(() => {
+    console.log('efeitou paybas');
     if (dialogOpen === false) {
       return
     }
     (async () => {
     if (txsSocket === undefined) {
+      console.log('setup txs paybas');
       await setupTxsSocket({
         address: to,
         txsSocket,
@@ -185,6 +188,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
       })
     }
     if (altpaymentSocket === undefined && useAltpayment) {
+      console.log('setup alt paybas');
       await setupAltpaymentSocket({
         addressType,
         altpaymentSocket,
@@ -201,16 +205,19 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
     })()
 
     return () => {
+      console.log('cleanup paybas');
       if (txsSocket !== undefined) {
+        console.log('cleanup txs paybas');
         txsSocket.disconnect();
         setTxsSocket(undefined);
       }
       if (altpaymentSocket !== undefined) {
+        console.log('cleanup alt paybas');
         altpaymentSocket.disconnect();
         setAltpaymentSocket(undefined);
       }
     }
-  }, [to, useAltpayment, dialogOpen]);
+  }, []);
 
   useEffect(() => {
     if (dialogOpen === false && props.amount && currency) {

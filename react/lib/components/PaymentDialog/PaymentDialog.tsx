@@ -130,7 +130,9 @@ export const PaymentDialog = (
     setSuccess(false);
   };
   const handleSuccess = (transaction: Transaction): void => {
+    console.log('handling succs')
     if (dialogOpen === false) {
+      console.log('opening dialog')
       setDialogOpen(true)
     }
     setSuccess(true);
