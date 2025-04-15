@@ -1,5 +1,0 @@
-{
-  "wsBaseUrl": "https://socket.paybutton.org",
-  "apiBaseUrl": "https://paybutton.org",
-  "altpaymentClient": "sideshift"
-}
