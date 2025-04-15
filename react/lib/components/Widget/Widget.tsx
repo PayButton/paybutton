@@ -469,32 +469,30 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   useEffect(() => {
     console.log('efeitrou widget');
     (async () => {
-    if (isChild !== true) {
-      console.log('asettingup txssocket widget', { to, thisTxsSocket, apiBaseUrl, wsBaseUrl, setThisTxsSocket, setNewTxs})
-      await setupTxsSocket({
-        address: to,
-        txsSocket: thisTxsSocket,
-        apiBaseUrl,
-        wsBaseUrl,
-        setTxsSocket: setThisTxsSocket,
-        setNewTxs: setThisNewTxs,
-      })
-    }
-    if (thisAltpaymentSocket === undefined && thisUseAltpayment) {
-      console.log('settingup altpay widget')
-      await setupAltpaymentSocket({
-        addressType: thisAddressType,
-        wsBaseUrl,
-        altpaymentSocket: thisAltpaymentSocket,
-        setAltpaymentSocket: setThisAltpaymentSocket,
-        setCoins: setThisCoins,
-        setCoinPair: setThisCoinPair,
-        setLoadingPair: setThisLoadingPair,
-        setAltpaymentShift: setThisAltpaymentShift,
-        setLoadingShift: setThisLoadingShift,
-        setAltpaymentError: setThisAltpaymentError,
-      })
-    }
+      if (isChild !== true) {
+        await setupTxsSocket({
+          address: to,
+          txsSocket: thisTxsSocket,
+          apiBaseUrl,
+          wsBaseUrl,
+          setTxsSocket: setThisTxsSocket,
+          setNewTxs: setThisNewTxs,
+        })
+        if (thisUseAltpayment) {
+          await setupAltpaymentSocket({
+            addressType: thisAddressType,
+            wsBaseUrl,
+            altpaymentSocket: thisAltpaymentSocket,
+            setAltpaymentSocket: setThisAltpaymentSocket,
+            setCoins: setThisCoins,
+            setCoinPair: setThisCoinPair,
+            setLoadingPair: setThisLoadingPair,
+            setAltpaymentShift: setThisAltpaymentShift,
+            setLoadingShift: setThisLoadingShift,
+            setAltpaymentError: setThisAltpaymentError,
+          })
+        }
+      }
     })()
 
     return () => {
