@@ -1,5 +1,5 @@
 import BigNumber from "bignumber.js";
-import { getCurrencyTypeFromAddress } from "./address";
+import { getAddressPrefix, getCurrencyTypeFromAddress } from "./address";
 import { resolveNumber } from "./number";
 import { Currency, CurrencyObject, Transaction } from "./types";
 import { DECIMALS } from "./constants";
@@ -21,7 +21,9 @@ export const shouldTriggerOnSuccess = async (
       message,
       amount, 
       address } = transaction; 
-      
+    
+    const addressPrefix = getAddressPrefix(address);
+    const isBCH = addressPrefix === 'bitcoincash';
     let isAmountValid = true;
 
     if(expectedAmount) {
@@ -50,6 +52,15 @@ export const shouldTriggerOnSuccess = async (
       const rawOpReturnIsEmptyOrUndefined = rawOpReturn === '' || rawOpReturn === undefined;
       const opReturn = rawOpReturnIsEmptyOrUndefined ? message : rawOpReturn
       const opReturnIsEmptyOrUndefined = opReturn === '' || opReturn === undefined;
+
+    if(!isBCH){
+      const rawOpReturnIsEmptyOrUndefined = rawOpReturn === '' || rawOpReturn === undefined;
+      const opReturn = rawOpReturnIsEmptyOrUndefined ? message : rawOpReturn
+      const opReturnIsEmptyOrUndefined = opReturn === '' || opReturn === undefined;
+    
+      const opReturnsMatch = opReturn === expectedOpReturn;
+      isOpReturnValid = expectedOpReturn ? opReturnsMatch : opReturnIsEmptyOrUndefined;
+    }
     
       const opReturnsMatch = opReturn === expectedOpReturn;
       isOpReturnValid = expectedOpReturn ? opReturnsMatch : opReturnIsEmptyOrUndefined;
