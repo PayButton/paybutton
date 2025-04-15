@@ -41,6 +41,7 @@ type QRCodeProps = BaseQRCodeProps & { renderAs: 'svg' };
 
 export interface WidgetProps {
   to: string;
+  isChild?: boolean;
   amount?: number | null | string;
   setAmount?: Function;
   opReturn?: string;
@@ -339,7 +340,8 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     loadingShift,
     setLoadingShift,
     altpaymentError,
-    setAltpaymentError
+    setAltpaymentError,
+    isChild
   } = Object.assign({}, Widget.defaultProps, props);
 
   const [loading, setLoading] = useState(true);
@@ -467,7 +469,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   useEffect(() => {
     console.log('efeitrou widget');
     (async () => {
-    if (thisTxsSocket === undefined) {
+    if (isChild !== true) {
       console.log('asettingup txssocket widget', { to, thisTxsSocket, apiBaseUrl, wsBaseUrl, setThisTxsSocket, setNewTxs})
       await setupTxsSocket({
         address: to,

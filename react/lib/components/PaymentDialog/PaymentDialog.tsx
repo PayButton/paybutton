@@ -180,6 +180,7 @@ export const PaymentDialog = (
         transitionDuration={{ enter: 300, exit: 300 }}
       >
         <WidgetContainer
+          isChild={true}
           ButtonComponent={ButtonComponent}
           active={dialogOpen}
           to={to}

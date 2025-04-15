@@ -112,6 +112,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
       newTxs,
       setNewTxs,
       txsSocket,
+      isChild,
       ...widgetProps
     } = props;
 
@@ -255,6 +256,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
       <React.Fragment>
         <Widget
           to={to}
+          isChild={isChild}
           {...widgetProps}
           amount={amount}
           setAmount={setAmount}
