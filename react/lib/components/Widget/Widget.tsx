@@ -364,42 +364,34 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const thisUseAltpayment = useAltpayment ?? internalUseAltpayment;
   const setThisUseAltpayment = setUseAltpayment ?? setInternalUseAltpayment;
 
-  //A
   const [internalAltpaymentSocket, setInternalAltpaymentSocket] = useState<Socket | undefined>(undefined);
   const thisAltpaymentSocket = altpaymentSocket ?? internalAltpaymentSocket;
   const setThisAltpaymentSocket = setAltpaymentSocket ?? setInternalAltpaymentSocket;
 
-  //A
   const [internalShiftCompleted, setInternalShiftCompleted] = useState<boolean>(false);
   const thisShiftCompleted = shiftCompleted ?? internalShiftCompleted;
   const setThisShiftCompleted = setShiftCompleted ?? setInternalShiftCompleted;
 
-  //A
   const [internalCoins, setInternalCoins] = useState<AltpaymentCoin[]>([]);
   const thisCoins = coins ?? internalCoins;
   const setThisCoins = setCoins ?? setInternalCoins;
 
-  //A
   const [internalCoinPair, setInternalCoinPair] = useState<AltpaymentPair | undefined>();
   const thisCoinPair = coinPair ?? internalCoinPair;
   const setThisCoinPair = setCoinPair ?? setInternalCoinPair;
 
-  //A
   const [internalLoadingPair, setInternalLoadingPair] = useState<boolean>(false);
   const thisLoadingPair = loadingPair ?? internalLoadingPair;
   const setThisLoadingPair = setLoadingPair ?? setInternalLoadingPair;
 
-  //A
   const [internalLoadingShift, setInternalLoadingShift] = useState<boolean>(false);
   const thisLoadingShift = loadingShift ?? internalLoadingShift;
   const setThisLoadingShift = setLoadingShift ?? setInternalLoadingShift;
 
-  //A
   const [internalAltpaymentError, setInternalAltpaymentError] = useState<AltpaymentError | undefined>();
   const thisAltpaymentError = altpaymentError ?? internalAltpaymentError;
   const setThisAltpaymentError = setAltpaymentError ?? setInternalAltpaymentError;
 
-  //A
   const [internalAddressType, setInternalAddressType] = useState<CryptoCurrency>(getCurrencyTypeFromAddress(to));
   const thisAddressType = addressType ?? internalAddressType;
   const setThisAddressType = setAddressType ?? setInternalAddressType;
@@ -467,7 +459,6 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   }, [price])
 
   useEffect(() => {
-    console.log('efeitrou widget');
     (async () => {
       if (isChild !== true) {
         await setupTxsSocket({
@@ -496,14 +487,11 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     })()
 
     return () => {
-      console.log('cleanup widget')
       if (thisTxsSocket !== undefined) {
-        console.log('cleanup txs widget')
         thisTxsSocket.disconnect();
         setThisTxsSocket(undefined);
       }
       if (thisAltpaymentSocket !== undefined) {
-        console.log('cleanup alt widget')
         thisAltpaymentSocket.disconnect();
         setThisAltpaymentSocket(undefined);
       }
