@@ -185,6 +185,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
         wsBaseUrl,
         setTxsSocket,
         setNewTxs,
+        setDialogOpen
       })
     }
     if (altpaymentSocket === undefined && useAltpayment) {
@@ -217,7 +218,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
         setAltpaymentSocket(undefined);
       }
     }
-  }, []);
+  }, [dialogOpen]);
 
   useEffect(() => {
     if (dialogOpen === false && props.amount && currency) {

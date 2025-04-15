@@ -6,7 +6,7 @@ import { BroadcastTxData } from './types';
 import { getAddressDetails } from './api-client';
 import { getAddressPrefixed } from './address';
 
-export const txsListener = (txsSocket: Socket, setNewTxs: Function): void => {
+const txsListener = (txsSocket: Socket, setNewTxs: Function, setDialogOpen?: Function): void => {
   txsSocket.on('incoming-txs', (broadcastedTxData: BroadcastTxData) => {
     const unconfirmedTxs = broadcastedTxData.txs.filter(
       tx => tx.confirmed === false,
@@ -15,6 +15,9 @@ export const txsListener = (txsSocket: Socket, setNewTxs: Function): void => {
       broadcastedTxData.messageType === 'NewTx' &&
       unconfirmedTxs.length !== 0
     ) {
+      if (setDialogOpen !== undefined) {
+        setDialogOpen(true)
+      }
       setNewTxs(unconfirmedTxs);
     }
   });
@@ -96,6 +99,7 @@ interface SetupTxsSocketParams {
   wsBaseUrl?: string
   setTxsSocket: Function
   setNewTxs: Function
+  setDialogOpen?: Function
 }
 
 export const setupTxsSocket = async (params: SetupTxsSocketParams): Promise<void> => {
@@ -109,5 +113,5 @@ export const setupTxsSocket = async (params: SetupTxsSocketParams): Promise<void
     query: { addresses: [getAddressPrefixed(params.address)] },
   });
   params.setTxsSocket(newSocket);
-  txsListener(newSocket, params.setNewTxs);
+  txsListener(newSocket, params.setNewTxs, params.setDialogOpen);
 }
