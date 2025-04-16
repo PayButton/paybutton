@@ -978,6 +978,34 @@ contribution-offset: 10
 contributionOffset = 10
 ```
 <!-- tabs:end -->
+
+## auto-close
+
+> **‘autoClose’ 收到付款後，參數會自動關閉付款對話框.**
+
+?> 此參數是可選的。預設值為 true。可能的值是真或假。
+**Example:**
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+auto-close="false"
+```
+
+#### ** JavaScript **
+
+```javascript
+autoClose: false
+```
+
+#### ** React **
+
+```react
+autoClose = false
+```
+<!-- tabs:end -->
+
 # 貢獻
 
 PayButton是一個社區主導的開放源代碼促進會。此項目的成功關鍵在於對社區的貢獻。
