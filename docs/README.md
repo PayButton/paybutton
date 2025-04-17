@@ -1011,6 +1011,33 @@ autoClose = false
 ```
 <!-- tabs:end -->
 
+## disable-sound
+
+> **The ‘disableSound’ parameter mutes the sound played when a transaction is successful.**
+
+?> This parameter is optional. Default value is false. Possible values are true or false.
+**Example:**
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+disable-sound="false"
+```
+
+#### ** JavaScript **
+
+```javascript
+disableSound: false
+```
+
+#### ** React **
+
+```react
+disableSound = false
+```
+<!-- tabs:end -->
+
 # Contribute
 
 PayButton is a community-driven open-source initiative. Contributions from the community are _crucial_ to the success of the project.

@@ -151,7 +151,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
         if (altpaymentShift) {
           const shiftStatus = await paymentClient.getPaymentStatus(altpaymentShift.id)
           if (shiftStatus.status === 'settled') {
-            if (sound && disableSound !== true) txSound.play().catch(() => {});
+            if (sound && !isPropsTrue(disableSound)) txSound.play().catch(() => {});
             onSuccess?.(transaction);
             setShiftCompleted(true)
           }
