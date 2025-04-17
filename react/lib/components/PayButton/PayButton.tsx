@@ -46,6 +46,7 @@ export interface PayButtonProps extends ButtonProps {
   disableAltpayment?: boolean
   contributionOffset?: number
   autoClose?: boolean
+  disableSound?: boolean
 }
 
 export const PayButton = (props: PayButtonProps): React.ReactElement => {
@@ -59,7 +60,6 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
   const [price, setPrice] = useState(0);
   const priceRef = useRef<number>(price);
   const cryptoAmountRef = useRef<string | undefined>(cryptoAmount);
-
 
   const {
     to,
@@ -83,7 +83,8 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
     apiBaseUrl,
     disableAltpayment,
     contributionOffset,
-    autoClose
+    autoClose,
+    disableSound,
   } = Object.assign({}, PayButton.defaultProps, props);
 
   const [paymentId] = useState(!disablePaymentId ? generatePaymentId(8) : undefined);
@@ -240,6 +241,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
         disableAltpayment={disableAltpayment}
         contributionOffset={contributionOffset}
         autoClose={autoClose}
+        disableSound={disableSound}
       />
       {errorMsg && (
         <p
