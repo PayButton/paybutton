@@ -101,7 +101,8 @@ const allowedProps = [
   'apiBaseUrl',
   'disableAltpayment',
   'contributionOffset',
-  'autoClose'
+  'autoClose',
+  'disableSound',
 ];
 
 const requiredProps = [
