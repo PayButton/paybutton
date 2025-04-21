@@ -119,15 +119,26 @@
               <input id="successText" v-model="paybuttonProps.successText" type="text">
             </div>
           </div>
+          <div class="form-input">
+            <label for="hoverText">Hover Text:</label>
+            <input id="hoverText" v-model="paybuttonProps.hoverText" type="text">
+          </div>
           <div style="display: flex; justify-content: space-between; gap:10px">
-            <div class="form-input">
-              <label for="hoverText">Hover Text:</label>
-              <input id="hoverText" v-model="paybuttonProps.hoverText" type="text">
-            </div>
-            <div class="form-input">
+            <div class="form-input" style="width:100%">
               <label for="transactionText">Transaction Text:</label>
               <input id="transactionText" v-model="paybuttonProps.transactionText" type="text">
             </div>
+            <div class="form-input">
+              <label for="hoverText" style="width: 20%;">Size:</label>
+              <select id="paybutton-type" v-model="paybuttonProps.size" class="selector">
+                <option value="xm">xm</option>
+                <option value="sm">sm</option>
+                <option value="md">md</option>
+                <option value="lg">lg</option>
+                <option value="xl">xl</option>
+              </select>
+            </div>
+
           </div>
           <div class="form-input">
             <label for="theme">Theme:</label>
