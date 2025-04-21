@@ -1066,6 +1066,34 @@ disableSound = false
 ```
 <!-- tabs:end -->
 
+## size
+
+> **The ‘size’ parameter will adjust the size of the button.**
+?> The size parameter is optional. It accepts one of the predefined string values: 'xs'(extra small), 'sm'(small),'md'(regular),'lg'(large), or 'xl'(extra large). The default value is 'md'.
+
+
+**Example:**
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+size="sm"
+```
+
+#### ** JavaScript **
+
+```javascript
+size: "sm"
+```
+
+#### ** React **
+
+```react
+size = "sm"
+```
+<!-- tabs:end -->
+
 # 贡献
 
 PayButton是一个社群主导的开放源代码促进会。此项目的成功关键在于对社群的贡献。
