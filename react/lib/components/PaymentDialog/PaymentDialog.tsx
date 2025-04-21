@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
 import Button, { ButtonProps } from '../Button/Button';
 import { WidgetContainer } from '../Widget/WidgetContainer';
-import { Currency, CurrencyObject, Transaction, isPropsTrue, isValidCashAddress, isValidXecAddress } from '../../util';
+import { Currency, CurrencyObject, Transaction, buttonSize, isPropsTrue, isValidCashAddress, isValidXecAddress } from '../../util';
 
 export interface PaymentDialogProps extends ButtonProps {
   to: string;
@@ -38,6 +38,7 @@ export interface PaymentDialogProps extends ButtonProps {
   contributionOffset?: number;
   autoClose?: boolean;
   disableSound?: boolean;
+  size: buttonSize;
 }
 
 export const PaymentDialog = (
@@ -77,6 +78,7 @@ export const PaymentDialog = (
     contributionOffset,
     autoClose,
     disableSound,
+    size,
   } = Object.assign({}, PaymentDialog.defaultProps, props);
 
   const handleWidgetClose = (): void => {
@@ -157,6 +159,7 @@ export const PaymentDialog = (
           disableAltpayment={disableAltpayment}
           contributionOffset={contributionOffset}
           disableSound={disableSound}
+          size={size}
           foot={success && (
             <ButtonComponent
               onClick={handleWidgetClose}

@@ -14,7 +14,8 @@ import {
   CurrencyObject,
   generatePaymentId,
   getCurrencyObject,
-  isPropsTrue
+  isPropsTrue,
+  buttonSize
 } from '../../util';
 import { PaymentDialog } from '../PaymentDialog';
 export interface PayButtonProps extends ButtonProps {
@@ -43,10 +44,11 @@ export interface PayButtonProps extends ButtonProps {
   onClose?: (success?: boolean, paymentId?:string) => void;
   wsBaseUrl?: string;
   apiBaseUrl?: string;
-  disableAltpayment?: boolean
-  contributionOffset?: number
-  autoClose?: boolean
-  disableSound?: boolean
+  disableSound?: boolean;
+  autoClose?: boolean;
+  disableAltpayment?:boolean
+  contributionOffset?:number
+  size: buttonSize;
 }
 
 export const PayButton = (props: PayButtonProps): React.ReactElement => {
@@ -85,6 +87,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
     contributionOffset,
     autoClose,
     disableSound,
+    size
   } = Object.assign({}, PayButton.defaultProps, props);
 
   const [paymentId] = useState(!disablePaymentId ? generatePaymentId(8) : undefined);
@@ -209,6 +212,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
         text={text}
         hoverText={hoverText}
         disabled={disabled}
+        size={size}
       />
       <PaymentDialog
         disableEnforceFocus={disableEnforceFocus}
@@ -242,6 +246,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
         contributionOffset={contributionOffset}
         autoClose={autoClose}
         disableSound={disableSound}
+        size={size}
       />
       {errorMsg && (
         <p
@@ -269,6 +274,7 @@ const payButtonDefaultProps: PayButtonProps = {
   disabled: false,
   editable: false,
   autoClose: true,
+  size: 'md',
 };
 
 PayButton.defaultProps = payButtonDefaultProps;

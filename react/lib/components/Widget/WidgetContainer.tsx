@@ -18,6 +18,7 @@ import {
   shouldTriggerOnSuccess,
   getCurrencyObject,
   isPropsTrue
+  buttonSize
 } from '../../util';
 
 import Widget, { WidgetProps } from './Widget';
@@ -48,6 +49,7 @@ export interface WidgetContainerProps
   disableAltpayment?: boolean
   contributionOffset?: number
   disableSound?: boolean
+  size: buttonSize;
 }
 
 const snackbarOptions: OptionsObject = {
@@ -109,6 +111,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
       disableAltpayment,
       contributionOffset,
       disableSound,
+      size,
       ...widgetProps
     } = props;
 
@@ -286,6 +289,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
           setShiftCompleted={setShiftCompleted}
           disableAltpayment={disableAltpayment}
           contributionOffset={contributionOffset}
+          size={size}
         />
       </React.Fragment>
     );
