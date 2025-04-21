@@ -104,6 +104,7 @@ const allowedProps = [
   'autoClose',
   'disableSound',
   'transactionText',
+  'size'
 ];
 
 const requiredProps = [
