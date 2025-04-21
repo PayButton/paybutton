@@ -253,7 +253,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
         handleNewTransaction(tx);
       });
     }, [newTxs, handleNewTransaction]);
-
+    
     return (
       <React.Fragment>
         <Widget
@@ -289,7 +289,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
           setShiftCompleted={setShiftCompleted}
           disableAltpayment={disableAltpayment}
           contributionOffset={contributionOffset}
-          size={size}
+          size='md'
         />
       </React.Fragment>
     );
