@@ -8,6 +8,7 @@ export const shouldTriggerOnSuccess = async (
     transaction: Transaction,
     currency: string,
     price: number,
+    randomSatoshis: number | boolean,
     disablePaymentId?: boolean,
     expectedPaymentId?: string,
     expectedAmount?: BigNumber | number,
@@ -38,17 +39,21 @@ export const shouldTriggerOnSuccess = async (
       } else {
         isAmountValid = expectedAmount.isEqualTo(amount);
       }
-    } 
-  
-    const paymentIdsMatch = expectedPaymentId === paymentId;
-    const isPaymentIdValid = disablePaymentId ? true : paymentIdsMatch;
+    }
+    let isPaymentIdValid = true
+    let isOpReturnValid = true 
 
-    const rawOpReturnIsEmptyOrUndefined = rawOpReturn === '' || rawOpReturn === undefined;
-    const opReturn = rawOpReturnIsEmptyOrUndefined ? message : rawOpReturn
-    const opReturnIsEmptyOrUndefined = opReturn === '' || opReturn === undefined;
+    if(!randomSatoshis || randomSatoshis === 0){
+      const paymentIdsMatch = expectedPaymentId === paymentId;
+      isPaymentIdValid = disablePaymentId ? true : paymentIdsMatch;
   
-    const opReturnsMatch = opReturn === expectedOpReturn;
-    const isOpReturnValid = expectedOpReturn ? opReturnsMatch : opReturnIsEmptyOrUndefined;
+      const rawOpReturnIsEmptyOrUndefined = rawOpReturn === '' || rawOpReturn === undefined;
+      const opReturn = rawOpReturnIsEmptyOrUndefined ? message : rawOpReturn
+      const opReturnIsEmptyOrUndefined = opReturn === '' || opReturn === undefined;
     
+      const opReturnsMatch = opReturn === expectedOpReturn;
+      isOpReturnValid = expectedOpReturn ? opReturnsMatch : opReturnIsEmptyOrUndefined;
+    }
+
     return isAmountValid && isPaymentIdValid && isOpReturnValid;
 };

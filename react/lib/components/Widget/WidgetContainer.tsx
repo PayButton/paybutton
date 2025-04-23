@@ -108,8 +108,8 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
       disableSound,
       ...widgetProps
     } = props;
-    const [internalCurrencyObj, _setInternalCurrencyObj] = useState<CurrencyObject>();
-    const setCurrencyObj = props.setCurrencyObj || _setInternalCurrencyObj;
+    const [internalCurrencyObj, setInternalCurrencyObj] = useState<CurrencyObject>();
+    const setCurrencyObj = props.setCurrencyObj || setInternalCurrencyObj;
     const currencyObj = props.currencyObj || internalCurrencyObj;
 
     const [thisPaymentId, setThisPaymentId] = useState<string | undefined>();
@@ -163,6 +163,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
             transaction,
             currency,
             thisPrice,
+            randomSatoshis,
             disablePaymentId,
             thisPaymentId,
             expectedAmount,
@@ -206,6 +207,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
         altpaymentShift,
         thisPrice,
         currencyObj,
+        randomSatoshis
       ],
     );
 
