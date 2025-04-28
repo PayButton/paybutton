@@ -13,4 +13,4 @@ export const CURRENCY_PREFIXES_MAP: Record<typeof CRYPTO_CURRENCIES[number], str
     xec: 'ecash',
 };
 
-export type buttonSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | undefined;
+export type buttonSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | "extrasmall" | "small" | "medium" | "large" | "extralarge" | undefined;
