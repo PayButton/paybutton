@@ -24,19 +24,21 @@ interface StyleProps {
 }
 
 const useStyles = makeStyles({
-  container: {
-    fontSize: '0.8rem !important',
-  },
-  button: ({ theme, animation, size }: StyleProps): CreateCSSProperties => {
+  
+  container: ({ size }: StyleProps) => {
     const getScale = (): number => {
       switch (size) {
-        case 'xs':
-          return 0.65;
+        case 'xs': 
+        case "extrasmall":
+          return 0.75;
         case 'sm':
+        case "small":
           return 0.85;
         case 'lg':
+        case "large":
           return 1.20;
         case 'xl':
+        case "extralarge":
           return 1.40;
         default:
           return 1;
@@ -46,9 +48,18 @@ const useStyles = makeStyles({
     const scale = getScale();
 
     return {
-      background: `${theme.palette.secondary} !important`,
-      transition: '0.6s !important',
+      display: 'inline-block',
       transform: `scale(${scale})`,
+      fontSize: '0.8rem !important',
+      transformOrigin: 'top left',
+      marginBottom: `${(scale - 1) * 2.5}em`,
+    };
+  },
+  button: ({ theme, animation }: StyleProps): CreateCSSProperties => {
+
+    return {
+      background: `${theme.palette.secondary} !important`,
+      transition: '0.6s !important', 
       ...(animation === 'slide'
         ? {
             background: `linear-gradient(45deg, ${theme.palette.primary} 50%, ${theme.palette.secondary} 50%) 100% center / 300% !important`,
