@@ -1007,6 +1007,34 @@ autoClose = false
 ```
 <!-- tabs:end -->
 
+## disable-sound
+
+> **“disableSound”参数会在交易成功时静音原本播放的声音。**
+
+?>此参数为可选。默认值为 false。可接受的值为 true 或 false。
+
+**Example:**
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+disable-sound="false"
+```
+
+#### ** JavaScript **
+
+```javascript
+disableSound: false
+```
+
+#### ** React **
+
+```react
+disableSound = false
+```
+<!-- tabs:end -->
+
 # 贡献
 
 PayButton是一个社群主导的开放源代码促进会。此项目的成功关键在于对社群的贡献。
