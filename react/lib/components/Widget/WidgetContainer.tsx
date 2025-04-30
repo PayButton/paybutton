@@ -16,7 +16,8 @@ import {
   isValidCurrency,
   resolveNumber,
   shouldTriggerOnSuccess,
-  getCurrencyObject
+  getCurrencyObject,
+  isPropsTrue
 } from '../../util';
 
 import Widget, { WidgetProps } from './Widget';
@@ -47,6 +48,7 @@ export interface WidgetContainerProps
   disableAltpayment?: boolean
   contributionOffset?: number
   setNewTxs: Function
+  disableSound?: boolean
 }
 
 const snackbarOptions: OptionsObject = {
@@ -113,6 +115,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
       setNewTxs,
       txsSocket,
       isChild,
+      disableSound,
       ...widgetProps
     } = props;
 
@@ -152,7 +155,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
         if (altpaymentShift) {
           const shiftStatus = await paymentClient.getPaymentStatus(altpaymentShift.id)
           if (shiftStatus.status === 'settled') {
-            if (sound) txSound.play().catch(() => {});
+            if (sound && !isPropsTrue(disableSound)) txSound.play().catch(() => {});
             onSuccess?.(transaction);
             setShiftCompleted(true)
           }
@@ -174,7 +177,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
               randomSatoshis,
             ),
           )) {
-            if (sound) {
+            if (sound && !isPropsTrue(disableSound)) {
               txSound.play().catch(() => {});
             }
 

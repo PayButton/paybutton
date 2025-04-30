@@ -39,7 +39,6 @@ export interface PaymentDialogProps extends ButtonProps {
   apiBaseUrl?: string;
   disableAltpayment?: boolean;
   contributionOffset?: number;
-  autoClose?: boolean
   useAltpayment: boolean
   setUseAltpayment: Function;
   txsSocket?: Socket;
@@ -62,6 +61,8 @@ export interface PaymentDialogProps extends ButtonProps {
   setAddressType: Function,
   setNewTxs: Function,
   newTxs?: Transaction[]
+  autoClose?: boolean;
+  disableSound?: boolean;
 }
 
 export const PaymentDialog = (
@@ -100,7 +101,7 @@ export const PaymentDialog = (
     hoverText,
     disableAltpayment,
     contributionOffset,
-    autoClose
+    autoClose,
     useAltpayment,
     setUseAltpayment,
     setTxsSocket,
@@ -122,7 +123,8 @@ export const PaymentDialog = (
     addressType,
     newTxs,
     setNewTxs,
-    setAddressType
+    setAddressType,
+    disableSound
   } = Object.assign({}, PaymentDialog.defaultProps, props);
 
   const handleWidgetClose = (): void => {
@@ -228,6 +230,7 @@ export const PaymentDialog = (
           setAddressType={setAddressType}
           setNewTxs={setNewTxs}
           newTxs={newTxs}
+          disableSound={disableSound}
           foot={success && (
             <ButtonComponent
               onClick={handleWidgetClose}
