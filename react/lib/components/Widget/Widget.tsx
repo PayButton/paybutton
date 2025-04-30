@@ -875,7 +875,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                 <div className={classes.editAmount}>
                   <TextField
                     label='Edit amount'
-                    value={thisAmount || 0}
+                    value={thisCurrencyObject?.float || 0}
                     onChange={handleAmountChange}
                     inputProps={{ maxlength: '12' }}
                     name="Amount"
