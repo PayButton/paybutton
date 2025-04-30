@@ -1072,7 +1072,8 @@ disableSound = false
 ## size
 
 > **The ‘size’ parameter will adjust the size of the button.**
-?> The size parameter is optional. It accepts one of the predefined string values: 'xs'(extra small), 'sm'(small),'md'(regular),'lg'(large), or 'xl'(extra large). The default value is 'md'.
+
+?> The size parameter is optional and supports the following predefined string values: 'xs' (extra small), 'sm' (small), 'md' (medium), 'lg' (large), and 'xl' (extra large). If not specified, the default value is 'md'. You can also use the aliases 'extrasmall', 'small', 'medium', 'large', and 'extralarge', which correspond to 'xs', 'sm', 'md', 'lg', and 'xl', respectively.
 
 
 **Example:**
