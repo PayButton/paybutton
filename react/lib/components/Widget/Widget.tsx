@@ -36,7 +36,7 @@ import {
   CRYPTO_CURRENCIES,
   isPropsTrue,
   getAddressPrefixed,
-  buttonSize
+  ButtonSize
 } from '../../util';
 import AltpaymentWidget from './AltpaymentWidget';
 import { AltpaymentPair, AltpaymentShift, AltpaymentError, AltpaymentCoin, MINIMUM_ALTPAYMENT_DOLLAR_AMOUNT, MINIMUM_ALTPAYMENT_CAD_AMOUNT } from '../../altpayment';
@@ -80,7 +80,7 @@ export interface WidgetProps {
   setShiftCompleted: Function;
   disableAltpayment?: boolean;
   contributionOffset?: number
-  size: buttonSize;
+  size: ButtonSize;
 }
 
 interface StyleProps {

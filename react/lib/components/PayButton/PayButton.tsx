@@ -15,7 +15,7 @@ import {
   generatePaymentId,
   getCurrencyObject,
   isPropsTrue,
-  buttonSize
+  ButtonSize
 } from '../../util';
 import { PaymentDialog } from '../PaymentDialog';
 export interface PayButtonProps extends ButtonProps {
@@ -48,7 +48,7 @@ export interface PayButtonProps extends ButtonProps {
   autoClose?: boolean;
   disableAltpayment?:boolean
   contributionOffset?:number
-  size: buttonSize;
+  size: ButtonSize;
 }
 
 export const PayButton = (props: PayButtonProps): React.ReactElement => {

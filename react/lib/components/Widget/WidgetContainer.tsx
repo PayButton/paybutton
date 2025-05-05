@@ -17,8 +17,8 @@ import {
   resolveNumber,
   shouldTriggerOnSuccess,
   getCurrencyObject,
-  isPropsTrue
-  buttonSize
+  isPropsTrue,
+  ButtonSize
 } from '../../util';
 
 import Widget, { WidgetProps } from './Widget';
@@ -49,7 +49,7 @@ export interface WidgetContainerProps
   disableAltpayment?: boolean
   contributionOffset?: number
   disableSound?: boolean
-  size: buttonSize;
+  size: ButtonSize;
 }
 
 const snackbarOptions: OptionsObject = {

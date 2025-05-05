@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
 import Button, { ButtonProps } from '../Button/Button';
 import { WidgetContainer } from '../Widget/WidgetContainer';
-import { Currency, CurrencyObject, Transaction, buttonSize, isPropsTrue, isValidCashAddress, isValidXecAddress } from '../../util';
+import { Currency, CurrencyObject, Transaction, ButtonSize, isPropsTrue, isValidCashAddress, isValidXecAddress } from '../../util';
 
 export interface PaymentDialogProps extends ButtonProps {
   to: string;
@@ -38,7 +38,7 @@ export interface PaymentDialogProps extends ButtonProps {
   contributionOffset?: number;
   autoClose?: boolean;
   disableSound?: boolean;
-  size: buttonSize;
+  size: ButtonSize;
 }
 
 export const PaymentDialog = (
