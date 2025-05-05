@@ -34,7 +34,7 @@ import {
   setupAltpaymentSocket,
   CryptoCurrency,
   getAddressPrefixed,
-  buttonSize
+  ButtonSize
 } from '../../util';
 import AltpaymentWidget from './AltpaymentWidget';
 import { AltpaymentPair, AltpaymentShift, AltpaymentError, AltpaymentCoin, MINIMUM_ALTPAYMENT_DOLLAR_AMOUNT, MINIMUM_ALTPAYMENT_CAD_AMOUNT } from '../../altpayment';
@@ -97,7 +97,7 @@ export interface WidgetProps {
   setAddressType?: Function,
   newTxText?: string;
   transactionText?: string;
-  size: buttonSize;
+  size: ButtonSize;
 }
 
 interface StyleProps {

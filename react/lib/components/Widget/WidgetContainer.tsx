@@ -16,8 +16,9 @@ import {
   isValidCurrency,
   resolveNumber,
   shouldTriggerOnSuccess,
-  isPropsTrue
-  buttonSize
+  getCurrencyObject,
+  isPropsTrue,
+  ButtonSize
 } from '../../util';
 
 import Widget, { WidgetProps } from './Widget';
@@ -50,7 +51,7 @@ export interface WidgetContainerProps
   setNewTxs: Function
   disableSound?: boolean
   transactionText?: string
-  size: buttonSize;
+  size: ButtonSize;
 }
 
 const snackbarOptionsSuccess: OptionsObject = {
