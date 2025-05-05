@@ -6,7 +6,6 @@ import { WidgetContainer } from '../Widget/WidgetContainer';
 import { Currency, CurrencyObject, Transaction, ButtonSize, isPropsTrue, isValidCashAddress, isValidXecAddress } from '../../util';
 import { Socket } from 'socket.io-client';
 import { AltpaymentCoin, AltpaymentPair, AltpaymentShift, AltpaymentError } from '../../altpayment';
-
 export interface PaymentDialogProps extends ButtonProps {
   to: string;
   amount?: number | string;

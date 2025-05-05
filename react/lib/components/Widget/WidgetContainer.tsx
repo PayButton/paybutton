@@ -18,7 +18,7 @@ import {
   shouldTriggerOnSuccess,
   getCurrencyObject,
   isPropsTrue,
-  ButtonSize
+  ButtonSize,
 } from '../../util';
 
 import Widget, { WidgetProps } from './Widget';

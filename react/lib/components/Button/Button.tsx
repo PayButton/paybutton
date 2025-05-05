@@ -175,7 +175,7 @@ const buttonDefaultProps: ButtonProps = {
   text: 'Donate',
   hoverText: 'Send Payment',
   disabled: false,
-  size: 'md',
+  size: 'medium',
 };
 
 Button.defaultProps = buttonDefaultProps;
