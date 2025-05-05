@@ -51,7 +51,6 @@ const useStyles = makeStyles({
       display: 'inline-block',
       transform: `scale(${scale})`,
       fontSize: '0.8rem !important',
-      transformOrigin: 'top left',
       marginBottom: `${(scale - 1) * 2.5}em`,
     };
   },
