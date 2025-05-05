@@ -957,7 +957,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                     onClick={handleButtonClick}
                     disabled={isPropsTrue(disabled)}
                     animation={animation}
-                    size={size}
+                    size={'medium'}
                   />
                 </Box>
               )}
