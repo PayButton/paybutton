@@ -3,7 +3,7 @@ import { CreateCSSProperties } from '@material-ui/styles';
 import React, { useRef, useState, useLayoutEffect } from 'react';
 
 import { Theme, ThemeName, useTheme } from '../../themes';
-import { buttonSize } from '../../util';
+import { ButtonSize } from '../../util';
 
 export type animation = 'slide' | 'invert' | 'none' | undefined;
 
@@ -14,7 +14,7 @@ export interface ButtonProps {
   theme?: ThemeName | Theme;
   disabled?: boolean;
   onClick?: () => void;
-  size?: buttonSize;
+  size?: ButtonSize;
 }
 
 interface StyleProps {

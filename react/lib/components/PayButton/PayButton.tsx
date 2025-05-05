@@ -19,7 +19,7 @@ import {
   setupAltpaymentSocket,
   setupTxsSocket,
   CryptoCurrency,
-  buttonSize
+  ButtonSize
 } from '../../util';
 import { PaymentDialog } from '../PaymentDialog';
 import { AltpaymentCoin, AltpaymentError, AltpaymentPair, AltpaymentShift } from '../../altpayment';
@@ -54,7 +54,7 @@ export interface PayButtonProps extends ButtonProps {
   autoClose?: boolean;
   disableAltpayment?:boolean
   contributionOffset?:number
-  size: buttonSize;
+  size: ButtonSize;
 }
 
 export const PayButton = (props: PayButtonProps): React.ReactElement => {
