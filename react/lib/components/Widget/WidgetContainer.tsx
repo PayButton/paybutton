@@ -275,7 +275,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
         handleNewTransaction(tx);
       });
     }, [newTxs, handleNewTransaction]);
-    
+
     return (
       <React.Fragment>
         <Widget
