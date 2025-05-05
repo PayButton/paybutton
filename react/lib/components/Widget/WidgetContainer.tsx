@@ -17,7 +17,7 @@ import {
   resolveNumber,
   shouldTriggerOnSuccess,
   getCurrencyObject,
-  isPropsTrue,
+  isPropsTrue
 } from '../../util';
 
 import Widget, { WidgetProps } from './Widget';
@@ -250,7 +250,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
         handleNewTransaction(tx);
       });
     }, [newTxs, handleNewTransaction]);
-    
+
     return (
       <React.Fragment>
         <Widget
