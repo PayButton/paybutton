@@ -373,7 +373,7 @@ const payButtonDefaultProps: PayButtonProps = {
   disabled: false,
   editable: false,
   autoClose: true,
-  size: 'md',
+  size: 'medium',
 };
 
 PayButton.defaultProps = payButtonDefaultProps;
