@@ -1,5 +1,4 @@
 import { lib, enc } from 'crypto-js';
-import { Blob } from 'buffer'
 
 // All the below variables are already encoded to HEX
 export const OP_RETURN_PREFIX_PUSHDATA = '04'; // \x04
