@@ -8,9 +8,10 @@ export const shouldTriggerOnSuccess = async (
     transaction: Transaction,
     currency: string,
     price: number,
+    randomSatoshis: number | boolean,
     disablePaymentId?: boolean,
     expectedPaymentId?: string,
-    expectedAmount?: BigNumber,
+    expectedAmount?: BigNumber | number,
     expectedOpReturn?: string,
     currencyObject?: CurrencyObject,
   ) => {
@@ -24,6 +25,9 @@ export const shouldTriggerOnSuccess = async (
     let isAmountValid = true;
 
     if(expectedAmount) {
+      if (typeof expectedAmount === 'number'){
+        expectedAmount = new BigNumber(expectedAmount);
+      }
       const transactionCurrency: Currency = getCurrencyTypeFromAddress(address);
       if (transactionCurrency !== currency) {
         if (currencyObject){
@@ -33,19 +37,23 @@ export const shouldTriggerOnSuccess = async (
           isAmountValid = false
         }
       } else {
-        isAmountValid = expectedAmount.isEqualTo(amount)
+        isAmountValid = expectedAmount.isEqualTo(amount);
       }
-    } 
-  
-    const paymentIdsMatch = expectedPaymentId === paymentId;
-    const isPaymentIdValid = disablePaymentId ? true : paymentIdsMatch;
+    }
+    let isPaymentIdValid = true
+    let isOpReturnValid = true 
 
-    const rawOpReturnIsEmptyOrUndefined = rawOpReturn === '' || rawOpReturn === undefined;
-    const opReturn = rawOpReturnIsEmptyOrUndefined ? message : rawOpReturn
-    const opReturnIsEmptyOrUndefined = opReturn === '' || opReturn === undefined;
+    if(!randomSatoshis || randomSatoshis === 0){
+      const paymentIdsMatch = expectedPaymentId === paymentId;
+      isPaymentIdValid = disablePaymentId ? true : paymentIdsMatch;
   
-    const opReturnsMatch = opReturn === expectedOpReturn;
-    const isOpReturnValid = expectedOpReturn ? opReturnsMatch : opReturnIsEmptyOrUndefined;
+      const rawOpReturnIsEmptyOrUndefined = rawOpReturn === '' || rawOpReturn === undefined;
+      const opReturn = rawOpReturnIsEmptyOrUndefined ? message : rawOpReturn
+      const opReturnIsEmptyOrUndefined = opReturn === '' || opReturn === undefined;
     
+      const opReturnsMatch = opReturn === expectedOpReturn;
+      isOpReturnValid = expectedOpReturn ? opReturnsMatch : opReturnIsEmptyOrUndefined;
+    }
+
     return isAmountValid && isPaymentIdValid && isOpReturnValid;
 };

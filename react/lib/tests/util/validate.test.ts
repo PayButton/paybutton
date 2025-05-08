@@ -30,6 +30,7 @@ describe('Validate Util Tests', () => {
           currency,
           price,
           false,
+          false,
           expectedPaymentId,
           expectedAmount,
           expectedOpReturn
@@ -58,6 +59,7 @@ describe('Validate Util Tests', () => {
           transaction,
           currency,
           price,
+          false,
           true,
           expectedPaymentId,
           expectedAmount,
@@ -88,6 +90,7 @@ describe('Validate Util Tests', () => {
           currency,
           price,
           false,
+          false,
           expectedPaymentId,
           expectedAmount,
           expectedOpReturn
@@ -116,6 +119,7 @@ describe('Validate Util Tests', () => {
           transaction,
           currency,
           price,
+          false,
           false,
           expectedPaymentId,
           expectedAmount,
@@ -146,6 +150,7 @@ describe('Validate Util Tests', () => {
           currency,
           price,
           false,
+          false,
           expectedPaymentId,
           expectedAmount,
           expectedOpReturn
@@ -174,6 +179,7 @@ describe('Validate Util Tests', () => {
           transaction,
           currency,
           price,
+          false,
           false,
           expectedPaymentId,
           expectedAmount,
@@ -204,6 +210,7 @@ describe('Validate Util Tests', () => {
           currency,
           price,
           false,
+          false,
           expectedPaymentId,
           expectedAmount,
           expectedOpReturn
@@ -232,6 +239,7 @@ describe('Validate Util Tests', () => {
           transaction,
           currency,
           price,
+          false,
           true,
           expectedPaymentId,
           expectedAmount,
@@ -261,6 +269,7 @@ describe('Validate Util Tests', () => {
           transaction,
           currency,
           price,
+          false,
           false,
           expectedPaymentId,
           expectedAmount,
@@ -294,6 +303,7 @@ describe('Validate Util Tests', () => {
           currency,
           price,
           false,
+          false,
           expectedPaymentId,
           expectedAmount,
           expectedOpReturn
@@ -322,6 +332,7 @@ describe('Validate Util Tests', () => {
           transaction,
           currency,
           price,
+          false,
           false,
           expectedPaymentId,
           expectedAmount,
@@ -356,6 +367,43 @@ describe('Validate Util Tests', () => {
           transaction,
           currency,
           price,
+          false,
+          false,
+          expectedPaymentId,
+          expectedAmount,
+          expectedOpReturn,
+          currencyObject
+        );
+  
+        expect(result).toBe(true);
+      });
+
+      it('true when randomSatoshis is true and paymentId does not match', async () => {
+        const transaction: Transaction = {
+          amount: '3152585.12',
+          paymentId: '1234',
+          message: 'test opReturn',
+          rawMessage: 'test opReturn',
+          hash: '',
+          timestamp: 0,
+          address: 'ecash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7quss2vxek',
+        };
+        const expectedPaymentId = '123';
+        const expectedAmount = resolveNumber('101.00');
+        const expectedOpReturn = 'test opReturn';
+        const price = 0.00003172;
+        const currency = 'USD';
+        const currencyObject: CurrencyObject = {
+            currency: 'USD',
+            string: '$100',
+            float: 100,
+        };
+      
+        const result = await shouldTriggerOnSuccess(
+          transaction,
+          currency,
+          price,
+          true,
           false,
           expectedPaymentId,
           expectedAmount,
