@@ -178,7 +178,7 @@ PaymentDialog.defaultProps = {
   disabled: false,
   editable: false,
   dialogOpen: true,
-  autoClose: true,
+  autoClose: false,
 };
 
 export default PaymentDialog;

@@ -268,7 +268,7 @@ const payButtonDefaultProps: PayButtonProps = {
   disableEnforceFocus: false,
   disabled: false,
   editable: false,
-  autoClose: true,
+  autoClose: false,
 };
 
 PayButton.defaultProps = payButtonDefaultProps;
