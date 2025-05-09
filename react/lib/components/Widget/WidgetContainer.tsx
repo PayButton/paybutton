@@ -184,9 +184,6 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
               );
             setSuccess(true);
             onSuccess?.(transaction);
-            setTimeout(() => {
-              setSuccess(false);
-            }, 3000);
           } else {
             onTransaction?.(transaction);
           }
