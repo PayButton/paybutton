@@ -17,8 +17,12 @@ const txsListener = (txsSocket: Socket, setNewTxs: Function, setDialogOpen?: Fun
     ) {
       if (setDialogOpen !== undefined) {
         setDialogOpen(true)
+        setTimeout(() => {
+          setNewTxs(unconfirmedTxs);
+        }, 700);
+      } else {
+        setNewTxs(unconfirmedTxs);
       }
-      setNewTxs(unconfirmedTxs);
     }
   });
 };
