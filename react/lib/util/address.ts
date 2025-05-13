@@ -49,7 +49,7 @@ const removeAddressPrefix = function (addressString: string): string {
 
 type NetworkSlugsType = 'ecash' | 'bitcoincash'
 
-const getAddressPrefix = function (addressString: string): NetworkSlugsType {
+export const getAddressPrefix = function (addressString: string): NetworkSlugsType {
   try {
     const format = xecaddr.detectAddressFormat(addressString)
     if (format === xecaddr.Format.Xecaddr) {
