@@ -103,6 +103,7 @@ const allowedProps = [
   'contributionOffset',
   'autoClose',
   'disableSound',
+  'transactionText',
 ];
 
 const requiredProps = [

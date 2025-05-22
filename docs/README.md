@@ -558,6 +558,35 @@ successText = "Thanks!"
 
 <!-- tabs:end -->
 
+## transaction-text
+
+> **The ‘transaction-text’ parameter specifies the text displayed when a new transaction occurs but the amount or OP_RETURN code are incorrect.**
+
+?> This parameter is optional. Default value is empty. Possible values are any string.
+
+**Example:**
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+transaction-text="New transaction!"
+```
+
+#### ** JavaScript **
+
+```javascript
+transactionText: 'New transaction!'
+```
+
+#### ** React **
+
+```react
+transactionText = "New transaction!"
+```
+
+<!-- tabs:end -->
+
 ## on-success
 
 > **The ‘on-success’ parameter specifies the callback function that runs upon successful payment.**
@@ -927,6 +956,8 @@ apiBaseUrl: 'https://paybutton.org'
 ```react
 apiBaseUrl = "https://paybutton.org"
 ```
+
+<!-- tabs:end -->
 
 ## disable-altpayment
 

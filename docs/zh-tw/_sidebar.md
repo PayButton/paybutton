@@ -14,6 +14,7 @@
   - [theme](/zh-tw/?id=theme)
   - [animation](/zh-tw/?id=animation)
   - [success-text](/zh-tw/?id=success-text)
+  - [ transaction-text](/zh-tw/?id=transaction-text)
   - [on-success](/zh-tw/?id=on-success)
   - [on-transaction](/zh-tw/?id=on-transaction)
   - [on-open](/zh-tw/?id=on-open)

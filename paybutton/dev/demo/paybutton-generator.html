@@ -119,9 +119,15 @@
               <input id="successText" v-model="paybuttonProps.successText" type="text">
             </div>
           </div>
-          <div class="form-input">
-            <label for="hoverText">Hover Text:</label>
-            <input id="hoverText" v-model="paybuttonProps.hoverText" type="text">
+          <div style="display: flex; justify-content: space-between; gap:10px">
+            <div class="form-input">
+              <label for="hoverText">Hover Text:</label>
+              <input id="hoverText" v-model="paybuttonProps.hoverText" type="text">
+            </div>
+            <div class="form-input">
+              <label for="transactionText">Transaction Text:</label>
+              <input id="transactionText" v-model="paybuttonProps.transactionText" type="text">
+            </div>
           </div>
           <div class="form-input">
             <label for="theme">Theme:</label>
@@ -206,6 +212,7 @@
             :on-success="mySuccessFuction"
             :on-transaction="myTransactionFuction"
             :disable-altpayment="paybuttonProps.disableAltpayment"
+            :transaction-text="paybuttonProps.transactionText"
             :op-return="paybuttonProps.opReturn">
           </div>
         </div>
@@ -238,6 +245,7 @@
             disableAltpayment: false,
             contributionOffset: undefined,
             opReturn:undefined,
+            transactiontext: '',
             onSuccess: mySuccessFuction,
             onTransaction: myTransactionFuction
           });

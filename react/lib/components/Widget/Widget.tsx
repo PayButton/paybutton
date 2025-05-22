@@ -78,7 +78,9 @@ export interface WidgetProps {
   shiftCompleted: boolean
   setShiftCompleted: Function;
   disableAltpayment?: boolean;
-  contributionOffset?: number
+  contributionOffset?: number;
+  newTxText?: string;
+  transactionText?: string;
 }
 
 interface StyleProps {
