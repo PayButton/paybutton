@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js";
 import { CRYPTO_CURRENCIES, FIAT_CURRENCIES } from "./constants"
 
 export type CurrencyObject = {
@@ -142,4 +143,15 @@ export interface BroadcastTxData {
   address: string
   txs: Transaction[]
   messageType: TxBroadcast
+}
+
+export interface CheckSuccessInfo {
+  currency: Currency
+  price: number
+  randomSatoshis: number | boolean
+  disablePaymentId?: boolean
+  expectedPaymentId?: string
+  expectedAmount?: BigNumber | number
+  expectedOpReturn?: string,
+  currencyObj?: CurrencyObject
 }

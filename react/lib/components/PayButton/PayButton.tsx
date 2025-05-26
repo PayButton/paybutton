@@ -176,6 +176,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
     }
     (async () => {
     if (txsSocket === undefined) {
+      const expectedAmount = currencyObj ? currencyObj?.float : undefined
       await setupTxsSocket({
         address: to,
         txsSocket,
@@ -183,7 +184,17 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
         wsBaseUrl,
         setTxsSocket,
         setNewTxs,
-        setDialogOpen
+        setDialogOpen,
+        checkSuccessInfo: {
+          currency,
+          price,
+          randomSatoshis: randomSatoshis ?? false,
+          disablePaymentId,
+          expectedAmount,
+          expectedOpReturn: opReturn,
+          expectedPaymentId: paymentId,
+          currencyObj,
+        }
       })
     }
     if (altpaymentSocket === undefined && useAltpayment) {

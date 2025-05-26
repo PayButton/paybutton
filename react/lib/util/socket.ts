@@ -2,11 +2,12 @@ import { io, Socket } from 'socket.io-client';
 import { AltpaymentCoin, AltpaymentError, AltpaymentPair, AltpaymentShift } from '../altpayment';
 import config from '../../../paybutton-config.json';
 
-import { BroadcastTxData } from './types';
+import { BroadcastTxData, CheckSuccessInfo } from './types';
 import { getAddressDetails } from './api-client';
 import { getAddressPrefixed } from './address';
+import { shouldTriggerOnSuccess } from './validate';
 
-const txsListener = (txsSocket: Socket, setNewTxs: Function, setDialogOpen?: Function): void => {
+const txsListener = (txsSocket: Socket, setNewTxs: Function, setDialogOpen?: Function, checkSuccessInfo?: CheckSuccessInfo): void => {
   txsSocket.on('incoming-txs', (broadcastedTxData: BroadcastTxData) => {
     const unconfirmedTxs = broadcastedTxData.txs.filter(
       tx => tx.confirmed === false,
@@ -15,11 +16,26 @@ const txsListener = (txsSocket: Socket, setNewTxs: Function, setDialogOpen?: Fun
       broadcastedTxData.messageType === 'NewTx' &&
       unconfirmedTxs.length !== 0
     ) {
-      if (setDialogOpen !== undefined) {
-        setDialogOpen(true)
-        setTimeout(() => {
-          setNewTxs(unconfirmedTxs);
-        }, 700);
+      if (setDialogOpen !== undefined && checkSuccessInfo !== undefined) {
+        for (const tx of unconfirmedTxs) {
+          if (shouldTriggerOnSuccess(
+            tx,
+            checkSuccessInfo.currency,
+            checkSuccessInfo.price,
+            checkSuccessInfo.randomSatoshis,
+            checkSuccessInfo.disablePaymentId,
+            checkSuccessInfo.expectedPaymentId,
+            checkSuccessInfo.expectedAmount,
+            checkSuccessInfo.expectedOpReturn,
+            checkSuccessInfo.currencyObj
+          )) {
+            setDialogOpen(true)
+            setTimeout(() => {
+              setNewTxs(unconfirmedTxs);
+            }, 700);
+            break
+          }
+        }
       } else {
         setNewTxs(unconfirmedTxs);
       }
@@ -104,6 +120,7 @@ interface SetupTxsSocketParams {
   setTxsSocket: Function
   setNewTxs: Function
   setDialogOpen?: Function
+  checkSuccessInfo?: CheckSuccessInfo
 }
 
 export const setupTxsSocket = async (params: SetupTxsSocketParams): Promise<void> => {
@@ -117,5 +134,5 @@ export const setupTxsSocket = async (params: SetupTxsSocketParams): Promise<void
     query: { addresses: [getAddressPrefixed(params.address)] },
   });
   params.setTxsSocket(newSocket);
-  txsListener(newSocket, params.setNewTxs, params.setDialogOpen);
+  txsListener(newSocket, params.setNewTxs, params.setDialogOpen, params.checkSuccessInfo);
 }
