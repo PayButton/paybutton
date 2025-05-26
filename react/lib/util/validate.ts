@@ -4,7 +4,7 @@ import { resolveNumber } from "./number";
 import { Currency, CurrencyObject, Transaction } from "./types";
 import { DECIMALS } from "./constants";
 
-export const shouldTriggerOnSuccess = async (
+export const shouldTriggerOnSuccess = (
     transaction: Transaction,
     currency: string,
     price: number,
@@ -19,9 +19,9 @@ export const shouldTriggerOnSuccess = async (
       paymentId,
       rawMessage:rawOpReturn,
       message,
-      amount, 
-      address } = transaction; 
-      
+      amount,
+      address } = transaction;
+
     let isAmountValid = true;
 
     if(expectedAmount) {
@@ -41,16 +41,16 @@ export const shouldTriggerOnSuccess = async (
       }
     }
     let isPaymentIdValid = true
-    let isOpReturnValid = true 
+    let isOpReturnValid = true
 
     if(!randomSatoshis || randomSatoshis === 0){
       const paymentIdsMatch = expectedPaymentId === paymentId;
       isPaymentIdValid = disablePaymentId ? true : paymentIdsMatch;
-  
+
       const rawOpReturnIsEmptyOrUndefined = rawOpReturn === '' || rawOpReturn === undefined;
       const opReturn = rawOpReturnIsEmptyOrUndefined ? message : rawOpReturn
       const opReturnIsEmptyOrUndefined = opReturn === '' || opReturn === undefined;
-    
+
       const opReturnsMatch = opReturn === expectedOpReturn;
       isOpReturnValid = expectedOpReturn ? opReturnsMatch : opReturnIsEmptyOrUndefined;
     }

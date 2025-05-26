@@ -8,7 +8,7 @@ global.fetch = jest.fn();
 
 describe('Validate Util Tests', () => {
     describe('shouldTriggerOnSuccess', () => {
-  
+
       it('true when amount, opReturn, and paymentId match the ones received in transaction', async () => {
         const transaction: Transaction = {
           amount: '100.00',
@@ -24,8 +24,8 @@ describe('Validate Util Tests', () => {
         const expectedPaymentId = '123';
         const price = 1;
         const currency = 'XEC';
-  
-        const result = await shouldTriggerOnSuccess(
+
+        const result = shouldTriggerOnSuccess(
           transaction,
           currency,
           price,
@@ -35,10 +35,10 @@ describe('Validate Util Tests', () => {
           expectedAmount,
           expectedOpReturn
         );
-  
+
         expect(result).toBe(true);
       });
-  
+
       it('true when paymentId is undefined and received paymentId is empty', async () => {
         const transaction: Transaction = {
           amount: '101.00',
@@ -54,8 +54,8 @@ describe('Validate Util Tests', () => {
         const expectedOpReturn = 'test opReturn message';
         const price = 1;
         const currency = 'XEC';
-  
-        const result = await shouldTriggerOnSuccess(
+
+        const result = shouldTriggerOnSuccess(
           transaction,
           currency,
           price,
@@ -65,10 +65,10 @@ describe('Validate Util Tests', () => {
           expectedAmount,
           expectedOpReturn
         );
-  
+
         expect(result).toBe(true);
       });
-  
+
       it('true when both expected and received paymentId are empty', async () => {
         const transaction: Transaction = {
           amount: '101.00',
@@ -84,8 +84,8 @@ describe('Validate Util Tests', () => {
         const expectedOpReturn = 'test opReturn message';
         const price = 1;
         const currency = 'XEC';
-  
-        const result = await shouldTriggerOnSuccess(
+
+        const result = shouldTriggerOnSuccess(
           transaction,
           currency,
           price,
@@ -95,10 +95,10 @@ describe('Validate Util Tests', () => {
           expectedAmount,
           expectedOpReturn
         );
-  
+
         expect(result).toBe(true);
       });
-  
+
       it('false when paymentId does not match received paymentId', async () => {
         const transaction: Transaction = {
           amount: '100.00',
@@ -114,8 +114,8 @@ describe('Validate Util Tests', () => {
         const expectedOpReturn = 'test opReturn message';
         const price = 1;
         const currency = 'XEC';
-  
-        const result = await shouldTriggerOnSuccess(
+
+        const result = shouldTriggerOnSuccess(
           transaction,
           currency,
           price,
@@ -125,10 +125,10 @@ describe('Validate Util Tests', () => {
           expectedAmount,
           expectedOpReturn
         );
-  
+
         expect(result).toBe(false);
       });
-  
+
       it('false when amount does not match received amount', async () => {
         const transaction: Transaction = {
           amount: '101.00',
@@ -144,8 +144,8 @@ describe('Validate Util Tests', () => {
         const expectedOpReturn = 'test opReturn message';
         const price = 1;
         const currency = 'XEC';
-  
-        const result = await shouldTriggerOnSuccess(
+
+        const result = shouldTriggerOnSuccess(
           transaction,
           currency,
           price,
@@ -155,10 +155,10 @@ describe('Validate Util Tests', () => {
           expectedAmount,
           expectedOpReturn
         );
-  
+
         expect(result).toBe(false);
       });
-  
+
       it('false when opReturn message does not match received message', async () => {
         const transaction: Transaction = {
           amount: '101.00',
@@ -174,8 +174,8 @@ describe('Validate Util Tests', () => {
         const expectedOpReturn = 'test opReturn';
         const price = 1;
         const currency = 'XEC';
-  
-        const result = await shouldTriggerOnSuccess(
+
+        const result = shouldTriggerOnSuccess(
           transaction,
           currency,
           price,
@@ -185,10 +185,10 @@ describe('Validate Util Tests', () => {
           expectedAmount,
           expectedOpReturn
         );
-  
+
         expect(result).toBe(false);
       });
-  
+
       it('should ignore amount validation when expected amount is undefined', async () => {
         const transaction: Transaction = {
           amount: '101.00',
@@ -204,8 +204,8 @@ describe('Validate Util Tests', () => {
         const expectedOpReturn = 'test opReturn';
         const price = 1;
         const currency = 'XEC';
-  
-        const result = await shouldTriggerOnSuccess(
+
+        const result = shouldTriggerOnSuccess(
           transaction,
           currency,
           price,
@@ -215,10 +215,10 @@ describe('Validate Util Tests', () => {
           expectedAmount,
           expectedOpReturn
         );
-  
+
         expect(result).toBe(true);
       });
-  
+
       it('should ignore paymentId validation when disablePaymentId is true', async () => {
         const transaction: Transaction = {
           amount: '101.00',
@@ -234,8 +234,8 @@ describe('Validate Util Tests', () => {
         const expectedOpReturn = 'test opReturn';
         const price = 1;
         const currency = 'XEC';
-  
-        const result = await shouldTriggerOnSuccess(
+
+        const result = shouldTriggerOnSuccess(
           transaction,
           currency,
           price,
@@ -245,10 +245,10 @@ describe('Validate Util Tests', () => {
           expectedAmount,
           expectedOpReturn
         );
-  
+
         expect(result).toBe(true);
       });
-  
+
       it('false when opReturn is undefined and received opReturn message is not empty or undefined', async () => {
         const transaction: Transaction = {
           amount: '101.00',
@@ -264,8 +264,8 @@ describe('Validate Util Tests', () => {
         const expectedOpReturn = undefined;
         const price = 1;
         const currency = 'XEC';
-  
-        const result = await shouldTriggerOnSuccess(
+
+        const result = shouldTriggerOnSuccess(
           transaction,
           currency,
           price,
@@ -275,10 +275,10 @@ describe('Validate Util Tests', () => {
           expectedAmount,
           expectedOpReturn
         );
-  
+
         expect(result).toBe(false);
       });
-  
+
       it('true when opReturn is in a different format than received opReturn message but rawMessage matches expected opReturn', async () => {
         const transaction: Transaction = {
           amount: '101.00',
@@ -297,8 +297,8 @@ describe('Validate Util Tests', () => {
         const expectedOpReturn = 'classOf=2013 bullYears=2013|2017|2021';
         const price = 1;
         const currency = 'XEC';
-  
-        const result = await shouldTriggerOnSuccess(
+
+        const result = shouldTriggerOnSuccess(
           transaction,
           currency,
           price,
@@ -308,10 +308,10 @@ describe('Validate Util Tests', () => {
           expectedAmount,
           expectedOpReturn
         );
-  
+
         expect(result).toBe(true);
       });
-  
+
       it('false when currency is USD and currencyObject is missing', async () => {
         const transaction: Transaction = {
           amount: '101.00',
@@ -327,8 +327,8 @@ describe('Validate Util Tests', () => {
         const expectedOpReturn = 'test opReturn';
         const price = 1;
         const currency = 'USD';
-  
-        const result = await shouldTriggerOnSuccess(
+
+        const result = shouldTriggerOnSuccess(
           transaction,
           currency,
           price,
@@ -338,10 +338,10 @@ describe('Validate Util Tests', () => {
           expectedAmount,
           expectedOpReturn
         );
-  
+
         expect(result).toBe(false);
       });
-  
+
       it('true when currency is USD and currencyObject is provided', async () => {
         const transaction: Transaction = {
           amount: '3152585.12',
@@ -362,8 +362,8 @@ describe('Validate Util Tests', () => {
             string: '$100',
             float: 100,
         };
-      
-        const result = await shouldTriggerOnSuccess(
+
+        const result = shouldTriggerOnSuccess(
           transaction,
           currency,
           price,
@@ -374,7 +374,7 @@ describe('Validate Util Tests', () => {
           expectedOpReturn,
           currencyObject
         );
-  
+
         expect(result).toBe(true);
       });
 
@@ -398,8 +398,8 @@ describe('Validate Util Tests', () => {
             string: '$100',
             float: 100,
         };
-      
-        const result = await shouldTriggerOnSuccess(
+
+        const result = shouldTriggerOnSuccess(
           transaction,
           currency,
           price,
@@ -410,9 +410,9 @@ describe('Validate Util Tests', () => {
           expectedOpReturn,
           currencyObject
         );
-  
+
         expect(result).toBe(true);
       });
     });
   });
-  
+

@@ -163,7 +163,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
           const expectedAmount = currencyObj ? currencyObj?.float : undefined
           const receivedAmount = resolveNumber(transaction.amount);
 
-          if (await shouldTriggerOnSuccess(
+          if (shouldTriggerOnSuccess(
             transaction,
             currency,
             thisPrice,
