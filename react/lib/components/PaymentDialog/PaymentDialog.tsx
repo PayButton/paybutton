@@ -63,6 +63,7 @@ export interface PaymentDialogProps extends ButtonProps {
   newTxs?: Transaction[]
   autoClose?: boolean;
   disableSound?: boolean;
+  transactionText?: string
 }
 
 export const PaymentDialog = (
@@ -124,7 +125,8 @@ export const PaymentDialog = (
     newTxs,
     setNewTxs,
     setAddressType,
-    disableSound
+    disableSound,
+    transactionText,
   } = Object.assign({}, PaymentDialog.defaultProps, props);
 
   const handleWidgetClose = (): void => {
@@ -231,6 +233,7 @@ export const PaymentDialog = (
           setNewTxs={setNewTxs}
           newTxs={newTxs}
           disableSound={disableSound}
+          transactionText={transactionText}
           foot={success && (
             <ButtonComponent
               onClick={handleWidgetClose}

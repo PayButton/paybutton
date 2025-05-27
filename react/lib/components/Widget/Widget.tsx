@@ -93,6 +93,8 @@ export interface WidgetProps {
   altpaymentError?: AltpaymentError;
   addressType?: Currency,
   setAddressType?: Function,
+  newTxText?: string;
+  transactionText?: string;
 }
 
 interface StyleProps {
