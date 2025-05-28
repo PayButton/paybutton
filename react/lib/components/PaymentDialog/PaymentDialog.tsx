@@ -4,6 +4,8 @@ import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
 import Button, { ButtonProps } from '../Button/Button';
 import { WidgetContainer } from '../Widget/WidgetContainer';
 import { Currency, CurrencyObject, Transaction, isPropsTrue, isValidCashAddress, isValidXecAddress } from '../../util';
+import { Socket } from 'socket.io-client';
+import { AltpaymentCoin, AltpaymentError, AltpaymentPair, AltpaymentShift } from '../../altpayment';
 
 export interface PaymentDialogProps extends ButtonProps {
   to: string;
@@ -26,6 +28,7 @@ export interface PaymentDialogProps extends ButtonProps {
   disableEnforceFocus?: boolean;
   editable?: boolean;
   dialogOpen: boolean;
+  setDialogOpen: Function;
   disableScrollLock?: boolean;
   active?: boolean;
   container?: HTMLElement;
@@ -35,9 +38,31 @@ export interface PaymentDialogProps extends ButtonProps {
   wsBaseUrl?: string;
   apiBaseUrl?: string;
   disableAltpayment?: boolean;
-  disableSound?: boolean;
+  contributionOffset?: number;
+  useAltpayment: boolean
+  setUseAltpayment: Function;
+  txsSocket?: Socket;
+  setTxsSocket: Function;
+  altpaymentSocket?: Socket;
+  setAltpaymentSocket: Function;
+  setCoins: Function;
+  coins: AltpaymentCoin[];
+  setCoinPair: Function;
+  coinPair?: AltpaymentPair;
+  setLoadingPair: Function;
+  loadingPair: boolean;
+  setAltpaymentShift: Function;
+  altpaymentShift?: AltpaymentShift;
+  setLoadingShift: Function;
+  loadingShift: boolean;
+  setAltpaymentError: Function;
+  altpaymentError?: AltpaymentError;
+  addressType: Currency,
+  setAddressType: Function,
+  setNewTxs: Function,
+  newTxs?: Transaction[]
   autoClose?: boolean;
-  contributionOffset?:number;
+  disableSound?: boolean;
   transactionText?: string
 }
 
@@ -70,6 +95,7 @@ export const PaymentDialog = (
     disableEnforceFocus,
     editable,
     dialogOpen,
+    setDialogOpen,
     container,
     wsBaseUrl,
     apiBaseUrl,
@@ -77,6 +103,28 @@ export const PaymentDialog = (
     disableAltpayment,
     contributionOffset,
     autoClose,
+    useAltpayment,
+    setUseAltpayment,
+    setTxsSocket,
+    txsSocket,
+    setAltpaymentSocket,
+    altpaymentSocket,
+    setCoins,
+    coins,
+    setCoinPair,
+    coinPair,
+    setLoadingPair,
+    loadingPair,
+    setAltpaymentShift,
+    altpaymentShift,
+    setLoadingShift,
+    loadingShift,
+    setAltpaymentError,
+    altpaymentError,
+    addressType,
+    newTxs,
+    setNewTxs,
+    setAddressType,
     disableSound,
     transactionText,
   } = Object.assign({}, PaymentDialog.defaultProps, props);
@@ -86,6 +134,9 @@ export const PaymentDialog = (
     setSuccess(false);
   };
   const handleSuccess = (transaction: Transaction): void => {
+    if (dialogOpen === false) {
+      setDialogOpen(true)
+    }
     setSuccess(true);
     onSuccess?.(transaction);
     setTimeout(() => {
@@ -131,6 +182,7 @@ export const PaymentDialog = (
         transitionDuration={{ enter: 300, exit: 300 }}
       >
         <WidgetContainer
+          isChild={true}
           ButtonComponent={ButtonComponent}
           active={dialogOpen}
           to={to}
@@ -158,6 +210,28 @@ export const PaymentDialog = (
           hoverText={hoverText}
           disableAltpayment={disableAltpayment}
           contributionOffset={contributionOffset}
+          useAltpayment={useAltpayment}
+          setUseAltpayment={setUseAltpayment}
+          setTxsSocket={setTxsSocket}
+          txsSocket={txsSocket}
+          setAltpaymentSocket={setAltpaymentSocket}
+          altpaymentSocket={altpaymentSocket}
+          setCoins={setCoins}
+          coins={coins}
+          setCoinPair={setCoinPair}
+          coinPair={coinPair}
+          setLoadingPair={setLoadingPair}
+          loadingPair={loadingPair}
+          setAltpaymentShift={setAltpaymentShift}
+          altpaymentShift={altpaymentShift}
+          setLoadingShift={setLoadingShift}
+          loadingShift={loadingShift}
+          setAltpaymentError={setAltpaymentError}
+          altpaymentError={altpaymentError}
+          addressType={addressType}
+          setAddressType={setAddressType}
+          setNewTxs={setNewTxs}
+          newTxs={newTxs}
           disableSound={disableSound}
           transactionText={transactionText}
           foot={success && (

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
 import Button, { ButtonProps } from '../Button/Button';
+import { Socket } from 'socket.io-client';
 
 import {
   Transaction,
@@ -14,9 +15,13 @@ import {
   CurrencyObject,
   generatePaymentId,
   getCurrencyObject,
-  isPropsTrue
+  isPropsTrue,
+  setupAltpaymentSocket,
+  setupTxsSocket,
+  CryptoCurrency
 } from '../../util';
 import { PaymentDialog } from '../PaymentDialog';
+import { AltpaymentCoin, AltpaymentError, AltpaymentPair, AltpaymentShift } from '../../altpayment';
 export interface PayButtonProps extends ButtonProps {
   to: string;
   amount?: number | string;
@@ -55,10 +60,20 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
   const [disabled, setDisabled] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [amount, setAmount] = useState(props.amount);
+  const [txsSocket, setTxsSocket] = useState<Socket | undefined>(undefined);
+  const [altpaymentSocket, setAltpaymentSocket] = useState<Socket | undefined>(undefined);
+  const [useAltpayment, setUseAltpayment] = useState(false);
+  const [coins, setCoins] = useState<AltpaymentCoin[]>([]);
+  const [loadingPair, setLoadingPair] = useState<boolean>(false);
+  const [coinPair, setCoinPair] = useState<AltpaymentPair | undefined>();
+  const [loadingShift, setLoadingShift] = useState(false);
+  const [altpaymentShift, setAltpaymentShift] = useState<AltpaymentShift | undefined>();
+  const [altpaymentError, setAltpaymentError] = useState<AltpaymentError | undefined>(undefined);
 
   const [currencyObj, setCurrencyObj] = useState<CurrencyObject | undefined>();
   const [cryptoAmount, setCryptoAmount] = useState<string>();
   const [price, setPrice] = useState(0);
+  const [newTxs, setNewTxs] = useState<Transaction[] | undefined>();
   const priceRef = useRef<number>(price);
   const cryptoAmountRef = useRef<string | undefined>(cryptoAmount);
 
@@ -90,6 +105,9 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
   } = Object.assign({}, PayButton.defaultProps, props);
 
   const [paymentId] = useState(!disablePaymentId ? generatePaymentId(8) : undefined);
+  const [addressType, setAddressType] = useState<CryptoCurrency>(
+    getCurrencyTypeFromAddress(to),
+  );
 
   useEffect(() => {
     priceRef.current = price;
@@ -153,6 +171,61 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
       setErrorMsg('Invalid Recipient');
     }
   }, [to]);
+
+  useEffect(() => {
+    if (dialogOpen === false) {
+      return
+    }
+    (async () => {
+    if (txsSocket === undefined) {
+      const expectedAmount = currencyObj ? currencyObj?.float : undefined
+      await setupTxsSocket({
+        address: to,
+        txsSocket,
+        apiBaseUrl,
+        wsBaseUrl,
+        setTxsSocket,
+        setNewTxs,
+        setDialogOpen,
+        checkSuccessInfo: {
+          currency,
+          price,
+          randomSatoshis: randomSatoshis ?? false,
+          disablePaymentId,
+          expectedAmount,
+          expectedOpReturn: opReturn,
+          expectedPaymentId: paymentId,
+          currencyObj,
+        }
+      })
+    }
+    if (altpaymentSocket === undefined && useAltpayment) {
+      await setupAltpaymentSocket({
+        addressType,
+        altpaymentSocket,
+        wsBaseUrl,
+        setAltpaymentSocket,
+        setCoins,
+        setCoinPair,
+        setLoadingPair,
+        setAltpaymentShift,
+        setLoadingShift,
+        setAltpaymentError,
+      })
+    }
+    })()
+
+    return () => {
+      if (txsSocket !== undefined) {
+        txsSocket.disconnect();
+        setTxsSocket(undefined);
+      }
+      if (altpaymentSocket !== undefined) {
+        altpaymentSocket.disconnect();
+        setAltpaymentSocket(undefined);
+      }
+    }
+  }, [dialogOpen, useAltpayment]);
 
   useEffect(() => {
     if (dialogOpen === false && props.amount && currency) {
@@ -236,6 +309,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
         editable={editable}
         goalAmount={goalAmount}
         dialogOpen={dialogOpen}
+        setDialogOpen={setDialogOpen}
         onClose={handleCloseDialog}
         wsBaseUrl={wsBaseUrl}
         apiBaseUrl={apiBaseUrl}
@@ -243,6 +317,28 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
         disableAltpayment={disableAltpayment}
         contributionOffset={contributionOffset}
         autoClose={autoClose}
+        useAltpayment={useAltpayment}
+        setUseAltpayment={setUseAltpayment}
+        setTxsSocket={setTxsSocket}
+        txsSocket={txsSocket}
+        setAltpaymentSocket={setAltpaymentSocket}
+        altpaymentSocket={altpaymentSocket}
+        setCoins={setCoins}
+        coins={coins}
+        setCoinPair={setCoinPair}
+        coinPair={coinPair}
+        setLoadingPair={setLoadingPair}
+        loadingPair={loadingPair}
+        setAltpaymentShift={setAltpaymentShift}
+        altpaymentShift={altpaymentShift}
+        setLoadingShift={setLoadingShift}
+        loadingShift={loadingShift}
+        setAltpaymentError={setAltpaymentError}
+        altpaymentError={altpaymentError}
+        addressType={addressType}
+        setAddressType={setAddressType}
+        setNewTxs={setNewTxs}
+        newTxs={newTxs}
         disableSound={disableSound}
         transactionText={transactionText}
       />

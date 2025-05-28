@@ -1,6 +1,6 @@
 import { OptionsObject, SnackbarProvider, useSnackbar } from 'notistack';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { AltpaymentShift, getAltpaymentClient } from '../../altpayment';
+import { getAltpaymentClient } from '../../altpayment';
 
 import successSound from '../../assets/success.mp3.json';
 
@@ -22,7 +22,7 @@ import {
 import Widget, { WidgetProps } from './Widget';
 
 export interface WidgetContainerProps
-  extends Omit<WidgetProps, 'success' | 'setNewTxs' | 'setCurrencyObject' | 'setAltpaymentShift' | 'useAltpayment' | 'setUseAltpayment' | 'shiftCompleted' | 'setShiftCompleted'  > {
+  extends Omit<WidgetProps, 'success' | 'setCurrencyObject' | 'shiftCompleted' | 'setShiftCompleted'  > {
   active?: boolean;
   amount?: number;
   opReturn?: string;
@@ -46,6 +46,7 @@ export interface WidgetContainerProps
   successText?: string;
   disableAltpayment?: boolean
   contributionOffset?: number
+  setNewTxs: Function
   disableSound?: boolean
   transactionText?: string
 }
@@ -114,6 +115,12 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
       hoverText,
       disableAltpayment,
       contributionOffset,
+      altpaymentShift,
+      setAltpaymentShift,
+      newTxs,
+      setNewTxs,
+      txsSocket,
+      isChild,
       disableSound,
       transactionText,
       ...widgetProps
@@ -136,9 +143,6 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
     const [success, setSuccess] = useState(false);
     const { enqueueSnackbar } = useSnackbar();
 
-    const [newTxs, setNewTxs] = useState<Transaction[] | undefined>();
-    const [useAltpayment, setUseAltpayment] = useState(false);
-    const [altpaymentShift, setAltpaymentShift] = useState<AltpaymentShift | undefined>();
     const [shiftCompleted, setShiftCompleted] = useState(false);
 
     const paymentClient = getAltpaymentClient()
@@ -170,7 +174,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
           const receivedAmount = resolveNumber(transaction.amount);
           const currencyTicker = getCurrencyTypeFromAddress(to);
 
-          if (await shouldTriggerOnSuccess(
+          if (shouldTriggerOnSuccess(
             transaction,
             currency,
             thisPrice,
@@ -272,6 +276,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
       <React.Fragment>
         <Widget
           to={to}
+          isChild={isChild}
           {...widgetProps}
           amount={amount}
           setAmount={setAmount}
@@ -289,16 +294,15 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
           success={success}
           disabled={disabled}
           editable={editable}
-          setNewTxs={setNewTxs}
           newTxs={newTxs}
+          setNewTxs={setNewTxs}
+          txsSocket={txsSocket}
           wsBaseUrl={wsBaseUrl}
           apiBaseUrl={apiBaseUrl}
           successText={successText}
           hoverText={hoverText}
           altpaymentShift={altpaymentShift}
           setAltpaymentShift={setAltpaymentShift}
-          useAltpayment={useAltpayment}
-          setUseAltpayment={setUseAltpayment}
           shiftCompleted={shiftCompleted}
           setShiftCompleted={setShiftCompleted}
           disableAltpayment={disableAltpayment}
