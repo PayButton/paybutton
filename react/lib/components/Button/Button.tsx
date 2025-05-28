@@ -15,17 +15,19 @@ export interface ButtonProps {
   disabled?: boolean;
   onClick?: () => void;
   size?: ButtonSize;
+  sizeScaleAlreadyApplied?: boolean;
 }
 
 interface StyleProps {
   animation: animation;
   theme: Theme;
   size: ButtonProps['size'];
+  sizeScaleAlreadyApplied: ButtonProps['sizeScaleAlreadyApplied'];
 }
 
 const useStyles = makeStyles({
   
-  container: ({ size }: StyleProps) => {
+  container: ({ size, sizeScaleAlreadyApplied }: StyleProps) => {
     const getScale = (): number => {
       switch (size) {
         case 'xs': 
@@ -47,11 +49,14 @@ const useStyles = makeStyles({
 
     const scale = getScale();
 
+    if (sizeScaleAlreadyApplied) {
+      return {
+        fontSize: '0.8rem !important',
+      }
+    }
     return {
-      display: 'inline-block',
       transform: `scale(${scale})`,
       fontSize: '0.8rem !important',
-      marginBottom: `${(scale - 1) * 2.5}em`,
     };
   },
   button: ({ theme, animation }: StyleProps): CreateCSSProperties => {
@@ -109,7 +114,7 @@ const useStyles = makeStyles({
 });
 
 export const Button = (props: ButtonProps): React.ReactElement => {
-  const { animation, text, hoverText, disabled, size } = Object.assign(
+  const { animation, text, hoverText, disabled, size, sizeScaleAlreadyApplied } = Object.assign(
     {},
     Button.defaultProps,
     props,
@@ -121,7 +126,7 @@ export const Button = (props: ButtonProps): React.ReactElement => {
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   const theme = useTheme(props.theme);
-  const styleProps: StyleProps = { animation, theme, size };
+  const styleProps: StyleProps = { animation, theme, size, sizeScaleAlreadyApplied };
   const classes = useStyles(styleProps);
 
   useLayoutEffect(() => {
@@ -175,6 +180,7 @@ const buttonDefaultProps: ButtonProps = {
   hoverText: 'Send Payment',
   disabled: false,
   size: 'medium',
+  sizeScaleAlreadyApplied: false,
 };
 
 Button.defaultProps = buttonDefaultProps;

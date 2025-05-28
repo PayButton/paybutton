@@ -55,6 +55,7 @@ export interface PayButtonProps extends ButtonProps {
   disableAltpayment?:boolean
   contributionOffset?:number
   size: ButtonSize;
+  sizeScaleAlreadyApplied: boolean;
 }
 
 export const PayButton = (props: PayButtonProps): React.ReactElement => {
@@ -104,7 +105,8 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
     autoClose,
     disableSound,
     transactionText,
-    size
+    size,
+    sizeScaleAlreadyApplied
   } = Object.assign({}, PayButton.defaultProps, props);
 
   const [paymentId] = useState(!disablePaymentId ? generatePaymentId(8) : undefined);
@@ -288,6 +290,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
         hoverText={hoverText}
         disabled={disabled}
         size={size}
+        sizeScaleAlreadyApplied={sizeScaleAlreadyApplied}
       />
       <PaymentDialog
         disableEnforceFocus={disableEnforceFocus}
@@ -374,6 +377,7 @@ const payButtonDefaultProps: PayButtonProps = {
   editable: false,
   autoClose: false,
   size: 'md',
+  sizeScaleAlreadyApplied: false,
 };
 
 PayButton.defaultProps = payButtonDefaultProps;
