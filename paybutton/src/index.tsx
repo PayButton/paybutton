@@ -225,6 +225,38 @@ function findAndRender<T>(className: string, Component: React.ComponentType<any>
 
       //    el.classList.remove(className);
 
+      if (attributes.size) {
+        const size = attributes.size.toLowerCase();
+
+        const getScale = (): number => {
+          switch (size) {
+            case 'xs':
+            case 'extrasmall':
+              return 0.75;
+            case 'sm':
+            case 'small':
+              return 0.85;
+            case 'lg':
+            case 'large':
+              return 1.20;
+            case 'xl':
+            case 'extralarge':
+              return 1.40;
+            default:
+              return 1;
+          }
+        };
+
+        const scale = getScale();
+
+        Object.assign(el.style, {
+          transform: `scale(${scale})`,
+        });
+
+        props.sizeScaleAlreadyApplied = true
+      }
+
+
       render(<Component {...props} />, el)
     });
 }

@@ -16,7 +16,6 @@ import {
   isValidCurrency,
   resolveNumber,
   shouldTriggerOnSuccess,
-  getCurrencyObject,
   isPropsTrue,
   ButtonSize,
 } from '../../util';
