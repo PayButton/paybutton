@@ -3,10 +3,9 @@ import React, { useState, useEffect } from 'react';
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
 import Button, { ButtonProps } from '../Button/Button';
 import { WidgetContainer } from '../Widget/WidgetContainer';
-import { Currency, CurrencyObject, Transaction, isPropsTrue, isValidCashAddress, isValidXecAddress } from '../../util';
+import { Currency, CurrencyObject, Transaction, ButtonSize, isPropsTrue, isValidCashAddress, isValidXecAddress } from '../../util';
 import { Socket } from 'socket.io-client';
-import { AltpaymentCoin, AltpaymentError, AltpaymentPair, AltpaymentShift } from '../../altpayment';
-
+import { AltpaymentCoin, AltpaymentPair, AltpaymentShift, AltpaymentError } from '../../altpayment';
 export interface PaymentDialogProps extends ButtonProps {
   to: string;
   amount?: number | string;
@@ -64,6 +63,7 @@ export interface PaymentDialogProps extends ButtonProps {
   autoClose?: boolean;
   disableSound?: boolean;
   transactionText?: string
+  size: ButtonSize;
 }
 
 export const PaymentDialog = (

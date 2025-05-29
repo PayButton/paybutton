@@ -18,7 +18,8 @@ import {
   isPropsTrue,
   setupAltpaymentSocket,
   setupTxsSocket,
-  CryptoCurrency
+  CryptoCurrency,
+  ButtonSize
 } from '../../util';
 import { PaymentDialog } from '../PaymentDialog';
 import { AltpaymentCoin, AltpaymentError, AltpaymentPair, AltpaymentShift } from '../../altpayment';
@@ -48,11 +49,13 @@ export interface PayButtonProps extends ButtonProps {
   onClose?: (success?: boolean, paymentId?:string) => void;
   wsBaseUrl?: string;
   apiBaseUrl?: string;
-  disableSound?: boolean
-  autoClose?: boolean;
-  disableAltpayment?:boolean;
-  contributionOffset?:number;
   transactionText?: string;
+  disableSound?: boolean;
+  autoClose?: boolean;
+  disableAltpayment?:boolean
+  contributionOffset?:number
+  size: ButtonSize;
+  sizeScaleAlreadyApplied: boolean;
 }
 
 export const PayButton = (props: PayButtonProps): React.ReactElement => {
@@ -102,6 +105,8 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
     autoClose,
     disableSound,
     transactionText,
+    size,
+    sizeScaleAlreadyApplied
   } = Object.assign({}, PayButton.defaultProps, props);
 
   const [paymentId] = useState(!disablePaymentId ? generatePaymentId(8) : undefined);
@@ -284,6 +289,8 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
         text={text}
         hoverText={hoverText}
         disabled={disabled}
+        size={size}
+        sizeScaleAlreadyApplied={sizeScaleAlreadyApplied}
       />
       <PaymentDialog
         disableEnforceFocus={disableEnforceFocus}
@@ -341,6 +348,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
         newTxs={newTxs}
         disableSound={disableSound}
         transactionText={transactionText}
+        size={size}
       />
       {errorMsg && (
         <p
@@ -368,6 +376,8 @@ const payButtonDefaultProps: PayButtonProps = {
   disabled: false,
   editable: false,
   autoClose: true,
+  size: 'medium',
+  sizeScaleAlreadyApplied: false,
 };
 
 PayButton.defaultProps = payButtonDefaultProps;
