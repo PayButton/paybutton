@@ -47,21 +47,13 @@ export const shouldTriggerOnSuccess = (
 
     if(!randomSatoshis || randomSatoshis === 0){
       const paymentIdsMatch = expectedPaymentId === paymentId;
-      isPaymentIdValid = disablePaymentId ? true : paymentIdsMatch;
-
-      const rawOpReturnIsEmptyOrUndefined = rawOpReturn === '' || rawOpReturn === undefined;
-      const opReturn = rawOpReturnIsEmptyOrUndefined ? message : rawOpReturn
-      const opReturnIsEmptyOrUndefined = opReturn === '' || opReturn === undefined;
-
+      isPaymentIdValid = disablePaymentId ? true : paymentIdsMatch;  
+    }
     if(!isBCH){
       const rawOpReturnIsEmptyOrUndefined = rawOpReturn === '' || rawOpReturn === undefined;
       const opReturn = rawOpReturnIsEmptyOrUndefined ? message : rawOpReturn
       const opReturnIsEmptyOrUndefined = opReturn === '' || opReturn === undefined;
-    
-      const opReturnsMatch = opReturn === expectedOpReturn;
-      isOpReturnValid = expectedOpReturn ? opReturnsMatch : opReturnIsEmptyOrUndefined;
-    }
-    
+      
       const opReturnsMatch = opReturn === expectedOpReturn;
       isOpReturnValid = expectedOpReturn ? opReturnsMatch : opReturnIsEmptyOrUndefined;
     }
