@@ -33,8 +33,6 @@ import {
   setupTxsSocket,
   setupAltpaymentSocket,
   CryptoCurrency,
-  getAddressPrefixed,
-  ButtonSize
 } from '../../util';
 import AltpaymentWidget from './AltpaymentWidget';
 import { AltpaymentPair, AltpaymentShift, AltpaymentError, AltpaymentCoin, MINIMUM_ALTPAYMENT_DOLLAR_AMOUNT, MINIMUM_ALTPAYMENT_CAD_AMOUNT } from '../../altpayment';
@@ -97,7 +95,6 @@ export interface WidgetProps {
   setAddressType?: Function,
   newTxText?: string;
   transactionText?: string;
-  size: ButtonSize;
 }
 
 interface StyleProps {
@@ -347,7 +344,6 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     altpaymentError,
     setAltpaymentError,
     isChild,
-    size
   } = Object.assign({}, Widget.defaultProps, props);
 
   const [loading, setLoading] = useState(true);
