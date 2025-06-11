@@ -225,7 +225,7 @@ function findAndRender<T>(className: string, Component: React.ComponentType<any>
 
       //    el.classList.remove(className);
 
-      if (attributes.size) {
+      if (attributes.size && className === 'paybutton') {
         const size = attributes.size.toLowerCase();
 
         const getScale = (): number => {

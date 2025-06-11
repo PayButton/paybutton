@@ -348,7 +348,6 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
         newTxs={newTxs}
         disableSound={disableSound}
         transactionText={transactionText}
-        size={size}
       />
       {errorMsg && (
         <p

@@ -17,7 +17,6 @@ import {
   resolveNumber,
   shouldTriggerOnSuccess,
   isPropsTrue,
-  ButtonSize,
 } from '../../util';
 
 import Widget, { WidgetProps } from './Widget';
@@ -50,7 +49,6 @@ export interface WidgetContainerProps
   setNewTxs: Function
   disableSound?: boolean
   transactionText?: string
-  size: ButtonSize;
 }
 
 const snackbarOptionsSuccess: OptionsObject = {
@@ -128,7 +126,6 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
       isChild,
       disableSound,
       transactionText,
-      size,
       ...widgetProps
     } = props;
     const [internalCurrencyObj, setInternalCurrencyObj] = useState<CurrencyObject>();
@@ -311,7 +308,6 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
           disableAltpayment={disableAltpayment}
           contributionOffset={contributionOffset}
           transactionText={transactionText}
-          size={size}
         />
       </React.Fragment>
     );
