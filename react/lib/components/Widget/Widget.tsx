@@ -940,6 +940,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                     name="Amount"
                     placeholder='Enter Amount'
                     id="userEditedAmount"
+                    disabled={success}
                   />
                  <Typography component="span">{currency}</Typography>
                 </div>
