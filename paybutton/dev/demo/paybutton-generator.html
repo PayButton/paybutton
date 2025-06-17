@@ -181,6 +181,11 @@
                 false-value="false">
               <label for="disabled">Disabled</label>
             </div>
+            <div class="form-input toggle">
+              <input type="checkbox" id="autoClose" v-model="paybuttonProps.autoClose" true-value="true"
+                false-value="false">
+              <label for="autoClose">Auto Close</label>
+            </div>
           </div>
         </div>
         <div style="display: flex; justify-content: right; position: relative;">
@@ -213,6 +218,7 @@
             :on-transaction="myTransactionFuction"
             :disable-altpayment="paybuttonProps.disableAltpayment"
             :transaction-text="paybuttonProps.transactionText"
+            :auto-close="paybuttonProps.autoClose"
             :op-return="paybuttonProps.opReturn">
           </div>
         </div>
@@ -247,7 +253,8 @@
             opReturn:undefined,
             transactiontext: '',
             onSuccess: mySuccessFuction,
-            onTransaction: myTransactionFuction
+            onTransaction: myTransactionFuction,
+            autoClose: true
           });
           const paybuttonType = ref("paybutton");
           const updateProps = () => {
