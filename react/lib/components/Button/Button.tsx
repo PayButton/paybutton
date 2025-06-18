@@ -26,38 +26,33 @@ interface StyleProps {
 }
 
 const useStyles = makeStyles({
-  
-  container: ({ size, sizeScaleAlreadyApplied }: StyleProps) => {
-    const getScale = (): number => {
-      switch (size) {
-        case 'xs': 
-        case "extrasmall":
-          return 0.75;
-        case 'sm':
-        case "small":
-          return 0.85;
-        case 'lg':
-        case "large":
-          return 1.20;
-        case 'xl':
-        case "extralarge":
-          return 1.40;
-        default:
-          return 1;
-      }
-    };
-
-    const scale = getScale();
-
-    if (sizeScaleAlreadyApplied) {
-      return {
-        fontSize: '0.8rem !important',
-      }
+  container: ({ size }: StyleProps) => {
+    switch (size) {
+      case 'xs': 
+      case "extrasmall":
+        return {
+          fontSize: '0.6rem !important',
+        }
+      case 'sm':
+      case "small":
+        return {
+          fontSize: '0.7rem !important',
+        }
+      case 'lg':
+      case "large":
+        return {
+          fontSize: '1rem !important',
+        }
+      case 'xl':
+      case "extralarge":
+        return {
+          fontSize: '1.2rem !important',
+        }
+      default:
+        return {
+          fontSize: '0.8rem !important',
+        }
     }
-    return {
-      transform: `scale(${scale})`,
-      fontSize: '0.8rem !important',
-    };
   },
   button: ({ theme, animation }: StyleProps): CreateCSSProperties => {
 
