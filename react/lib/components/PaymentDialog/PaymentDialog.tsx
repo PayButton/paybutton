@@ -140,8 +140,7 @@ export const PaymentDialog = (
     setSuccess(true);
     onSuccess?.(transaction);
     setTimeout(() => {
-      setSuccess(false);
-      if (autoClose === true) {
+      if (isPropsTrue(autoClose)) {
         handleWidgetClose();
       }
     }, 3000);
