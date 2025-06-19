@@ -32,7 +32,7 @@ import {
   isPropsTrue,
   setupTxsSocket,
   setupAltpaymentSocket,
-  CryptoCurrency
+  CryptoCurrency,
 } from '../../util';
 import AltpaymentWidget from './AltpaymentWidget';
 import { AltpaymentPair, AltpaymentShift, AltpaymentError, AltpaymentCoin, MINIMUM_ALTPAYMENT_DOLLAR_AMOUNT, MINIMUM_ALTPAYMENT_CAD_AMOUNT } from '../../altpayment';
@@ -343,7 +343,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     setLoadingShift,
     altpaymentError,
     setAltpaymentError,
-    isChild
+    isChild,
   } = Object.assign({}, Widget.defaultProps, props);
 
   const [loading, setLoading] = useState(true);
@@ -954,6 +954,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                     onClick={handleButtonClick}
                     disabled={isPropsTrue(disabled)}
                     animation={animation}
+                    size={'medium'}
                   />
                 </Box>
               )}

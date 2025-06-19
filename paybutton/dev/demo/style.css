@@ -10,11 +10,12 @@
   padding: 10px;
 }
 .buttons-section {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 20px;
-  padding: 50px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
   align-items: center;
+  justify-content: center;
+  padding: 20px;
 }
 .widgets-section {
   display: grid;
