@@ -25,17 +25,17 @@
   <div class="buttons-section">
     <div id="my_button"></div>
     <div class="paybutton" to="bitcoincash:qzy3s3qk8py0qvl97syex7tgap22pa2xfupwc4n659" amount="5" currency="USD"
-      display-currency="BCH"></div>
+      display-currency="BCH" size="sm"></div>
 
     <div class="paybutton" to="ecash:qp2v7kemclu7mv5y3h9qprwp0mrevkqt9gprvmm7yl"
       theme='{ "palette": { "primary": "#FF00FF", "secondary": "#ffffff", "tertiary": "#333333"} }'></div>
 
     <div class="paybutton" to="ecash:qp2v7kemclu7mv5y3h9qprwp0mrevkqt9gprvmm7yl" text="Purchase" amount="0.01"
       currency="CAD" goal-amount="2.5" success-text="WOW!" on-close="myClose" on-open="myOpen"
-      on-success="mySuccessFunction" on-transaction="myTransactionFunction" editable="true"></div>
+      on-success="mySuccessFunction" on-transaction="myTransactionFunction" editable="true" size="lg"></div>
 
     <div class="paybutton" to="bitcoincash:qzy3s3qk8py0qvl97syex7tgap22pa2xfupwc4n659" goal-amount="0.3" amount="0.05"
-      currency="BCH" text="Purchase" on-transaction="myTransactionFunction"></div>
+      currency="BCH" text="Purchase" on-transaction="myTransactionFunction" size="xl"></div>
 
     <div class="paybutton" to="ecash:qp2v7kemclu7mv5y3h9qprwp0mrevkqt9gprvmm7yl" goal-amount="2500.05" currency="USD"
       text="Donate (other dev)" on-success="mySuccessFunction" on-transaction="myTransactionFunction" disable-altpayment="false"></div>
@@ -206,6 +206,7 @@
       onSuccess: mySuccessFunction,
       onTransaction: myTransactionFunction,
       randomSatoshis: true,
+      size: 'xs'
     }
 
     PayButton.render(document.getElementById('my_button'), config)

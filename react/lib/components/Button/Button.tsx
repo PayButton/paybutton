@@ -54,7 +54,22 @@ const useStyles = makeStyles({
         }
     }
   },
-  button: ({ theme, animation }: StyleProps): CreateCSSProperties => {
+  button: ({ theme, animation, size }: StyleProps): CreateCSSProperties => {
+
+    const radiusBySize = {
+      xs: '5px',
+      extrasmall: '5px',
+      sm: '7px',
+      small: '7px',
+      lg: '12px',
+      large: '12px',
+      xl: '13px',
+      extralarge: '13px',
+      md: '10px',
+      medium: '10px'
+    };
+  
+    const borderRadius = radiusBySize[(size ?? 'default') as keyof typeof radiusBySize];
 
     return {
       background: `${theme.palette.secondary} !important`,
@@ -73,7 +88,7 @@ const useStyles = makeStyles({
       margin: 'auto !important',
       boxShadow: '3px 3px 3px rgba(0, 0, 0, 0.08) !important',
       border: `2px solid ${theme.palette.primary} !important`,
-      borderRadius: '10px !important',
+      borderRadius: `${borderRadius} !important`,
       fontSize: '1em !important',
       textTransform: 'none',
       '&:hover': {
