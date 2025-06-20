@@ -1,6 +1,6 @@
 import { MockedPaymentClient } from "./mocked"
 import { SideshiftClient, SideshiftCoin, SideshiftError, SideshiftPair, SideshiftQuote, SideshiftShift } from "./sideshift"
-import config from '../../../paybutton-config.json'
+import config from '../paybutton-config.json'
 
 export const MINIMUM_ALTPAYMENT_DOLLAR_AMOUNT = 10
 export const MINIMUM_ALTPAYMENT_CAD_AMOUNT = 15

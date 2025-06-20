@@ -1,6 +1,6 @@
 import { io, Socket } from 'socket.io-client';
 import { AltpaymentCoin, AltpaymentError, AltpaymentPair, AltpaymentShift } from '../altpayment';
-import config from '../../../paybutton-config.json';
+import config from '../paybutton-config.json';
 
 import { BroadcastTxData, CheckSuccessInfo } from './types';
 import { getAddressDetails } from './api-client';

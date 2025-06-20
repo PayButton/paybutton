@@ -8,9 +8,9 @@
   "license": "MIT",
   "scripts": {
     "dev": "cd paybutton && yarn dev",
-    "predev": "[ -f ./paybutton-config.json ] || cp ./example-config.json ./paybutton-config.json",
-    "prebuild": "[ -f ./paybutton-config.json ] || cp ./example-config.json ./paybutton-config.json",
-    "pretest": "[ -f ./paybutton-config.json ] || cp ./example-config.json ./paybutton-config.json",
+    "predev": "[ -f ./react/lib/paybutton-config.json ] || cp ./react/lib/example-config.json ./react/lib/paybutton-config.json",
+    "prebuild": "[ -f ./react/lib/paybutton-config.json ] || cp ./react/lib/example-config.json ./react/lib/paybutton-config.json",
+    "pretest": "[ -f ./react/lib/paybutton-config.json ] || cp ./react/lib/example-config.json ./react/lib/paybutton-config.json",
     "build:dev": "yarn build:react && yarn dev",
     "watch": "(cd paybutton && yarn dev) & (cd react && yarn dev)",
     "test": "cd react && yarn test",
