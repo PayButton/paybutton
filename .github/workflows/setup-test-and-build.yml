@@ -8,6 +8,8 @@ on:
 jobs:
   setup:
     runs-on: ubuntu-latest
+    outputs:
+      artifact-name: deps
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -22,22 +24,15 @@ jobs:
           cd react
           yarn
 
-  build:
-    needs: setup
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Upload dependencies
+        uses: actions/upload-artifact@v4
         with:
-          fetch-depth: 0
-
-      - name: Build
-        run: |
-          yarn build
-
-      - name: Check TS declaration files
-        run: |
-          [[ -f react/dist/index.d.ts ]]
+          name: deps
+          path: |
+            ./node_modules
+            ./react/node_modules
+            ./react/yarn.lock
+            ./react/lib/paybutton-config.json
 
   test:
     needs: setup
@@ -48,6 +43,33 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Download dependencies
+        uses: actions/download-artifact@v4
+        with:
+          name: deps
+
       - name: Run react unit tests
-        run: yarn test
+        run: |
+          yarn test
+
+  build:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Download dependencies
+        uses: actions/download-artifact@v4
+        with:
+          name: deps
+
+      - name: Build
+        run: yarn build
+
+      - name: Check TS declaration files
+        run: |
+          [[ -f react/dist/index.d.ts ]]
 
