@@ -1,5 +1,5 @@
 import { AltpaymentClient, AltpaymentShift } from ".";
-import config from '../../../paybutton-config.json'
+import config from '../paybutton-config.json'
 
 export class MockedPaymentClient implements AltpaymentClient {
   public async getPaymentStatus (_id: string): Promise<AltpaymentShift> {
