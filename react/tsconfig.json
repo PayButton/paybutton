@@ -6,6 +6,7 @@
       "dom",
       "esnext"
     ],
+    "rootDir": "./",
     "moduleResolution": "node",
     "jsx": "react",
     "sourceMap": true,
