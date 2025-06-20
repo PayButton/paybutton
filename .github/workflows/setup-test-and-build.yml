@@ -17,6 +17,11 @@ jobs:
       - name: Install root dependencies
         run: yarn
 
+      - name: Install react dependencies
+        run: |
+          cd react
+          yarn
+
   build:
     needs: setup
     runs-on: ubuntu-latest
