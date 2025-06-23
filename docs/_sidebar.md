@@ -31,6 +31,8 @@
   - [disable-altpayment](/?id=disable-altpayment)
   - [contribution-offset](/?id=contribution-offset)
   - [auto-close](/?id=auto-close)
+  - [disable-sound](/?id=auto-close)
+  - [size](/?id=size)
 - [Contribute](/?id=contribute)
   - [Developer Quick Start](/?id=developer-quick-start)
     - [Getting Started](/?id=getting-started)
