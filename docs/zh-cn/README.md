@@ -1066,6 +1066,37 @@ disableSound = false
 ```
 <!-- tabs:end -->
 
+## size
+
+> **‘size’参数用于调整按钮的大小。**
+
+?> size 参数是可选的，支持以下预定义的字符串值：'xs'（特小）、'sm'（小）、'md'（中）、'lg'（大）和 'xl'（特大）。如果未指定，将默认使用 'md'。你也可以使用别名 'extrasmall'、'small'、'medium'、'large' 和 'extralarge'，它们分别对应 'xs'、'sm'、'md'、'lg' 和 'xl'。
+
+
+
+
+**Example:**
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+size="sm"
+```
+
+#### ** JavaScript **
+
+```javascript
+size: "sm"
+```
+
+#### ** React **
+
+```react
+size = "sm"
+```
+<!-- tabs:end -->
+
 # 贡献
 
 PayButton是一个社群主导的开放源代码促进会。此项目的成功关键在于对社群的贡献。

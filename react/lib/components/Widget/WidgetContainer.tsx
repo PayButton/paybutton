@@ -16,7 +16,7 @@ import {
   isValidCurrency,
   resolveNumber,
   shouldTriggerOnSuccess,
-  isPropsTrue
+  isPropsTrue,
 } from '../../util';
 
 import Widget, { WidgetProps } from './Widget';

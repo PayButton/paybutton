@@ -3,6 +3,7 @@ import { CreateCSSProperties } from '@material-ui/styles';
 import React, { useRef, useState, useLayoutEffect } from 'react';
 
 import { Theme, ThemeName, useTheme } from '../../themes';
+import { ButtonSize } from '../../util';
 
 export type animation = 'slide' | 'invert' | 'none' | undefined;
 
@@ -13,70 +14,117 @@ export interface ButtonProps {
   theme?: ThemeName | Theme;
   disabled?: boolean;
   onClick?: () => void;
+  size?: ButtonSize;
+  sizeScaleAlreadyApplied?: boolean;
 }
 
 interface StyleProps {
   animation: animation;
   theme: Theme;
+  size: ButtonProps['size'];
+  sizeScaleAlreadyApplied: ButtonProps['sizeScaleAlreadyApplied'];
 }
 
 const useStyles = makeStyles({
-  container: {
-    fontSize: '0.8rem !important',
-  },
-  button: ({ theme, ...props }: StyleProps): CreateCSSProperties => ({
-    background: `${theme.palette.secondary} !important`,
-    transition: '0.6s !important',
-    ...(props.animation === 'slide'
-      ? {
-          background: `linear-gradient(45deg, ${theme.palette.primary} 50%, ${theme.palette.secondary} 50%) 100% center / 300% !important`,
-          backgroundSize: '300% !important',
-          backgroundPosition: '100% !important',
-          transition: 'background-position 0.8s, color 0.15s !important',
+  container: ({ size }: StyleProps) => {
+    switch (size) {
+      case 'xs': 
+      case "extrasmall":
+        return {
+          fontSize: '0.6rem !important',
         }
-      : {}),
-    color: `${theme.palette.primary} !important`,
-    minWidth: '14em !important',
-    padding: '0.618em 1.618em !important',
-    margin: 'auto !important',
-    boxShadow: '3px 3px 3px rgba(0, 0, 0, 0.08) !important',
-    border: `2px solid ${theme.palette.primary} !important`,
-    borderRadius: '10px !important',
-    fontSize: '1em !important',
-    textTransform: 'none',
-    '&:hover': {
-      ...(props.animation === 'slide'
+      case 'sm':
+      case "small":
+        return {
+          fontSize: '0.7rem !important',
+        }
+      case 'lg':
+      case "large":
+        return {
+          fontSize: '1rem !important',
+        }
+      case 'xl':
+      case "extralarge":
+        return {
+          fontSize: '1.2rem !important',
+        }
+      default:
+        return {
+          fontSize: '0.8rem !important',
+        }
+    }
+  },
+  button: ({ theme, animation, size }: StyleProps): CreateCSSProperties => {
+
+    const radiusBySize = {
+      xs: '5px',
+      extrasmall: '5px',
+      sm: '7px',
+      small: '7px',
+      lg: '12px',
+      large: '12px',
+      xl: '13px',
+      extralarge: '13px',
+      md: '10px',
+      medium: '10px'
+    };
+  
+    const borderRadius = radiusBySize[(size ?? 'default') as keyof typeof radiusBySize];
+
+    return {
+      background: `${theme.palette.secondary} !important`,
+      transition: '0.6s !important', 
+      ...(animation === 'slide'
         ? {
-            backgroundPosition: '0 !important',
-            color: `${theme.palette.secondary} !important`,
+            background: `linear-gradient(45deg, ${theme.palette.primary} 50%, ${theme.palette.secondary} 50%) 100% center / 300% !important`,
+            backgroundSize: '300% !important',
+            backgroundPosition: '100% !important',
+            transition: 'background-position 0.8s, color 0.15s !important',
           }
         : {}),
-      ...(props.animation === 'invert'
-        ? {
-            background: `${theme.palette.primary} !important`,
-            color: `${theme.palette.secondary} !important`,
-          }
-        : {}),
-      ...(props.animation === 'none'
-        ? {
-            background: `${theme.palette.secondary} !important`,
-            color: `${theme.palette.primary} !important`,
-          }
-        : {}),
-    },
-    '& .MuiTouchRipple-root': {
-      margin: -2,
-      color: '#00000044 !important',
-    },
-    '&:disabled span': {
-      filter: 'blur(2px)',
-      color: 'rgba(0, 0, 0, 0.5)',
-    },
-  }),
+      color: `${theme.palette.primary} !important`,
+      minWidth: '14em !important',
+      padding: '0.618em 1.618em !important',
+      margin: 'auto !important',
+      boxShadow: '3px 3px 3px rgba(0, 0, 0, 0.08) !important',
+      border: `2px solid ${theme.palette.primary} !important`,
+      borderRadius: `${borderRadius} !important`,
+      fontSize: '1em !important',
+      textTransform: 'none',
+      '&:hover': {
+        ...(animation === 'slide'
+          ? {
+              backgroundPosition: '0 !important',
+              color: `${theme.palette.secondary} !important`,
+            }
+          : {}),
+        ...(animation === 'invert'
+          ? {
+              background: `${theme.palette.primary} !important`,
+              color: `${theme.palette.secondary} !important`,
+            }
+          : {}),
+        ...(animation === 'none'
+          ? {
+              background: `${theme.palette.secondary} !important`,
+              color: `${theme.palette.primary} !important`,
+            }
+          : {}),
+      },
+      '& .MuiTouchRipple-root': {
+        margin: -2,
+        color: '#00000044 !important',
+      },
+      '&:disabled span': {
+        filter: 'blur(2px)',
+        color: 'rgba(0, 0, 0, 0.5)',
+      },
+    };
+  },
 });
 
 export const Button = (props: ButtonProps): React.ReactElement => {
-  const { animation, text, hoverText, disabled } = Object.assign(
+  const { animation, text, hoverText, disabled, size, sizeScaleAlreadyApplied } = Object.assign(
     {},
     Button.defaultProps,
     props,
@@ -88,7 +136,7 @@ export const Button = (props: ButtonProps): React.ReactElement => {
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   const theme = useTheme(props.theme);
-  const styleProps: StyleProps = { animation, theme };
+  const styleProps: StyleProps = { animation, theme, size, sizeScaleAlreadyApplied };
   const classes = useStyles(styleProps);
 
   useLayoutEffect(() => {
@@ -141,6 +189,8 @@ const buttonDefaultProps: ButtonProps = {
   text: 'Donate',
   hoverText: 'Send Payment',
   disabled: false,
+  size: 'medium',
+  sizeScaleAlreadyApplied: false,
 };
 
 Button.defaultProps = buttonDefaultProps;

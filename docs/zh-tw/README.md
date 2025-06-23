@@ -1035,6 +1035,36 @@ autoClose: false
 autoClose = false
 ```
 <!-- tabs:end -->
+## size
+
+> **「size」參數用於調整按鈕的大小。**
+
+?> size 參數為選填，支援以下預設的字串值：'xs'（特小）、'sm'（小）、'md'（中）、'lg'（大）以及 'xl'（特大）。若未指定，預設值為 'md'。你也可以使用別名 'extrasmall'、'small'、'medium'、'large' 和 'extralarge'，這些別名會分別對應到 'xs'、'sm'、'md'、'lg' 和 'xl'。
+
+
+
+**Example:**
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+size="sm"
+```
+
+#### ** JavaScript **
+
+```javascript
+size: "sm"
+```
+
+#### ** React **
+
+```react
+size = "sm"
+```
+<!-- tabs:end -->
+
 
 ## disable-sound
 

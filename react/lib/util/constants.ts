@@ -12,3 +12,5 @@ export const CURRENCY_PREFIXES_MAP: Record<typeof CRYPTO_CURRENCIES[number], str
     bch: 'bitcoincash',
     xec: 'ecash',
 };
+
+export type ButtonSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | "extrasmall" | "small" | "medium" | "large" | "extralarge" | undefined;

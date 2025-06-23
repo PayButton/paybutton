@@ -104,6 +104,7 @@ const allowedProps = [
   'autoClose',
   'disableSound',
   'transactionText',
+  'size'
 ];
 
 const requiredProps = [
@@ -223,6 +224,7 @@ function findAndRender<T>(className: string, Component: React.ComponentType<any>
       }
 
       //    el.classList.remove(className);
+
 
       render(<Component {...props} />, el)
     });
