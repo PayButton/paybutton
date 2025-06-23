@@ -1,6 +1,6 @@
 {
   "name": "@paybutton/paybutton",
-  "version": "4.1.0",
+  "version": "4.2.0",
   "description": "The easiest way to accept eCash online",
   "author": "",
   "main": "dist/paybutton.js",
