@@ -19,9 +19,9 @@ export const shouldTriggerOnSuccess = (
       paymentId,
       rawMessage:rawOpReturn,
       message,
-      amount, 
-      address } = transaction; 
-    
+      amount,
+      address } = transaction;
+
     const addressPrefix = getAddressPrefix(address);
     const isBCH = addressPrefix === 'bitcoincash';
     let isAmountValid = true;
@@ -48,17 +48,18 @@ export const shouldTriggerOnSuccess = (
     if(!randomSatoshis || randomSatoshis === 0){
       if(!isBCH){
         const paymentIdsMatch = expectedPaymentId === paymentId;
-        isPaymentIdValid = disablePaymentId ? true : paymentIdsMatch;  
+        isPaymentIdValid = disablePaymentId ? true : paymentIdsMatch;
       }
     }
     if(!isBCH){
       const rawOpReturnIsEmptyOrUndefined = rawOpReturn === '' || rawOpReturn === undefined;
       const opReturn = rawOpReturnIsEmptyOrUndefined ? message : rawOpReturn
       const opReturnIsEmptyOrUndefined = opReturn === '' || opReturn === undefined;
-      
+
       const opReturnsMatch = opReturn === expectedOpReturn;
       isOpReturnValid = expectedOpReturn ? opReturnsMatch : opReturnIsEmptyOrUndefined;
     }
 
+    console.log('shouldas vai retar', isAmountValid && isPaymentIdValid && isOpReturnValid);
     return isAmountValid && isPaymentIdValid && isOpReturnValid;
 };

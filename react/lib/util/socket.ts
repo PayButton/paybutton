@@ -29,6 +29,7 @@ const txsListener = (txsSocket: Socket, setNewTxs: Function, setDialogOpen?: Fun
             checkSuccessInfo.expectedOpReturn,
             checkSuccessInfo.currencyObj
           )) {
+            console.log('VAI ABRIR O CARALHO MLK 1')
             setDialogOpen(true)
             setTimeout(() => {
               setNewTxs(unconfirmedTxs);

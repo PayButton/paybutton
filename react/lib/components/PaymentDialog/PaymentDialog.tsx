@@ -134,6 +134,7 @@ export const PaymentDialog = (
   };
   const handleSuccess = (transaction: Transaction): void => {
     if (dialogOpen === false) {
+      console.log('VAI ABRIR O CARALHO MLK 2')
       setDialogOpen(true)
     }
     setSuccess(true);
