@@ -138,11 +138,13 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
         onOpen(amount, to, paymentId)
       }
     }
+    console.log('VAI ABRIR O CARALHO MLK 3')
     setDialogOpen(true);
   }, [cryptoAmount, to, paymentId, price])
 
   const handleCloseDialog = (success?: boolean, paymentId?: string): void => {
     if (onClose !== undefined) onClose(success, paymentId);
+    console.log('VAI ABRIR O CARALHO MLK 4')
     setDialogOpen(false);
   };
 
