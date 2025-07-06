@@ -1,14 +1,14 @@
-import { Story } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import React from 'react';
 
 import { ThemeName } from '../../themes';
-import Button, { ButtonProps } from './Button';
+import Button from './Button';
 
-export default {
+const meta: Meta<typeof Button> = {
   title: 'Button',
   component: Button,
   decorators: [
-    (Story: Story): React.ReactNode => (
+    (Story) => (
       <div style={{ margin: 'auto', maxWidth: 400 }}>
         <Story />
       </div>
@@ -22,13 +22,16 @@ export default {
   },
 };
 
-const Template: Story<ButtonProps> = props => <Button {...props} />;
+export default meta;
+type Story = StoryObj<typeof meta>;
 
-export const Default = Template.bind({});
-Default.args = {};
+export const Default: Story = {
+  args: {},
+};
 
-export const OrangeTheme = Template.bind({});
-OrangeTheme.args = {
-  theme: ThemeName.ORANGE,
-  animation: 'invert',
+export const OrangeTheme: Story = {
+  args: {
+    theme: ThemeName.ORANGE,
+    animation: 'invert',
+  },
 };
