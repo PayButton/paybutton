@@ -2,7 +2,7 @@ import BigNumber from "bignumber.js";
 import { getAddressPrefix, getCurrencyTypeFromAddress } from "./address";
 import { resolveNumber } from "./number";
 import { Currency, CurrencyObject, Transaction } from "./types";
-import { DECIMALS } from "./constants";
+import { CRYPTO_CURRENCIES, DECIMALS } from "./constants";
 
 export const shouldTriggerOnSuccess = (
     transaction: Transaction,
@@ -33,7 +33,7 @@ export const shouldTriggerOnSuccess = (
       const transactionCurrency: Currency = getCurrencyTypeFromAddress(address);
       if (transactionCurrency !== currency) {
         if (currencyObject){
-          const value = (currencyObject.float / price).toFixed(DECIMALS[transactionCurrency])
+          const value = CRYPTO_CURRENCIES.includes(currencyObject.currency) ? currencyObject.float : (currencyObject.float / price).toFixed(DECIMALS[transactionCurrency])
           isAmountValid = resolveNumber(value).isEqualTo(amount)
         }else {
           isAmountValid = false
