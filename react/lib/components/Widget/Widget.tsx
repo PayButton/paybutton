@@ -30,7 +30,7 @@ import {
   CURRENCY_PREFIXES_MAP,
   CRYPTO_CURRENCIES,
   isPropsTrue,
-  setupTxsSocket,
+  setupChronikWebSocket,
   setupAltpaymentSocket,
   CryptoCurrency,
 } from '../../util';
@@ -463,7 +463,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   useEffect(() => {
     (async () => {
       if (isChild !== true) {
-        await setupTxsSocket({
+        await setupChronikWebSocket({
           address: to,
           txsSocket: thisTxsSocket,
           apiBaseUrl,
@@ -489,10 +489,10 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     })()
 
     return () => {
-      if (thisTxsSocket !== undefined) {
-        thisTxsSocket.disconnect();
-        setThisTxsSocket(undefined);
-      }
+      // if (thisTxsSocket !== undefined) {
+         //thisTxsSocket.disconnect();
+         //setThisTxsSocket(undefined);
+      // }
       if (thisAltpaymentSocket !== undefined) {
         thisAltpaymentSocket.disconnect();
         setThisAltpaymentSocket(undefined);

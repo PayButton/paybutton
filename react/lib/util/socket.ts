@@ -2,10 +2,11 @@ import { io, Socket } from 'socket.io-client';
 import { AltpaymentCoin, AltpaymentError, AltpaymentPair, AltpaymentShift } from '../altpayment';
 import config from '../paybutton-config.json';
 
-import { BroadcastTxData, CheckSuccessInfo } from './types';
+import { BroadcastTxData, CheckSuccessInfo, Transaction } from './types';
 import { getAddressDetails } from './api-client';
 import { getAddressPrefixed } from './address';
 import { shouldTriggerOnSuccess } from './validate';
+import { initializeChronikWebsocket } from './chronik';
 
 const txsListener = (txsSocket: Socket, setNewTxs: Function, setDialogOpen?: Function, checkSuccessInfo?: CheckSuccessInfo): void => {
   txsSocket.on('incoming-txs', (broadcastedTxData: BroadcastTxData) => {
@@ -136,3 +137,40 @@ export const setupTxsSocket = async (params: SetupTxsSocketParams): Promise<void
   params.setTxsSocket(newSocket);
   txsListener(newSocket, params.setNewTxs, params.setDialogOpen, params.checkSuccessInfo);
 }
+
+export const setupChronikWebSocket = async (params: SetupTxsSocketParams): Promise<void> => {
+  if (params.txsSocket !== undefined) {
+    console.log(`Closing existing Chronik WebSocket for address: ${params.address}`);
+    params.txsSocket.close();
+    params.setTxsSocket(undefined);
+  }
+  
+  const newChronikSocket = await initializeChronikWebsocket(params.address, (transactions: Transaction[]) => { onMessage(transactions, params.setNewTxs, params.setDialogOpen, params.checkSuccessInfo) }); 
+  params.setTxsSocket(newChronikSocket);
+}
+
+export const onMessage = (transactions: Transaction[], setNewTxs: Function, setDialogOpen?: Function, checkSuccessInfo?: CheckSuccessInfo) => {
+  if (setDialogOpen !== undefined && checkSuccessInfo !== undefined) {
+    for (const tx of transactions) {
+      if (shouldTriggerOnSuccess(
+        tx,
+        checkSuccessInfo.currency,
+        checkSuccessInfo.price,
+        checkSuccessInfo.randomSatoshis,
+        checkSuccessInfo.disablePaymentId,
+        checkSuccessInfo.expectedPaymentId,
+        checkSuccessInfo.expectedAmount,
+        checkSuccessInfo.expectedOpReturn,
+        checkSuccessInfo.currencyObj
+      )) {
+        setDialogOpen(true)
+        setTimeout(() => {
+          setNewTxs(transactions);
+        }, 700);
+        break
+      }
+    }
+  } else {
+    setNewTxs(transactions);
+  }
+};
