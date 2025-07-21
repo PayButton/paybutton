@@ -17,7 +17,7 @@ import {
   getCurrencyObject,
   isPropsTrue,
   setupAltpaymentSocket,
-  setupTxsSocket,
+  setupChronikWebSocket,
   CryptoCurrency,
   ButtonSize
 } from '../../util';
@@ -184,7 +184,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
     (async () => {
     if (txsSocket === undefined) {
       const expectedAmount = currencyObj ? currencyObj?.float : undefined
-      await setupTxsSocket({
+      await setupChronikWebSocket({
         address: to,
         txsSocket,
         apiBaseUrl,
@@ -221,10 +221,10 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
     })()
 
     return () => {
-      if (txsSocket !== undefined) {
-        txsSocket.disconnect();
-        setTxsSocket(undefined);
-      }
+      // if (txsSocket !== undefined) {
+         // txsSocket.disconnect();
+         //setTxsSocket(undefined);
+      // }
       if (altpaymentSocket !== undefined) {
         altpaymentSocket.disconnect();
         setAltpaymentSocket(undefined);
