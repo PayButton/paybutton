@@ -221,10 +221,6 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
     })()
 
     return () => {
-      // if (txsSocket !== undefined) {
-         // txsSocket.disconnect();
-         //setTxsSocket(undefined);
-      // }
       if (altpaymentSocket !== undefined) {
         altpaymentSocket.disconnect();
         setAltpaymentSocket(undefined);

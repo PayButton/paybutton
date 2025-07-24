@@ -7,6 +7,7 @@ import Decimal from 'decimal.js'
 import { Buffer } from 'buffer';
 import { Transaction } from './types';
 import { getAddressPrefix } from './address';
+import config from '../paybutton-config.json'
 
 const decoder = new TextDecoder()
 export interface OpReturnData {
@@ -262,7 +263,7 @@ export const initializeChronikWebsocket = async (
     address: string,
     onTransaction: Function
 ): Promise<WsEndpoint> => {
-    const chronik = new ChronikClient(['https://chronik.e.cash']);
+    const chronik = new ChronikClient([config.chronikBaseUrl]);
     const networSlug = getAddressPrefix(address)
     const ws = chronik.ws({
         onMessage: async (msg: any) => {

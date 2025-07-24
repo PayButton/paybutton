@@ -489,10 +489,6 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     })()
 
     return () => {
-      // if (thisTxsSocket !== undefined) {
-         //thisTxsSocket.disconnect();
-         //setThisTxsSocket(undefined);
-      // }
       if (thisAltpaymentSocket !== undefined) {
         thisAltpaymentSocket.disconnect();
         setThisAltpaymentSocket(undefined);

@@ -145,7 +145,10 @@ export const setupChronikWebSocket = async (params: SetupTxsSocketParams): Promi
     params.setTxsSocket(undefined);
   }
   
-  const newChronikSocket = await initializeChronikWebsocket(params.address, (transactions: Transaction[]) => { onMessage(transactions, params.setNewTxs, params.setDialogOpen, params.checkSuccessInfo) }); 
+  const newChronikSocket = await initializeChronikWebsocket(params.address, (transactions: Transaction[]) => { 
+    onMessage(transactions, params.setNewTxs, params.setDialogOpen, params.checkSuccessInfo) 
+  }); 
+  
   params.setTxsSocket(newChronikSocket);
 }
 
