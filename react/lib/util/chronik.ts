@@ -243,10 +243,12 @@ export const parseWebsocketMessage = async (
         return;
     }
     const { msgType } = wsMsg;
+    console.log('[CHRONIK]: New message', wsMsg);
 
     switch (msgType) {
         case 'TX_ADDED_TO_MEMPOOL': {
             const rawTransaction = await chronik.tx(wsMsg.txid);
+            console.log('[CHRONIK]: New transaction added to mempool', rawTransaction.txid);
             const addressesWithTransactions = await getAddressesForTransaction(rawTransaction, networkslug)
             for (const addressWithTransaction of addressesWithTransactions) {
               if (addressWithTransaction.transaction.amount > Decimal(0)) {
@@ -265,6 +267,7 @@ export const initializeChronikWebsocket = async (
 ): Promise<WsEndpoint> => {
     const chronik = new ChronikClient([config.chronikBaseUrl]);
     const networSlug = getAddressPrefix(address)
+    console.log('[CHRONIK]: Initializing websocket for address', address, 'network', networSlug);
     const ws = chronik.ws({
         onMessage: async (msg: any) => {
             await parseWebsocketMessage(
