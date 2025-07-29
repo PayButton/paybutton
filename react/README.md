@@ -31,6 +31,15 @@ import { PayButton } from '@paybutton/react'
 
 ```
 
+## Tailwind CSS Support
+
+PayButton now includes optional Tailwind CSS support for enhanced styling capabilities. For details on setup and usage, see [TAILWIND.md](./lib/TAILWIND.md).
+
+```tsx
+// Optional: Import Tailwind utilities
+import '@paybutton/react/dist/tailwind.css';
+```
+
 ## License
 
 MIT 

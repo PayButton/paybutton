@@ -1,3 +1,5 @@
+import '../lib/styles/tailwind.css';
+
 export const parameters = {
   controls: { expanded: true },
   actions: { argTypesRegex: '^on.*' },
