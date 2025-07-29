@@ -100,6 +100,7 @@ export function toHash160 (address: string): {type: AddressType, hash160: string
       throw err
     }
 }
+
 export async function satoshisToUnit(satoshis: bigint, networkFormat: string): Promise<string> {
     const decimal = new Decimal(satoshis.toString())
     
@@ -109,8 +110,9 @@ export async function satoshisToUnit(satoshis: bigint, networkFormat: string): P
       return decimal.div(1e8).toString()
     }
   
-    throw new Error('Invalid address')
-  }
+    throw new Error('[CHRONIK]: Invalid address')
+}
+
 const getTransactionAmountAndData = async  (transaction: Tx, addressString: string): Promise<{amount: string, opReturn: string}> => {
     let totalOutput = BigInt(0);
     let totalInput = BigInt(0);
@@ -157,7 +159,8 @@ const getTransactionFromChronikTransaction = async (transaction: Tx, address: st
       message: parsedOpReturn?.message ?? '',
       rawMessage: parsedOpReturn?.rawMessage ?? '',
     }
-  }
+}
+
 export const fromHash160  = (networkSlug: string, type: AddressType, hash160: string): string => {
     const buffer = Buffer.from(hash160, 'hex')
   
@@ -243,12 +246,10 @@ export const parseWebsocketMessage = async (
         return;
     }
     const { msgType } = wsMsg;
-    console.log('[CHRONIK]: New message', wsMsg);
 
     switch (msgType) {
         case 'TX_ADDED_TO_MEMPOOL': {
             const rawTransaction = await chronik.tx(wsMsg.txid);
-            console.log('[CHRONIK]: New transaction added to mempool', rawTransaction.txid);
             const addressesWithTransactions = await getAddressesForTransaction(rawTransaction, networkslug)
             for (const addressWithTransaction of addressesWithTransactions) {
               if (addressWithTransaction.transaction.amount > Decimal(0)) {
@@ -265,9 +266,9 @@ export const initializeChronikWebsocket = async (
     address: string,
     onTransaction: Function
 ): Promise<WsEndpoint> => {
-    const chronik = new ChronikClient([config.chronikBaseUrl]);
     const networSlug = getAddressPrefix(address)
-    console.log('[CHRONIK]: Initializing websocket for address', address, 'network', networSlug);
+    const blockchainUrls = config.networkBlockchainURLs[networSlug];
+    const chronik = new ChronikClient(blockchainUrls);
     const ws = chronik.ws({
         onMessage: async (msg: any) => {
             await parseWebsocketMessage(
