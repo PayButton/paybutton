@@ -19,13 +19,13 @@
   },
   "scripts": {
     "build": "npm run build:tailwind && tsc --p ./tsconfig-build.json && microbundle --jsx React.createElement --format modern,cjs",
-    "build:tailwind": "tailwindcss -i ./lib/styles/tailwind.css -o ./dist/tailwind.css --minify",
+    "build:tailwind": "tailwindcss -i ./lib/styles/tailwind.css -o ./dist/tailwind.css --config ./tailwind.config.js --minify",
     "lint": "eslint 'lib/**/*.{ts,tsx}' --fix",
     "prettier": "prettier --write 'lib/**/*.ts'",
     "dev": "concurrently yarn:watch yarn:storybook",
     "storybook": "storybook dev -p 6006",
     "watch": "microbundle watch --jsx React.createElement --no-compress --format modern,cjs",
-    "watch:tailwind": "tailwindcss -i ./lib/styles/tailwind.css -o ./dist/tailwind.css --watch",
+    "watch:tailwind": "tailwindcss -i ./lib/styles/tailwind.css -o ./dist/tailwind.css --config ./tailwind.config.js --watch",
     "test": "jest",
     "test:coverage": "jest --coverage"
   },
