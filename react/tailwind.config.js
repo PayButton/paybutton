@@ -3,27 +3,28 @@ module.exports = {
   content: [
     "./lib/**/*.{js,ts,jsx,tsx}",
     "./src/**/*.{js,ts,jsx,tsx}",
-    "./index.tsx"
+    "./index.tsx",
+    "./.storybook/**/*.{js,ts,jsx,tsx}"
   ],
   theme: {
     extend: {
       colors: {
         // PayButton brand colors that can be used with Tailwind
-        'paybutton': {
+        paybutton: {
           primary: '#4BC846',
           secondary: '#ffffff',
           tertiary: '#374151',
         },
-        'bch': {
+        bch: {
           green: '#4BC846',
           orange: '#F7931A',
         },
-        'xec': {
+        xec: {
           blue: '#0074C2',
         }
       },
       fontFamily: {
-        'paybutton': ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+        paybutton: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
       },
     },
   },

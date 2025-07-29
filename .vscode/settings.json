@@ -1,0 +1,27 @@
+{
+  // Tailwind CSS configuration
+  "tailwindCSS.experimental.configFile": "react/tailwind.config.js",
+  "tailwindCSS.configPath": "react/tailwind.config.js",
+  "tailwindCSS.rootFontSize": 16,
+  "tailwindCSS.includeLanguages": {
+    "typescript": "typescript",
+    "typescriptreact": "typescriptreact",
+    "javascript": "javascript",
+    "javascriptreact": "javascriptreact"
+  },
+  "tailwindCSS.files.exclude": [
+    "**/.git/**",
+    "**/node_modules/**",
+    "**/.hg/**",
+    "**/.svn/**",
+    "**/dist/**",
+    "**/build/**"
+  ],
+  "tailwindCSS.experimental.classRegex": [
+    ["className\\s*=\\s*[\"']([^\"']*)[\"']", "[\"']([^\"']*)[\"']"],
+    ["class\\s*=\\s*[\"']([^\"']*)[\"']", "[\"']([^\"']*)[\"']"]
+  ],
+  // Fallback settings for different Tailwind extension versions
+  "tailwindcss.experimental.configFile": "react/tailwind.config.js",
+  "tailwindcss.configPath": "react/tailwind.config.js"
+}
