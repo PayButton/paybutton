@@ -131,6 +131,9 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
     const [internalCurrencyObj, setInternalCurrencyObj] = useState<CurrencyObject>();
     const setCurrencyObj = props.setCurrencyObj || setInternalCurrencyObj;
     const currencyObj = props.currencyObj || internalCurrencyObj;
+    const [internalNewTxs, setInternalNewTxs] = useState<Transaction[] | undefined>();
+    const thisNewTxs = setNewTxs ? newTxs : internalNewTxs;
+    const thisSetNewTxs = setNewTxs ?? setInternalNewTxs;
 
     const [thisPaymentId, setThisPaymentId] = useState<string | undefined>();
     const [thisPrice, setThisPrice] = useState(0);
@@ -214,7 +217,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
             
           }
         }
-        setNewTxs([]);
+        thisSetNewTxs([]);
       },
       [
         onSuccess,
@@ -267,10 +270,10 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
     );
 
     useEffect(() => {
-      newTxs?.map(tx => {
+      thisNewTxs?.map(tx => {
         handleNewTransaction(tx);
       });
-    }, [newTxs, handleNewTransaction]);
+    }, [thisNewTxs, handleNewTransaction]);
 
     return (
       <React.Fragment>
@@ -294,8 +297,8 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
           success={success}
           disabled={disabled}
           editable={editable}
-          newTxs={newTxs}
-          setNewTxs={setNewTxs}
+          newTxs={thisNewTxs}
+          setNewTxs={thisSetNewTxs}
           txsSocket={txsSocket}
           wsBaseUrl={wsBaseUrl}
           apiBaseUrl={apiBaseUrl}
