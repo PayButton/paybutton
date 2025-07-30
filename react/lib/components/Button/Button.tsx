@@ -21,18 +21,18 @@ const getSizeClasses = (size: ButtonSize) => {
   switch (size) {
     case 'xs': 
     case "extrasmall":
-      return 'text-[0.6rem]'
+      return 'text-xs p-3 min-w-[6rem]'
     case 'sm':
     case "small":
-      return 'text-[0.7rem]'
+      return 'text-sm p-3 min-w-[7rem]'
     case 'lg':
     case "large":
-      return 'text-base'
+      return 'text-lg p-3 min-w-[12rem]'
     case 'xl':
     case "extralarge":
-      return 'text-xl'
+      return 'text-xl p-3 min-w-[14rem]'
     default:
-      return 'text-[0.8rem]'
+      return 'text-base p-3 min-w-[10rem]'
   }
 }
 
@@ -40,42 +40,61 @@ const getBorderRadius = (size: ButtonSize) => {
   switch (size) {
     case 'xs': 
     case "extrasmall":
-      return 'rounded-[5px]'
+      return 'rounded-lg' // More rounded for small buttons
     case 'sm':
     case "small":
-      return 'rounded-[7px]'
+      return 'rounded-xl' // Nice curve for small
     case 'lg':
     case "large":
-      return 'rounded-xl'
+      return 'rounded-2xl' // Generous rounding for large
     case 'xl':
     case "extralarge":
-      return 'rounded-[13px]'
+      return 'rounded-3xl' // Bold curves for extra large
     default:
-      return 'rounded-[10px]'
+      return 'rounded-xl' // Perfect balance for medium
   }
 }
 
 const getButtonClasses = (_theme: Theme, animation: animation, size: ButtonSize) => {
   const baseClasses = [
-    // Layout and spacing
-    'min-w-[14em]',
-    'px-5',
-    'py-2.5',
-    'mx-auto',
+    // Layout and spacing - sizing handled by getSizeClasses
+    'inline-flex',
+    'items-center',
+    'justify-center',
+    'w-auto',
     
     // Typography
-    'font-medium',
+    'font-semibold', // Slightly bolder for better presence
     'text-center',
     'normal-case',
+    'whitespace-nowrap',
     
-    // Border and appearance
+    // Enhanced border and appearance
     'border-2',
     'bg-transparent',
+    'backdrop-blur-sm', // Subtle backdrop blur for depth
     
-    // Focus states
+    // Cursor
+    'cursor-pointer',
+    
+    // Force border radius with important to override any existing styles
+    '!rounded-none', // Reset any inherited radius first
+    
+    // Enhanced focus states
     'focus:ring-4',
     'focus:ring-dynamic',
+    'focus:ring-offset-2',
+    'focus:ring-offset-white',
     'focus:outline-none',
+    
+    // Enhanced hover effects with better styling
+    'hover:shadow-xl', // More dramatic shadow
+    'hover:shadow-current/20', // Shadow uses button color
+    'hover:-translate-y-1', // More lift
+    'hover:border-opacity-80',
+    'active:translate-y-0',
+    'active:shadow-lg',
+    'active:scale-[0.98]', // Subtle press effect
     
     // Layout
     'relative',
@@ -83,50 +102,122 @@ const getButtonClasses = (_theme: Theme, animation: animation, size: ButtonSize)
     'transform',
     'origin-center',
     
-    // Disabled states
-    'disabled:opacity-50',
+    // Enhanced disabled states
+    'disabled:opacity-40',
     'disabled:cursor-not-allowed',
-    'disabled:blur-[1px]',
+    'disabled:transform-none',
+    'disabled:shadow-none',
+    'disabled:border-opacity-30',
     
-    // Size-specific text size and border radius
+    // Size-specific classes (includes padding, text size, min-width)
     getSizeClasses(size),
-    getBorderRadius(size)
+    // Apply border radius with important to ensure it takes precedence
+    `!${getBorderRadius(size)}`
   ];
 
-  // Add animation-specific classes - remove conflicting transitions
+  // Add animation-specific classes with enhanced styling
   if (animation === 'slide') {
     baseClasses.push(
       'bg-gradient-to-r', 
       'bg-[length:300%_100%]', 
-      'bg-[100%_center]'
-      // No transition classes here - handled by inline styles
+      'bg-[100%_center]',
+      'transition-all',
+      'duration-500',
+      'ease-out',
+      'hover:bg-[length:250%_100%]' // Slight compression on hover for depth
     );
   } else if (animation === 'invert') {
     baseClasses.push(
       'transition-all', 
       'duration-300', 
-      'ease-in-out'
+      'ease-out',
+      'hover:border-2' // Maintain border thickness
     );
   } else {
-    // 'none' animation - basic transitions
+    // 'none' animation - enhanced basic transitions
     baseClasses.push(
-      'transition-colors', 
-      'duration-200'
+      'transition-all', 
+      'duration-250',
+      'ease-out',
+      'hover:border-opacity-90'
     );
   }
 
   return baseClasses.join(' ');
 }
 
-const getInlineStyles = (theme: Theme, animation: animation) => {
+const getInlineStyles = (theme: Theme, animation: animation, size: ButtonSize) => {
+  // Get border radius value based on size
+  const getBorderRadiusValue = (size: ButtonSize) => {
+    switch (size) {
+      case 'xs': 
+      case "extrasmall":
+        return '0.5rem' // rounded-lg equivalent
+      case 'sm':
+      case "small":
+        return '0.75rem' // rounded-xl equivalent
+      case 'lg':
+      case "large":
+        return '1rem' // rounded-2xl equivalent
+      case 'xl':
+      case "extralarge":
+        return '1.5rem' // rounded-3xl equivalent
+      default:
+        return '0.75rem' // rounded-xl equivalent
+    }
+  }
+
+  // Get min-width value to ensure it's applied
+  const getMinWidthValue = (size: ButtonSize) => {
+    switch (size) {
+      case 'xs': 
+      case "extrasmall":
+        return '6rem' // 96px
+      case 'sm':
+      case "small":
+        return '7rem' // 112px
+      case 'lg':
+      case "large":
+        return '12rem' // 192px
+      case 'xl':
+      case "extralarge":
+        return '14rem' // 224px
+      default:
+        return '10rem' // 160px
+    }
+  }
+
+  // Get padding value to ensure it's applied
+  const getPaddingValue = () => {
+    // All sizes use 12px padding as requested
+    return '12px'; // p-3 equivalent for all sizes
+  }
+
   const styles: React.CSSProperties = {
     // Outline button base styles
     color: theme.palette.primary,
     borderColor: theme.palette.primary,
     backgroundColor: 'transparent',
     
+    // Force border radius in CSS to ensure it's applied
+    borderRadius: getBorderRadiusValue(size),
+    
+    // Force min-width in CSS to ensure it's applied
+    minWidth: getMinWidthValue(size),
+    
+    // Force padding in CSS to ensure it's applied
+    padding: getPaddingValue(),
+    
+    // Force cursor pointer to ensure it's applied
+    cursor: 'pointer',
+    
     // Focus ring color (using CSS custom properties for dynamic theming)
     '--tw-ring-color': `${theme.palette.primary}30`, // 30 is alpha in hex (about 18% opacity)
+    
+    // Ensure smooth transitions
+    transition: animation === 'slide' 
+      ? 'background-position 0.5s ease-out, color 0.3s ease-out, border-color 0.3s ease-out, transform 0.25s ease-out, box-shadow 0.25s ease-out'
+      : 'all 0.3s ease-out',
   } as React.CSSProperties & { '--tw-ring-color': string };
 
   if (animation === 'slide') {
@@ -147,14 +238,17 @@ const getHoverHandlers = (animation: animation, theme: Theme) => {
       if (animation === 'slide') {
         // Slide to show the primary color background
         target.style.backgroundPosition = '0% center';
-        target.style.color = theme.palette.secondary; // White text on colored background
+        target.style.color = theme.palette.secondary;
+        target.style.borderColor = theme.palette.primary;
       } else if (animation === 'invert') {
         target.style.backgroundColor = theme.palette.primary;
         target.style.color = theme.palette.secondary;
+        target.style.borderColor = theme.palette.primary;
       } else {
         // 'none' animation - simple fill effect
         target.style.backgroundColor = theme.palette.primary;
         target.style.color = theme.palette.secondary;
+        target.style.borderColor = theme.palette.primary;
       }
     },
     onMouseLeave: (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -162,14 +256,17 @@ const getHoverHandlers = (animation: animation, theme: Theme) => {
       if (animation === 'slide') {
         // Slide back to transparent
         target.style.backgroundPosition = '100% center';
-        target.style.color = theme.palette.primary; // Primary text on transparent background
+        target.style.color = theme.palette.primary;
+        target.style.borderColor = theme.palette.primary;
       } else if (animation === 'invert') {
         target.style.backgroundColor = 'transparent';
         target.style.color = theme.palette.primary;
+        target.style.borderColor = theme.palette.primary;
       } else {
         // 'none' animation - restore outline style
         target.style.backgroundColor = 'transparent';
         target.style.color = theme.palette.primary;
+        target.style.borderColor = theme.palette.primary;
       }
     }
   };
@@ -191,8 +288,7 @@ export const Button = (props: ButtonProps): React.ReactElement => {
   
   // Get Tailwind classes and styles
   const buttonClasses = getButtonClasses(theme, animation, size!);
-  const containerClasses = getSizeClasses(size!);
-  const buttonStyles = getInlineStyles(theme, animation);
+  const buttonStyles = getInlineStyles(theme, animation, size!);
   const hoverHandlers = getHoverHandlers(animation, theme);
 
   const handleClick = (): void => {
@@ -215,8 +311,9 @@ export const Button = (props: ButtonProps): React.ReactElement => {
       const { current } = buttonRef;
       if (current !== null) {
         const { style } = current;
+        // Set fixed width to prevent size changes when text changes on hover
         style.width = `${current.clientWidth}px`;
-        // +4 is a seemingly magic number but it works.
+        // Keep the height fixed too for consistency
         style.height = `${current.clientHeight + 4}px`;
       }
     }
@@ -239,7 +336,7 @@ export const Button = (props: ButtonProps): React.ReactElement => {
   };
 
   return (
-    <div className={`transition-all duration-300 hover:scale-105 origin-center ${containerClasses}`}>
+    <div className="inline-block">
       <button
         disabled={disabled}
         className={buttonClasses}
