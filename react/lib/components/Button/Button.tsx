@@ -1,5 +1,3 @@
-import { Button as MuiButton, makeStyles } from '@material-ui/core';
-import { CreateCSSProperties } from '@material-ui/styles';
 import React, { useRef, useState, useLayoutEffect } from 'react';
 
 import { Theme, ThemeName, useTheme } from '../../themes';
@@ -18,113 +16,167 @@ export interface ButtonProps {
   sizeScaleAlreadyApplied?: boolean;
 }
 
-interface StyleProps {
-  animation: animation;
-  theme: Theme;
-  size: ButtonProps['size'];
-  sizeScaleAlreadyApplied: ButtonProps['sizeScaleAlreadyApplied'];
+// Utility functions to generate Tailwind classes
+const getSizeClasses = (size: ButtonSize) => {
+  switch (size) {
+    case 'xs': 
+    case "extrasmall":
+      return 'text-[0.6rem]'
+    case 'sm':
+    case "small":
+      return 'text-[0.7rem]'
+    case 'lg':
+    case "large":
+      return 'text-base'
+    case 'xl':
+    case "extralarge":
+      return 'text-xl'
+    default:
+      return 'text-[0.8rem]'
+  }
 }
 
-const useStyles = makeStyles({
-  container: ({ size }: StyleProps) => {
-    switch (size) {
-      case 'xs': 
-      case "extrasmall":
-        return {
-          fontSize: '0.6rem !important',
-        }
-      case 'sm':
-      case "small":
-        return {
-          fontSize: '0.7rem !important',
-        }
-      case 'lg':
-      case "large":
-        return {
-          fontSize: '1rem !important',
-        }
-      case 'xl':
-      case "extralarge":
-        return {
-          fontSize: '1.2rem !important',
-        }
-      default:
-        return {
-          fontSize: '0.8rem !important',
-        }
+const getBorderRadius = (size: ButtonSize) => {
+  switch (size) {
+    case 'xs': 
+    case "extrasmall":
+      return 'rounded-[5px]'
+    case 'sm':
+    case "small":
+      return 'rounded-[7px]'
+    case 'lg':
+    case "large":
+      return 'rounded-xl'
+    case 'xl':
+    case "extralarge":
+      return 'rounded-[13px]'
+    default:
+      return 'rounded-[10px]'
+  }
+}
+
+const getButtonClasses = (_theme: Theme, animation: animation, size: ButtonSize) => {
+  const baseClasses = [
+    // Layout and spacing
+    'min-w-[14em]',
+    'px-5',
+    'py-2.5',
+    'mx-auto',
+    
+    // Typography
+    'font-medium',
+    'text-center',
+    'normal-case',
+    
+    // Border and appearance
+    'border-2',
+    'bg-transparent',
+    
+    // Focus states
+    'focus:ring-4',
+    'focus:ring-dynamic',
+    'focus:outline-none',
+    
+    // Layout
+    'relative',
+    'overflow-hidden',
+    'transform',
+    'origin-center',
+    
+    // Disabled states
+    'disabled:opacity-50',
+    'disabled:cursor-not-allowed',
+    'disabled:blur-[1px]',
+    
+    // Size-specific text size and border radius
+    getSizeClasses(size),
+    getBorderRadius(size)
+  ];
+
+  // Add animation-specific classes - remove conflicting transitions
+  if (animation === 'slide') {
+    baseClasses.push(
+      'bg-gradient-to-r', 
+      'bg-[length:300%_100%]', 
+      'bg-[100%_center]'
+      // No transition classes here - handled by inline styles
+    );
+  } else if (animation === 'invert') {
+    baseClasses.push(
+      'transition-all', 
+      'duration-300', 
+      'ease-in-out'
+    );
+  } else {
+    // 'none' animation - basic transitions
+    baseClasses.push(
+      'transition-colors', 
+      'duration-200'
+    );
+  }
+
+  return baseClasses.join(' ');
+}
+
+const getInlineStyles = (theme: Theme, animation: animation) => {
+  const styles: React.CSSProperties = {
+    // Outline button base styles
+    color: theme.palette.primary,
+    borderColor: theme.palette.primary,
+    backgroundColor: 'transparent',
+    
+    // Focus ring color (using CSS custom properties for dynamic theming)
+    '--tw-ring-color': `${theme.palette.primary}30`, // 30 is alpha in hex (about 18% opacity)
+  } as React.CSSProperties & { '--tw-ring-color': string };
+
+  if (animation === 'slide') {
+    // For slide animation: gradient goes from primary (left) to secondary (right)
+    // Start position shows secondary color (transparent background)
+    styles.background = `linear-gradient(45deg, ${theme.palette.primary} 50%, transparent 50%)`;
+    styles.backgroundSize = '300% 100%';
+    styles.backgroundPosition = '100% center'; // Shows transparent part initially
+  }
+
+  return styles;
+}
+
+const getHoverHandlers = (animation: animation, theme: Theme) => {
+  return {
+    onMouseEnter: (e: React.MouseEvent<HTMLButtonElement>) => {
+      const target = e.currentTarget;
+      if (animation === 'slide') {
+        // Slide to show the primary color background
+        target.style.backgroundPosition = '0% center';
+        target.style.color = theme.palette.secondary; // White text on colored background
+      } else if (animation === 'invert') {
+        target.style.backgroundColor = theme.palette.primary;
+        target.style.color = theme.palette.secondary;
+      } else {
+        // 'none' animation - simple fill effect
+        target.style.backgroundColor = theme.palette.primary;
+        target.style.color = theme.palette.secondary;
+      }
+    },
+    onMouseLeave: (e: React.MouseEvent<HTMLButtonElement>) => {
+      const target = e.currentTarget;
+      if (animation === 'slide') {
+        // Slide back to transparent
+        target.style.backgroundPosition = '100% center';
+        target.style.color = theme.palette.primary; // Primary text on transparent background
+      } else if (animation === 'invert') {
+        target.style.backgroundColor = 'transparent';
+        target.style.color = theme.palette.primary;
+      } else {
+        // 'none' animation - restore outline style
+        target.style.backgroundColor = 'transparent';
+        target.style.color = theme.palette.primary;
+      }
     }
-  },
-  button: ({ theme, animation, size }: StyleProps): CreateCSSProperties => {
-
-    const radiusBySize = {
-      xs: '5px',
-      extrasmall: '5px',
-      sm: '7px',
-      small: '7px',
-      lg: '12px',
-      large: '12px',
-      xl: '13px',
-      extralarge: '13px',
-      md: '10px',
-      medium: '10px'
-    };
-  
-    const borderRadius = radiusBySize[(size ?? 'default') as keyof typeof radiusBySize];
-
-    return {
-      background: `${theme.palette.secondary} !important`,
-      transition: '0.6s !important', 
-      ...(animation === 'slide'
-        ? {
-            background: `linear-gradient(45deg, ${theme.palette.primary} 50%, ${theme.palette.secondary} 50%) 100% center / 300% !important`,
-            backgroundSize: '300% !important',
-            backgroundPosition: '100% !important',
-            transition: 'background-position 0.8s, color 0.15s !important',
-          }
-        : {}),
-      color: `${theme.palette.primary} !important`,
-      minWidth: '14em !important',
-      padding: '0.618em 1.618em !important',
-      margin: 'auto !important',
-      boxShadow: '3px 3px 3px rgba(0, 0, 0, 0.08) !important',
-      border: `2px solid ${theme.palette.primary} !important`,
-      borderRadius: `${borderRadius} !important`,
-      fontSize: '1em !important',
-      textTransform: 'none',
-      '&:hover': {
-        ...(animation === 'slide'
-          ? {
-              backgroundPosition: '0 !important',
-              color: `${theme.palette.secondary} !important`,
-            }
-          : {}),
-        ...(animation === 'invert'
-          ? {
-              background: `${theme.palette.primary} !important`,
-              color: `${theme.palette.secondary} !important`,
-            }
-          : {}),
-        ...(animation === 'none'
-          ? {
-              background: `${theme.palette.secondary} !important`,
-              color: `${theme.palette.primary} !important`,
-            }
-          : {}),
-      },
-      '& .MuiTouchRipple-root': {
-        margin: -2,
-        color: '#00000044 !important',
-      },
-      '&:disabled span': {
-        filter: 'blur(2px)',
-        color: 'rgba(0, 0, 0, 0.5)',
-      },
-    };
-  },
-});
+  };
+}
 
 export const Button = (props: ButtonProps): React.ReactElement => {
-  const { animation, text, hoverText, disabled, size, sizeScaleAlreadyApplied } = Object.assign(
+  const { animation, text, hoverText, disabled, size } = Object.assign(
     {},
     Button.defaultProps,
     props,
@@ -136,8 +188,27 @@ export const Button = (props: ButtonProps): React.ReactElement => {
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   const theme = useTheme(props.theme);
-  const styleProps: StyleProps = { animation, theme, size, sizeScaleAlreadyApplied };
-  const classes = useStyles(styleProps);
+  
+  // Get Tailwind classes and styles
+  const buttonClasses = getButtonClasses(theme, animation, size!);
+  const containerClasses = getSizeClasses(size!);
+  const buttonStyles = getInlineStyles(theme, animation);
+  const hoverHandlers = getHoverHandlers(animation, theme);
+
+  const handleClick = (): void => {
+    if (!props.onClick) return;
+    
+    // If button is currently hovered, add a small delay to allow 
+    // the scale-down animation to complete when hover state is lost
+    if (hovering) {
+      setTimeout(() => {
+        props.onClick?.();
+      }, 100); // Shorter delay for better UX
+    } else {
+      // No delay needed if not hovered
+      props.onClick();
+    }
+  };
 
   useLayoutEffect(() => {
     if (buttonRef !== null && text) {
@@ -168,18 +239,24 @@ export const Button = (props: ButtonProps): React.ReactElement => {
   };
 
   return (
-    <div className={classes.container}>
-      <MuiButton
+    <div className={`transition-all duration-300 hover:scale-105 origin-center ${containerClasses}`}>
+      <button
         disabled={disabled}
-        className={classes.button}
-        onClick={props.onClick}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
+        className={buttonClasses}
+        style={buttonStyles}
+        onClick={handleClick}
+        onMouseEnter={(e) => {
+          handleMouseEnter();
+          hoverHandlers.onMouseEnter(e);
+        }}
+        onMouseLeave={(e) => {
+          handleMouseLeave();
+          hoverHandlers.onMouseLeave(e);
+        }}
         ref={buttonRef}
       >
-        <span> {transitioning !== hovering ? hoverText : (text && text.trim() !== "" ? text : <div>&nbsp;</div>)}
-        </span>
-      </MuiButton>
+        <span>{transitioning !== hovering ? hoverText : (text && text.trim() !== "" ? text : <div>&nbsp;</div>)}</span>
+      </button>
     </div>
   );
 };

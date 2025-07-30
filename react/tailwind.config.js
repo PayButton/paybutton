@@ -45,6 +45,9 @@ module.exports = {
       },
       transitionTimingFunction: {
         'mui': 'cubic-bezier(0.4, 0, 0.2, 1)',
+      },
+      ringColor: {
+        'dynamic': 'var(--tw-ring-color)',
       }
     },
   },
