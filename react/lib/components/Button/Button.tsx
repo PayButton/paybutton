@@ -168,7 +168,7 @@ export const Button = (props: ButtonProps): React.ReactElement => {
   };
 
   return (
-    <div className={`${classes.container} transition-all duration-300 hover:scale-105`}>
+    <div className={classes.container}>
       <MuiButton
         disabled={disabled}
         className={classes.button}
