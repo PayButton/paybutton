@@ -70,9 +70,8 @@ const getButtonClasses = (_theme: Theme, animation: animation, size: ButtonSize)
     'whitespace-nowrap',
     
     // Enhanced border and appearance
-    'border-2',
+    'border',
     'bg-transparent',
-    'backdrop-blur-sm', // Subtle backdrop blur for depth
     
     // Cursor
     'cursor-pointer',
@@ -81,20 +80,18 @@ const getButtonClasses = (_theme: Theme, animation: animation, size: ButtonSize)
     '!rounded-none', // Reset any inherited radius first
     
     // Enhanced focus states
-    'focus:ring-4',
+    'focus:ring-2',
     'focus:ring-dynamic',
-    'focus:ring-offset-2',
-    'focus:ring-offset-white',
+    'focus:ring-offset-1',
     'focus:outline-none',
     
     // Enhanced hover effects with better styling
-    'hover:shadow-xl', // More dramatic shadow
-    'hover:shadow-current/20', // Shadow uses button color
-    'hover:-translate-y-1', // More lift
-    'hover:border-opacity-80',
+    'hover:shadow-lg', // Softer shadow
+    'hover:border-opacity-100', // Full opacity on hover
+    'hover:-translate-y-0.5', // Subtle lift
     'active:translate-y-0',
-    'active:shadow-lg',
-    'active:scale-[0.98]', // Subtle press effect
+    'active:shadow-md',
+    'active:scale-[0.99]', // Very subtle press effect
     
     // Layout
     'relative',
@@ -103,11 +100,11 @@ const getButtonClasses = (_theme: Theme, animation: animation, size: ButtonSize)
     'origin-center',
     
     // Enhanced disabled states
-    'disabled:opacity-40',
+    'disabled:opacity-50',
     'disabled:cursor-not-allowed',
     'disabled:transform-none',
     'disabled:shadow-none',
-    'disabled:border-opacity-30',
+    'disabled:border-opacity-40',
     
     // Size-specific classes (includes padding, text size, min-width)
     getSizeClasses(size),
@@ -130,16 +127,14 @@ const getButtonClasses = (_theme: Theme, animation: animation, size: ButtonSize)
     baseClasses.push(
       'transition-all', 
       'duration-300', 
-      'ease-out',
-      'hover:border-2' // Maintain border thickness
+      'ease-out'
     );
   } else {
     // 'none' animation - enhanced basic transitions
     baseClasses.push(
       'transition-all', 
-      'duration-250',
-      'ease-out',
-      'hover:border-opacity-90'
+      'duration-200',
+      'ease-out'
     );
   }
 
@@ -198,6 +193,13 @@ const getInlineStyles = (theme: Theme, animation: animation, size: ButtonSize) =
     color: theme.palette.primary,
     borderColor: theme.palette.primary,
     backgroundColor: 'transparent',
+    
+    // Force uniform border on all sides (prevents browser 3D effects)
+    borderStyle: 'solid',
+    borderWidth: '2px',
+    
+    // Add custom box shadow
+    boxShadow: 'rgba(0, 0, 0, 0.08) 3px 3px 3px',
     
     // Force border radius in CSS to ensure it's applied
     borderRadius: getBorderRadiusValue(size),
