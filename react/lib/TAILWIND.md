@@ -90,11 +90,64 @@ For PayButton custom colors:
 
 ## Migration Strategy
 
-The Tailwind integration is designed for gradual adoption:
+The Tailwind integration is designed for **gradual MUI → Tailwind migration**:
 
-1. **Phase 1** (Current): Tailwind available as opt-in, all existing styling unchanged
-2. **Phase 2** (Future): Gradual component migration from Material-UI to Tailwind
-3. **Phase 3** (Future): Complete migration with Material-UI removal
+### **Phase 1** (✅ Current): Foundation & Coexistence
+- ✅ Tailwind CSS installed and configured
+- ✅ Custom PayButton theme colors defined
+- ✅ Storybook integration for development
+- ✅ MUI and Tailwind classes working side-by-side
+- ✅ CSS reset disabled to prevent conflicts
+- ✅ Initial enhancements (button hover animations)
+
+### **Phase 2** (🔄 Ready): Component-by-Component Migration
+Target components for migration (in suggested order):
+
+1. **Button Component** (`lib/components/Button/`)
+   - Replace `makeStyles` with Tailwind classes
+   - Keep existing props/API unchanged
+   - Already has Tailwind animations added
+
+2. **PaymentDialog** (`lib/components/PaymentDialog/`)
+   - Replace MUI `Dialog` with custom Tailwind modal
+   - Maintain existing functionality and animations
+
+3. **Widget Components** (`lib/components/Widget/`)
+   - Replace MUI layout components with Tailwind flexbox/grid
+   - Migrate complex `makeStyles` to utility classes
+
+### **Phase 3** (🎯 Future): Complete Migration
+- Remove `@material-ui/core` dependency
+- Enable Tailwind's CSS reset (`preflight: true`)
+- Final bundle size optimization
+- Full utility-first CSS approach
+
+### **Migration Guidelines**
+
+For each component migration:
+
+```tsx
+// BEFORE (MUI):
+const useStyles = makeStyles({
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
+    padding: '16px',
+    backgroundColor: '#4BC846',
+    borderRadius: '8px',
+  }
+});
+
+// AFTER (Tailwind):
+<div className="flex flex-col p-4 bg-paybutton-primary rounded-lg">
+```
+
+**Benefits of gradual migration:**
+- ✅ No breaking changes for consumers
+- ✅ Reduced risk (test each component individually)
+- ✅ Maintain existing functionality during transition
+- ✅ Smaller, more focused PRs
+- ✅ Bundle size decreases with each migration
 
 ## Development Workflow
 
@@ -102,11 +155,64 @@ For PayButton development with Tailwind:
 
 ```bash
 # Start development with Tailwind watching
-npm run dev & npm run watch:tailwind
+npm run dev  # Includes both Storybook and Tailwind watching
 
-# Or manually build Tailwind
+# Or run separately:
+npm run storybook       # Start Storybook
+npm run watch:tailwind  # Watch Tailwind changes
+
+# Build Tailwind CSS manually
 npm run build:tailwind
 
-# Full build (includes Tailwind)
+# Full build (includes Tailwind CSS compilation)
 npm run build
 ```
+
+## Migration Helper Tools
+
+### **Common MUI → Tailwind Conversions**
+
+```tsx
+// Flexbox layouts
+makeStyles({ display: 'flex', flexDirection: 'column' })
+// → className="flex flex-col"
+
+// Spacing
+makeStyles({ padding: '16px', margin: '8px' })
+// → className="p-4 m-2"
+
+// Colors
+makeStyles({ backgroundColor: '#4BC846', color: '#ffffff' })
+// → className="bg-paybutton-primary text-white"
+
+// Shadows (MUI elevation)
+makeStyles({ boxShadow: theme.shadows[1] })
+// → className="shadow-mui-1"
+
+// Transitions
+makeStyles({ transition: theme.transitions.create(['transform']) })
+// → className="transition-transform duration-300 ease-mui"
+```
+
+### **Component Migration Checklist**
+
+For each component being migrated:
+
+- [ ] **Backup**: Create branch for the component migration
+- [ ] **Inventory**: List all `makeStyles` objects to convert
+- [ ] **Convert**: Replace MUI classes with Tailwind utilities
+- [ ] **Test**: Verify visual appearance in Storybook
+- [ ] **Props**: Ensure all component props still work
+- [ ] **Types**: Update TypeScript interfaces if needed  
+- [ ] **Stories**: Update Storybook stories if necessary
+- [ ] **Bundle**: Check that bundle size decreased
+
+### **MUI Dependencies Audit**
+
+Current MUI usage in codebase:
+- `Button.tsx`: `makeStyles`, `MuiButton`
+- `Widget.tsx`: `makeStyles`, layout components
+- `AltpaymentWidget.tsx`: `makeStyles`, layout components  
+- `PaymentDialog.tsx`: `Dialog`, `Zoom` components
+
+**Migration Priority**: Start with `Button.tsx` (already has Tailwind animations) → `PaymentDialog.tsx` → `Widget` components

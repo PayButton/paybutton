@@ -26,6 +26,26 @@ module.exports = {
       fontFamily: {
         paybutton: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
       },
+      // Add common spacing values used in PayButton components
+      spacing: {
+        '18': '4.5rem',
+        '88': '22rem',
+      },
+      // Add shadows that match MUI elevation system
+      boxShadow: {
+        'mui-1': '0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12)',
+        'mui-2': '0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)',
+        'mui-3': '0px 3px 3px -2px rgba(0,0,0,0.2), 0px 3px 4px 0px rgba(0,0,0,0.14), 0px 1px 8px 0px rgba(0,0,0,0.12)',
+      },
+      // Add animation timing that matches MUI transitions
+      transitionDuration: {
+        '250': '250ms',
+        '300': '300ms',
+        '500': '500ms',
+      },
+      transitionTimingFunction: {
+        'mui': 'cubic-bezier(0.4, 0, 0.2, 1)',
+      }
     },
   },
   plugins: [],
