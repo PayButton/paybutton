@@ -4,7 +4,7 @@
   "altpaymentClient": "mocked",
   "networkBlockchainURLs": {
     "ecash": [
-      "https://xec.paybutton.io",
+      "https://xec.paybutton.org",
       "https://chronik1.alitayin.com",
       "https://chronik2.alitayin.com",
       "https://chronik.e.cash",
@@ -14,6 +14,6 @@
       "https://chronik.pay2stay.com/xec",
       "https://chronik.pay2stay.com/xec2"
     ],
-    "bitcoincash": ["https://bch.paybutton.io", "https://chronik.pay2stay.com/bch"]
+    "bitcoincash": ["https://bch.paybutton.org", "https://chronik.pay2stay.com/bch"]
   }
 }
