@@ -1,0 +1,12 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "noEmit": false,
+        "declaration": true,
+        "outDir": "dist/esm",
+        "module": "esnext",
+        "target": "es2018",
+        "importHelpers": true
+    },
+    "include": ["lib", "index.tsx"]
+}
