@@ -528,9 +528,11 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
 
   useEffect(() => {
     (async (): Promise<void> => {
-      const balance = await getAddressBalance(to, apiBaseUrl);
-      setTotalReceived(balance);
-      setLoading(false);
+      if(thisNewTxs === undefined || thisNewTxs.length === 0) {
+        const balance = await getAddressBalance(to, apiBaseUrl);
+        setTotalReceived(balance);
+        setLoading(false);
+      }
     })();
   }, [thisNewTxs]);
 
