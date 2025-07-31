@@ -208,25 +208,6 @@ export function outputScriptToAddress (networkSlug: string, outputScript: string
     return fromHash160(networkSlug, addressType as AddressType, hash160)
 }
 
-const getRelatedAddressesForTransaction = (transaction: Tx, networkSlug: string): (string | undefined)[] => {
-    const inputAddresses = transaction.inputs.map(inp => outputScriptToAddress(networkSlug, inp.outputScript))
-    const outputAddresses = transaction.outputs.map(out => outputScriptToAddress(networkSlug, out.outputScript))
-    return [...inputAddresses, ...outputAddresses].filter(a => a !== undefined)
-}
-
-export const getAddressesForTransaction = async (transaction: Tx, networkSlug: string): Promise<any[]> => {
-    const relatedAddresses = getRelatedAddressesForTransaction(transaction, networkSlug)
-    const addressesWithTransactions: any = await Promise.all(relatedAddresses.map(
-      async address => {
-        return {
-          address,
-          transaction: await getTransactionFromChronikTransaction(transaction, address ?? '')
-        }
-      }
-    ))
-    return addressesWithTransactions
-}
-
 const resolveOpReturn = (opReturn: string): OpReturnData | null => {
   try {
     return opReturn === '' ? null : JSON.parse(opReturn)
@@ -239,23 +220,19 @@ export const parseWebsocketMessage = async (
     wsMsg: any,
     onTransaction: Function,
     chronik: ChronikClient,
-    networkslug: string,
+    address: string
 ) => {
     const { type } = wsMsg;
     if (type === 'Error') {
         return;
     }
     const { msgType } = wsMsg;
-
     switch (msgType) {
         case 'TX_ADDED_TO_MEMPOOL': {
             const rawTransaction = await chronik.tx(wsMsg.txid);
-            const addressesWithTransactions = await getAddressesForTransaction(rawTransaction, networkslug)
-            for (const addressWithTransaction of addressesWithTransactions) {
-              if (addressWithTransaction.transaction.amount > Decimal(0)) {
-                onTransaction([addressWithTransaction.transaction]);
-              }
-            }
+            const transaction = await getTransactionFromChronikTransaction(rawTransaction, address ?? '')
+
+            onTransaction([transaction]);
         }
         default:
             return;
@@ -275,7 +252,7 @@ export const initializeChronikWebsocket = async (
                 msg,
                 onTransaction,
                 chronik,
-                networSlug
+                address
             );
         },
     });
