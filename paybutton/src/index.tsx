@@ -230,7 +230,7 @@ function findAndRender<T>(className: string, Component: React.ComponentType<any>
     });
 }
 
-const validateJSProps = (props: PayButtonProps) => {
+const validateJSProps = (props: PayButtonProps | WidgetProps) => {
   if (props.amount !== null && props.amount !== undefined) {
     props.amount = +props.amount
 

@@ -1,4 +1,12 @@
 {
     "extends": "./tsconfig.json",
-    "include": ["lib"]
+    "compilerOptions": {
+        "noEmit": false,
+        "declaration": true,
+        "outDir": "dist",
+        "module": "commonjs",
+        "target": "es5",
+        "importHelpers": true
+    },
+    "include": ["lib", "index.tsx"]
 }

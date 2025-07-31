@@ -53,13 +53,13 @@ export interface WidgetContainerProps
 
 const snackbarOptionsSuccess: OptionsObject = {
   variant: 'success',
-  style:{
-    marginBottom: '60px',
-  },
   autoHideDuration: 8000,
   anchorOrigin: {
     vertical: 'bottom',
     horizontal: 'center',
+  },
+  style: {
+    marginBottom: '60px',
   },
 };
 

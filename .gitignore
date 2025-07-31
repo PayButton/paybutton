@@ -4,3 +4,5 @@ dist
 paybutton/dev/demo/paybutton.js
 react/coverage
 react/lib/paybutton-config.json
+react/lib/**/*.js
+react/lib/**/*.js.map

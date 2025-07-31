@@ -1,4 +1,4 @@
-import { Dialog, Zoom } from '@material-ui/core';
+import { Dialog, Zoom } from '@mui/material';
 import React, { useState, useEffect } from 'react';
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
 import Button, { ButtonProps } from '../Button/Button';

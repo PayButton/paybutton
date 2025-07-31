@@ -23,8 +23,16 @@ export default ( env ) => ({
     }),
     alias({
       entries: [
-        { find: 'react', replacement: require.resolve( 'preact/compat' ) },
-        { find: 'react-dom', replacement: require.resolve( 'preact/compat' ) },
+        { 
+          find: /^react\/jsx-runtime$/, 
+          replacement: require.resolve('preact/compat/jsx-runtime').replace(/\\/g, '/') 
+        },
+        { 
+          find: /^react\/jsx-dev-runtime$/, 
+          replacement: require.resolve('preact/compat/jsx-dev-runtime').replace(/\\/g, '/') 
+        },
+        { find: 'react', replacement: require.resolve('preact/compat') },
+        { find: 'react-dom', replacement: require.resolve('preact/compat') },
       ]
     }),
     replace({
@@ -36,7 +44,8 @@ export default ( env ) => ({
     resolve({ 
       browser: true, 
       extensions: [ '.js', '.jsx', '.ts', '.tsx', '.svg' ],
-      preferBuiltins: false 
+      preferBuiltins: false,
+      dedupe: ['react', 'react-dom', 'preact']
     }),
     commonJS( { extensions: [ '.js', '.jsx', '.ts', '.tsx', '.svg' ], transformMixedEsModules: true } ),
     image(),
@@ -47,5 +56,5 @@ export default ( env ) => ({
     }),
     typescript({ compilerOptions: {lib: ["es5", "es6", "dom"], target: "es5"}}),
     ],
-    external: ['@types/currency-formatter', 'currency-formatter'],
+    external: ['@types/currency-formatter'],
   });

@@ -4,17 +4,18 @@ import {
   Grid,
   Select,
   MenuItem,
-  makeStyles,
   InputLabel,
   FormControl,
-  Typography
-} from '@material-ui/core';
+  Typography,
+  SelectChangeEvent
+} from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import {
   resolveNumber,
   CryptoCurrency,
   DECIMALS
 } from '../../util';
-import { Button, animation } from '../Button/Button';
+import { Button } from '../Button/Button';
 import { Socket } from 'socket.io-client';
 import { AltpaymentCoin, AltpaymentError, AltpaymentPair, AltpaymentShift } from '../../altpayment';
 import { sideShiftLogo, copyIcon } from './SideShiftLogo'
@@ -36,7 +37,7 @@ interface AltpaymentProps {
   coinPair?: AltpaymentPair;
   setCoinPair: Function;
   altpaymentEditable: boolean;
-  animation?: animation;
+  animation?: 'slide' | 'invert' | 'none' | undefined;
   addressType: CryptoCurrency;
   to: string;
   thisAmount?: string | number | null
@@ -125,7 +126,7 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     }
   }
 
-  const handleCoinChange = async (e: React.ChangeEvent<{ name?: string; value: unknown }>) => {
+  const handleCoinChange = async (e: SelectChangeEvent<string | null>) => {
     const coinName = e.target.value as string
     const selectedCoin = coins.find(c => c.coin === coinName)
     setSelectedCoinNetwork(selectedCoin?.networks[0])
@@ -137,7 +138,7 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     requestPairRate()
   }
 
-  const handleNetworkChange = async (e: React.ChangeEvent<{ name?: string; value: unknown }>) => {
+  const handleNetworkChange = async (e: SelectChangeEvent<string | null>) => {
     const networkName = e.target.value as string
     setSelectedCoinNetwork(networkName)
   }
@@ -384,12 +385,12 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
   return (
     <Typography component="div" className={classes.sideshift_ctn}>
       {altpaymentError ? (
-        <>
+        <React.Fragment>
           <p className={classes.error_msg}>Error: {altpaymentError.errorMessage}</p>
           <div className={classes.back_link} onClick={resetTrade}>Back</div>
-        </>
+        </React.Fragment>
       ) : (
-        <>
+        <React.Fragment>
           {
             altpaymentShift ? (
               shiftCompleted ? (
@@ -440,7 +441,7 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
             ) : loadingShift ? (
               <p>Loading Shift...</p>
             ) : coinPair ? (
-              <>
+              <React.Fragment>
                 <p>
                   {' '}
                   1 {selectedCoin?.name} ~={' '}
@@ -497,12 +498,12 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                 {!isBelowMaximumAltpaymentAmount && (
                   <p className={classes.amount_error}>Amount is above maximum.</p>
                 )}
-              </>
+              </React.Fragment>
             ) : (
-              <>
+              <React.Fragment>
                 {coins.length === 0 && <div>Loading...</div>}
                 {coins.length > 0 && (
-                  <>
+                  <React.Fragment>
                     <div className={classes.header}>
                       Swap coins with
                       <a href="https://sideshift.ai" target="_blank">
@@ -545,7 +546,7 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                     </FormControl>
                     <div className={classes.spacer} />
                     {selectedCoin && selectedCoin.networks.length > 1 && (
-                      <>
+                      <React.Fragment>
                         {
                           <FormControl>
                             <InputLabel id="select-network-label">
@@ -575,9 +576,9 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                             </Select>
                           </FormControl>
                         }
-                      </>
+                      </React.Fragment>
                     )}
-                  </>
+                  </React.Fragment>
                 )}
                 <div className={classes.spacer} />
                 {loadingPair ||
@@ -596,14 +597,14 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                   />
                 )}
                 <div className={classes.back_link} onClick={() => {setUseAltpayment(false)}}>Back</div>
-              </>
+              </React.Fragment>
             )
             // END: Altpayment region
           }
            {coinPair && !loadingShift && (
               <div className={classes.back_link} onClick={resetTrade}>Back</div>
             )}
-        </>
+        </React.Fragment>
       )}
     </Typography>
   );

@@ -3,6 +3,7 @@ module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
   modulePaths: ['./'],
+  testPathIgnorePatterns: ['/node_modules/', '/dist/'],
   collectCoverageFrom: [
     'lib/**/*.{ts,tsx,mjs}',
   ],

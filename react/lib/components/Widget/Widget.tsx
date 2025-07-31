@@ -2,16 +2,16 @@ import {
   Box,
   CircularProgress,
   Fade,
-  Typography,
-  makeStyles,
   TextField,
-} from '@material-ui/core';
+} from '@mui/material';
+import Typography from '@mui/material/Typography';
+import { makeStyles } from '@mui/styles';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import copy from 'copy-to-clipboard';
 import QRCode, { BaseQRCodeProps } from 'qrcode.react';
 import { Socket } from 'socket.io-client';
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
-import { Button, animation } from '../Button/Button';
+import { Button } from '../Button/Button';
 import BarChart from '../BarChart/BarChart';
 import {
   Currency,
@@ -56,7 +56,7 @@ export interface WidgetProps {
   disabled: boolean;
   goalAmount?: number | string | null;
   currency?: Currency;
-  animation?: animation;
+  animation?: 'slide' | 'invert' | 'none' | undefined;
   currencyObject?: CurrencyObject | undefined;
   setCurrencyObject?: Function;
   randomSatoshis?: boolean | number;
@@ -851,8 +851,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                 to={to}
               />
            }
-            <>
-              {loading && shouldDisplayGoal ? (
+            {loading && shouldDisplayGoal ? (
                 <Typography
                   className={classes.text}
                   style={{ margin: '10px auto 20px' }}
@@ -864,9 +863,9 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                   />
                 </Typography>
               ) : (
-                <>
+                <React.Fragment>
                   {shouldDisplayGoal && (
-                    <>
+                    <React.Fragment>
                       <Typography
                         className={classes.copyText}
                         style={{ marginBottom: '0.61rem', ...blurCSS}}
@@ -879,9 +878,9 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                         value={Math.round(goalPercent)}
                         disabled={disabled}
                       />
-                    </>
+                    </React.Fragment>
                   )}
-                </>
+                </React.Fragment>
               )}
 
               <Box
@@ -968,7 +967,6 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                   Don't have any {thisAddressType}?
                 </Typography>
               )}
-            </>
           {foot && (
             <Box pt={2} flex={1}>
               {foot}
