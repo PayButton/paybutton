@@ -18,7 +18,7 @@ import {
   getAddressBalance,
   isFiat,
   Transaction,
-  getCashtabProviderStatus,
+  openCashtabPayment,
   DECIMALS,
   CurrencyObject,
   getCurrencyObject,
@@ -693,24 +693,9 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     }
   }, [totalReceived, currency, goalAmount, price, hasPrice, contributionOffset]);
 
-  const handleButtonClick = () => {
+  const handleButtonClick = async () => {
     if (thisAddressType === 'XEC') {
-      const hasExtension = getCashtabProviderStatus();
-      if (!hasExtension) {
-        const webUrl = `https://cashtab.com/#/send?bip21=${url}`;
-        window.open(webUrl, '_blank');
-      } else {
-        return window.postMessage(
-          {
-            type: 'FROM_PAGE',
-            text: 'Cashtab',
-            txInfo: {
-              bip21: url
-            },
-          },
-          '*',
-        );
-      }
+      await openCashtabPayment(url);
     } else {
       window.location.href = url;
     }
