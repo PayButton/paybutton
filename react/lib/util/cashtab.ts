@@ -8,16 +8,59 @@ import {
 // Create a single instance to be reused throughout the app
 const cashtab = new CashtabConnect();
 
+// Cache for extension status to avoid multiple checks
+let extensionStatusCache: boolean | null = null;
+let extensionStatusPromise: Promise<boolean> | null = null;
+
 /**
- * Check if the Cashtab extension is available
+ * Check if the Cashtab extension is available (with caching)
+ * This function caches the result to avoid multiple extension checks per page load
  * @returns Promise<boolean> - true if extension is available, false otherwise
  */
 export const getCashtabProviderStatus = async (): Promise<boolean> => {
-  try {
-    return await cashtab.isExtensionAvailable();
-  } catch (error) {
-    return false;
+  // Return cached result if available
+  if (extensionStatusCache !== null) {
+    return extensionStatusCache;
   }
+
+  // If a check is already in progress, wait for it
+  if (extensionStatusPromise !== null) {
+    return extensionStatusPromise;
+  }
+
+  // Start a new check and cache the promise
+  extensionStatusPromise = (async () => {
+    try {
+      const isAvailable = await cashtab.isExtensionAvailable();
+      extensionStatusCache = isAvailable;
+      return isAvailable;
+    } catch (error) {
+      extensionStatusCache = false;
+      return false;
+    } finally {
+      // Clear the promise so future calls can make a fresh check if needed
+      extensionStatusPromise = null;
+    }
+  })();
+
+  return extensionStatusPromise;
+};
+
+/**
+ * Clear the cached extension status (useful for testing or if extension state changes)
+ */
+export const clearCashtabStatusCache = (): void => {
+  extensionStatusCache = null;
+  extensionStatusPromise = null;
+};
+
+/**
+ * Initialize Cashtab status check (call this on page load to cache extension status)
+ * This function starts the extension check early to have the result ready when needed
+ * @returns Promise<boolean> - true if extension is available, false otherwise
+ */
+export const initializeCashtabStatus = async (): Promise<boolean> => {
+  return getCashtabProviderStatus();
 };
 
 /**

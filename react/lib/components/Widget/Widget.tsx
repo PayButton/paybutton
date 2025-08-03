@@ -19,6 +19,7 @@ import {
   isFiat,
   Transaction,
   openCashtabPayment,
+  initializeCashtabStatus,
   DECIMALS,
   CurrencyObject,
   getCurrencyObject,
@@ -415,6 +416,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const [text, setText] = useState(`Send any amount of ${thisAddressType}`);
   const [widgetButtonText, setWidgetButtonText] = useState('Send Payment');
   const [opReturn, setOpReturn] = useState<string | undefined>();
+  const [isCashtabAvailable, setIsCashtabAvailable] = useState<boolean>(false);
 
   const [isAboveMinimumAltpaymentAmount, setIsAboveMinimumAltpaymentAmount] = useState<boolean | null>(null);
 
@@ -459,6 +461,21 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   useEffect(() => {
     setHasPrice(price !== undefined && price > 0)
   }, [price])
+
+  // Initialize Cashtab extension status on component mount
+  useEffect(() => {
+    const initCashtab = async () => {
+      try {
+        const isAvailable = await initializeCashtabStatus();
+        setIsCashtabAvailable(isAvailable);
+      } catch (error) {
+        // If initialization fails, assume extension is not available
+        setIsCashtabAvailable(false);
+      }
+    };
+    
+    initCashtab();
+  }, []); // Run only once on mount
 
   useEffect(() => {
     (async () => {
@@ -597,7 +614,13 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     let url;
 
     setThisAddressType(thisAddressType);
-    setWidgetButtonText(`Send with ${thisAddressType} wallet`);
+    
+    // Update button text based on address type and Cashtab availability
+    if (thisAddressType === 'XEC' && isCashtabAvailable) {
+      setWidgetButtonText('Send with Cashtab');
+    } else {
+      setWidgetButtonText(`Send with ${thisAddressType} wallet`);
+    }
 
     if (thisCurrencyObject && hasPrice) {
       const convertedAmount = thisCurrencyObject.float / price
@@ -628,7 +651,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       }
       setUrl(url ?? "");
     }
-  }, [to, thisCurrencyObject, price, thisAmount, opReturn, hasPrice]);
+  }, [to, thisCurrencyObject, price, thisAmount, opReturn, hasPrice, isCashtabAvailable]);
 
   useEffect(() => {
     try {
