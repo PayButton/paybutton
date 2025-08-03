@@ -80,7 +80,12 @@ export const openCashtabPayment = async (bip21Url: string, fallbackUrl?: string)
       window.open(webUrl, '_blank');
     }
   } catch (error) {
-    console.warn('Cashtab payment failed, falling back to web interface:', error);
+    if (error instanceof CashtabAddressDeniedError) {
+      // User rejected the transaction - do nothing for now
+      // This case is handled here in case we want to add specific behavior in the future
+      return;
+    }
+    
     // If extension interaction fails, fall back to web Cashtab
     const webUrl = fallbackUrl || `https://cashtab.com/#/send?bip21=${encodeURIComponent(bip21Url)}`;
     window.open(webUrl, '_blank');
