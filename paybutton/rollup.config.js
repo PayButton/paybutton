@@ -30,6 +30,7 @@ export default ( env ) => ({
       entries: [
         { find: 'react', replacement: pathResolve(__dirname, 'node_modules/preact/compat/dist/compat.js') },
         { find: 'react-dom', replacement: pathResolve(__dirname, 'node_modules/preact/compat/dist/compat.js') },
+        { find: '@paybutton/react', replacement: pathResolve(__dirname, '../react/dist/index.js') },
       ]
     }),
     replace({
@@ -41,16 +42,17 @@ export default ( env ) => ({
     resolve({ 
       browser: true, 
       extensions: [ '.js', '.jsx', '.ts', '.tsx', '.svg' ],
-      preferBuiltins: false 
+      preferBuiltins: false,
+      mainFields: ['module', 'main']
     }),
-    commonJS( { extensions: [ '.js', '.jsx', '.ts', '.tsx', '.svg' ], transformMixedEsModules: true } ),
+    typescript({ compilerOptions: {lib: ["es5", "es6", "dom"], target: "es5"}}),
+    commonJS( { extensions: [ '.js', '.jsx' ], transformMixedEsModules: true } ),
     image(),
     nodePolyfills(),
     json(),
     dotenv({
       cwd: "../react"
     }),
-    typescript({ compilerOptions: {lib: ["es5", "es6", "dom"], target: "es5"}}),
     ],
     external: ['@types/currency-formatter', 'currency-formatter'],
   });
