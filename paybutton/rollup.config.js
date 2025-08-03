@@ -9,6 +9,11 @@ import typescript from '@rollup/plugin-typescript';
 import json from "@rollup/plugin-json";
 import dotenv from "rollup-plugin-dotenv";
 import progress from "rollup-plugin-progress";
+import { fileURLToPath } from 'url';
+import { dirname, resolve as pathResolve } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 export default ( env ) => ({
   input: 'src/index.tsx',
@@ -23,8 +28,8 @@ export default ( env ) => ({
     }),
     alias({
       entries: [
-        { find: 'react', replacement: require.resolve( 'preact/compat' ) },
-        { find: 'react-dom', replacement: require.resolve( 'preact/compat' ) },
+        { find: 'react', replacement: pathResolve(__dirname, 'node_modules/preact/compat/dist/compat.js') },
+        { find: 'react-dom', replacement: pathResolve(__dirname, 'node_modules/preact/compat/dist/compat.js') },
       ]
     }),
     replace({

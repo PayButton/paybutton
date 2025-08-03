@@ -5,9 +5,10 @@ import common from './rollup.config.js';
 
 const config = common( 'development' );
 
-module.exports = config;
 config.output.file = 'dev/demo/paybutton.js'
 config.plugins.push(
     serve( 'dev/demo' ),
     livereload( ),
 );
+
+export default config;
