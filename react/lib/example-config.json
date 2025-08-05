@@ -1,5 +1,19 @@
 {
   "wsBaseUrl": "http://localhost:5000",
   "apiBaseUrl": "http://localhost:3000",
-  "altpaymentClient": "mocked"
+  "altpaymentClient": "mocked",
+  "networkBlockchainURLs": {
+    "ecash": [
+      "https://xec.paybutton.org",
+      "https://chronik1.alitayin.com",
+      "https://chronik2.alitayin.com",
+      "https://chronik.e.cash",
+      "https://chronik-native1.fabien.cash",
+      "https://chronik-native2.fabien.cash",
+      "https://chronik-native3.fabien.cash",
+      "https://chronik.pay2stay.com/xec",
+      "https://chronik.pay2stay.com/xec2"
+    ],
+    "bitcoincash": ["https://bch.paybutton.org", "https://chronik.pay2stay.com/bch"]
+  }
 }
