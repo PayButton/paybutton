@@ -203,7 +203,6 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
                 snackbarOptionsSuccess,
               );
             setSuccess(true);
-            console.timeEnd("firing on success")
             onSuccess?.(transaction);
           } else {
             onTransaction?.(transaction);

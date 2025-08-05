@@ -14,8 +14,8 @@ import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
 import { Button, animation } from '../Button/Button';
 import BarChart from '../BarChart/BarChart';
 import {
-  Currency,
   getAddressBalance,
+  Currency,
   isFiat,
   Transaction,
   getCashtabProviderStatus,
@@ -356,7 +356,10 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
 
   const [internalNewTxs, setInternalNewTxs] = useState<Transaction[] | undefined>();
   const thisNewTxs = newTxs ?? internalNewTxs
-  const setThisNewTxs = setNewTxs ?? setInternalNewTxs
+  const setThisNewTxs = useCallback((txs: Transaction[]) => {
+  const setterFn = setNewTxs ?? setInternalNewTxs;
+    setterFn(txs);
+  }, [setNewTxs])
 
   const [internalAltpaymentShift, setInternalAltpaymentShift] = useState<AltpaymentShift | undefined>(undefined);
   const thisAltpaymentShift = altpaymentShift ?? internalAltpaymentShift;
@@ -516,10 +519,10 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       if(thisNewTxs === undefined || thisNewTxs.length === 0) {
         const balance = await getAddressBalance(to, apiBaseUrl);
         setTotalReceived(balance);
-        setLoading(false);
       }
+      setLoading(false);
     })();
-  }, [thisNewTxs]);
+  }, [thisNewTxs, to, apiBaseUrl]);
 
   useEffect(() => {
     const invalidAmount =
