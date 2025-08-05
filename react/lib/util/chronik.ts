@@ -222,6 +222,9 @@ export const parseWebsocketMessage = async (
     chronik: ChronikClient,
     address: string
 ) => {
+    const getTime = () => new Date().toISOString();
+    console.time("processing message")
+    console.log(`[${getTime()}][CHRONIK]: Received websocket message`);
     const { type } = wsMsg;
     if (type === 'Error') {
         return;
@@ -230,6 +233,11 @@ export const parseWebsocketMessage = async (
     switch (msgType) {
         case 'TX_ADDED_TO_MEMPOOL': {
             const rawTransaction = await chronik.tx(wsMsg.txid);
+            console.timeEnd("processing message")
+            console.time("firing on success")
+
+            console.log(`[${getTime()}][CHRONIK]: Got message details`);
+            
             const transaction = await getTransactionFromChronikTransaction(rawTransaction, address ?? '')
 
             onTransaction([transaction]);
