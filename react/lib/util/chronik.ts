@@ -218,29 +218,23 @@ const resolveOpReturn = (opReturn: string): OpReturnData | null => {
 
 export const parseWebsocketMessage = async (
     wsMsg: any,
-    onTransaction: Function,
+    setNewTx: Function,
     chronik: ChronikClient,
     address: string
 ) => {
-    const getTime = () => new Date().toISOString();
-    console.time("processing message")
-    console.log(`[${getTime()}][CHRONIK]: Received websocket message`);
     const { type } = wsMsg;
     if (type === 'Error') {
-        return;
+      return;
     }
     const { msgType } = wsMsg;
     switch (msgType) {
-        case 'TX_ADDED_TO_MEMPOOL': {
-            const rawTransaction = await chronik.tx(wsMsg.txid);
-            console.timeEnd("processing message")
-            console.time("firing on success")
+      case 'TX_ADDED_TO_MEMPOOL': {
+        const rawTransaction = await chronik.tx(wsMsg.txid);
 
-            console.log(`[${getTime()}][CHRONIK]: Got message details`);
-            
-            const transaction = await getTransactionFromChronikTransaction(rawTransaction, address ?? '')
+        const transaction = await getTransactionFromChronikTransaction(rawTransaction, address ?? '')
 
-            onTransaction([transaction]);
+        setNewTx([transaction]);
+        break;
         }
         default:
             return;
@@ -249,7 +243,7 @@ export const parseWebsocketMessage = async (
 
 export const initializeChronikWebsocket = async (
     address: string,
-    onTransaction: Function
+    setNewTx: Function
 ): Promise<WsEndpoint> => {
     const networSlug = getAddressPrefix(address)
     const blockchainUrls = config.networkBlockchainURLs[networSlug];
@@ -258,7 +252,7 @@ export const initializeChronikWebsocket = async (
         onMessage: async (msg: any) => {
             await parseWebsocketMessage(
                 msg,
-                onTransaction,
+                setNewTx,
                 chronik,
                 address
             );
