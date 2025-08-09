@@ -5,7 +5,6 @@ import {
   CashtabTimeoutError 
 } from 'cashtab-connect';
 
-// Create a single instance to be reused throughout the app
 const cashtab = new CashtabConnect();
 
 // Cache for extension status to avoid multiple checks
@@ -28,7 +27,6 @@ export const getCashtabProviderStatus = async (): Promise<boolean> => {
     return extensionStatusPromise;
   }
 
-  // Start a new check and cache the promise
   extensionStatusPromise = (async () => {
     try {
       const isAvailable = await cashtab.isExtensionAvailable();
@@ -54,20 +52,11 @@ export const clearCashtabStatusCache = (): void => {
   extensionStatusPromise = null;
 };
 
-/**
- * Initialize Cashtab status check (call this on page load to cache extension status)
- * This function starts the extension check early to have the result ready when needed
- * @returns Promise<boolean> - true if extension is available, false otherwise
- */
+
 export const initializeCashtabStatus = async (): Promise<boolean> => {
   return getCashtabProviderStatus();
 };
 
-/**
- * Wait for the Cashtab extension to become available
- * @param timeout - Maximum time to wait in milliseconds (default: 3000)
- * @returns Promise that resolves when extension is available or rejects on timeout
- */
 export const waitForCashtabExtension = async (timeout?: number): Promise<void> => {
   return cashtab.waitForExtension(timeout);
 };
@@ -83,12 +72,6 @@ export const requestCashtabAddress = async (): Promise<string> => {
   return cashtab.requestAddress();
 };
 
-/**
- * Send XEC to an address using Cashtab
- * @param address - Recipient's eCash address
- * @param amount - Amount to send in XEC
- * @throws {CashtabExtensionUnavailableError} When the Cashtab extension is not available
- */
 export const sendXecWithCashtab = async (address: string, amount: string | number): Promise<any> => {
   return cashtab.sendXec(address, amount);
 };
@@ -103,22 +86,17 @@ export const openCashtabPayment = async (bip21Url: string, fallbackUrl?: string)
     const isAvailable = await getCashtabProviderStatus();
     
     if (isAvailable) {
-      // For BIP21 URLs, we need to parse them to extract address and amount
-      // The cashtab-connect library expects separate address and amount parameters
       const url = new URL(bip21Url);
       const address = url.pathname;
       const amount = url.searchParams.get('amount');
       
       if (amount) {
-        // If we have an amount, use the sendXec method
         await sendXecWithCashtab(address, amount);
       } else {
-        // If no amount, fall back to opening web Cashtab with the full BIP21 URL
         const webUrl = fallbackUrl || `https://cashtab.com/#/send?bip21=${encodeURIComponent(bip21Url)}`;
         window.open(webUrl, '_blank');
       }
     } else {
-      // Extension not available, open web Cashtab
       const webUrl = fallbackUrl || `https://cashtab.com/#/send?bip21=${encodeURIComponent(bip21Url)}`;
       window.open(webUrl, '_blank');
     }
@@ -129,13 +107,11 @@ export const openCashtabPayment = async (bip21Url: string, fallbackUrl?: string)
       return;
     }
     
-    // If extension interaction fails, fall back to web Cashtab
     const webUrl = fallbackUrl || `https://cashtab.com/#/send?bip21=${encodeURIComponent(bip21Url)}`;
     window.open(webUrl, '_blank');
   }
 };
 
-// Export error types for consumers to handle specific errors
 export {
   CashtabExtensionUnavailableError,
   CashtabAddressDeniedError,

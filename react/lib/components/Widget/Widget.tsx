@@ -462,20 +462,18 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     setHasPrice(price !== undefined && price > 0)
   }, [price])
 
-  // Initialize Cashtab extension status on component mount
   useEffect(() => {
     const initCashtab = async () => {
       try {
         const isAvailable = await initializeCashtabStatus();
         setIsCashtabAvailable(isAvailable);
       } catch (error) {
-        // If initialization fails, assume extension is not available
         setIsCashtabAvailable(false);
       }
     };
     
     initCashtab();
-  }, []); // Run only once on mount
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -615,7 +613,6 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
 
     setThisAddressType(thisAddressType);
     
-    // Update button text based on address type and Cashtab availability
     if (thisAddressType === 'XEC' && isCashtabAvailable) {
       setWidgetButtonText('Send with Cashtab');
     } else {
