@@ -97,11 +97,3 @@ export default {
   getAddressBalance,
 };
 
-export const getCashtabProviderStatus = () => {
-  const windowAny = window as any
-  if (window && windowAny.bitcoinAbc && windowAny.bitcoinAbc === 'cashtab') {
-    return true;
-  }
-  return false;
-};
-

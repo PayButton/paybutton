@@ -18,7 +18,8 @@ import {
   getAddressBalance,
   isFiat,
   Transaction,
-  getCashtabProviderStatus,
+  openCashtabPayment,
+  initializeCashtabStatus,
   DECIMALS,
   CurrencyObject,
   getCurrencyObject,
@@ -415,6 +416,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const [text, setText] = useState(`Send any amount of ${thisAddressType}`);
   const [widgetButtonText, setWidgetButtonText] = useState('Send Payment');
   const [opReturn, setOpReturn] = useState<string | undefined>();
+  const [isCashtabAvailable, setIsCashtabAvailable] = useState<boolean>(false);
 
   const [isAboveMinimumAltpaymentAmount, setIsAboveMinimumAltpaymentAmount] = useState<boolean | null>(null);
 
@@ -459,6 +461,19 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   useEffect(() => {
     setHasPrice(price !== undefined && price > 0)
   }, [price])
+
+  useEffect(() => {
+    const initCashtab = async () => {
+      try {
+        const isAvailable = await initializeCashtabStatus();
+        setIsCashtabAvailable(isAvailable);
+      } catch (error) {
+        setIsCashtabAvailable(false);
+      }
+    };
+    
+    initCashtab();
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -597,7 +612,12 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     let url;
 
     setThisAddressType(thisAddressType);
-    setWidgetButtonText(`Send with ${thisAddressType} wallet`);
+    
+    if (thisAddressType === 'XEC' && isCashtabAvailable) {
+      setWidgetButtonText('Send with Cashtab');
+    } else {
+      setWidgetButtonText(`Send with ${thisAddressType} wallet`);
+    }
 
     if (thisCurrencyObject && hasPrice) {
       const convertedAmount = thisCurrencyObject.float / price
@@ -628,7 +648,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       }
       setUrl(url ?? "");
     }
-  }, [to, thisCurrencyObject, price, thisAmount, opReturn, hasPrice]);
+  }, [to, thisCurrencyObject, price, thisAmount, opReturn, hasPrice, isCashtabAvailable]);
 
   useEffect(() => {
     try {
@@ -693,24 +713,9 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     }
   }, [totalReceived, currency, goalAmount, price, hasPrice, contributionOffset]);
 
-  const handleButtonClick = () => {
+  const handleButtonClick = async () => {
     if (thisAddressType === 'XEC') {
-      const hasExtension = getCashtabProviderStatus();
-      if (!hasExtension) {
-        const webUrl = `https://cashtab.com/#/send?bip21=${url}`;
-        window.open(webUrl, '_blank');
-      } else {
-        return window.postMessage(
-          {
-            type: 'FROM_PAGE',
-            text: 'Cashtab',
-            txInfo: {
-              bip21: url
-            },
-          },
-          '*',
-        );
-      }
+      await openCashtabPayment(url);
     } else {
       window.location.href = url;
     }
