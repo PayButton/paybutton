@@ -86,16 +86,7 @@ export const openCashtabPayment = async (bip21Url: string, fallbackUrl?: string)
     const isAvailable = await getCashtabProviderStatus();
     
     if (isAvailable) {
-      const url = new URL(bip21Url);
-      const address = url.pathname;
-      const amount = url.searchParams.get('amount');
-      
-      if (amount) {
-        await sendXecWithCashtab(address, amount);
-      } else {
-        const webUrl = fallbackUrl || `https://cashtab.com/#/send?bip21=${encodeURIComponent(bip21Url)}`;
-        window.open(webUrl, '_blank');
-      }
+      cashtab.sendBip21(bip21Url);
     } else {
       const webUrl = fallbackUrl || `https://cashtab.com/#/send?bip21=${encodeURIComponent(bip21Url)}`;
       window.open(webUrl, '_blank');
