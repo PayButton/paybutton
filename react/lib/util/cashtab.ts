@@ -88,7 +88,7 @@ export const openCashtabPayment = async (bip21Url: string, fallbackUrl?: string)
     if (isAvailable) {
       cashtab.sendBip21(bip21Url);
     } else {
-      const webUrl = fallbackUrl || `https://cashtab.com/#/send?bip21=${encodeURIComponent(bip21Url)}`;
+      const webUrl = fallbackUrl || `https://cashtab.com/#/send?bip21=${bip21Url}`;
       window.open(webUrl, '_blank');
     }
   } catch (error) {
@@ -98,7 +98,7 @@ export const openCashtabPayment = async (bip21Url: string, fallbackUrl?: string)
       return;
     }
     
-    const webUrl = fallbackUrl || `https://cashtab.com/#/send?bip21=${encodeURIComponent(bip21Url)}`;
+    const webUrl = fallbackUrl || `https://cashtab.com/#/send?bip21=${bip21Url}`;
     window.open(webUrl, '_blank');
   }
 };
