@@ -1,4 +1,4 @@
-import { ChronikClient, WsEndpoint, Tx} from 'chronik-client-cashtokens';
+import { ChronikClient, WsEndpoint, Tx, ConnectionStrategy} from 'chronik-client-cashtokens';
 import { encodeCashAddress, decodeCashAddress } from 'ecashaddrjs'
 import { AddressType } from 'ecashaddrjs/dist/types'
 import xecaddr from 'xecaddrjs'
@@ -247,7 +247,11 @@ export const initializeChronikWebsocket = async (
 ): Promise<WsEndpoint> => {
     const networSlug = getAddressPrefix(address)
     const blockchainUrls = config.networkBlockchainURLs[networSlug];
-    const chronik = new ChronikClient(blockchainUrls);
+    
+    const chronik = await ChronikClient.useStrategy(
+        ConnectionStrategy.AsOrdered,
+        blockchainUrls,
+    );
     const ws = chronik.ws({
         onMessage: async (msg: any) => {
             await parseWebsocketMessage(
