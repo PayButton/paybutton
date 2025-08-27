@@ -245,8 +245,8 @@ export const initializeChronikWebsocket = async (
     address: string,
     setNewTx: Function
 ): Promise<WsEndpoint> => {
-    const networSlug = getAddressPrefix(address)
-    const blockchainUrls = config.networkBlockchainURLs[networSlug];
+    const networkSlug = getAddressPrefix(address)
+    const blockchainUrls = config.networkBlockchainURLs[networkSlug];
     
     const chronik = await ChronikClient.useStrategy(
         ConnectionStrategy.AsOrdered,
