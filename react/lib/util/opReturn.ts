@@ -134,6 +134,52 @@ export function encodeOpReturnProps({
   );
 }
 
+function splitAtFirst (str: string, separator: string): string[] {
+  const index = str.indexOf(separator)
+  if (index === -1) { return [str] };
+  return [str.slice(0, index), str.slice(index + separator.length)]
+}
+
+export function parseStringToArray (str: string): string | string[] {
+  const pattern = /(?<!\\)\|/
+  // Split the input string using the pattern
+  const splitted = str.split(pattern)
+  if (splitted.length > 1) {
+    return splitted.map(s => s.replace('\\|', '|'))
+  }
+  return str.replace('\\|', '|')
+}
+
+export function parseOpReturnData (opReturnData: string): any {
+  const dataObject: any = {}
+  // Try to parse it as JSON first, excluding simple numbers
+  try {
+    const jsonParsed = JSON.parse(opReturnData)
+    if (typeof jsonParsed === 'number') {
+      throw new Error()
+    }
+    return jsonParsed
+  } catch {}
+
+  // Try to parse it as k=v pairs
+  try {
+    const keyValuePairs = opReturnData.split(' ')
+    for (const kvString of keyValuePairs) {
+      const splitted = splitAtFirst(kvString, '=')
+      if (splitted[1] === undefined || splitted[1] === '' || splitted[0] === '') {
+        return parseStringToArray(opReturnData)
+      }
+      const key = splitted[0]
+      const value = parseStringToArray(splitted[1])
+      // (parse value as array)
+      dataObject[key] = value
+    }
+    return dataObject
+  } catch (err) {
+    return parseStringToArray(opReturnData)
+  }
+}
+
 export const exportedForTesting = {
   prependPaymentIdWithPushdata,
   generatePaymentId,

@@ -17,6 +17,7 @@ export interface Transaction {
     address: string
     rawMessage?: string
     inputAddresses?: string[]
+    opReturn?: string
 }
 
 export interface UtxoDetails {
