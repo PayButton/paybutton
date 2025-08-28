@@ -1,6 +1,6 @@
 {
   "name": "paybutton",
-  "version": "4.2.0",
+  "version": "5.0.0",
   "description": "The easiest way to accept eCash online",
   "author": "Blockchain Ventures Corp.",
   "main": "index.js",
