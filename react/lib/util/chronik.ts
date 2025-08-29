@@ -225,7 +225,7 @@ function getSortedInputAddresses (networkSlug: string, transaction: Tx): string[
   transaction.inputs.forEach((inp) => {
     const address = outputScriptToAddress(networkSlug, inp.outputScript)
     if (address !== undefined && address !== '') {
-      const currentValue = addressSatsMap.get(address) ?? 0n
+      const currentValue = addressSatsMap.get(address) ?? BigInt(0)
       addressSatsMap.set(address, currentValue + inp.sats)
     }
   })
