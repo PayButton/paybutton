@@ -23,29 +23,29 @@ export function getNullDataScriptData (outputScript: string): OpReturnData | nul
     const opReturnCode = '6a'
     const encodedProtocolPushData = '04' // '\x04'
     const encodedProtocol = '50415900' // 'PAY\x00'
-  
+
     const prefixLen = (
       opReturnCode.length +
       encodedProtocolPushData.length +
       encodedProtocol.length +
       2 // version byte
     )
-  
+
     const regexPattern = new RegExp(
       `${opReturnCode}${encodedProtocolPushData}${encodedProtocol}.{2}`,
       'i'
     )
-  
+
     if (!regexPattern.test(outputScript.slice(0, prefixLen))) {
       return null
     }
-  
+
     let dataStartIndex = prefixLen + 2
-  
+
     if (outputScript.length < dataStartIndex) {
       return null
     }
-  
+
     let dataPushDataHex = outputScript.slice(prefixLen, dataStartIndex)
     if (dataPushDataHex.toLowerCase() === '4c') {
       dataStartIndex = dataStartIndex + 2
@@ -55,26 +55,26 @@ export function getNullDataScriptData (outputScript: string): OpReturnData | nul
     if (outputScript.length < dataStartIndex + dataPushData * 2) {
       return null
     }
-  
+
     const dataHexBuffer = Buffer.from(
       outputScript.slice(dataStartIndex, dataStartIndex + dataPushData * 2),
       'hex'
     )
     const dataString = decoder.decode(dataHexBuffer)
-  
+
     const ret: OpReturnData = {
       rawMessage: dataString,
       message: parseOpReturnData(dataString),
       paymentId: ''
     }
-  
+
     const paymentIdPushDataIndex = dataStartIndex + dataPushData * 2
     const paymentIdStartIndex = paymentIdPushDataIndex + 2
     const hasPaymentId = outputScript.length >= paymentIdStartIndex
     if (!hasPaymentId) {
       return ret
     }
-  
+
     const paymentIdPushDataHex = outputScript.slice(paymentIdPushDataIndex, paymentIdStartIndex)
     const paymentIdPushData = parseInt(paymentIdPushDataHex, 16)
     let paymentIdString = ''
@@ -87,10 +87,10 @@ export function getNullDataScriptData (outputScript: string): OpReturnData | nul
       paymentIdString += hexByte
     }
     ret.paymentId = paymentIdString
-  
+
     return ret
 }
-  
+
 export function toHash160 (address: string): {type: AddressType, hash160: string} {
     try {
       const { type, hash } = decodeCashAddress(address)
@@ -103,13 +103,13 @@ export function toHash160 (address: string): {type: AddressType, hash160: string
 
 export async function satoshisToUnit(satoshis: bigint, networkFormat: string): Promise<string> {
     const decimal = new Decimal(satoshis.toString())
-    
+
     if (networkFormat === xecaddr.Format.Xecaddr) {
       return decimal.div(1e2).toString()
     } else if (networkFormat === xecaddr.Format.Cashaddr) {
       return decimal.div(1e8).toString()
     }
-  
+
     throw new Error('[CHRONIK]: Invalid address')
 }
 
@@ -148,6 +148,8 @@ const getTransactionAmountAndData = async  (transaction: Tx, addressString: stri
 const getTransactionFromChronikTransaction = async (transaction: Tx, address: string): Promise<Transaction> => {
     const { amount, opReturn } = await getTransactionAmountAndData(transaction, address)
     const parsedOpReturn = resolveOpReturn(opReturn)
+    const networkSlug = getAddressPrefix(address)
+    const inputAddresses = getSortedInputAddresses(networkSlug, transaction)
     return {
       hash: transaction.txid,
       amount,
@@ -158,19 +160,20 @@ const getTransactionFromChronikTransaction = async (transaction: Tx, address: st
       paymentId: parsedOpReturn?.paymentId ?? '',
       message: parsedOpReturn?.message ?? '',
       rawMessage: parsedOpReturn?.rawMessage ?? '',
+      inputAddresses,
     }
 }
 
 export const fromHash160  = (networkSlug: string, type: AddressType, hash160: string): string => {
     const buffer = Buffer.from(hash160, 'hex')
-  
+
     // Because ecashaddrjs only accepts Uint8Array as input type, convert
     const hash160ArrayBuffer = new ArrayBuffer(buffer.length)
     const hash160Uint8Array = new Uint8Array(hash160ArrayBuffer)
     for (let i = 0; i < hash160Uint8Array.length; i += 1) {
       hash160Uint8Array[i] = buffer[i]
     }
-  
+
     return encodeCashAddress(
       networkSlug,
       type,
@@ -180,7 +183,7 @@ export const fromHash160  = (networkSlug: string, type: AddressType, hash160: st
 
 export function outputScriptToAddress (networkSlug: string, outputScript: string | undefined): string | undefined {
     if (outputScript === undefined) return undefined
-  
+
     const typeTestSlice = outputScript.slice(0, 4)
     let addressType
     let hash160
@@ -202,9 +205,9 @@ export function outputScriptToAddress (networkSlug: string, outputScript: string
       default:
         return undefined
     }
-  
+
     if (hash160.length !== 40) return undefined
-  
+
     return fromHash160(networkSlug, addressType as AddressType, hash160)
 }
 
@@ -216,12 +219,30 @@ const resolveOpReturn = (opReturn: string): OpReturnData | null => {
   }
 }
 
+function getSortedInputAddresses (networkSlug: string, transaction: Tx): string[] {
+  const addressSatsMap = new Map<string, bigint>()
+
+  transaction.inputs.forEach((inp) => {
+    const address = outputScriptToAddress(networkSlug, inp.outputScript)
+    if (address !== undefined && address !== '') {
+      const currentValue = addressSatsMap.get(address) ?? BigInt(0)
+      addressSatsMap.set(address, currentValue + inp.sats)
+    }
+  })
+
+  const sortedInputAddresses = Array.from(addressSatsMap.entries())
+    .sort(([, valueA], [, valueB]) => Number(valueB - valueA))
+    .map(([address]) => address)
+
+  return sortedInputAddresses
+}
+
 export const parseWebsocketMessage = async (
     wsMsg: any,
     setNewTx: Function,
     chronik: ChronikClient,
     address: string
-) => {
+): Promise<void> => {
     const { type } = wsMsg;
     if (type === 'Error') {
       return;
@@ -247,7 +268,7 @@ export const initializeChronikWebsocket = async (
 ): Promise<WsEndpoint> => {
     const networkSlug = getAddressPrefix(address)
     const blockchainUrls = config.networkBlockchainURLs[networkSlug];
-    
+
     const chronik = await ChronikClient.useStrategy(
         ConnectionStrategy.AsOrdered,
         blockchainUrls,
