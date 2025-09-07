@@ -59,8 +59,8 @@ export interface PaymentDialogProps extends ButtonProps {
   addressType: Currency,
   setAddressType: Function,
   setNewTxs: Function,
-  newTxs?: Transaction[]
-  autoClose?: boolean;
+  newTxs?: Transaction[],
+  autoClose?: boolean | number | string;
   disableSound?: boolean;
   transactionText?: string
 }
@@ -98,10 +98,10 @@ export const PaymentDialog = (
     container,
     wsBaseUrl,
     apiBaseUrl,
-    hoverText,
     disableAltpayment,
     contributionOffset,
     autoClose,
+    hoverText,
     useAltpayment,
     setUseAltpayment,
     setTxsSocket,
@@ -128,21 +128,36 @@ export const PaymentDialog = (
     transactionText,
   } = Object.assign({}, PaymentDialog.defaultProps, props);
 
+  const getAutoCloseDelay = (value: PaymentDialogProps['autoClose']): number | undefined => {
+    if (value === undefined) return 2000; // default when not provided (enabled)
+    if (typeof value === 'boolean') return value ? 2000 : undefined;
+    if (typeof value === 'number') return value > 0 ? Math.round(value * 1000) : undefined;
+    if (typeof value === 'string') {
+      const trimmed = value.trim().toLowerCase();
+      if (trimmed === 'true') return 2000;
+      if (trimmed === 'false') return undefined;
+      const num = +trimmed;
+      if (!isNaN(num)) return num > 0 ? Math.round(num * 1000) : undefined;
+      return 2000; // treat unknown string as enabled default
+    }
+    return undefined;
+  };
+
   const handleWidgetClose = (): void => {
     if (onClose) onClose(success, paymentId);
     setSuccess(false);
   };
+
   const handleSuccess = (transaction: Transaction): void => {
     if (dialogOpen === false) {
-      setDialogOpen(true)
+      setDialogOpen(true);
     }
     setSuccess(true);
     onSuccess?.(transaction);
-    setTimeout(() => {
-      if (isPropsTrue(autoClose)) {
-        handleWidgetClose();
-      }
-    }, 3000);
+    const delay = getAutoCloseDelay(autoClose);
+    if (delay !== undefined) {
+      setTimeout(() => { handleWidgetClose(); }, delay);
+    }
   };
   useEffect(() => {
     const invalidAmount = amount !== undefined && isNaN(+amount);
