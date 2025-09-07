@@ -1019,26 +1019,26 @@ contributionOffset = 10
 
 > **The ‘autoClose’ parameter automatically closes the payment dialog after a payment is received.**
 
-?> This parameter is optional. Default value is true. Possible values are true or false.
+?> This parameter is optional. Default is true (2 seconds). Possible values are true, false, or a number (seconds) to set a custom delay.
 **Example:**
 <!-- tabs:start -->
 
 #### ** HTML **
 
 ```html
-auto-close="false"
+auto-close="1"
 ```
 
 #### ** JavaScript **
 
 ```javascript
-autoClose: false
+autoClose: 1
 ```
 
 #### ** React **
 
 ```react
-autoClose = false
+autoClose = 1
 ```
 <!-- tabs:end -->
 
