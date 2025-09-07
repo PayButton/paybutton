@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
 import Button, { ButtonProps } from '../Button/Button';
 import { WidgetContainer } from '../Widget/WidgetContainer';
-import { Currency, CurrencyObject, Transaction, isPropsTrue, isValidCashAddress, isValidXecAddress } from '../../util';
+import { Currency, CurrencyObject, Transaction, isPropsTrue, isValidCashAddress, isValidXecAddress, AUTO_CLOSE_DEFAULT_MS } from '../../util';
 import { Socket } from 'socket.io-client';
 import { AltpaymentCoin, AltpaymentPair, AltpaymentShift, AltpaymentError } from '../../altpayment';
 export interface PaymentDialogProps extends ButtonProps {
@@ -129,16 +129,16 @@ export const PaymentDialog = (
   } = Object.assign({}, PaymentDialog.defaultProps, props);
 
   const getAutoCloseDelay = (value: PaymentDialogProps['autoClose']): number | undefined => {
-    if (value === undefined) return 2000; // default when not provided (enabled)
-    if (typeof value === 'boolean') return value ? 2000 : undefined;
+    if (value === undefined) return AUTO_CLOSE_DEFAULT_MS; // default when not provided (enabled)
+    if (typeof value === 'boolean') return value ? AUTO_CLOSE_DEFAULT_MS : undefined;
     if (typeof value === 'number') return value > 0 ? Math.round(value * 1000) : undefined;
     if (typeof value === 'string') {
       const trimmed = value.trim().toLowerCase();
-      if (trimmed === 'true') return 2000;
+      if (trimmed === 'true') return AUTO_CLOSE_DEFAULT_MS;
       if (trimmed === 'false') return undefined;
       const num = +trimmed;
       if (!isNaN(num)) return num > 0 ? Math.round(num * 1000) : undefined;
-      return 2000; // treat unknown string as enabled default
+      return AUTO_CLOSE_DEFAULT_MS; // treat unknown string as enabled default
     }
     return undefined;
   };
