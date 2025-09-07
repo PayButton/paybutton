@@ -1,9 +1,9 @@
 import { Dialog, Zoom } from '@material-ui/core';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
 import Button, { ButtonProps } from '../Button/Button';
 import { WidgetContainer } from '../Widget/WidgetContainer';
-import { Currency, CurrencyObject, Transaction, isPropsTrue, isValidCashAddress, isValidXecAddress, AUTO_CLOSE_DEFAULT_MS } from '../../util';
+import { Currency, CurrencyObject, Transaction, isPropsTrue, isValidCashAddress, isValidXecAddress, getAutoCloseDelay } from '../../util';
 import { Socket } from 'socket.io-client';
 import { AltpaymentCoin, AltpaymentPair, AltpaymentShift, AltpaymentError } from '../../altpayment';
 export interface PaymentDialogProps extends ButtonProps {
@@ -128,22 +128,20 @@ export const PaymentDialog = (
     transactionText,
   } = Object.assign({}, PaymentDialog.defaultProps, props);
 
-  const getAutoCloseDelay = (value: PaymentDialogProps['autoClose']): number | undefined => {
-    if (value === undefined) return AUTO_CLOSE_DEFAULT_MS; // default when not provided (enabled)
-    if (typeof value === 'boolean') return value ? AUTO_CLOSE_DEFAULT_MS : undefined;
-    if (typeof value === 'number') return value > 0 ? Math.round(value * 1000) : undefined;
-    if (typeof value === 'string') {
-      const trimmed = value.trim().toLowerCase();
-      if (trimmed === 'true') return AUTO_CLOSE_DEFAULT_MS;
-      if (trimmed === 'false') return undefined;
-      const num = +trimmed;
-      if (!isNaN(num)) return num > 0 ? Math.round(num * 1000) : undefined;
-      return AUTO_CLOSE_DEFAULT_MS; // treat unknown string as enabled default
+  // Compute auto-close delay (ms) using shared util
+
+  // Store timeout id so a manual close can cancel it
+  const autoCloseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const clearAutoCloseTimer = () => {
+    if (autoCloseTimerRef.current) {
+      clearTimeout(autoCloseTimerRef.current);
+      autoCloseTimerRef.current = null;
     }
-    return undefined;
   };
 
   const handleWidgetClose = (): void => {
+    clearAutoCloseTimer();
     if (onClose) onClose(success, paymentId);
     setSuccess(false);
   };
@@ -156,9 +154,13 @@ export const PaymentDialog = (
     onSuccess?.(transaction);
     const delay = getAutoCloseDelay(autoClose);
     if (delay !== undefined) {
-      setTimeout(() => { handleWidgetClose(); }, delay);
+      clearAutoCloseTimer();
+      autoCloseTimerRef.current = setTimeout(() => { handleWidgetClose(); }, delay);
     }
   };
+
+  // Cleanup on unmount
+  useEffect(() => () => clearAutoCloseTimer(), []);
   useEffect(() => {
     const invalidAmount = amount !== undefined && isNaN(+amount);
 
