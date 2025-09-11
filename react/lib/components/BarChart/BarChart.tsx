@@ -7,8 +7,11 @@ export interface BarChartProps {
   disabled: boolean;
 }
 
-export const BarChart = (props: BarChartProps): React.ReactElement => {
-  const { value, color, disabled } = props;
+export const BarChart = ({
+  value = 34,
+  color = '#4bc846',
+  disabled,
+}: BarChartProps): React.ReactElement => {
   const [barWidth, setBarWidth] = useState(0);
 
 
@@ -50,11 +53,6 @@ export const BarChart = (props: BarChartProps): React.ReactElement => {
       </div>
     </div>
   );
-};
-
-BarChart.defaultProps = {
-  value: 34,
-  color: '#4bc846',
 };
 
 export default BarChart;

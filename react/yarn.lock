@@ -5530,14 +5530,14 @@ chrome-trace-event@^1.0.2:
   resolved "https://registry.yarnpkg.com/chrome-trace-event/-/chrome-trace-event-1.0.4.tgz#05bffd7ff928465093314708c93bdfa9bd1f0f5b"
   integrity sha512-rNjApaLzuwaOTjCiT8lSDdGN1APCiqkChLMJxJPWLunPAt5fy8xgU9/jNOchV84wfIxrA0lRQB7oCT8jrn/wrQ==
 
-chronik-client-cashtokens@^3.1.1-rc0:
-  version "3.1.1-rc0"
-  resolved "https://registry.yarnpkg.com/chronik-client-cashtokens/-/chronik-client-cashtokens-3.1.1-rc0.tgz#e5e4a3538e8010b70623974a731bf2712506c5e3"
-  integrity sha512-jnFnog+hVd9u8bik+sf2SRVwr4ETN8Gnq6HpFRdPkM5UtMu7boCjQVrKHOXKb9AyaCFKUnreK9mBEL/l9dAjMg==
+chronik-client-cashtokens@^3.4.0:
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/chronik-client-cashtokens/-/chronik-client-cashtokens-3.4.0.tgz#0c958c72c119867d924c0c446e0765381fd1b792"
+  integrity sha512-D2G8j+dhOlG0wr+DtgnMHHwCYzpa/XCzNvHhkkAfOOL3OaAoXONMxhbqx+N1y7B0L5ot69y8z/8KOEz9ARL3hg==
   dependencies:
     "@types/ws" "^8.2.1"
     axios "^1.6.3"
-    ecashaddrjs "file:../../../.cache/yarn/v6/npm-chronik-client-cashtokens-3.1.1-rc0-e5e4a3538e8010b70623974a731bf2712506c5e3-integrity/node_modules/ecashaddrjs"
+    ecashaddrjs "2.0.0"
     isomorphic-ws "^4.0.1"
     protobufjs "^6.8.8"
     ws "^8.3.0"
@@ -6753,6 +6753,11 @@ eastasianwidth@^0.2.0:
   resolved "https://registry.yarnpkg.com/eastasianwidth/-/eastasianwidth-0.2.0.tgz#696ce2ec0aa0e6ea93a397ffcf24aa7840c827cb"
   integrity sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==
 
+ecashaddrjs@2.0.0, ecashaddrjs@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/ecashaddrjs/-/ecashaddrjs-2.0.0.tgz#d45ede7fb6168815dbcf664b8e0a6872e485d874"
+  integrity sha512-EvK1V4D3+nIEoD0ggy/b0F4lW39/72R9aOs/scm6kxMVuXu16btc+H74eQv7okNfXaQWKgolEekZkQ6wfcMMLw==
+
 ecashaddrjs@^1.0.7:
   version "1.6.2"
   resolved "https://registry.yarnpkg.com/ecashaddrjs/-/ecashaddrjs-1.6.2.tgz#9fec1131bc006a874e4c2fa589e6fc880c40745e"
@@ -6760,11 +6765,6 @@ ecashaddrjs@^1.0.7:
   dependencies:
     big-integer "1.6.36"
     bs58check "^3.0.1"
-
-ecashaddrjs@^2.0.0, "ecashaddrjs@file:../../../../../Library/Caches/Yarn/v6/npm-chronik-client-cashtokens-3.1.1-rc0-e5e4a3538e8010b70623974a731bf2712506c5e3-integrity/node_modules/ecashaddrjs":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/ecashaddrjs/-/ecashaddrjs-2.0.0.tgz#d45ede7fb6168815dbcf664b8e0a6872e485d874"
-  integrity sha512-EvK1V4D3+nIEoD0ggy/b0F4lW39/72R9aOs/scm6kxMVuXu16btc+H74eQv7okNfXaQWKgolEekZkQ6wfcMMLw==
 
 ee-first@1.1.1:
   version "1.1.1"

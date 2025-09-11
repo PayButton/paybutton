@@ -123,19 +123,23 @@ const useStyles = makeStyles({
   },
 });
 
-export const Button = (props: ButtonProps): React.ReactElement => {
-  const { animation, text, hoverText, disabled, size, sizeScaleAlreadyApplied } = Object.assign(
-    {},
-    Button.defaultProps,
-    props,
-  );
+export const Button = ({
+  animation = 'slide',
+  text = 'Donate',
+  hoverText = 'Send Payment',
+  disabled = false,
+  size = 'medium',
+  sizeScaleAlreadyApplied = false,
+  onClick,
+  theme: themeProp,
+}: ButtonProps): React.ReactElement => {
 
   const [hovering, setHovering] = useState(false);
   const [transitioning, setTransitioning] = useState(false);
   const timer = useRef<number>();
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-  const theme = useTheme(props.theme);
+  const theme = useTheme(themeProp);
   const styleProps: StyleProps = { animation, theme, size, sizeScaleAlreadyApplied };
   const classes = useStyles(styleProps);
 
@@ -172,7 +176,7 @@ export const Button = (props: ButtonProps): React.ReactElement => {
       <MuiButton
         disabled={disabled}
         className={classes.button}
-        onClick={props.onClick}
+        onClick={onClick}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         ref={buttonRef}
@@ -183,16 +187,5 @@ export const Button = (props: ButtonProps): React.ReactElement => {
     </div>
   );
 };
-
-const buttonDefaultProps: ButtonProps = {
-  animation: 'slide',
-  text: 'Donate',
-  hoverText: 'Send Payment',
-  disabled: false,
-  size: 'medium',
-  sizeScaleAlreadyApplied: false,
-};
-
-Button.defaultProps = buttonDefaultProps;
 
 export default Button;
