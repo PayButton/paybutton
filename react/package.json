@@ -1,6 +1,6 @@
 {
   "name": "@paybutton/react",
-  "version": "5.0.2",
+  "version": "5.0.3",
   "description": "The easiest way to accept eCash online",
   "author": "Blockchain Ventures Corp.",
   "license": "MIT",
@@ -91,7 +91,7 @@
     "axios": "1.6.5",
     "bignumber.js": "9.0.2",
     "cashtab-connect": "^1.1.0",
-    "chronik-client-cashtokens": "^3.1.1-rc0",
+    "chronik-client-cashtokens": "^3.4.0",
     "copy-to-clipboard": "3.3.3",
     "crypto-js": "^4.2.0",
     "decimal.js": "^10.6.0",
