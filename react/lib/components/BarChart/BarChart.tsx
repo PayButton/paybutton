@@ -2,12 +2,6 @@ import React, { useEffect, useState, CSSProperties } from 'react';
 import { isPropsTrue } from '../../util';
 
 export interface BarChartProps {
-  value: number;
-  color: string;
-  disabled: boolean;
-}
-
-export interface BarChartProps {
   value?: number;
   color?: string;
   disabled?: boolean;
