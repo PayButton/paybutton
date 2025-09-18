@@ -1097,6 +1097,36 @@ size: "sm"
 size = "sm"
 ```
 <!-- tabs:end -->
+
+## donation-rate
+
+> **The ‘donationRate’ parameter represents the amount that will be donated to the donation address.**
+
+?> The donationRate parameter is optional values accepted are intergers between 0-100. Default value is 2. 
+
+
+**Example:**
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+donation-rate="10"
+```
+
+#### ** JavaScript **
+
+```javascript
+donationRate: 10
+```
+
+#### ** React **
+
+```react
+donationRate = 10
+```
+<!-- tabs:end -->
+
 # Contribute
 
 PayButton is a community-driven open-source initiative. Contributions from the community are _crucial_ to the success of the project.
