@@ -154,5 +154,6 @@ export interface CheckSuccessInfo {
   expectedPaymentId?: string
   expectedAmount?: BigNumber | number
   expectedOpReturn?: string,
-  currencyObj?: CurrencyObject
+  currencyObj?: CurrencyObject,
+  donationRate?: number
 }

@@ -62,7 +62,9 @@ export interface PaymentDialogProps extends ButtonProps {
   newTxs?: Transaction[],
   autoClose?: boolean | number | string;
   disableSound?: boolean;
-  transactionText?: string
+  transactionText?: string;
+  donationAddress?: string;
+  donationRate?: number;
 }
 
 export const PaymentDialog = ({
@@ -122,6 +124,8 @@ export const PaymentDialog = ({
   transactionText,
   disabled,
   theme: themeProp,
+  donationAddress,
+  donationRate
 }: PaymentDialogProps): React.ReactElement => {
   const [success, setSuccess] = useState(false);
   const [internalDisabled, setInternalDisabled] = useState(false);
@@ -247,6 +251,8 @@ export const PaymentDialog = ({
           newTxs={newTxs}
           disableSound={disableSound}
           transactionText={transactionText}
+          donationAddress={donationAddress}
+          donationRate={donationRate}
           foot={success && (
             <ButtonComponent
               onClick={handleWidgetClose}

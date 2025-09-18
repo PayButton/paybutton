@@ -13,6 +13,7 @@ import { Socket } from 'socket.io-client';
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
 import { Button, animation } from '../Button/Button';
 import BarChart from '../BarChart/BarChart';
+import config from '../../paybutton-config.json'
 import {
   getAddressBalance,
   Currency,
@@ -34,6 +35,7 @@ import {
   setupChronikWebSocket,
   setupAltpaymentSocket,
   CryptoCurrency,
+  DEFAULT_DONATE_RATE,
 } from '../../util';
 import AltpaymentWidget from './AltpaymentWidget';
 import { AltpaymentPair, AltpaymentShift, AltpaymentError, AltpaymentCoin, MINIMUM_ALTPAYMENT_DOLLAR_AMOUNT, MINIMUM_ALTPAYMENT_CAD_AMOUNT } from '../../altpayment';
@@ -96,6 +98,8 @@ export interface WidgetProps {
   setAddressType?: Function,
   newTxText?: string;
   transactionText?: string;
+  donationAddress?: string;
+  donationRate?: number;
 }
 
 interface StyleProps {
@@ -345,8 +349,9 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     altpaymentError,
     setAltpaymentError,
     isChild,
+    donationAddress = config.donationAddress,
+    donationRate = DEFAULT_DONATE_RATE
   } = props;
-
   const [loading, setLoading] = useState(true);
 
   // Define controlled websocket constants if standalone widget
@@ -431,7 +436,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const [thisCurrencyObject, setThisCurrencyObject] = useState(
     props.currencyObject,
   );
-
+  const [donationAmount, setDonationAmount] = useState<number | null>(null)
   const blurCSS = isPropsTrue(disabled) ? { filter: 'blur(5px)' } : {};
 
   const bchSvg = useMemo((): string => {
@@ -630,8 +635,30 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         )
         : null;
       if (convertedObj) {
+        let amountToDisplay = thisCurrencyObject.string;
+        let convertedAmountToDisplay = convertedObj.string
+        if ( donationRate && donationRate >= 5){
+          const thisDonationAmount = thisCurrencyObject.float * (donationRate / 100)
+          const amountWithDonation = thisCurrencyObject.float + thisDonationAmount
+          const amountWithDonationObj = getCurrencyObject(
+            amountWithDonation,
+            currency,
+            false,
+          )
+          amountToDisplay = amountWithDonationObj.string
+
+          const convertedDonationAmount = convertedObj.float * (donationRate / 100)
+          const convertedAmountWithDonation = convertedObj.float + convertedDonationAmount
+          const convertedAmountWithDonationObj = getCurrencyObject(
+            convertedAmountWithDonation,
+            thisAddressType,
+            randomSatoshis,
+          )
+          convertedAmountToDisplay = convertedAmountWithDonationObj.string
+          setDonationAmount(convertedAmountWithDonationObj.float)
+        }
         setText(
-          `Send ${thisCurrencyObject.string} ${thisCurrencyObject.currency} = ${convertedObj.string} ${thisAddressType}`,
+          `Send ${amountToDisplay} ${thisCurrencyObject.currency} = ${convertedAmountToDisplay} ${thisAddressType}`,
         );
         url = resolveUrl(thisAddressType, convertedObj.float);
         setUrl(url ?? "");
@@ -738,7 +765,19 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     let thisUrl = `${prefix}:${to.replace(/^.*:/, '')}`;
 
     if (amount) {
-      thisUrl += `?amount=${amount}`;
+      if (donationAddress && donationRate && Number(donationRate)) {
+        const network = Object.entries(CURRENCY_PREFIXES_MAP).find(
+          ([, value]) => value === prefix
+        )?.[0];
+        const decimals = network ? DECIMALS[network.toUpperCase()] : undefined;
+        const donationPercent = donationRate / 100
+        const thisDonationAmount = donationAmount ? donationAmount : amount * donationPercent
+
+        thisUrl+=`?amount=${amount}`
+        thisUrl += `&addr=${donationAddress}&amount=${thisDonationAmount.toFixed(decimals)}`;
+      }else{
+        thisUrl += `?amount=${amount}`
+      }
     }
 
     if (opReturn) {
