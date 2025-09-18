@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
 import Button, { ButtonProps } from '../Button/Button';
 import { Socket } from 'socket.io-client';
-
+import config from '../../paybutton-config.json'
 import {
   Transaction,
   Currency,
@@ -19,7 +19,8 @@ import {
   setupAltpaymentSocket,
   setupChronikWebSocket,
   CryptoCurrency,
-  ButtonSize
+  ButtonSize,
+  DEFAULT_DONATE_RATE
 } from '../../util';
 import { PaymentDialog } from '../PaymentDialog';
 import { AltpaymentCoin, AltpaymentError, AltpaymentPair, AltpaymentShift } from '../../altpayment';
@@ -56,6 +57,8 @@ export interface PayButtonProps extends ButtonProps {
   contributionOffset?:number
   size: ButtonSize;
   sizeScaleAlreadyApplied: boolean;
+  donationAddress?: string;
+  donationRate?: number;
 }
 
 export const PayButton = (props: PayButtonProps): React.ReactElement => {
@@ -106,7 +109,9 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
     disableSound,
     transactionText,
     size,
-    sizeScaleAlreadyApplied
+    sizeScaleAlreadyApplied,
+    donationAddress,
+    donationRate
   } = Object.assign({}, PayButton.defaultProps, props);
 
   const [paymentId] = useState(!disablePaymentId ? generatePaymentId(8) : undefined);
@@ -201,6 +206,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
           expectedOpReturn: opReturn,
           expectedPaymentId: paymentId,
           currencyObj,
+          donationRate
         }
       })
     }
@@ -344,6 +350,8 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
         newTxs={newTxs}
         disableSound={disableSound}
         transactionText={transactionText}
+        donationAddress={donationAddress}
+        donationRate={donationRate}
       />
       {errorMsg && (
         <p
@@ -373,6 +381,8 @@ const payButtonDefaultProps: PayButtonProps = {
   autoClose: false,
   size: 'md',
   sizeScaleAlreadyApplied: false,
+  donationAddress: config.donationAddress,
+  donationRate: DEFAULT_DONATE_RATE,
 };
 
 PayButton.defaultProps = payButtonDefaultProps;
