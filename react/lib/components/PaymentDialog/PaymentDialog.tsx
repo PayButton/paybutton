@@ -65,68 +65,68 @@ export interface PaymentDialogProps extends ButtonProps {
   transactionText?: string
 }
 
-export const PaymentDialog = (
-  props: PaymentDialogProps,
-): React.ReactElement => {
+export const PaymentDialog = ({
+  to,
+  amount,
+  setAmount,
+  opReturn,
+  paymentId,
+  disablePaymentId,
+  currency,
+  currencyObj,
+  setCurrencyObj,
+  cryptoAmount,
+  price,
+  successText = 'Thank you!',
+  animation = 'slide',
+  randomSatoshis = false,
+  hideToasts = false,
+  onClose,
+  onSuccess,
+  onTransaction,
+  goalAmount,
+  disableEnforceFocus = false,
+  editable = false,
+  dialogOpen = true,
+  setDialogOpen,
+  container,
+  wsBaseUrl,
+  apiBaseUrl,
+  hoverText,
+  disableAltpayment,
+  contributionOffset,
+  autoClose = true,
+  useAltpayment,
+  setUseAltpayment,
+  setTxsSocket,
+  txsSocket,
+  setAltpaymentSocket,
+  altpaymentSocket,
+  setCoins,
+  coins,
+  setCoinPair,
+  coinPair,
+  setLoadingPair,
+  loadingPair,
+  setAltpaymentShift,
+  altpaymentShift,
+  setLoadingShift,
+  loadingShift,
+  setAltpaymentError,
+  altpaymentError,
+  addressType,
+  newTxs,
+  setNewTxs,
+  setAddressType,
+  disableSound,
+  transactionText,
+  disabled,
+  theme: themeProp,
+}: PaymentDialogProps): React.ReactElement => {
   const [success, setSuccess] = useState(false);
-  const [disabled, setDisabled] = useState(false);
+  const [internalDisabled, setInternalDisabled] = useState(false);
 
-  const {
-    to,
-    amount,
-    setAmount,
-    opReturn,
-    paymentId,
-    disablePaymentId,
-    currency,
-    currencyObj,
-    setCurrencyObj,
-    cryptoAmount,
-    price,
-    successText,
-    animation,
-    randomSatoshis,
-    hideToasts,
-    onClose,
-    onSuccess,
-    onTransaction,
-    goalAmount,
-    disableEnforceFocus,
-    editable,
-    dialogOpen,
-    setDialogOpen,
-    container,
-    wsBaseUrl,
-    apiBaseUrl,
-    hoverText,
-    disableAltpayment,
-    contributionOffset,
-    autoClose,
-    useAltpayment,
-    setUseAltpayment,
-    setTxsSocket,
-    txsSocket,
-    setAltpaymentSocket,
-    altpaymentSocket,
-    setCoins,
-    coins,
-    setCoinPair,
-    coinPair,
-    setLoadingPair,
-    loadingPair,
-    setAltpaymentShift,
-    altpaymentShift,
-    setLoadingShift,
-    loadingShift,
-    setAltpaymentError,
-    altpaymentError,
-    addressType,
-    newTxs,
-    setNewTxs,
-    setAddressType,
-    disableSound,
-    transactionText,
-  } = Object.assign({}, PaymentDialog.defaultProps, props);
+  
 
   const handleWidgetClose = (): void => {
     if (onClose) onClose(success, paymentId);
@@ -148,19 +148,19 @@ export const PaymentDialog = (
     const invalidAmount = amount !== undefined && isNaN(+amount);
 
     if (to !== undefined && (isValidCashAddress(to) || isValidXecAddress(to))) {
-      setDisabled(isPropsTrue(props.disabled));
+      setInternalDisabled(isPropsTrue(disabled));
     } else if (invalidAmount) {
-      setDisabled(true);
+      setInternalDisabled(true);
     } else {
-      setDisabled(true);
+      setInternalDisabled(true);
     }
-  }, [to, amount, props.disabled]);
+  }, [to, amount, disabled]);
 
   const ButtonComponent: React.FunctionComponent<ButtonProps> = (
     props: ButtonProps,
   ): React.ReactElement => <Button animation={animation} {...props} />;
 
-  const theme = useTheme(props.theme, isValidXecAddress(to));
+  const theme = useTheme(themeProp, isValidXecAddress(to));
 
   let cleanAmount: any;
 
@@ -200,7 +200,7 @@ export const PaymentDialog = (
           onSuccess={handleSuccess}
           onTransaction={onTransaction}
           successText={successText}
-          disabled={disabled}
+          disabled={internalDisabled}
           editable={editable}
           goalAmount={goalAmount}
           wsBaseUrl={wsBaseUrl}
@@ -237,23 +237,11 @@ export const PaymentDialog = (
               onClick={handleWidgetClose}
               text="Close"
               hoverText="Close"
-              disabled={disabled} />
+              disabled={internalDisabled} />
           )}        />
       </Dialog>
     </ThemeProvider>
   );
-};
-
-PaymentDialog.defaultProps = {
-  animation: 'slide',
-  hideToasts: false,
-  randomSatoshis: false,
-  successText: 'Thank you!',
-  disableEnforceFocus: false,
-  disabled: false,
-  editable: false,
-  dialogOpen: true,
-  autoClose: true,
 };
 
 export default PaymentDialog;

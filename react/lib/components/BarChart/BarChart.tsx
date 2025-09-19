@@ -2,13 +2,16 @@ import React, { useEffect, useState, CSSProperties } from 'react';
 import { isPropsTrue } from '../../util';
 
 export interface BarChartProps {
-  value: number;
-  color: string;
-  disabled: boolean;
+  value?: number;
+  color?: string;
+  disabled?: boolean;
 }
 
-export const BarChart = (props: BarChartProps): React.ReactElement => {
-  const { value, color, disabled } = props;
+export const BarChart = ({
+  value = 34,
+  color = '#4bc846',
+  disabled = false,
+}: BarChartProps): React.ReactElement => {
   const [barWidth, setBarWidth] = useState(0);
 
 
@@ -50,11 +53,6 @@ export const BarChart = (props: BarChartProps): React.ReactElement => {
       </div>
     </div>
   );
-};
-
-BarChart.defaultProps = {
-  value: 34,
-  color: '#4bc846',
 };
 
 export default BarChart;
