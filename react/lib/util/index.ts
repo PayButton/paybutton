@@ -11,4 +11,5 @@ export * from './types';
 export * from './number';
 export * from './currency';
 export * from './validate';
+export * from './autoClose';
 

@@ -1013,26 +1013,26 @@ contributionOffset = 10
 
 > **‘autoClose’ 收到付款後，參數會自動關閉付款對話框.**
 
-?> 此參數是可選的。預設值為 true。可能的值是真或假。
+?> 此參數是可選的。預設為 true（2 秒）。可接受 true、false，或數字（單位：秒）以自訂延遲。
 **Example:**
 <!-- tabs:start -->
 
 #### ** HTML **
 
 ```html
-auto-close="false"
+auto-close="1"
 ```
 
 #### ** JavaScript **
 
 ```javascript
-autoClose: false
+autoClose: 1
 ```
 
 #### ** React **
 
 ```react
-autoClose = false
+autoClose = 1
 ```
 <!-- tabs:end -->
 ## size

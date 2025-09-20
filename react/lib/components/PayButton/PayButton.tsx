@@ -51,7 +51,7 @@ export interface PayButtonProps extends ButtonProps {
   apiBaseUrl?: string;
   transactionText?: string;
   disableSound?: boolean;
-  autoClose?: boolean;
+  autoClose?: boolean | number | string;
   disableAltpayment?:boolean
   contributionOffset?:number
   size: ButtonSize;
@@ -370,7 +370,7 @@ const payButtonDefaultProps: PayButtonProps = {
   disableEnforceFocus: false,
   disabled: false,
   editable: false,
-  autoClose: false,
+  autoClose: true,
   size: 'md',
   sizeScaleAlreadyApplied: false,
 };
