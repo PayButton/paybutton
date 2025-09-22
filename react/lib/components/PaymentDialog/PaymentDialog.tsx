@@ -62,7 +62,9 @@ export interface PaymentDialogProps extends ButtonProps {
   newTxs?: Transaction[],
   autoClose?: boolean | number | string;
   disableSound?: boolean;
-  transactionText?: string
+  transactionText?: string;
+  donationAddress?: string;
+  donationRate?: number;
 }
 
 export const PaymentDialog = (
@@ -126,6 +128,8 @@ export const PaymentDialog = (
     setAddressType,
     disableSound,
     transactionText,
+    donationAddress,
+    donationRate,
   } = Object.assign({}, PaymentDialog.defaultProps, props);
 
   // Compute auto-close delay (ms) using shared util
@@ -249,6 +253,8 @@ export const PaymentDialog = (
           newTxs={newTxs}
           disableSound={disableSound}
           transactionText={transactionText}
+          donationAddress={donationAddress}
+          donationRate={donationRate}
           foot={success && (
             <ButtonComponent
               onClick={handleWidgetClose}
