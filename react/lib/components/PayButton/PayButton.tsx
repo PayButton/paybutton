@@ -13,7 +13,6 @@ import {
   isValidCashAddress,
   isValidXecAddress,
   CurrencyObject,
-  generatePaymentId,
   getCurrencyObject,
   isPropsTrue,
   setupAltpaymentSocket,
@@ -22,6 +21,7 @@ import {
   ButtonSize,
   DEFAULT_DONATION_RATE
 } from '../../util';
+import { createPayment } from '../../util/api-client';
 import { PaymentDialog } from '../PaymentDialog';
 import { AltpaymentCoin, AltpaymentError, AltpaymentPair, AltpaymentShift } from '../../altpayment';
 export interface PayButtonProps extends ButtonProps {
@@ -116,10 +116,26 @@ export const PayButton = ({
   const cryptoAmountRef = useRef<string | undefined>(cryptoAmount);
 
 
-  const [paymentId] = useState(!disablePaymentId ? generatePaymentId(8) : undefined);
+
+  const [paymentId, setPaymentId] = useState<string | undefined>(undefined);
   const [addressType, setAddressType] = useState<CryptoCurrency>(
     getCurrencyTypeFromAddress(to),
   );
+
+  useEffect(() => {
+    const initializePaymentId = async () => {
+      if (!disablePaymentId && to) {
+        try {
+          const responsePaymentId = await createPayment(amount, to, apiBaseUrl);
+          setPaymentId(responsePaymentId);
+        } catch (error) {
+          console.error('Error creating payment ID:', error);
+        }
+      }
+    };
+
+    initializePaymentId();
+  }, [disablePaymentId, amount, to, apiBaseUrl]);
 
   useEffect(() => {
     priceRef.current = price;

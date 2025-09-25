@@ -11,7 +11,6 @@ import {
   Currency,
   CurrencyObject,
   Transaction,
-  generatePaymentId,
   getCurrencyTypeFromAddress,
   isCrypto,
   isGreaterThanZero,
@@ -21,6 +20,7 @@ import {
   isPropsTrue,
   DEFAULT_DONATION_RATE,
 } from '../../util';
+import { createPayment } from '../../util/api-client';
 
 import Widget, { WidgetProps } from './Widget';
 
@@ -151,13 +151,23 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
     const [thisPrice, setThisPrice] = useState(0);
     const [usdPrice, setUsdPrice] = useState(0);
     useEffect(() => {
-      if ((paymentId === undefined || paymentId === '') && !disablePaymentId) {
-        const newPaymentId = generatePaymentId(8);
-        setThisPaymentId(newPaymentId)
-      } else {
-        setThisPaymentId(paymentId)
-      }
-    }, [paymentId, disablePaymentId]);
+      const initializePaymentId = async () => {
+        if ((paymentId === undefined || paymentId === '') && !disablePaymentId) {
+          if (to) {
+            try {
+              const responsePaymentId = await createPayment(amount, to, apiBaseUrl);
+              setThisPaymentId(responsePaymentId);
+            } catch (error) {
+              console.error('Error creating payment ID:', error);
+            }
+          }
+        } else {
+          setThisPaymentId(paymentId);
+        }
+      };
+
+      initializePaymentId();
+    }, [paymentId, disablePaymentId, amount, to, apiBaseUrl]);
     const [success, setSuccess] = useState(false);
     const { enqueueSnackbar } = useSnackbar();
 
