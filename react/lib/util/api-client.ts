@@ -89,6 +89,20 @@ export const getTransactionDetails = async (
   return res.json();
 };
 
+export const createPayment = async (
+  amount: string | number | undefined,
+  address: string,
+  rootUrl = config.apiBaseUrl,
+): Promise<string> => {
+  const { data } = await axios.post(
+    `${rootUrl}/api/payments/paymentId`,
+    { amount, address }
+  );
+  return data.paymentId;
+  
+};
+
+
 export default {
   getAddressDetails,
   getTransactionDetails,
