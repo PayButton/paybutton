@@ -8,6 +8,9 @@ export const DECIMALS: { [key: string]: number } = {
     FIAT: 2,
 };
 
+// Default delay (ms) before auto-closing success dialog when autoClose is enabled
+export const AUTO_CLOSE_DEFAULT_MS = 2000;
+
 export const CURRENCY_PREFIXES_MAP: Record<typeof CRYPTO_CURRENCIES[number], string> = {
     bch: 'bitcoincash',
     xec: 'ecash',
