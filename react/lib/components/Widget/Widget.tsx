@@ -6,7 +6,7 @@ import {
   makeStyles,
   TextField,
 } from '@material-ui/core';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import copy from 'copy-to-clipboard';
 import QRCode, { BaseQRCodeProps } from 'qrcode.react';
 import { Socket } from 'socket.io-client';
@@ -857,7 +857,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                 to={to}
               />
            }
-            <>
+            <Fragment>
               {loading && shouldDisplayGoal ? (
                 <Typography
                   className={classes.text}
@@ -870,9 +870,9 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                   />
                 </Typography>
               ) : (
-                <>
+                <Fragment>
                   {shouldDisplayGoal && (
-                    <>
+                    <Fragment>
                       <Typography
                         className={classes.copyText}
                         style={{ marginBottom: '0.61rem', ...blurCSS}}
@@ -885,9 +885,9 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                         value={Math.round(goalPercent)}
                         disabled={disabled}
                       />
-                    </>
+                    </Fragment>
                   )}
-                </>
+                </Fragment>
               )}
 
               <Box
@@ -974,7 +974,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                   Don't have any {thisAddressType}?
                 </Typography>
               )}
-            </>
+            </Fragment>
           {foot && (
             <Box pt={2} flex={1}>
               {foot}
