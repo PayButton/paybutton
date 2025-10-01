@@ -51,7 +51,7 @@ export interface PayButtonProps extends ButtonProps {
   apiBaseUrl?: string;
   transactionText?: string;
   disableSound?: boolean;
-  autoClose?: boolean;
+  autoClose?: boolean | number | string;
   disableAltpayment?:boolean
   contributionOffset?:number
   size: ButtonSize;
@@ -110,7 +110,7 @@ export const PayButton = ({
   const priceRef = useRef<number>(price);
   const cryptoAmountRef = useRef<string | undefined>(cryptoAmount);
 
-  
+
 
   const [paymentId] = useState(!disablePaymentId ? generatePaymentId(8) : undefined);
   const [addressType, setAddressType] = useState<CryptoCurrency>(
