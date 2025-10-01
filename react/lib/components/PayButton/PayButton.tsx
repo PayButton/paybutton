@@ -58,11 +58,41 @@ export interface PayButtonProps extends ButtonProps {
   sizeScaleAlreadyApplied: boolean;
 }
 
-export const PayButton = (props: PayButtonProps): React.ReactElement => {
+export const PayButton = ({
+  to,
+  amount: initialAmount,
+  opReturn,
+  disablePaymentId,
+  currency = '' as Currency,
+  theme: themeProp,
+  text,
+  hoverText,
+  successText = 'Thank you!',
+  animation = 'slide',
+  randomSatoshis = false,
+  hideToasts = false,
+  disabled: disabledProp = false,
+  goalAmount,
+  disableEnforceFocus = false,
+  editable = false,
+  onSuccess,
+  onTransaction,
+  onOpen,
+  onClose,
+  wsBaseUrl,
+  apiBaseUrl,
+  transactionText,
+  disableSound,
+  autoClose = false,
+  disableAltpayment,
+  contributionOffset,
+  size = 'md',
+  sizeScaleAlreadyApplied = false,
+}: PayButtonProps): React.ReactElement => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [disabled, setDisabled] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
-  const [amount, setAmount] = useState(props.amount);
+  const [amount, setAmount] = useState(initialAmount);
   const [txsSocket, setTxsSocket] = useState<Socket | undefined>(undefined);
   const [altpaymentSocket, setAltpaymentSocket] = useState<Socket | undefined>(undefined);
   const [useAltpayment, setUseAltpayment] = useState(false);
@@ -80,34 +110,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
   const priceRef = useRef<number>(price);
   const cryptoAmountRef = useRef<string | undefined>(cryptoAmount);
 
-  const {
-    to,
-    opReturn,
-    disablePaymentId,
-    currency = '' as Currency,
-    text,
-    hoverText,
-    successText,
-    animation,
-    randomSatoshis,
-    hideToasts,
-    onSuccess,
-    onTransaction,
-    onOpen,
-    onClose,
-    goalAmount,
-    disableEnforceFocus,
-    editable,
-    wsBaseUrl,
-    apiBaseUrl,
-    disableAltpayment,
-    contributionOffset,
-    autoClose,
-    disableSound,
-    transactionText,
-    size,
-    sizeScaleAlreadyApplied
-  } = Object.assign({}, PayButton.defaultProps, props);
+
 
   const [paymentId] = useState(!disablePaymentId ? generatePaymentId(8) : undefined);
   const [addressType, setAddressType] = useState<CryptoCurrency>(
@@ -147,14 +150,14 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
   };
 
   useEffect(() => {
-    setAmount(props.amount);
-  }, [props.amount]);
+    setAmount(initialAmount);
+  }, [initialAmount]);
 
   useEffect(() => {
-    const invalidAmount = props.amount !== undefined && isNaN(+props.amount);
+    const invalidAmount = initialAmount !== undefined && isNaN(+initialAmount);
 
     if (to !== undefined) {
-      setDisabled(isPropsTrue(props.disabled));
+      setDisabled(isPropsTrue(disabledProp));
       setErrorMsg('');
     } else if (invalidAmount) {
       setDisabled(true);
@@ -163,7 +166,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
       setDisabled(true);
       setErrorMsg('Invalid Recipient');
     }
-  }, [to, props.amount, props.disabled]);
+  }, [to, initialAmount, disabledProp]);
 
   useEffect(() => {
     if (!to) {
@@ -229,9 +232,9 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
   }, [dialogOpen, useAltpayment]);
 
   useEffect(() => {
-    if (dialogOpen === false && props.amount && currency) {
+    if (dialogOpen === false && initialAmount && currency) {
       const obj = getCurrencyObject(
-        Number(props.amount),
+        Number(initialAmount),
         currency,
         randomSatoshis,
       );
@@ -240,7 +243,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
         setCurrencyObj(obj);
       }, 300);
     }
-  }, [dialogOpen, props.amount, currency, randomSatoshis]);
+  }, [dialogOpen, initialAmount, currency, randomSatoshis]);
 
   const getPrice = useCallback(
     async () => {
@@ -272,7 +275,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
     }
   }, [price, currencyObj, amount, currency, randomSatoshis, to]);
 
-  const theme = useTheme(props.theme, isValidXecAddress(to ?? ''));
+  const theme = useTheme(themeProp, isValidXecAddress(to ?? ''));
 
   const ButtonComponent: React.FC<ButtonProps> = (
     props: ButtonProps,
@@ -360,21 +363,5 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
     </ThemeProvider>
   );
 };
-
-const payButtonDefaultProps: PayButtonProps = {
-  to: '',
-  animation: 'slide',
-  hideToasts: false,
-  randomSatoshis: false,
-  successText: 'Thank you!',
-  disableEnforceFocus: false,
-  disabled: false,
-  editable: false,
-  autoClose: true,
-  size: 'md',
-  sizeScaleAlreadyApplied: false,
-};
-
-PayButton.defaultProps = payButtonDefaultProps;
 
 export default PayButton;

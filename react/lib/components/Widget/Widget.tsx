@@ -304,22 +304,22 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const {
     to,
     foot,
-    success,
+    success = false,
     paymentId,
-    successText,
+    successText = 'Thank you!',
     disablePaymentId,
     goalAmount,
     ButtonComponent = Button,
     currency = getCurrencyTypeFromAddress(to),
     animation,
     randomSatoshis = false,
-    editable,
+    editable = false,
     newTxs,
     setNewTxs,
     apiBaseUrl,
     usdPrice,
     wsBaseUrl,
-    hoverText = Button.defaultProps.hoverText,
+    hoverText = 'Send Payment',
     setAltpaymentShift,
     altpaymentShift,
     shiftCompleted,
@@ -345,7 +345,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     altpaymentError,
     setAltpaymentError,
     isChild,
-  } = Object.assign({}, Widget.defaultProps, props);
+  } = props;
 
   const [loading, setLoading] = useState(true);
 
@@ -989,12 +989,6 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       </Box>
     </ThemeProvider>
   );
-};
-
-Widget.defaultProps = {
-  success: false,
-  successText: 'Thank you!',
-  editable: false,
 };
 
 export default Widget;
