@@ -94,12 +94,16 @@ export const createPayment = async (
   address: string,
   rootUrl = config.apiBaseUrl,
 ): Promise<string> => {
-  const { data } = await axios.post(
+  const { data, status } = await axios.post(
     `${rootUrl}/api/payments/paymentId`,
     { amount, address }
   );
-  return data.paymentId;
   
+  if (status === 200) {
+    return data.paymentId;
+  }
+  throw new Error("Failed to generate payment Id.") // WIP
+
 };
 
 
