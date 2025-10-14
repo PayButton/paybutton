@@ -77,7 +77,7 @@ export const PaymentDialog = (
     setAmount,
     opReturn,
     paymentId,
-    disablePaymentId,
+    disablePaymentId = isPropsTrue(props.disablePaymentId),
     currency,
     currencyObj,
     setCurrencyObj,

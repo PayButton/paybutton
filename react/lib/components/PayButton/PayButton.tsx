@@ -83,7 +83,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
   const {
     to,
     opReturn,
-    disablePaymentId,
+    disablePaymentId = isPropsTrue(props.disablePaymentId),
     currency = '' as Currency,
     text,
     hoverText,
@@ -110,20 +110,27 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
   } = Object.assign({}, PayButton.defaultProps, props);
 
   const [paymentId, setPaymentId] = useState<string | undefined>(undefined);
+  const [fetchingPaymentId, setFetchingPaymentId] = useState<boolean | undefined>();
   const [addressType, setAddressType] = useState<CryptoCurrency>(
     getCurrencyTypeFromAddress(to),
   );
 
   useEffect(() => {
+    if (fetchingPaymentId !== undefined) {
+      return
+    }
+    setFetchingPaymentId(true)
     const initializePaymentId = async () => {
       if (!disablePaymentId && to) {
         try {
           const responsePaymentId = await createPayment(amount, to, apiBaseUrl);
           setPaymentId(responsePaymentId);
+          setFetchingPaymentId(false);
         } catch (error) {
           console.error('Error creating payment ID:', error);
         }
       }
+      setFetchingPaymentId(false);
     };
 
     initializePaymentId();
