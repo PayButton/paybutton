@@ -101,7 +101,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
     let {
       to,
       opReturn,
-      disablePaymentId,
+      disablePaymentId = isPropsTrue(props.disablePaymentId),
       paymentId,
       amount,
       setAmount,
@@ -141,21 +141,28 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
     const thisSetNewTxs = setNewTxs ?? setInternalNewTxs;
 
     const [thisPaymentId, setThisPaymentId] = useState<string | undefined>();
+    const [fetchingPaymentId, setFetchingPaymentId] = useState<boolean | undefined>();
     const [thisPrice, setThisPrice] = useState(0);
     const [usdPrice, setUsdPrice] = useState(0);
     useEffect(() => {
+      if (fetchingPaymentId !== undefined) {
+        return
+      }
+      setFetchingPaymentId(true)
       const initializePaymentId = async () => {
         if ((paymentId === undefined || paymentId === '') && !disablePaymentId) {
           if (to) {
             try {
               const responsePaymentId = await createPayment(amount, to, apiBaseUrl);
               setThisPaymentId(responsePaymentId);
+              setFetchingPaymentId(false);
             } catch (error) {
               console.error('Error creating payment ID:', error);
             }
           }
         } else {
           setThisPaymentId(paymentId);
+          setFetchingPaymentId(false);
         }
       };
 
