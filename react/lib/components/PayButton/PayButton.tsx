@@ -105,6 +105,9 @@ export const PayButton = ({
 
   const [currencyObj, setCurrencyObj] = useState<CurrencyObject | undefined>();
   const [cryptoAmount, setCryptoAmount] = useState<string>();
+  const [convertedAmount, setConvertedAmount] = useState<number>();
+  const [convertedCurrencyObj, setConvertedCurrencyObj] = useState<CurrencyObject | undefined>();
+
   const [price, setPrice] = useState(0);
   const [newTxs, setNewTxs] = useState<Transaction[] | undefined>();
   const priceRef = useRef<number>(price);
@@ -116,26 +119,7 @@ export const PayButton = ({
     getCurrencyTypeFromAddress(to),
   );
 
-  useEffect(() => {
-    if (fetchingPaymentId !== undefined) {
-      return
-    }
-    setFetchingPaymentId(true)
-    const initializePaymentId = async () => {
-      if (!disablePaymentId && to) {
-        try {
-          const responsePaymentId = await createPayment(amount, to, apiBaseUrl);
-          setPaymentId(responsePaymentId);
-          setFetchingPaymentId(false);
-        } catch (error) {
-          console.error('Error creating payment ID:', error);
-        }
-      }
-      setFetchingPaymentId(false);
-    };
 
-    initializePaymentId();
-  }, [disablePaymentId, amount, to, apiBaseUrl]);
 
   useEffect(() => {
     priceRef.current = price;
@@ -283,14 +267,27 @@ export const PayButton = ({
 
   useEffect(() => {
     if (currencyObj && isFiat(currency) && price) {
-      const addressType: Currency = getCurrencyTypeFromAddress(to);
+      if(!convertedCurrencyObj) {
+        const addressType: Currency = getCurrencyTypeFromAddress(to);
+        const convertedObj = getCurrencyObject(
+          currencyObj.float / price,
+          addressType,
+          randomSatoshis,
+        );
+        setCryptoAmount(convertedObj.string);
+        setConvertedAmount(convertedObj.float);
+        setConvertedCurrencyObj(convertedObj);
+      }
+    } else if (!isFiat(currency) && randomSatoshis && !convertedAmount){
       const convertedObj = getCurrencyObject(
-        currencyObj.float / price,
+        amount as number,
         addressType,
         randomSatoshis,
       );
       setCryptoAmount(convertedObj.string);
-    } else if (!isFiat(currency)) {
+      setConvertedAmount(convertedObj.float);
+      setConvertedCurrencyObj(convertedObj);
+    } else if (!isFiat(currency) && !randomSatoshis) {
       setCryptoAmount(amount?.toString());
     }
   }, [price, currencyObj, amount, currency, randomSatoshis, to]);
@@ -367,6 +364,8 @@ export const PayButton = ({
         newTxs={newTxs}
         disableSound={disableSound}
         transactionText={transactionText}
+        convertedAmount={convertedAmount}
+        convertedCurrencyObj={convertedCurrencyObj}
       />
       {errorMsg && (
         <p
