@@ -113,7 +113,6 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
   } = Object.assign({}, PayButton.defaultProps, props);
 
   const [paymentId, setPaymentId] = useState<string | undefined>(undefined);
-  const [fetchingPaymentId, setFetchingPaymentId] = useState<boolean | undefined>();
   const [addressType, setAddressType] = useState<CryptoCurrency>(
     getCurrencyTypeFromAddress(to),
   );
@@ -136,16 +135,57 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
       }
     }, 300);
   };
+
+  const getPaymentId = useCallback(async (
+    currency: Currency,
+    amount: number,
+    convertedAmount: number | undefined,
+    to: string | undefined,
+  ): Promise<string | undefined> => {
+    if (disablePaymentId || !to) return paymentId
+    try {
+      const amountToUse =
+        (isFiat(currency) || randomSatoshis) && convertedAmount
+        ? convertedAmount
+        : amount
+
+      console.log('Creating payment ID with amount:', amountToUse)
+      const responsePaymentId = await createPayment(amountToUse, to, apiBaseUrl)
+
+      setPaymentId(responsePaymentId)
+      return responsePaymentId
+    } catch (err) {
+      console.error('Error creating payment ID:', err)
+      return undefined
+    }
+  }, [disablePaymentId, apiBaseUrl, isFiat, randomSatoshis])
+
   const handleButtonClick = useCallback(async (): Promise<void> => {
-    if (onOpen !== undefined) {
+
+    if (onOpen) {
       if (isFiat(currency)) {
-        void waitPrice(() => { onOpen(cryptoAmountRef.current, to, paymentId) })
+        void waitPrice(() => onOpen(cryptoAmountRef.current, to, paymentId))
       } else {
         onOpen(amount, to, paymentId)
       }
     }
-    setDialogOpen(true);
-  }, [cryptoAmount, to, paymentId, price])
+
+    if (!disablePaymentId && !paymentId) {
+      await getPaymentId(currency, Number(amount), convertedAmount, to)
+    }
+
+    setDialogOpen(true)
+  }, [
+    onOpen,
+    isFiat,
+    currency,
+    amount,
+    to,
+    paymentId,
+    disablePaymentId,
+    getPaymentId,
+    convertedAmount,
+  ])
 
   const handleCloseDialog = (success?: boolean, paymentId?: string): void => {
     if (onClose !== undefined) onClose(success, paymentId);
@@ -188,42 +228,42 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
       return
     }
     (async () => {
-    if (txsSocket === undefined) {
-      const expectedAmount = currencyObj ? currencyObj?.float : undefined
-      await setupChronikWebSocket({
-        address: to,
-        txsSocket,
-        apiBaseUrl,
-        wsBaseUrl,
-        setTxsSocket,
-        setNewTxs,
-        setDialogOpen,
-        checkSuccessInfo: {
-          currency,
-          price,
-          randomSatoshis: randomSatoshis ?? false,
-          disablePaymentId,
-          expectedAmount,
-          expectedOpReturn: opReturn,
-          expectedPaymentId: paymentId,
-          currencyObj,
-        }
-      })
-    }
-    if (altpaymentSocket === undefined && useAltpayment) {
-      await setupAltpaymentSocket({
-        addressType,
-        altpaymentSocket,
-        wsBaseUrl,
-        setAltpaymentSocket,
-        setCoins,
-        setCoinPair,
-        setLoadingPair,
-        setAltpaymentShift,
-        setLoadingShift,
-        setAltpaymentError,
-      })
-    }
+      if (txsSocket === undefined) {
+        const expectedAmount = currencyObj ? currencyObj?.float : undefined
+        await setupChronikWebSocket({
+          address: to,
+          txsSocket,
+          apiBaseUrl,
+          wsBaseUrl,
+          setTxsSocket,
+          setNewTxs,
+          setDialogOpen,
+          checkSuccessInfo: {
+            currency,
+            price,
+            randomSatoshis: randomSatoshis ?? false,
+            disablePaymentId,
+            expectedAmount,
+            expectedOpReturn: opReturn,
+            expectedPaymentId: paymentId,
+            currencyObj,
+          }
+        })
+      }
+      if (altpaymentSocket === undefined && useAltpayment) {
+        await setupAltpaymentSocket({
+          addressType,
+          altpaymentSocket,
+          wsBaseUrl,
+          setAltpaymentSocket,
+          setCoins,
+          setCoinPair,
+          setLoadingPair,
+          setAltpaymentShift,
+          setLoadingShift,
+          setAltpaymentError,
+        })
+      }
     })()
 
     return () => {
@@ -258,9 +298,9 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
 
   useEffect(() => {
     (async () => {
-    if (isFiat(currency) && price === 0) {
-      await getPrice();
-    }
+      if (isFiat(currency) && price === 0) {
+        await getPrice();
+      }
     })()
   }, [currency, getPrice, to, price]);
 
@@ -282,43 +322,13 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
         amount as number,
         addressType,
         randomSatoshis,
-      );
-      setCryptoAmount(convertedObj.string);
+      ); setCryptoAmount(convertedObj.string);
       setConvertedAmount(convertedObj.float);
       setConvertedCurrencyObj(convertedObj);
     } else if (!isFiat(currency) && !randomSatoshis) {
       setCryptoAmount(amount?.toString());
     }
   }, [price, currencyObj, amount, currency, randomSatoshis, to]);
-
-  useEffect(() => {
-    if (fetchingPaymentId === true) {
-      return;
-    }
-    if ((isFiat(currency) && !convertedAmount) || (randomSatoshis && !convertedAmount)) {
-      return
-    }
-    
-    setFetchingPaymentId(true);
-    const initializePaymentId = async () => {
-      if (!disablePaymentId && to) {
-        try {
-          const amountToUse = (isFiat(currency) || randomSatoshis) ? convertedAmount : amount;
-          console.log('Creating payment ID with amount:', amountToUse, isFiat(currency));
-          const responsePaymentId = await createPayment(amountToUse, to, apiBaseUrl);
-          setPaymentId(responsePaymentId);
-          setFetchingPaymentId(false);
-        } catch (error) {
-          console.error('Error creating payment ID:', error);
-          setFetchingPaymentId(false);
-        }
-      } else {
-        setFetchingPaymentId(false);
-      }
-    };
-
-    initializePaymentId();
-  }, [disablePaymentId, amount, convertedAmount, to, apiBaseUrl]);
 
   const theme = useTheme(props.theme, isValidXecAddress(to ?? ''));
 
