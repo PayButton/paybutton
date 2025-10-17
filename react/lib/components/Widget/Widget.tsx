@@ -96,6 +96,8 @@ export interface WidgetProps {
   setAddressType?: Function,
   newTxText?: string;
   transactionText?: string;
+  convertedAmount?: number;
+  convertedCurrencyObj?: CurrencyObject;
 }
 
 interface StyleProps {
@@ -345,6 +347,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     altpaymentError,
     setAltpaymentError,
     isChild,
+    convertedCurrencyObj,
   } = Object.assign({}, Widget.defaultProps, props);
 
   const [loading, setLoading] = useState(true);
@@ -591,14 +594,14 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     }
 
     if (userEditedAmount !== undefined && thisAmount && thisAddressType) {
-      const obj = getCurrencyObject(+thisAmount, currency, false);
+      const obj = convertedCurrencyObj ??  getCurrencyObject(+thisAmount, currency, false);
       setThisCurrencyObject(obj);
       if (props.setCurrencyObject) {
         props.setCurrencyObject(obj);
       }
     } else if (thisAmount && thisAddressType) {
       cleanAmount = +thisAmount;
-      const obj = getCurrencyObject(cleanAmount, currency, randomSatoshis);
+      const obj = convertedCurrencyObj ?? getCurrencyObject(cleanAmount, currency, randomSatoshis);
       setThisCurrencyObject(obj);
       if (props.setCurrencyObject) {
         props.setCurrencyObject(obj);
@@ -620,9 +623,11 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       setWidgetButtonText(`Send with ${thisAddressType} wallet`);
     }
 
+    console.log('convertedAmount -> ', {convertedCurrencyObj, a: props.convertedAmount, thisCurrencyObject})
     if (thisCurrencyObject && hasPrice) {
-      const convertedAmount = thisCurrencyObject.float / price
-      const convertedObj = price
+      // Use convertedAmount prop if available, otherwise calculate locally
+      const convertedAmount = props.convertedAmount ?? thisCurrencyObject.float / price
+      const convertedObj = convertedCurrencyObj ? convertedCurrencyObj : price
         ? getCurrencyObject(
           convertedAmount,
           thisAddressType,

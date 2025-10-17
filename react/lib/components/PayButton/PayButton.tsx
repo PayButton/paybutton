@@ -75,6 +75,9 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
 
   const [currencyObj, setCurrencyObj] = useState<CurrencyObject | undefined>();
   const [cryptoAmount, setCryptoAmount] = useState<string>();
+  const [convertedAmount, setConvertedAmount] = useState<number>();
+  const [convertedCurrencyObj, setConvertedCurrencyObj] = useState<CurrencyObject | undefined>();
+
   const [price, setPrice] = useState(0);
   const [newTxs, setNewTxs] = useState<Transaction[] | undefined>();
   const priceRef = useRef<number>(price);
@@ -115,26 +118,7 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
     getCurrencyTypeFromAddress(to),
   );
 
-  useEffect(() => {
-    if (fetchingPaymentId !== undefined) {
-      return
-    }
-    setFetchingPaymentId(true)
-    const initializePaymentId = async () => {
-      if (!disablePaymentId && to) {
-        try {
-          const responsePaymentId = await createPayment(amount, to, apiBaseUrl);
-          setPaymentId(responsePaymentId);
-          setFetchingPaymentId(false);
-        } catch (error) {
-          console.error('Error creating payment ID:', error);
-        }
-      }
-      setFetchingPaymentId(false);
-    };
 
-    initializePaymentId();
-  }, [disablePaymentId, amount, to, apiBaseUrl]);
 
   useEffect(() => {
     priceRef.current = price;
@@ -282,17 +266,59 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
 
   useEffect(() => {
     if (currencyObj && isFiat(currency) && price) {
-      const addressType: Currency = getCurrencyTypeFromAddress(to);
+      if(!convertedCurrencyObj) {
+        const addressType: Currency = getCurrencyTypeFromAddress(to);
+        const convertedObj = getCurrencyObject(
+          currencyObj.float / price,
+          addressType,
+          randomSatoshis,
+        );
+        setCryptoAmount(convertedObj.string);
+        setConvertedAmount(convertedObj.float);
+        setConvertedCurrencyObj(convertedObj);
+      }
+    } else if (!isFiat(currency) && randomSatoshis && !convertedAmount){
       const convertedObj = getCurrencyObject(
-        currencyObj.float / price,
+        amount as number,
         addressType,
         randomSatoshis,
       );
       setCryptoAmount(convertedObj.string);
-    } else if (!isFiat(currency)) {
+      setConvertedAmount(convertedObj.float);
+      setConvertedCurrencyObj(convertedObj);
+    } else if (!isFiat(currency) && !randomSatoshis) {
       setCryptoAmount(amount?.toString());
     }
   }, [price, currencyObj, amount, currency, randomSatoshis, to]);
+
+  useEffect(() => {
+    if (fetchingPaymentId === true) {
+      return;
+    }
+    if ((isFiat(currency) && !convertedAmount) || (randomSatoshis && !convertedAmount)) {
+      return
+    }
+    
+    setFetchingPaymentId(true);
+    const initializePaymentId = async () => {
+      if (!disablePaymentId && to) {
+        try {
+          const amountToUse = (isFiat(currency) || randomSatoshis) ? convertedAmount : amount;
+          console.log('Creating payment ID with amount:', amountToUse, isFiat(currency));
+          const responsePaymentId = await createPayment(amountToUse, to, apiBaseUrl);
+          setPaymentId(responsePaymentId);
+          setFetchingPaymentId(false);
+        } catch (error) {
+          console.error('Error creating payment ID:', error);
+          setFetchingPaymentId(false);
+        }
+      } else {
+        setFetchingPaymentId(false);
+      }
+    };
+
+    initializePaymentId();
+  }, [disablePaymentId, amount, convertedAmount, to, apiBaseUrl]);
 
   const theme = useTheme(props.theme, isValidXecAddress(to ?? ''));
 
@@ -366,6 +392,8 @@ export const PayButton = (props: PayButtonProps): React.ReactElement => {
         newTxs={newTxs}
         disableSound={disableSound}
         transactionText={transactionText}
+        convertedAmount={convertedAmount}
+        convertedCurrencyObj={convertedCurrencyObj}
       />
       {errorMsg && (
         <p
