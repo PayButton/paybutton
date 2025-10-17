@@ -91,23 +91,25 @@ export interface WidgetProps {
   altpaymentSocket?: Socket
   setAltpaymentSocket?: Function
   shiftCompleted?: boolean
-  setShiftCompleted?: Function
-  setCoins?: Function
-  coins?: AltpaymentCoin[]
-  setCoinPair?: Function
-  coinPair?: AltpaymentPair
-  setLoadingPair?: Function
-  loadingPair?: boolean
-  setLoadingShift?: Function
-  loadingShift?: boolean
-  setAltpaymentError?: Function
-  altpaymentError?: AltpaymentError
-  addressType?: Currency
-  setAddressType?: Function
-  newTxText?: string
-  transactionText?: string
   donationAddress?: string
   donationRate?: number
+  setShiftCompleted?: Function;
+  setCoins?: Function;
+  coins?: AltpaymentCoin[];
+  setCoinPair?: Function;
+  coinPair?: AltpaymentPair;
+  setLoadingPair?: Function;
+  loadingPair?: boolean;
+  setLoadingShift?: Function;
+  loadingShift?: boolean;
+  setAltpaymentError?: Function;
+  altpaymentError?: AltpaymentError;
+  addressType?: Currency,
+  setAddressType?: Function,
+  newTxText?: string;
+  transactionText?: string;
+  convertedAmount?: number;
+  convertedCurrencyObj?: CurrencyObject;
 }
 
 interface StyleProps {
@@ -163,8 +165,9 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     altpaymentError,
     setAltpaymentError,
     isChild,
+    convertedCurrencyObj,
     donationAddress = config.donationAddress,
-    donationRate = DEFAULT_DONATION_RATE
+    donationRate = DEFAULT_DONATION_RATE,
   } = props;
   const [loading, setLoading] = useState(true);
 
@@ -595,14 +598,18 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       }
     }
     if (userEditedAmount !== undefined && thisAmount && thisAddressType) {
-      const obj = getCurrencyObject(+thisAmount, currency, false)
-      setThisCurrencyObject(obj)
-      if (props.setCurrencyObject) props.setCurrencyObject(obj)
+      const obj = convertedCurrencyObj ?? getCurrencyObject(+thisAmount, currency, false);
+      setThisCurrencyObject(obj);
+      if (props.setCurrencyObject) {
+        props.setCurrencyObject(obj);
+      }
     } else if (thisAmount && thisAddressType) {
-      cleanAmount = +thisAmount
-      const obj = getCurrencyObject(cleanAmount, currency, randomSatoshis)
-      setThisCurrencyObject(obj)
-      if (props.setCurrencyObject) props.setCurrencyObject(obj)
+      cleanAmount = +thisAmount;
+      const obj = convertedCurrencyObj ?? getCurrencyObject(cleanAmount, currency, randomSatoshis);
+      setThisCurrencyObject(obj);
+      if (props.setCurrencyObject) {
+        props.setCurrencyObject(obj);
+      }
     }
   }, [thisAmount, currency, userEditedAmount])
 
@@ -636,11 +643,18 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     } else {
       setWidgetButtonText(`Send with ${thisAddressType} wallet`)
     }
+
+    console.log('convertedAmount -> ', {convertedCurrencyObj, a: props.convertedAmount, thisCurrencyObject})
     if (thisCurrencyObject && hasPrice) {
-      const convertedAmount = thisCurrencyObject.float / price
-      const convertedObj = price
-        ? getCurrencyObject(convertedAmount, thisAddressType, randomSatoshis)
-        : null
+      // Use convertedAmount prop if available, otherwise calculate locally
+      const convertedAmount = props.convertedAmount ?? thisCurrencyObject.float / price
+      const convertedObj = convertedCurrencyObj ? convertedCurrencyObj : price
+        ? getCurrencyObject(
+          convertedAmount,
+          thisAddressType,
+          randomSatoshis,
+        )
+        : null;
       if (convertedObj) {
         // Store converted crypto amount for donation UI visibility check
         setConvertedCryptoAmount(convertedObj.float)
