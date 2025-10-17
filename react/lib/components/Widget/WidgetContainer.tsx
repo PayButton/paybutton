@@ -149,12 +149,15 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
     const [thisPrice, setThisPrice] = useState(0);
     const [usdPrice, setUsdPrice] = useState(0);
     useEffect(() => {
-      if (fetchingPaymentId !== undefined) {
+      if (
+        fetchingPaymentId !== undefined ||
+        thisPaymentId !== undefined
+      ) {
         return
       }
       setFetchingPaymentId(true)
       const initializePaymentId = async () => {
-        if ((paymentId === undefined || paymentId === '') && !disablePaymentId) {
+        if (paymentId === undefined && !disablePaymentId) {
           if (to) {
             try {
               const responsePaymentId = await createPayment(amount, to, apiBaseUrl);
