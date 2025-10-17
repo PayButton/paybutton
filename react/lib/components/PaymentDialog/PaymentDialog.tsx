@@ -63,6 +63,8 @@ export interface PaymentDialogProps extends ButtonProps {
   autoClose?: boolean | number | string;
   disableSound?: boolean;
   transactionText?: string
+  convertedAmount?: number;
+  convertedCurrencyObj?: CurrencyObject;
 }
 
 export const PaymentDialog = ({
@@ -121,6 +123,8 @@ export const PaymentDialog = ({
   disableSound,
   transactionText,
   disabled,
+  convertedAmount,
+  convertedCurrencyObj
   theme: themeProp,
 }: PaymentDialogProps): React.ReactElement => {
   const [success, setSuccess] = useState(false);
@@ -247,6 +251,8 @@ export const PaymentDialog = ({
           newTxs={newTxs}
           disableSound={disableSound}
           transactionText={transactionText}
+          convertedAmount={convertedAmount}
+          convertedCurrencyObj={convertedCurrencyObj}
           foot={success && (
             <ButtonComponent
               onClick={handleWidgetClose}
