@@ -543,7 +543,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       }
     }
     if (userEditedAmount !== undefined && thisAmount && thisAddressType) {
-      const obj = getCurrencyObject(+thisAmount, currency, false);
+      const obj = convertedCurrencyObj ??  getCurrencyObject(+thisAmount, currency, false);
       setThisCurrencyObject(obj);
       if (props.setCurrencyObject) {
         props.setCurrencyObject(obj);
@@ -578,6 +578,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       setWidgetButtonText(`Send with ${thisAddressType} wallet`)
     }
 
+    console.log('convertedAmount -> ', {convertedCurrencyObj, a: props.convertedAmount, thisCurrencyObject})
     if (thisCurrencyObject && hasPrice) {
       // Use convertedAmount prop if available, otherwise calculate locally
       const convertedAmount = convertedCurrencyObj ? convertedCurrencyObj.float : thisCurrencyObject.float / price
