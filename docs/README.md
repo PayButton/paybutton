@@ -1102,7 +1102,7 @@ size = "sm"
 
 > **The ‘donationRate’ parameter represents the amount that will be donated to the donation address.**
 
-?> The donationRate parameter is optional values accepted are intergers between 0-100. Default value is 2. 
+?> The donationRate parameter is optional values accepted are integers between 0-100. Default value is 2. 
 
 
 **Example:**
