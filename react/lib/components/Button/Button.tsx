@@ -78,6 +78,14 @@ const StyledButton = styled(BaseButton, {
   return {
     background: `${$theme.palette.secondary} !important`,
     transition: '0.6s !important',
+    minWidth: '14em !important',
+    padding: '0.618em 1.618em !important',
+    margin: 'auto !important',
+    boxShadow: '3px 3px 3px rgba(0, 0, 0, 0.08) !important',
+    border: `2px solid ${$theme.palette.primary} !important`,
+    borderRadius: `${borderRadius} !important`,
+    fontSize: '1em !important',
+
     ...(animation === 'slide'
       ? {
           background: `linear-gradient(45deg, ${$theme.palette.primary} 50%, ${$theme.palette.secondary} 50%) 100% center / 300% !important`,
@@ -87,9 +95,8 @@ const StyledButton = styled(BaseButton, {
         }
       : {}),
     color: `${$theme.palette.primary} !important`,
-    border: `2px solid ${$theme.palette.primary} !important`,
-    borderRadius: `${borderRadius} !important`,
     textTransform: 'none',
+
     '&:hover': {
       ...(animation === 'slide'
         ? {
@@ -109,6 +116,15 @@ const StyledButton = styled(BaseButton, {
             color: `${$theme.palette.primary} !important`,
           }
         : {}),
+    },
+
+    '& .MuiTouchRipple-root': {
+      margin: -2,
+      color: '#00000044 !important',
+    },
+    '&:disabled span': {
+      filter: 'blur(2px)',
+      color: 'rgba(0, 0, 0, 0.5)',
     },
   }
 })
