@@ -19,3 +19,5 @@ export const CURRENCY_PREFIXES_MAP: Record<typeof CRYPTO_CURRENCIES[number], str
 export type ButtonSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | "extrasmall" | "small" | "medium" | "large" | "extralarge" | undefined;
 
 export const DEFAULT_DONATE_RATE = 2;
+
+export const DEFAULT_MINIMUM_DONATE_AMOUNT = 10;

@@ -36,6 +36,7 @@ import {
   setupAltpaymentSocket,
   CryptoCurrency,
   DEFAULT_DONATE_RATE,
+  DEFAULT_MINIMUM_DONATE_AMOUNT
 } from '../../util';
 import AltpaymentWidget from './AltpaymentWidget';
 import { AltpaymentPair, AltpaymentShift, AltpaymentError, AltpaymentCoin, MINIMUM_ALTPAYMENT_DOLLAR_AMOUNT, MINIMUM_ALTPAYMENT_CAD_AMOUNT } from '../../altpayment';
@@ -774,7 +775,9 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         const thisDonationAmount = donationAmount ? donationAmount : amount * donationPercent
 
         thisUrl+=`?amount=${amount}`
-        thisUrl += `&addr=${donationAddress}&amount=${thisDonationAmount.toFixed(decimals)}`;
+        if(thisDonationAmount > DEFAULT_MINIMUM_DONATE_AMOUNT){
+          thisUrl += `&addr=${donationAddress}&amount=${thisDonationAmount.toFixed(decimals)}`;
+        }
       }else{
         thisUrl += `?amount=${amount}`
       }
