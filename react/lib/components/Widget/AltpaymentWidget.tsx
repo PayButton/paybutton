@@ -1,22 +1,11 @@
-import React, { Fragment, useEffect, useState } from 'react';
-import {
-  TextField,
-  Grid,
-  Select,
-  MenuItem,
-  makeStyles,
-  InputLabel,
-  FormControl,
-  Typography
-} from '@material-ui/core';
-import {
-  resolveNumber,
-  CryptoCurrency,
-  DECIMALS
-} from '../../util';
-import { Button, animation } from '../Button/Button';
-import { Socket } from 'socket.io-client';
-import { AltpaymentCoin, AltpaymentError, AltpaymentPair, AltpaymentShift } from '../../altpayment';
+import React, { Fragment, useEffect, useState } from 'react'
+import { TextField, Select, MenuItem, InputLabel, FormControl, Typography } from '@mui/material'
+import { makeStyles } from '@mui/styles'
+
+import { resolveNumber, CryptoCurrency, DECIMALS } from '../../util'
+import { Button, animation } from '../Button/Button'
+import { Socket } from 'socket.io-client'
+import { AltpaymentCoin, AltpaymentError, AltpaymentPair, AltpaymentShift } from '../../altpayment'
 import { sideShiftLogo, copyIcon } from './SideShiftLogo'
 
 interface AltpaymentProps {
@@ -211,162 +200,58 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
   };
 
   const useStyles = makeStyles({
-    select_box: {
-      minWidth: '220px'
-    },
-    option_outer_ctn: {
-      display: 'flex',
-      alignItems: 'center'
-    },
-    option_ctn: {
-      display: 'flex',
-      flexDirection: 'column',
-      margin: '5px 0'
-    },
-    list_icon: {
-      width: '28px',
-      height: '28px',
-      marginRight: '10px'
-    },
-    coin: {
-      fontWeight: 'bold',
-      lineHeight: '1em'
-    },
-    coin_name: {
-      fontSize: '14px'
-    },
-    spacer: {
-      height: '20px'
-    },
+    select_box: { minWidth: '220px' },
+    option_outer_ctn: { display: 'flex', alignItems: 'center' },
+    option_ctn: { display: 'flex', flexDirection: 'column', margin: '5px 0' },
+    list_icon: { width: '28px', height: '28px', marginRight: '10px' },
+    coin: { fontWeight: 'bold', lineHeight: '1em' },
+    coin_name: { fontSize: '14px' },
+    spacer: { height: '20px' },
     sideshift_ctn: {
-      alignItems: 'center',
-      display: 'flex',
-      flexDirection: 'column',
-      height: 'calc(100% - 20px)',
-      width: '100%',
-      position: 'absolute',
-      zIndex: 9,
-      top: '0',
-      left: '0',
-      background: '#f5f5f7',
-      paddingTop: '20px'
+      alignItems: 'center', display: 'flex', flexDirection: 'column',
+      height: 'calc(100% - 20px)', width: '100%', position: 'absolute',
+      zIndex: 9, top: '0', left: '0', background: '#f5f5f7', paddingTop: '20px'
     },
     header: {
-      marginBottom:'30px',
-      display: 'flex',
-      alignItems: 'center',
-      flexDirection: 'column',
-      color: 'rgb(35, 31, 32)',
-      fontSize: '0.9rem',
-
-      '& img': {
-        width: '150px',
-        marginTop: '10px'
-      },
+      marginBottom: '30px', display: 'flex', alignItems: 'center',
+      flexDirection: 'column', color: 'rgb(35, 31, 32)', fontSize: '0.9rem',
+      '& img': { width: '150px', marginTop: '10px' },
     },
     back_link: {
-      fontSize: '14px',
-      marginTop: '20px',
-      cursor: 'pointer',
-      border: '1px solid #000',
-      opacity: '0.7',
-      padding: '2px 20px',
-      borderRadius: '3px',
-      '&:hover': {
-        opacity: '1'
-      },
+      fontSize: '14px', marginTop: '20px', cursor: 'pointer',
+      border: '1px solid #000', opacity: '0.7', padding: '2px 20px',
+      borderRadius: '3px', '&:hover': { opacity: '1' },
     },
     shift_ready: {
-      width: '100%',
-      display: 'flex',
-      flexDirection: 'column',
-      '& h4': {
-       margin: '0',
-       fontSize: '20px',
-       borderBottom: '1px solid #000',
-       paddingBottom: '10px',
-       textAlign: 'center',
-      },
+      width: '100%', display: 'flex', flexDirection: 'column',
+      '& h4': { margin: '0', fontSize: '20px', borderBottom: '1px solid #000', paddingBottom: '10px', textAlign: 'center' },
     },
-    copy_ctn: {
-      display: 'flex',
-      alignItems: 'center',
-      '& > div': {
-        position: 'relative'
-       },
-    },
+    copy_ctn: { display: 'flex', alignItems: 'center', '& > div': { position: 'relative' } },
     editAmount: {
-      width: '100%',
-      margin: '12px auto 10px',
-      display: 'flex',
-      alignItems: 'flex-end',
-      '& > div': {
-       width: '100%',
-      },
-      '& span': {
-        marginLeft: '4px',
-        fontSize: '16px',
-      }
+      width: '100%', margin: '12px auto 10px', display: 'flex', alignItems: 'flex-end',
+      '& > div': { width: '100%' }, '& span': { marginLeft: '4px', fontSize: '16px' },
     },
     amount_error: {
-      position: 'absolute',
-      bottom: '10px',
-      textAlign: 'center',
-      background: '#00000014',
-      padding: '10px',
-      borderRadius: '5px'
+      position: 'absolute', bottom: '10px', textAlign: 'center',
+      background: '#00000014', padding: '10px', borderRadius: '5px'
     },
     error_msg: {
-      textAlign: 'center',
-      background: '#ee010119',
-      padding: '10px',
-      borderRadius: '5px',
-      color: 'red'
+      textAlign: 'center', background: '#ee010119',
+      padding: '10px', borderRadius: '5px', color: 'red'
     },
-    shift_label: {
-      fontSize: '14px',
-      marginLeft: '5px',
-      marginTop: '20px',
-      marginBottom: '2px',
-      fontWeight: 600
-    },
+    shift_label: { fontSize: '14px', marginLeft: '5px', marginTop: '20px', marginBottom: '2px', fontWeight: 600 },
     shift_input: {
-      background: '#ffffff',
-      padding: '10px',
-      borderRadius: '5px',
-      fontSize: '14px',
-      border: '1px solid #b3b3b3',
-      wordBreak: 'break-all',
-      flexGrow: 1,
-      position: 'relative',
+      background: '#ffffff', padding: '10px', borderRadius: '5px', fontSize: '14px',
+      border: '1px solid #b3b3b3', wordBreak: 'break-all', flexGrow: 1, position: 'relative',
     },
     copy_btn: {
-      background: '#ffffff',
-      padding: '10px',
-      borderRadius: '5px',
-      border: '1px solid #b3b3b3',
-      marginLeft: '5px',
-      display: 'flex',
-      alignItems: 'center',
-      cursor: 'pointer',
-      alignSelf: 'stretch',
-      transition: 'all ease-in-out 200ms',
-      '&:hover': {
-        background: '#f1f1f1'
-      },
-      '& img': {
-        width: '15px',
-        },
+      background: '#ffffff', padding: '10px', borderRadius: '5px', border: '1px solid #b3b3b3',
+      marginLeft: '5px', display: 'flex', alignItems: 'center', cursor: 'pointer',
+      alignSelf: 'stretch', transition: 'all ease-in-out 200ms',
+      '&:hover': { background: '#f1f1f1' }, '& img': { width: '15px' },
     },
-    shift_complete: {
-      display: 'flex',
-      alignItems: 'center',
-      height: '100%',
-      flex: '1',
-      width: '100%',
-      fontSize: '18px'
-    }
-  });
+    shift_complete: { display: 'flex', alignItems: 'center', height: '100%', flex: '1', width: '100%', fontSize: '18px' },
+  })
 
   const classes = useStyles();
 
@@ -447,30 +332,21 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                   {resolveNumber(coinPair.rate).toFixed(DECIMALS[coinPair.settleCoin])} {coinPair.settleCoin}{' '}
                 </p>
                 {altpaymentEditable ? (
-                  <Grid
-                    container
-                    spacing={2}
-                    alignItems="center"
-                    justifyContent="center"
-                    style={{ margin: '6px auto', width: '100%' }}
-                  >
-                    <Grid item>
-                      <TextField
-                        label="Amount"
-                        value={pairAmount ?? 0}
-                        onChange={handlePairAmountChange}
-                        inputProps={{
-                          maxLength: pairAmountMaxLength,
+                  <div style={{ display: 'flex', justifyContent: 'center', margin: '6px auto', width: '100%' }}>
+                    <TextField
+                      label="Amount"
+                      value={pairAmount ?? 0}
+                      onChange={handlePairAmountChange}
+                      inputProps={{
+                        maxLength: pairAmountMaxLength,
                           type: 'number',
                           pattern: '[0-9]*',
-                          inputMode: 'numeric'
-                        }}
-                      />
-                    </Grid>
-                  </Grid>
-                ) : (
-                  null
-                )}
+                          inputMode: 'numeric',
+                      }}
+                    />
+                  </div>
+                ) : null}
+
                 <div></div>
                 <div style={loadingPair ||
                     selectedCoinNetwork === undefined ||
@@ -510,63 +386,51 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                       </a>
                     </div>
                     <FormControl>
-                      <InputLabel id="select-coin-label">
-                        Select a coin
-                      </InputLabel>
+                      <InputLabel id="select-coin-label">Select a coin</InputLabel>
                       <Select
                         labelId="select-coin-label"
                         className={classes.select_box}
-                        value={selectedCoin?.coin ?? null}
-                        onChange={e => {
-                          handleCoinChange(e);
-                        }}
+                        value={selectedCoin?.coin ?? ''}
+                        label="Select a coin"
+                        onChange={(e) => handleCoinChange(e as any)}
                       >
                         {coins.map(coin => (
                           <MenuItem key={coin.coin} value={coin.coin}>
                             <div className={classes.option_outer_ctn}>
                               <img
                                 className={classes.list_icon}
-                                src={`https://sideshift.ai/coin-icons/${checkCoin(
-                                  coin.coin,
-                                )}.svg`}
+                                src={`https://sideshift.ai/coin-icons/${checkCoin(coin.coin)}.svg`}
+                                alt={coin.coin}
                               />
                               <div className={classes.option_ctn}>
-                                <span className={classes.coin}>
-                                  {coin.coin}
-                                </span>
-                                <span className={classes.coin_name}>
-                                  {coin.name}
-                                </span>
+                                <span className={classes.coin}>{coin.coin}</span>
+                                <span className={classes.coin_name}>{coin.name}</span>
                               </div>
                             </div>
                           </MenuItem>
                         ))}
                       </Select>
                     </FormControl>
+
                     <div className={classes.spacer} />
                     {selectedCoin && selectedCoin.networks.length > 1 && (
                       <Fragment>
                         {
                           <FormControl>
-                            <InputLabel id="select-network-label">
-                              Select a network
-                            </InputLabel>
-
+                            <InputLabel id="select-network-label">Select a network</InputLabel>
                             <Select
                               labelId="select-network-label"
                               className={classes.select_box}
-                              value={selectedCoinNetwork ?? null}
-                              onChange={e => {
-                                handleNetworkChange(e);
-                              }}
+                              value={selectedCoinNetwork ?? ''}
+                              label="Select a network"
+                              onChange={(e) => handleNetworkChange(e as any)}
                             >
                               {selectedCoin.networks.map(network => (
                                 <MenuItem key={network} value={network}>
                                   <div className={classes.option_outer_ctn}>
                                     <div className={classes.option_ctn}>
                                       <span className={classes.coin}>
-                                        {network.charAt(0).toUpperCase() +
-                                          network.slice(1)}
+                                        {network.charAt(0).toUpperCase() + network.slice(1)}
                                       </span>
                                     </div>
                                   </div>
