@@ -18,14 +18,13 @@ module.exports = {
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>"
   },
-  setupFiles: ['./jest.setup.js'],
   projects: [
     {
       displayName: 'node',
       preset: 'ts-jest',
       testEnvironment: 'node',
       testMatch: ['<rootDir>/lib/tests/!(components)/**/*.(test|spec).[jt]s?(x)'],
-      setupFiles: ['<rootDir>/jest.setup.js'],
+      setupFiles: ['<rootDir>/jest.setup.node.js'],
     },
     {
       displayName: 'react',
