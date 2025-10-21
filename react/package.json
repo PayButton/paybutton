@@ -41,6 +41,7 @@
     "@storybook/cli": "^7.6.17",
     "@storybook/react": "^7.6.17",
     "@storybook/react-vite": "^7.6.17",
+    "@testing-library/dom": "^10.4.1",
     "@testing-library/react": "^16.3.0",
     "@types/currency-formatter": "1.5.1",
     "@types/decimal.js": "^7.4.3",
