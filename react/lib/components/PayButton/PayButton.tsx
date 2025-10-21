@@ -229,7 +229,7 @@ export const PayButton = ({
         setAltpaymentSocket(undefined);
       }
     }
-  }, [dialogOpen, useAltpayment]);
+  }, [dialogOpen, useAltpayment, altpaymentSocket]);
 
   useEffect(() => {
     if (dialogOpen === false && initialAmount && currency) {
