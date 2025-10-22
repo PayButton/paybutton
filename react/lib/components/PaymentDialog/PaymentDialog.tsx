@@ -124,7 +124,7 @@ export const PaymentDialog = ({
   transactionText,
   disabled,
   convertedAmount,
-  convertedCurrencyObj
+  convertedCurrencyObj,
   theme: themeProp,
 }: PaymentDialogProps): React.ReactElement => {
   const [success, setSuccess] = useState(false);
