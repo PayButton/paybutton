@@ -674,7 +674,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       }
       if (shouldDisplayGoal && goal.float !== undefined && goal.float <= 0) {
         setDisabled(true)
-        setErrorMsg('Goal Value must be a number')
+        setErrorMsg('Goal Value must be a positive number')
       }
     }
   }, [totalReceived, currency, goalAmount, price, hasPrice, contributionOffset])
