@@ -126,7 +126,7 @@ export const PaymentDialog = ({
   transactionText,
   disabled,
   convertedAmount,
-  convertedCurrencyObj
+  convertedCurrencyObj,
   theme: themeProp,
   donationAddress,
   donationRate
