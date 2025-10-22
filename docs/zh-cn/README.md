@@ -1097,6 +1097,36 @@ size = "sm"
 ```
 <!-- tabs:end -->
 
+## donation-rate
+
+> **「donationRate」参数用于设置将捐赠到捐赠地址的金额。**
+
+?> donationRate 参数是可选的，接受的值为 0 到 100 之间的整数。默认值为 2。
+
+
+**Example:**
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+donation-rate="10"
+```
+
+#### ** JavaScript **
+
+```javascript
+donationRate: 10
+```
+
+#### ** React **
+
+```react
+donationRate = 10
+```
+<!-- tabs:end -->
+
+
 # 贡献
 
 PayButton是一个社群主导的开放源代码促进会。此项目的成功关键在于对社群的贡献。
