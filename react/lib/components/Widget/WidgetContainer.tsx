@@ -264,7 +264,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
       } else {
         setThisPrice(price)
       }
-    }, [currency, price, usdPrice]);
+    }, [currency, price]);
 
     const handleNewTransaction = useCallback(
       (tx: Transaction) => {
