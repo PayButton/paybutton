@@ -1,6 +1,8 @@
 import { OptionsObject, SnackbarProvider, useSnackbar } from 'notistack';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { getAltpaymentClient } from '../../altpayment';
+import { GlobalStyles } from '@mui/material'
+
 
 import successSound from '../../assets/success.mp3.json';
 
@@ -53,9 +55,6 @@ export interface WidgetContainerProps
 
 const snackbarOptionsSuccess: OptionsObject = {
   variant: 'success',
-  style:{
-    marginBottom: '60px',
-  },
   autoHideDuration: 8000,
   anchorOrigin: {
     vertical: 'bottom',
@@ -81,15 +80,18 @@ export interface Output {
 }
 
 const withSnackbar =
-  <T extends object>(
-    Component: React.ComponentType<T>,
-  ): React.FunctionComponent<T> =>
-  (props): React.ReactElement =>
-    (
+  <T extends object>(Component: React.ComponentType<T>): React.FunctionComponent<T> =>
+  (props) => {
+    return (
       <SnackbarProvider>
+        <GlobalStyles styles={{
+          '.SnackbarContainer-root': { marginBottom: '60px' },
+          '.SnackbarContainer-anchorOriginBottomCenter': { marginBottom: '60px' },
+        }} />
         <Component {...props} />
       </SnackbarProvider>
-    );
+    )
+  }
 
 export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
   withSnackbar((props): React.ReactElement => {
@@ -214,7 +216,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
                 snackbarOptionsInfo,
               );
             }
-            
+
           }
         }
         thisSetNewTxs([]);

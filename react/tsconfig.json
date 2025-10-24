@@ -32,6 +32,7 @@
   "include": ["lib", "src"],
   "exclude": [
     "node_modules",
-    "example"
+    "example",
+    "lib/tests/**"
   ]
 }

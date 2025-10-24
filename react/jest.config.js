@@ -18,5 +18,24 @@ module.exports = {
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>"
   },
-  setupFiles: ['./jest.setup.js'],
-};
+  projects: [
+    {
+      displayName: 'node',
+      preset: 'ts-jest',
+      testEnvironment: 'node',
+      testMatch: ['<rootDir>/lib/tests/!(components)/**/*.(test|spec).[jt]s?(x)'],
+      setupFiles: ['<rootDir>/jest.setup.node.js'],
+    },
+    {
+      displayName: 'react',
+      preset: 'ts-jest',
+      testEnvironment: 'jest-environment-jsdom',
+      testEnvironmentOptions: {
+        html: '<!doctype html><html><body></body></html>',
+        url: 'http://localhost/',
+      },
+      testMatch: ['<rootDir>/lib/tests/components/**/*.(test|spec).[jt]s?(x)'],
+      setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+    },
+  ],
+}
