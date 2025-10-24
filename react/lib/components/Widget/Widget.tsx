@@ -557,7 +557,9 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
 
   useEffect(() => {
     const invalidAmount = thisAmount !== undefined && thisAmount && isNaN(+thisAmount)
-    const isNegativeNumber = typeof thisAmount === 'string' && thisAmount.startsWith('-')
+    const isNegativeNumber =
+      (typeof thisAmount === 'number' && thisAmount < 0) ||
+      (typeof thisAmount === 'string' && thisAmount.trim().startsWith('-'))
     let cleanAmount: any
     if (invalidAmount) {
       setDisabled(true)
