@@ -697,9 +697,9 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   }, [disabled, to, url, setCopied, setRecentlyCopied])
 
   const resolveUrl = useCallback(
-    (currency: string, amount?: number) => {
+    (currencyCode: string, amount?: number) => {
       if (disabled || !to) return
-      const prefix = CURRENCY_PREFIXES_MAP[currency.toLowerCase() as (typeof CRYPTO_CURRENCIES)[number]]
+      const prefix = CURRENCY_PREFIXES_MAP[currencyCode.toLowerCase() as (typeof CRYPTO_CURRENCIES)[number]]
       if (!prefix) return
       let thisUrl = `${prefix}:${to.replace(/^.*:/, '')}`
       if (amount) {
@@ -711,7 +711,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       }
       return thisUrl
     },
-    [disabled, to, currency, opReturn]
+    [disabled, to, opReturn]
   )
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
