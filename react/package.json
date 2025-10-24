@@ -90,7 +90,6 @@
     "@emotion/styled": "^11.14.1",
     "@mui/lab": "^7.0.1-beta.18",
     "@mui/material": "^7.3.4",
-    "@mui/styles": "^6.4.8",
     "@types/crypto-js": "^4.2.1",
     "@types/jest": "^29.5.11",
     "axios": "1.12.0",
