@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useState } from 'react'
-import { TextField, Select, MenuItem, InputLabel, FormControl, Typography } from '@mui/material'
-import { makeStyles } from '@mui/styles'
+import { TextField, Select, MenuItem, InputLabel, FormControl  } from '@mui/material'
+import { styled } from '@mui/material/styles'
 
 import { resolveNumber, CryptoCurrency, DECIMALS } from '../../util'
 import { Button, animation } from '../Button/Button'
@@ -199,61 +199,90 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
       }
   };
 
-  const useStyles = makeStyles({
-    select_box: { minWidth: '220px' },
-    option_outer_ctn: { display: 'flex', alignItems: 'center' },
-    option_ctn: { display: 'flex', flexDirection: 'column', margin: '5px 0' },
-    list_icon: { width: '28px', height: '28px', marginRight: '10px' },
-    coin: { fontWeight: 'bold', lineHeight: '1em' },
-    coin_name: { fontSize: '14px' },
-    spacer: { height: '20px' },
-    sideshift_ctn: {
-      alignItems: 'center', display: 'flex', flexDirection: 'column',
-      height: 'calc(100% - 20px)', width: '100%', position: 'absolute',
-      zIndex: 9, top: '0', left: '0', background: '#f5f5f7', paddingTop: '20px'
-    },
-    header: {
-      marginBottom: '30px', display: 'flex', alignItems: 'center',
-      flexDirection: 'column', color: 'rgb(35, 31, 32)', fontSize: '0.9rem',
-      '& img': { width: '150px', marginTop: '10px' },
-    },
-    back_link: {
-      fontSize: '14px', marginTop: '20px', cursor: 'pointer',
-      border: '1px solid #000', opacity: '0.7', padding: '2px 20px',
-      borderRadius: '3px', '&:hover': { opacity: '1' },
-    },
-    shift_ready: {
-      width: '100%', display: 'flex', flexDirection: 'column',
-      '& h4': { margin: '0', fontSize: '20px', borderBottom: '1px solid #000', paddingBottom: '10px', textAlign: 'center' },
-    },
-    copy_ctn: { display: 'flex', alignItems: 'center', '& > div': { position: 'relative' } },
-    editAmount: {
-      width: '100%', margin: '12px auto 10px', display: 'flex', alignItems: 'flex-end',
-      '& > div': { width: '100%' }, '& span': { marginLeft: '4px', fontSize: '16px' },
-    },
-    amount_error: {
-      position: 'absolute', bottom: '10px', textAlign: 'center',
-      background: '#00000014', padding: '10px', borderRadius: '5px'
-    },
-    error_msg: {
-      textAlign: 'center', background: '#ee010119',
-      padding: '10px', borderRadius: '5px', color: 'red'
-    },
-    shift_label: { fontSize: '14px', marginLeft: '5px', marginTop: '20px', marginBottom: '2px', fontWeight: 600 },
-    shift_input: {
-      background: '#ffffff', padding: '10px', borderRadius: '5px', fontSize: '14px',
-      border: '1px solid #b3b3b3', wordBreak: 'break-all', flexGrow: 1, position: 'relative',
-    },
-    copy_btn: {
-      background: '#ffffff', padding: '10px', borderRadius: '5px', border: '1px solid #b3b3b3',
-      marginLeft: '5px', display: 'flex', alignItems: 'center', cursor: 'pointer',
-      alignSelf: 'stretch', transition: 'all ease-in-out 200ms',
-      '&:hover': { background: '#f1f1f1' }, '& img': { width: '15px' },
-    },
-    shift_complete: { display: 'flex', alignItems: 'center', height: '100%', flex: '1', width: '100%', fontSize: '18px' },
+  const SideshiftCtn = styled('div')({
+    alignItems: 'center', display: 'flex', flexDirection: 'column',
+    height: 'calc(100% - 20px)', width: '100%', position: 'absolute',
+    zIndex: 9, top: '0', left: '0', background: '#f5f5f7', paddingTop: '20px'
   })
 
-  const classes = useStyles();
+  const Header = styled('div')({
+    marginBottom: '30px', display: 'flex', alignItems: 'center',
+    flexDirection: 'column', color: 'rgb(35, 31, 32)', fontSize: '0.9rem',
+    '& img': { width: '150px', marginTop: '10px' },
+  })
+
+  const BackLink = styled('div')({
+    fontSize: '14px', marginTop: '20px', cursor: 'pointer',
+    border: '1px solid #000', opacity: '0.7', padding: '2px 20px',
+    borderRadius: '3px', '&:hover': { opacity: '1' },
+  })
+
+  const ShiftReady = styled('div')({
+    width: '100%', display: 'flex', flexDirection: 'column',
+    '& h4': { margin: '0', fontSize: '20px', borderBottom: '1px solid #000', paddingBottom: '10px', textAlign: 'center' },
+  })
+
+  const CopyCtn = styled('div')({
+    display: 'flex', alignItems: 'center', '& > div': { position: 'relative' }
+  })
+
+  const AmountError = styled('p')({
+    position: 'absolute', bottom: '10px', textAlign: 'center',
+    background: '#00000014', padding: '10px', borderRadius: '5px'
+  })
+
+  const ErrorMsg = styled('p')({
+    textAlign: 'center', background: '#ee010119',
+    padding: '10px', borderRadius: '5px', color: 'red'
+  })
+
+  const ShiftLabel = styled('span')({
+    fontSize: '14px', marginLeft: '5px', marginTop: '20px', marginBottom: '2px', fontWeight: 600
+  })
+
+  const ShiftInput = styled('div')({
+    background: '#ffffff', padding: '10px', borderRadius: '5px', fontSize: '14px',
+    border: '1px solid #b3b3b3', wordBreak: 'break-all', flexGrow: 1, position: 'relative',
+  })
+
+  const CopyBtn = styled('div')({
+    background: '#ffffff', padding: '10px', borderRadius: '5px', border: '1px solid #b3b3b3',
+    marginLeft: '5px', display: 'flex', alignItems: 'center', cursor: 'pointer',
+    alignSelf: 'stretch', transition: 'all ease-in-out 200ms',
+    '&:hover': { background: '#f1f1f1' }, '& img': { width: '15px' },
+  })
+
+  const ShiftComplete = styled('div')({
+    display: 'flex', alignItems: 'center', height: '100%', flex: '1', width: '100%', fontSize: '18px'
+  })
+
+  const SelectBox = styled(Select)({
+    minWidth: '220px'
+  })
+
+  const OptionOuterCtn = styled('div')({
+    display: 'flex', alignItems: 'center'
+  })
+
+  const OptionCtn = styled('div')({
+    display: 'flex', flexDirection: 'column', margin: '5px 0'
+  })
+
+  const ListIcon = styled('img')({
+    width: '28px', height: '28px', marginRight: '10px'
+  })
+
+  const Coin = styled('span')({
+    fontWeight: 'bold', lineHeight: '1em'
+  })
+
+  const CoinName = styled('span')({
+    fontSize: '14px'
+  })
+
+  const Spacer = styled('div')({
+    height: '20px'
+  })
 
   const checkCoin = (coin:string) => {
     let coinString = coin.toLowerCase();
@@ -267,60 +296,60 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
   }
 
   return (
-    <Typography component="div" className={classes.sideshift_ctn}>
+    <SideshiftCtn>
       {altpaymentError ? (
         <Fragment>
-          <p className={classes.error_msg}>Error: {altpaymentError.errorMessage}</p>
-          <div className={classes.back_link} onClick={resetTrade}>Back</div>
+          <ErrorMsg>Error: {altpaymentError.errorMessage}</ErrorMsg>
+          <BackLink onClick={resetTrade}>Back</BackLink>
         </Fragment>
       ) : (
         <Fragment>
           {
             altpaymentShift ? (
               shiftCompleted ? (
-                <div className={classes.shift_complete}>Shift Completed!</div>
+                <ShiftComplete>Shift Completed!</ShiftComplete>
               ) : (
-                <div className={classes.shift_ready}>
+                <ShiftReady>
                   <h4>Shift Ready!</h4>
-                  <span className={classes.shift_label}>Send</span>
-                  <div className={classes.copy_ctn}>
-                    <div className={classes.shift_input}>
+                  <ShiftLabel>Send</ShiftLabel>
+                  <CopyCtn>
+                    <ShiftInput>
                       <span id="shift_amount">{altpaymentShift.depositAmount}</span>{' '}{altpaymentShift.depositCoin}
-                    </div>
-                    <div className={classes.copy_btn} onClick={() => copyToClipboard('shift_amount')}>
+                    </ShiftInput>
+                    <CopyBtn onClick={() => copyToClipboard('shift_amount')}>
                       <img
                         src={copyIcon}
                         alt="Copy"
                       />
-                    </div>
-                  </div>
-                  <span className={classes.shift_label}>To</span>
-                  <div className={classes.copy_ctn}>
-                    <div id="to_address" className={classes.shift_input}>
+                    </CopyBtn>
+                  </CopyCtn>
+                  <ShiftLabel>To</ShiftLabel>
+                  <CopyCtn>
+                    <ShiftInput id="to_address">
                       {altpaymentShift.depositAddress}
-                    </div>
-                    <div className={classes.copy_btn} onClick={() => copyToClipboard('to_address')}>
+                    </ShiftInput>
+                    <CopyBtn onClick={() => copyToClipboard('to_address')}>
                       <img
                         src={copyIcon}
                         alt="Copy"
                       />
-                    </div>
-                  </div>
-                  <span className={classes.shift_label}>Network</span>
-                  <div className={classes.shift_input}>{selectedCoinNetwork}</div>
-                  <span className={classes.shift_label}>SideShift ID</span>
-                  <div className={classes.copy_ctn}>
-                    <div id="sideshift_id" className={classes.shift_input}>
+                    </CopyBtn>
+                  </CopyCtn>
+                  <ShiftLabel>Network</ShiftLabel>
+                  <ShiftInput>{selectedCoinNetwork}</ShiftInput>
+                  <ShiftLabel>SideShift ID</ShiftLabel>
+                  <CopyCtn>
+                    <ShiftInput id="sideshift_id">
                       {altpaymentShift.id}
-                    </div>
-                    <div className={classes.copy_btn} onClick={() => copyToClipboard('sideshift_id')}>
+                    </ShiftInput>
+                    <CopyBtn onClick={() => copyToClipboard('sideshift_id')}>
                       <img
                         src={copyIcon}
                         alt="Copy"
                       />
-                    </div>
-                  </div>
-                </div>
+                    </CopyBtn>
+                  </CopyCtn>
+                </ShiftReady>
               )
             ) : loadingShift ? (
               <p>Loading Shift...</p>
@@ -368,10 +397,10 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                 />
                 </div>
                 {!isAboveMinimumAltpaymentAmount && (
-                  <p className={classes.amount_error}>Amount is below minimum.</p>
+                  <AmountError>Amount is below minimum.</AmountError>
                 )}
                 {!isBelowMaximumAltpaymentAmount && (
-                  <p className={classes.amount_error}>Amount is above maximum.</p>
+                  <AmountError>Amount is above maximum.</AmountError>
                 )}
               </Fragment>
             ) : (
@@ -379,71 +408,68 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                 {coins.length === 0 && <div>Loading...</div>}
                 {coins.length > 0 && (
                   <Fragment>
-                    <div className={classes.header}>
+                    <Header>
                       Swap coins with
                       <a href="https://sideshift.ai" target="_blank">
                         <img src={sideShiftLogo} alt='SideShift' />
                       </a>
-                    </div>
+                    </Header>
                     <FormControl>
                       <InputLabel id="select-coin-label">Select a coin</InputLabel>
-                      <Select
+                      <SelectBox
                         labelId="select-coin-label"
-                        className={classes.select_box}
                         value={selectedCoin?.coin ?? ''}
                         label="Select a coin"
                         onChange={(e) => handleCoinChange(e as any)}
                       >
                         {coins.map(coin => (
                           <MenuItem key={coin.coin} value={coin.coin}>
-                            <div className={classes.option_outer_ctn}>
-                              <img
-                                className={classes.list_icon}
+                            <OptionOuterCtn>
+                              <ListIcon
                                 src={`https://sideshift.ai/coin-icons/${checkCoin(coin.coin)}.svg`}
                                 alt={coin.coin}
                               />
-                              <div className={classes.option_ctn}>
-                                <span className={classes.coin}>{coin.coin}</span>
-                                <span className={classes.coin_name}>{coin.name}</span>
-                              </div>
-                            </div>
+                              <OptionCtn>
+                                <Coin>{coin.coin}</Coin>
+                                <CoinName>{coin.name}</CoinName>
+                              </OptionCtn>
+                            </OptionOuterCtn>
                           </MenuItem>
                         ))}
-                      </Select>
+                      </SelectBox>
                     </FormControl>
 
-                    <div className={classes.spacer} />
+                    <Spacer />
                     {selectedCoin && selectedCoin.networks.length > 1 && (
                       <Fragment>
                         {
                           <FormControl>
                             <InputLabel id="select-network-label">Select a network</InputLabel>
-                            <Select
+                            <SelectBox
                               labelId="select-network-label"
-                              className={classes.select_box}
                               value={selectedCoinNetwork ?? ''}
                               label="Select a network"
                               onChange={(e) => handleNetworkChange(e as any)}
                             >
                               {selectedCoin.networks.map(network => (
                                 <MenuItem key={network} value={network}>
-                                  <div className={classes.option_outer_ctn}>
-                                    <div className={classes.option_ctn}>
-                                      <span className={classes.coin}>
+                                  <OptionOuterCtn>
+                                    <OptionCtn>
+                                      <Coin>
                                         {network.charAt(0).toUpperCase() + network.slice(1)}
-                                      </span>
-                                    </div>
-                                  </div>
+                                      </Coin>
+                                    </OptionCtn>
+                                  </OptionOuterCtn>
                                 </MenuItem>
                               ))}
-                            </Select>
+                            </SelectBox>
                           </FormControl>
                         }
                       </Fragment>
                     )}
                   </Fragment>
                 )}
-                <div className={classes.spacer} />
+                <Spacer />
                 {loadingPair ||
                 selectedCoin === undefined ||
                 selectedCoinNetwork === undefined ? null : (
@@ -459,17 +485,17 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                     animation={animation}
                   />
                 )}
-                <div className={classes.back_link} onClick={() => {setUseAltpayment(false)}}>Back</div>
+                <BackLink onClick={() => {setUseAltpayment(false)}}>Back</BackLink>
               </Fragment>
             )
             // END: Altpayment region
           }
            {coinPair && !loadingShift && (
-              <div className={classes.back_link} onClick={resetTrade}>Back</div>
+              <BackLink onClick={resetTrade}>Back</BackLink>
             )}
         </Fragment>
       )}
-    </Typography>
+    </SideshiftCtn>
   );
 };
 

@@ -5,7 +5,6 @@ import {
   Typography,
   TextField,
 } from '@mui/material'
-import { makeStyles } from '@mui/styles'
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import copyToClipboard from 'copy-to-clipboard'
 import { QRCodeSVG } from 'qrcode.react'
@@ -110,179 +109,6 @@ interface StyleProps {
   recentlyCopied: boolean
   copied: boolean
 }
-
-const useStyles = makeStyles({
-  root: {
-    minWidth: '240px !important',
-    background: '#f5f5f7 !important',
-    position: 'relative',
-  },
-  qrCode: ({ success, loading, theme }: StyleProps) => ({
-    background: '#fff !important',
-    border: '1px solid #eee !important',
-    borderRadius: '4px !important',
-    outline: 'none !important',
-    lineHeight: '0 !important',
-    maxWidth: '28vh !important',
-    maxHeight: '28vh !important',
-    position: 'relative',
-    padding: '1rem !important',
-    cursor: 'pointer !important',
-    userSelect: 'none',
-    '&:active': {
-      borderWidth: '2px !important',
-      margin: '-1px !important',
-    },
-    '& path': {
-      opacity: loading ? 0 : success ? 0.35 : 1,
-      color: theme.palette.secondary,
-    },
-    '& image': {
-      opacity: loading ? 0 : 1,
-    },
-  }),
-  copyTextContainer: ({ loading }: StyleProps) => ({
-    display: loading ? 'none' : 'block',
-    background: '#ffffffcc !important',
-    padding: '0 0.15rem 0.15rem 0 !important',
-  }),
-  copyText: ({ theme }: StyleProps) => ({
-    lineHeight: '1.2em !important',
-    fontSize: '0.7em !important',
-    color: `${theme.palette.tertiary} !important`,
-    textShadow:
-      '#fff -2px 0 1px, #fff 0 -2px 1px, #fff 0 2px 1px, #fff 2px 0 1px !important',
-    '&:disabled span': {
-      filter: 'blur(2px)',
-      color: 'rgba(0, 0, 0, 0.5)',
-    },
-  }),
-  text: ({ theme }: StyleProps) => ({
-    fontSize: '0.9rem !important',
-    color: `${theme.palette.tertiary} !important`,
-  }),
-  spinner: ({ theme }: StyleProps) => ({
-    color: `${theme.palette.primary} !important`,
-  }),
-  footer: () => ({
-    fontSize: '0.6rem !important',
-    color: '#a8a8a8 !important',
-    fontWeight: 'normal',
-    userSelect: 'none',
-  }),
-  sideShiftLink: ({ theme }: StyleProps) => ({
-    fontSize: '14px',
-    cursor: 'pointer',
-    padding: '6px 12px',
-    marginTop: '20px',
-    background: '#e9e9e9',
-    borderRadius: '5px',
-    transition: 'all ease-in-out 200ms',
-    opacity: 0,
-    '&:hover': {
-      background: `${theme.palette.primary}`,
-      color: `${theme.palette.secondary}`,
-    },
-  }),
-  animate_sideshift: ({ success }: StyleProps) => ({
-    animation: success
-      ? 'button-slide-out 0.4s ease-in-out forwards'
-      : 'button-slide 0.6s ease-in-out forwards',
-    animationDelay: success ? '0' : '0.5s',
-  }),
-  hide_sideshift: {
-    display: 'none',
-  },
-  editAmount: {
-    width: '100%',
-    margin: '12px auto 10px',
-    display: 'flex',
-    alignItems: 'flex-end',
-    '& > div': {
-      width: '100%',
-    },
-    '& span': {
-      marginLeft: '4px',
-      fontSize: '16px',
-    },
-  },
-  error: () => ({
-    fontSize: '0.9rem !important',
-    color: '#EB3B3B !important',
-  }),
-  '@global': {
-    '@keyframes reveal-qr': {
-      from: { clipPath: 'circle(0% at 50% 50%)', transform: 'rotate(-10deg)' },
-      to: { clipPath: 'circle(100% at 50% 50%)', transform: 'rotate(0deg)' },
-    },
-    '@keyframes fade-scale': {
-      from: { opacity: 0, transform: 'scale(0.3)' },
-      '80%': { opacity: 1, transform: 'scale(1.3)' },
-      to: { opacity: 1, transform: 'scale(1)' },
-    },
-    '@keyframes button-slide': {
-      from: { opacity: 0, transform: 'translateY(20px)' },
-      to: { opacity: 1, transform: 'translateY(0px)' },
-    },
-    '@keyframes button-slide-out': {
-      from: { opacity: 1, transform: 'translateY(0px)' },
-      to: { opacity: 0, transform: 'translateY(20px)' },
-    },
-    '@keyframes copy-qr': {
-      '0%': { transform: 'scale(1)' },
-      '50%': { transform: 'scale(1.1)' },
-      '100%': { transform: 'scale(1)' },
-    },
-    '@keyframes copy-svg': {
-      '0%': { opacity: 1 },
-      '50%': { opacity: 0 },
-      '100%': { opacity: 1 },
-    },
-    '@keyframes copy-icon': {
-      '0%': { transform: 'scale(1)' },
-      '50%': { transform: 'scale(0.7)' },
-      '100%': { transform: 'scale(1)' },
-    },
-    '@keyframes success-qr': {
-      '0%': { transform: 'scale(1)' },
-      '50%': { transform: 'scale(0.7)' },
-      '100%': { transform: 'scale(1)' },
-    },
-    '@keyframes success-icon': {
-      '0%': { transform: 'rotate(0deg)' },
-      '20%': { transform: 'rotate(-10deg)' },
-      '60%': { transform: 'rotate(370deg)' },
-      '100%': { transform: 'rotate(360deg)' },
-    },
-  },
-  qrAnimations: ({ success, loading, recentlyCopied, copied }: StyleProps) => ({
-    animation: success
-      ? 'success-qr 0.4s ease-in-out forwards'
-      : recentlyCopied
-      ? 'copy-qr 0.3s ease-in-out forwards'
-      : !loading && !copied
-      ? 'reveal-qr 0.8s ease-in-out forwards'
-      : 'none',
-    '& svg': {
-      animation: recentlyCopied ? 'copy-svg 0.3s ease-in-out forwards' : 'none',
-    },
-    '& image': {
-      animation: success
-        ? 'success-icon 1s ease-in-out forwards'
-        : recentlyCopied
-        ? 'copy-icon 0.3s ease-in-out forwards'
-        : !loading && !copied
-        ? 'fade-scale 0.6s ease-in-out forwards'
-        : 'none',
-      transformOrigin: 'center center',
-    },
-  }),
-  button_container: {
-    opacity: 0,
-    animation: 'button-slide 0.6s ease-in-out forwards',
-    animationDelay: '0.4s',
-  },
-})
 
 export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const {
@@ -422,7 +248,145 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const [isAboveMinimumAltpaymentAmount, setIsAboveMinimumAltpaymentAmount] = useState<boolean | null>(null)
 
   const theme = useTheme(props.theme, isValidXecAddress(to))
-  const classes = useStyles({ success, loading, theme, recentlyCopied, copied })
+
+  // inject keyframes once (replacement for @global in makeStyles)
+  useEffect(() => {
+    const id = 'paybutton-widget-keyframes'
+    if (document.getElementById(id)) return
+    const style = document.createElement('style')
+    style.id = id
+    style.textContent = `
+@keyframes reveal-qr { from { clip-path: circle(0% at 50% 50%); transform: rotate(-10deg); } to { clip-path: circle(100% at 50% 50%); transform: rotate(0deg); } }
+@keyframes fade-scale { from { opacity: 0; transform: scale(0.3); } 80% { opacity: 1; transform: scale(1.3); } to { opacity: 1; transform: scale(1); } }
+@keyframes button-slide { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0px); } }
+@keyframes button-slide-out { from { opacity: 1; transform: translateY(0px); } to { opacity: 0; transform: translateY(20px); } }
+@keyframes copy-qr { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+@keyframes copy-svg { 0% { opacity: 1; } 50% { opacity: 0; } 100% { opacity: 1; } }
+@keyframes copy-icon { 0% { transform: scale(1); } 50% { transform: scale(0.7); } 100% { transform: scale(1); } }
+@keyframes success-qr { 0% { transform: scale(1); } 50% { transform: scale(0.7); } 100% { transform: scale(1); } }
+@keyframes success-icon { 0% { transform: rotate(0deg); } 20% { transform: rotate(-10deg); } 60% { transform: rotate(370deg); } 100% { transform: rotate(360deg); } }
+`
+    document.head.appendChild(style)
+  }, [])
+
+  const classes = useMemo(() => {
+    const base: StyleProps = { success, loading, theme, recentlyCopied, copied }
+    return {
+      root: {
+        minWidth: '240px',
+        background: '#f5f5f7',
+        position: 'relative',
+      },
+      qrCode: {
+        background: '#fff',
+        border: '1px solid #eee',
+        borderRadius: '4px',
+        outline: 'none',
+        lineHeight: 0,
+        maxWidth: '28vh',
+        maxHeight: '28vh',
+        position: 'relative' as const,
+        padding: '1rem',
+        cursor: 'pointer',
+        userSelect: 'none',
+        '&:active': {
+          borderWidth: '2px',
+          margin: '-1px',
+        },
+        '& path': {
+          opacity: base.loading ? 0 : base.success ? 0.35 : 1,
+          color: base.theme.palette.secondary,
+        },
+        '& image': { opacity: base.loading ? 0 : 1 },
+      },
+      copyTextContainer: {
+        display: base.loading ? 'none' : 'block',
+        background: '#ffffffcc',
+        padding: '0 0.15rem 0.15rem 0',
+      },
+      copyText: {
+        lineHeight: '1.2em',
+        fontSize: '0.7em',
+        color: base.theme.palette.tertiary,
+        textShadow:
+          '#fff -2px 0 1px, #fff 0 -2px 1px, #fff 0 2px 1px, #fff 2px 0 1px',
+        '&:disabled span': {
+          filter: 'blur(2px)',
+          color: 'rgba(0, 0, 0, 0.5)',
+        },
+      },
+      text: {
+        fontSize: '0.9rem',
+        color: base.theme.palette.tertiary,
+      },
+      spinner: {
+        color: base.theme.palette.primary,
+      },
+      footer: {
+        fontSize: '0.6rem',
+        color: '#a8a8a8',
+        fontWeight: 'normal',
+        userSelect: 'none',
+      },
+      sideShiftLink: {
+        fontSize: '14px',
+        cursor: 'pointer',
+        padding: '6px 12px',
+        marginTop: '20px',
+        background: '#e9e9e9',
+        borderRadius: '5px',
+        transition: 'all ease-in-out 200ms',
+        opacity: 0,
+        '&:hover': {
+          background: base.theme.palette.primary,
+          color: base.theme.palette.secondary,
+        },
+      },
+      animate_sideshift: {
+        animation: base.success
+          ? 'button-slide-out 0.4s ease-in-out forwards'
+          : 'button-slide 0.6s ease-in-out forwards',
+        animationDelay: base.success ? '0s' : '0.5s',
+      },
+      hide_sideshift: { display: 'none' },
+      editAmount: {
+        width: '100%',
+        margin: '12px auto 10px',
+        display: 'flex',
+        alignItems: 'flex-end',
+        '& > div': { width: '100%' },
+        '& span': { marginLeft: '4px', fontSize: '16px' },
+      },
+      error: { fontSize: '0.9rem', color: '#EB3B3B' },
+      qrAnimations: {
+        animation: base.success
+          ? 'success-qr 0.4s ease-in-out forwards'
+          : base.recentlyCopied
+          ? 'copy-qr 0.3s ease-in-out forwards'
+          : !base.loading && !base.copied
+          ? 'reveal-qr 0.8s ease-in-out forwards'
+          : 'none',
+        '& svg': {
+          animation: base.recentlyCopied ? 'copy-svg 0.3s ease-in-out forwards' : 'none',
+        },
+        '& image': {
+          animation: base.success
+            ? 'success-icon 1s ease-in-out forwards'
+            : base.recentlyCopied
+            ? 'copy-icon 0.3s ease-in-out forwards'
+            : !base.loading && !base.copied
+            ? 'fade-scale 0.6s ease-in-out forwards'
+            : 'none',
+          transformOrigin: 'center center',
+        },
+      },
+      button_container: {
+        opacity: 0,
+        animation: 'button-slide 0.6s ease-in-out forwards',
+        animationDelay: '0.4s',
+      },
+    }
+  }, [success, loading, theme, recentlyCopied, copied])
 
   const [thisAmount, setThisAmount] = useState(props.amount)
   const [hasPrice, setHasPrice] = useState(props.price !== undefined && props.price > 0)
@@ -557,7 +521,9 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
 
   useEffect(() => {
     const invalidAmount = thisAmount !== undefined && thisAmount && isNaN(+thisAmount)
-    const isNegativeNumber = typeof thisAmount === 'string' && thisAmount.startsWith('-')
+    const isNegativeNumber =
+      (typeof thisAmount === 'number' && thisAmount < 0) ||
+      (typeof thisAmount === 'string' && thisAmount.trim().startsWith('-'))
     let cleanAmount: any
     if (invalidAmount) {
       setDisabled(true)
@@ -586,7 +552,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
 
   useEffect(() => {
     if (to === undefined) return
-    let nextUrl
+    let nextUrl: string | undefined
     setThisAddressType(thisAddressType)
     if (thisAddressType === 'XEC' && isCashtabAvailable) {
       setWidgetButtonText('Send with Cashtab')
@@ -695,9 +661,9 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   }, [disabled, to, url, setCopied, setRecentlyCopied])
 
   const resolveUrl = useCallback(
-    (currency: string, amount?: number) => {
+    (currencyCode: string, amount?: number) => {
       if (disabled || !to) return
-      const prefix = CURRENCY_PREFIXES_MAP[currency.toLowerCase() as (typeof CRYPTO_CURRENCIES)[number]]
+      const prefix = CURRENCY_PREFIXES_MAP[currencyCode.toLowerCase() as (typeof CRYPTO_CURRENCIES)[number]]
       if (!prefix) return
       let thisUrl = `${prefix}:${to.replace(/^.*:/, '')}`
       if (amount) {
@@ -709,7 +675,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       }
       return thisUrl
     },
-    [disabled, to, currency, opReturn]
+    [disabled, to, opReturn]
   )
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -730,7 +696,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   }
 
   const qrCode = (
-    <div className={classes.qrAnimations}>
+    <Box sx={classes.qrAnimations}>
       <QRCodeSVG
         size={300}
         level="H"
@@ -744,15 +710,17 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         }}
         style={{ flex: 1, width: '100%', height: 'auto', ...blurCSS }}
       />
-    </div>
+    </Box>
   )
 
   const ButtonEl = ButtonComponent as React.ComponentType<any>
 
+  const mergeSx = (...objs: any[]) => Object.assign({}, ...objs)
+
   return (
     <ThemeProvider value={theme}>
       <Box
-        className={classes.root}
+        sx={classes.root}
         pt={0}
         display="flex"
         flexDirection="column"
@@ -765,7 +733,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
           py={1}
           textAlign="center"
         >
-          <Typography className={errorMsg ? classes.error : classes.text}>
+          <Typography sx={errorMsg ? classes.error : classes.text}>
             {(() => {
               if (errorMsg) return errorMsg
               if (disabled) return 'Not yet ready for payment'
@@ -813,13 +781,13 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
           <Fragment>
             {loading && shouldDisplayGoal ? (
               <Typography
-                className={classes.text}
+                sx={classes.text}
                 style={{ margin: '10px auto 20px' }}
               >
                 <CircularProgress
                   size={15}
                   thickness={4}
-                  className={classes.spinner}
+                  sx={classes.spinner}
                 />
               </Typography>
             ) : (
@@ -827,7 +795,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                 {shouldDisplayGoal ? (
                   <Fragment>
                     <Typography
-                      className={classes.copyText}
+                      sx={classes.copyText}
                       style={{ marginBottom: '0.61rem', ...blurCSS }}
                     >
                       {goalText}
@@ -846,7 +814,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
             <Box
               flex={1}
               position="relative"
-              className={classes.qrCode}
+              sx={classes.qrCode}
               onClick={handleQrCodeClick}
             >
               <Fade in={!loading && url !== ''}>
@@ -855,9 +823,9 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                   {qrCode}
                   <Box position="absolute" bottom={0} right={0}>
                     <Fade appear={false} in={!copied || recentlyCopied} timeout={{ enter: 0, exit: 2000 }}>
-                      <Box className={classes.copyTextContainer}>
+                      <Box sx={classes.copyTextContainer}>
                         {!isPropsTrue(disabled) ? (
-                          <Typography className={classes.copyText}>
+                          <Typography sx={classes.copyText}>
                             {copied ? 'Payment copied!' : 'Click to copy'}
                           </Typography>
                         ) : null}
@@ -881,14 +849,14 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                   <CircularProgress
                     size={70}
                     thickness={4}
-                    className={classes.spinner}
+                    sx={classes.spinner}
                   />
                 </Box>
               ) : null}
             </Box>
 
             {isPropsTrue(editable) ? (
-              <div className={classes.editAmount}>
+              <Box sx={classes.editAmount} component="div">
                 <TextField
                   label="Edit amount"
                   value={thisCurrencyObject?.float || 0}
@@ -900,11 +868,11 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                   disabled={success}
                 />
                 <Typography component="span">{currency}</Typography>
-              </div>
+              </Box>
             ) : null}
 
             {success ? null : (
-              <Box pt={2} flex={1} className={classes.button_container}>
+              <Box pt={2} flex={1} sx={classes.button_container}>
                 {
                   // Use createElement to avoid JSX element-type incompatibility from duplicate React types
                   React.createElement(ButtonEl, {
@@ -922,11 +890,12 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
             {!isPropsTrue(disableAltpayment) ? (
               <Typography
                 component="div"
-                className={`${classes.sideShiftLink} ${
-                  isAboveMinimumAltpaymentAmount || altpaymentEditable
+                sx={mergeSx(
+                  classes.sideShiftLink,
+                  (isAboveMinimumAltpaymentAmount || altpaymentEditable)
                     ? classes.animate_sideshift
                     : classes.hide_sideshift
-                }`}
+                )}
                 onClick={
                   isAboveMinimumAltpaymentAmount || altpaymentEditable
                     ? tradeWithAltpayment
@@ -951,7 +920,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
           ) : null}
 
           <Box py={0.8}>
-            <Typography className={classes.footer}>
+            <Typography sx={classes.footer}>
               Powered by PayButton.org
             </Typography>
           </Box>
@@ -962,4 +931,3 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
 }
 
 export default Widget
-
