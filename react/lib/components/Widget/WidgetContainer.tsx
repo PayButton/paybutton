@@ -51,7 +51,6 @@ export interface WidgetContainerProps
   setNewTxs: Function
   disableSound?: boolean
   transactionText?: string
-  convertedAmount?: number;
   convertedCurrencyObj?: CurrencyObject;
 }
 
@@ -133,8 +132,8 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
       isChild,
       disableSound,
       transactionText,
-      convertedAmount,
       convertedCurrencyObj,
+      setConvertedCurrencyObj,
       ...widgetProps
     } = props;
     const [internalCurrencyObj, setInternalCurrencyObj] = useState<CurrencyObject>();
@@ -340,8 +339,8 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
           disableAltpayment={disableAltpayment}
           contributionOffset={contributionOffset}
           transactionText={transactionText}
-          convertedAmount={convertedAmount}
           convertedCurrencyObj={convertedCurrencyObj}
+          setConvertedCurrencyObj={setConvertedCurrencyObj}
         />
       </React.Fragment>
     );
