@@ -48,7 +48,6 @@ const Container = styled('div', {
   return { fontSize: `${fontSizeMap[$btnSize ?? 'md']} !important` }
 })
 
-// wrapper neutro para quebrar tipagem de ButtonOwnProps sem vazar props estranhas
 const BaseButton = React.forwardRef<HTMLButtonElement, React.ComponentProps<typeof MuiButton>>(
   (props, ref) => <MuiButton ref={ref} {...props} />
 )

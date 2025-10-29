@@ -436,7 +436,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   }, [])
 
   useEffect(() => {
-    ;(async () => {
+    (async () => {
       if (isChild !== true) {
         await setupChronikWebSocket({
           address: to,
