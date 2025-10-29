@@ -155,7 +155,6 @@ export const PayButton = ({
         ? convertedAmount
         : amount
 
-      console.log('Creating payment ID with amount:', amountToUse)
       const responsePaymentId = await createPayment(amountToUse, to, apiBaseUrl)
 
       setPaymentId(responsePaymentId)
@@ -329,7 +328,8 @@ export const PayButton = ({
         amount as number,
         addressType,
         randomSatoshis,
-      ); setCryptoAmount(convertedObj.string);
+      ); 
+      setCryptoAmount(convertedObj.string);
       setConvertedAmount(convertedObj.float);
       setConvertedCurrencyObj(convertedObj);
     } else if (!isFiat(currency) && !randomSatoshis) {
@@ -412,6 +412,7 @@ export const PayButton = ({
         donationAddress={donationAddress}
         donationRate={donationRate}
         convertedCurrencyObj={convertedCurrencyObj}
+        setConvertedCurrencyObj={setConvertedCurrencyObj}
       />
       {errorMsg && (
         <p
