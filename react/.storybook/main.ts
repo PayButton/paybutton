@@ -17,6 +17,36 @@ const config: StorybookConfig = {
   docs: {
     autodocs: "tag",
   },
+  async viteFinal(config, { configType }) {
+    config.define = {
+      ...(config.define || {}),
+      process: {
+        env: {},
+        version: 'v18.0.0',
+      },
+      global: 'globalThis',
+    }
+
+    config.resolve = {
+      ...(config.resolve || {}),
+      alias: {
+        ...(config.resolve?.alias || {}),
+        process: 'process/browser',
+        buffer: 'buffer',
+      },
+    }
+
+    config.optimizeDeps = {
+      ...(config.optimizeDeps || {}),
+      include: [
+        ...(config.optimizeDeps?.include || []),
+        'process',
+        'buffer',
+      ],
+    }
+
+    return config
+  },
 };
 
 export default config;
