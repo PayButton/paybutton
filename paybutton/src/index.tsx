@@ -161,7 +161,7 @@ function renderWidgets(widgetExists: boolean): void {
   }
 }
 
-function findAndRender<T>(className: string, Component: React.ComponentType<any>, allowedProps: string[], requiredProps: string[]) {
+function findAndRender(className: string, Component: React.ComponentType<any>, allowedProps: string[], requiredProps: string[]) {
   Array
     .from(document.getElementsByClassName(className))
     .forEach(el => {
@@ -231,7 +231,7 @@ function findAndRender<T>(className: string, Component: React.ComponentType<any>
     });
 }
 
-const validateJSProps = (props: PayButtonProps) => {
+const validateJSProps = (props: PayButtonProps | WidgetProps) => {
   if (props.amount !== null && props.amount !== undefined) {
     props.amount = +props.amount
 

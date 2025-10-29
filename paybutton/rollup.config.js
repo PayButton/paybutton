@@ -1,10 +1,10 @@
 import alias from '@rollup/plugin-alias';
+import resolve from '@rollup/plugin-node-resolve';
 import commonJS from '@rollup/plugin-commonjs';
 import image from '@rollup/plugin-image';
-import nodePolyfills from 'rollup-plugin-node-polyfills';
 import replace from '@rollup/plugin-replace';
-import resolve from '@rollup/plugin-node-resolve';
 import svg from 'rollup-plugin-svg';
+import inject from '@rollup/plugin-inject';
 import typescript from '@rollup/plugin-typescript';
 import json from "@rollup/plugin-json";
 import dotenv from "rollup-plugin-dotenv";
@@ -20,6 +20,8 @@ export default ( env ) => ({
   output: {
     file: 'dist/paybutton.js',
     name: 'PayButton',
+    exports: 'default',
+    esModule: false,
     format: 'umd',
   },
   plugins: [
@@ -28,10 +30,15 @@ export default ( env ) => ({
     }),
     alias({
       entries: [
-        { find: 'react', replacement: pathResolve(__dirname, 'node_modules/preact/compat/dist/compat.js') },
-        { find: 'react-dom', replacement: pathResolve(__dirname, 'node_modules/preact/compat/dist/compat.js') },
-        { find: '@paybutton/react', replacement: pathResolve(__dirname, '../react/dist/index.js') },
-      ]
+        { find: 'react/jsx-runtime', replacement: 'preact/jsx-runtime' },
+        { find: 'react', replacement: 'preact/compat' },
+        { find: 'react-dom', replacement: 'preact/compat' },
+
+        // minimal polyfill for cipher-base/hash.js Transform
+        { find: 'stream', replacement: 'stream-browserify' },
+
+        { find: '@paybutton/react', replacement: pathResolve(__dirname, '../react/dist/index.modern.mjs') },
+      ],
     }),
     replace({
       'process.env.NODE_ENV': JSON.stringify(env),
@@ -39,20 +46,28 @@ export default ( env ) => ({
     }),
     image(),
     svg(),
-    resolve({ 
-      browser: true, 
-      extensions: [ '.js', '.jsx', '.ts', '.tsx', '.svg' ],
+    resolve({
+      browser: true,
       preferBuiltins: false,
-      mainFields: ['module', 'main']
+      dedupe: ['preact', 'preact/compat', 'preact/jsx-runtime'],
+      extensions: [ '.js', '.jsx', '.ts', '.tsx', '.svg' ],
     }),
     typescript({ compilerOptions: {lib: ["es5", "es6", "dom"], target: "es5"}}),
     commonJS( { extensions: [ '.js', '.jsx' ], transformMixedEsModules: true } ),
-    image(),
-    nodePolyfills(),
+
+    inject({
+      process: 'process',
+      Buffer: ['buffer', 'Buffer'],
+    }),
+
     json(),
     dotenv({
       cwd: "../react"
     }),
-    ],
-    external: ['@types/currency-formatter', 'currency-formatter'],
-  });
+  ],
+  external: [
+    '@types/currency-formatter',
+    'currency-formatter'
+  ],
+});
+

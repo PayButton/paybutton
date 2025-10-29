@@ -55,8 +55,8 @@ export interface PayButtonProps extends ButtonProps {
   autoClose?: boolean | number | string;
   disableAltpayment?:boolean
   contributionOffset?:number
-  size: ButtonSize;
-  sizeScaleAlreadyApplied: boolean;
+  size?: ButtonSize;
+  sizeScaleAlreadyApplied?: boolean;
   donationAddress?: string;
   donationRate?: number;
 }
