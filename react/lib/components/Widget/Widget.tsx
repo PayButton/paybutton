@@ -34,7 +34,6 @@ import {
   setupAltpaymentSocket,
   CryptoCurrency,
 } from '../../util'
-import AltpaymentWidget from './AltpaymentWidget'
 import {
   AltpaymentPair,
   AltpaymentShift,
@@ -43,6 +42,9 @@ import {
   MINIMUM_ALTPAYMENT_DOLLAR_AMOUNT,
   MINIMUM_ALTPAYMENT_CAD_AMOUNT,
 } from '../../altpayment'
+
+import { createPayment } from '../../util/api-client';
+import AltpaymentWidget from './AltpaymentWidget';
 
 export interface WidgetProps {
   to: string
@@ -102,6 +104,9 @@ export interface WidgetProps {
   transactionText?: string;
   convertedCurrencyObj?: CurrencyObject;
   setConvertedCurrencyObj?: Function;
+  setPaymentId?: Function;
+  setFetchingPaymentId?: Function;
+  fetchingPaymentId?: boolean;
 }
 
 interface StyleProps {
@@ -159,6 +164,9 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     isChild,
     convertedCurrencyObj,
     setConvertedCurrencyObj = () => {},
+    setPaymentId,
+    setFetchingPaymentId,
+    fetchingPaymentId,
   } = props;
 
   const [loading, setLoading] = useState(true)
@@ -496,6 +504,45 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       setLoading(false)
     })()
   }, [thisNewTxs, to, apiBaseUrl])
+
+  // Payment ID initialization logic
+  useEffect(() => {
+    if (
+      fetchingPaymentId !== undefined ||
+      paymentId !== undefined
+    ) {
+      return
+    }
+    if (setFetchingPaymentId) {
+      setFetchingPaymentId(true)
+    }
+    const initializePaymentId = async () => {
+      if (paymentId === undefined && !disablePaymentId) {
+        if (to) {
+          try {
+            const responsePaymentId = await createPayment(props.amount || undefined, to, apiBaseUrl);
+            if (setPaymentId) {
+              setPaymentId(responsePaymentId);
+            }
+            if (setFetchingPaymentId) {
+              setFetchingPaymentId(false);
+            }
+          } catch (error) {
+            console.error('Error creating payment ID:', error);
+          }
+        }
+      } else {
+        if (setPaymentId) {
+          setPaymentId(paymentId);
+        }
+        if (setFetchingPaymentId) {
+          setFetchingPaymentId(false);
+        }
+      }
+    };
+
+    initializePaymentId();
+  }, [paymentId, disablePaymentId, props.amount, to, apiBaseUrl, setPaymentId, setFetchingPaymentId, fetchingPaymentId]);
 
   useEffect(() => {
     const invalidAmount = thisAmount !== undefined && thisAmount && isNaN(+thisAmount)
