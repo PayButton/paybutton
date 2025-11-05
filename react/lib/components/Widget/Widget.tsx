@@ -249,13 +249,23 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const [goalPercent, setGoalPercent] = useState(0)
   const [altpaymentEditable, setAltpaymentEditable] = useState<boolean>(false)
 
-  const price = props.price ?? 0
-  const [url, setUrl] = useState('')
-  const [userEditedAmount, setUserEditedAmount] = useState<CurrencyObject>()
-  const [text, setText] = useState(`Send any amount of ${thisAddressType}`)
-  const [widgetButtonText, setWidgetButtonText] = useState('Send Payment')
-  const [opReturn, setOpReturn] = useState<string | undefined>()
-  const [isCashtabAvailable, setIsCashtabAvailable] = useState<boolean>(false)
+  const updateConvertedCurrencyObj = useCallback((convertedObj: CurrencyObject | null) => {
+    setConvertedCurrencyObj(convertedObj);
+    if(setPaymentId){
+      setPaymentId(undefined);
+    }
+    if(setFetchingPaymentId){
+      setFetchingPaymentId(undefined);
+    }
+  }, [setConvertedCurrencyObj, setPaymentId, setFetchingPaymentId]);
+
+  const price = props.price ?? 0;
+  const [url, setUrl] = useState('');
+  const [userEditedAmount, setUserEditedAmount] = useState<CurrencyObject>();
+  const [text, setText] = useState(`Send any amount of ${thisAddressType}`);
+  const [widgetButtonText, setWidgetButtonText] = useState('Send Payment');
+  const [opReturn, setOpReturn] = useState<string | undefined>();
+  const [isCashtabAvailable, setIsCashtabAvailable] = useState<boolean>(false);
 
   const [isAboveMinimumAltpaymentAmount, setIsAboveMinimumAltpaymentAmount] = useState<boolean | null>(null)
 
@@ -505,7 +515,6 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     })()
   }, [thisNewTxs, to, apiBaseUrl])
 
-  // Payment ID initialization logic
   useEffect(() => {
     if (
       fetchingPaymentId !== undefined ||
@@ -520,7 +529,11 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       if (paymentId === undefined && !disablePaymentId) {
         if (to) {
           try {
-            const responsePaymentId = await createPayment(props.amount || undefined, to, apiBaseUrl);
+            const amountToUse =
+                    (isFiat(currency) || randomSatoshis) && convertedCurrencyObj
+                    ? convertedCurrencyObj.float
+                    : props.amount
+            const responsePaymentId = await createPayment(amountToUse || undefined, to, apiBaseUrl);
             if (setPaymentId) {
               setPaymentId(responsePaymentId);
             }
@@ -542,7 +555,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     };
 
     initializePaymentId();
-  }, [paymentId, disablePaymentId, props.amount, to, apiBaseUrl, setPaymentId, setFetchingPaymentId, fetchingPaymentId]);
+  }, [paymentId, disablePaymentId, props.amount, to, apiBaseUrl, setPaymentId, setFetchingPaymentId, fetchingPaymentId, convertedCurrencyObj]);
 
   useEffect(() => {
     const invalidAmount = thisAmount !== undefined && thisAmount && isNaN(+thisAmount)
@@ -603,8 +616,8 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
           randomSatoshis,
         )
         : null;
-      setConvertedCurrencyObj(convertedObj)
-    } else if (thisAmount && thisAddressType) {
+      updateConvertedCurrencyObj(convertedObj)
+    } else if (thisAmount && thisAddressType && isFiat(currency)) {
       cleanAmount = +thisAmount;
 
       const obj = getCurrencyObject(cleanAmount, currency, randomSatoshis);
