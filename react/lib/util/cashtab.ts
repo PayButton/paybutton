@@ -82,23 +82,30 @@ export const sendXecWithCashtab = async (address: string, amount: string | numbe
  * @param fallbackUrl - Optional fallback URL if extension is not available
  */
 export const openCashtabPayment = async (bip21Url: string, fallbackUrl?: string): Promise<void> => {
+  const webUrl = fallbackUrl || `https://cashtab.com/#/send?bip21=${bip21Url}`;
+  
   try {
     const isAvailable = await getCashtabProviderStatus();
     
     if (isAvailable) {
-      cashtab.sendBip21(bip21Url);
+      await cashtab.sendBip21(bip21Url);
     } else {
-      const webUrl = fallbackUrl || `https://cashtab.com/#/send?bip21=${bip21Url}`;
       window.open(webUrl, '_blank');
     }
   } catch (error) {
     if (error instanceof CashtabAddressDeniedError) {
-      // User rejected the transaction - do nothing for now
-      // This case is handled here in case we want to add specific behavior in the future
+      // User rejected the transaction - do nothing
       return;
     }
-    
-    const webUrl = fallbackUrl || `https://cashtab.com/#/send?bip21=${bip21Url}`;
+    if (
+      error instanceof CashtabExtensionUnavailableError ||
+      error instanceof CashtabTimeoutError
+    ) {
+      // Extension not available or timed out: fallback to web
+      window.open(webUrl, '_blank');
+      return;
+    }
+    // Unknown error: still attempt web fallback
     window.open(webUrl, '_blank');
   }
 };
