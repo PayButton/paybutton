@@ -91,6 +91,7 @@ export const openCashtabPayment = async (bip21Url: string, fallbackUrl?: string)
       await cashtab.sendBip21(bip21Url);
     } else {
       window.open(webUrl, '_blank');
+      return;
     }
   } catch (error) {
     if (error instanceof CashtabAddressDeniedError) {
