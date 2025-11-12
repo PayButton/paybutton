@@ -89,6 +89,24 @@ export const getTransactionDetails = async (
   return res.json();
 };
 
+export const createPayment = async (
+  amount: string | number | undefined,
+  address: string,
+  rootUrl = config.apiBaseUrl,
+): Promise<string | undefined> => {
+  const { data, status } = await axios.post(
+    `${rootUrl}/api/payments/paymentId`,
+    { amount, address }
+  );
+  
+  if (status === 200) {
+    return data.paymentId;
+  }
+  throw new Error("Failed to generate payment Id.") // WIP
+
+};
+
+
 export default {
   getAddressDetails,
   getTransactionDetails,

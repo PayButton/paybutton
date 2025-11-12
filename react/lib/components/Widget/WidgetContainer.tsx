@@ -11,7 +11,6 @@ import {
   Currency,
   CurrencyObject,
   Transaction,
-  generatePaymentId,
   getCurrencyTypeFromAddress,
   isCrypto,
   isGreaterThanZero,
@@ -24,7 +23,7 @@ import {
 import Widget, { WidgetProps } from './Widget';
 
 export interface WidgetContainerProps
-  extends Omit<WidgetProps, 'success' | 'setCurrencyObject' | 'shiftCompleted' | 'setShiftCompleted'  > {
+  extends Omit<WidgetProps, 'success' | 'setCurrencyObject' | 'shiftCompleted' | 'setShiftCompleted' | 'setPaymentId' | 'setFetchingPaymentId' | 'fetchingPaymentId'  > {
   active?: boolean;
   amount?: number;
   opReturn?: string;
@@ -51,6 +50,7 @@ export interface WidgetContainerProps
   setNewTxs: Function
   disableSound?: boolean
   transactionText?: string
+  convertedCurrencyObj?: CurrencyObject;
 }
 
 const snackbarOptionsSuccess: OptionsObject = {
@@ -101,7 +101,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
     let {
       to,
       opReturn,
-      disablePaymentId,
+      disablePaymentId = isPropsTrue(props.disablePaymentId),
       paymentId,
       amount,
       setAmount,
@@ -131,6 +131,8 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
       isChild,
       disableSound,
       transactionText,
+      convertedCurrencyObj,
+      setConvertedCurrencyObj,
       ...widgetProps
     } = props;
     const [internalCurrencyObj, setInternalCurrencyObj] = useState<CurrencyObject>();
@@ -140,17 +142,10 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
     const thisNewTxs = setNewTxs ? newTxs : internalNewTxs;
     const thisSetNewTxs = setNewTxs ?? setInternalNewTxs;
 
-    const [thisPaymentId, setThisPaymentId] = useState<string | undefined>();
+    const [thisPaymentId, setThisPaymentId] = useState<string | undefined>(paymentId);
+    const [fetchingPaymentId, setFetchingPaymentId] = useState<boolean | undefined>();
     const [thisPrice, setThisPrice] = useState(0);
     const [usdPrice, setUsdPrice] = useState(0);
-    useEffect(() => {
-      if ((paymentId === undefined || paymentId === '') && !disablePaymentId) {
-        const newPaymentId = generatePaymentId(8);
-        setThisPaymentId(newPaymentId)
-      } else {
-        setThisPaymentId(paymentId)
-      }
-    }, [paymentId, disablePaymentId]);
     const [success, setSuccess] = useState(false);
     const { enqueueSnackbar } = useSnackbar();
 
@@ -316,6 +311,11 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
           disableAltpayment={disableAltpayment}
           contributionOffset={contributionOffset}
           transactionText={transactionText}
+          convertedCurrencyObj={convertedCurrencyObj}
+          setConvertedCurrencyObj={setConvertedCurrencyObj}
+          setPaymentId={setThisPaymentId}
+          setFetchingPaymentId={setFetchingPaymentId}
+          fetchingPaymentId={fetchingPaymentId}
         />
       </React.Fragment>
     );

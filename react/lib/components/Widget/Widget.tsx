@@ -34,7 +34,6 @@ import {
   setupAltpaymentSocket,
   CryptoCurrency,
 } from '../../util'
-import AltpaymentWidget from './AltpaymentWidget'
 import {
   AltpaymentPair,
   AltpaymentShift,
@@ -43,6 +42,9 @@ import {
   MINIMUM_ALTPAYMENT_DOLLAR_AMOUNT,
   MINIMUM_ALTPAYMENT_CAD_AMOUNT,
 } from '../../altpayment'
+
+import { createPayment } from '../../util/api-client';
+import AltpaymentWidget from './AltpaymentWidget';
 
 export interface WidgetProps {
   to: string
@@ -85,21 +87,26 @@ export interface WidgetProps {
   altpaymentSocket?: Socket
   setAltpaymentSocket?: Function
   shiftCompleted?: boolean
-  setShiftCompleted?: Function
-  setCoins?: Function
-  coins?: AltpaymentCoin[]
-  setCoinPair?: Function
-  coinPair?: AltpaymentPair
-  setLoadingPair?: Function
-  loadingPair?: boolean
-  setLoadingShift?: Function
-  loadingShift?: boolean
-  setAltpaymentError?: Function
-  altpaymentError?: AltpaymentError
-  addressType?: Currency
-  setAddressType?: Function
-  newTxText?: string
-  transactionText?: string
+  setShiftCompleted?: Function;
+  setCoins?: Function;
+  coins?: AltpaymentCoin[];
+  setCoinPair?: Function;
+  coinPair?: AltpaymentPair;
+  setLoadingPair?: Function;
+  loadingPair?: boolean;
+  setLoadingShift?: Function;
+  loadingShift?: boolean;
+  setAltpaymentError?: Function;
+  altpaymentError?: AltpaymentError;
+  addressType?: Currency,
+  setAddressType?: Function,
+  newTxText?: string;
+  transactionText?: string;
+  convertedCurrencyObj?: CurrencyObject;
+  setConvertedCurrencyObj?: Function;
+  setPaymentId?: Function;
+  setFetchingPaymentId?: Function;
+  fetchingPaymentId?: boolean;
 }
 
 interface StyleProps {
@@ -155,7 +162,12 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     altpaymentError,
     setAltpaymentError,
     isChild,
-  } = props
+    convertedCurrencyObj,
+    setConvertedCurrencyObj = () => {},
+    setPaymentId,
+    setFetchingPaymentId,
+    fetchingPaymentId,
+  } = props;
 
   const [loading, setLoading] = useState(true)
 
@@ -237,13 +249,23 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const [goalPercent, setGoalPercent] = useState(0)
   const [altpaymentEditable, setAltpaymentEditable] = useState<boolean>(false)
 
-  const price = props.price ?? 0
-  const [url, setUrl] = useState('')
-  const [userEditedAmount, setUserEditedAmount] = useState<CurrencyObject>()
-  const [text, setText] = useState(`Send any amount of ${thisAddressType}`)
-  const [widgetButtonText, setWidgetButtonText] = useState('Send Payment')
-  const [opReturn, setOpReturn] = useState<string | undefined>()
-  const [isCashtabAvailable, setIsCashtabAvailable] = useState<boolean>(false)
+  const updateConvertedCurrencyObj = useCallback((convertedObj: CurrencyObject | null) => {
+    setConvertedCurrencyObj(convertedObj);
+    if(setPaymentId){
+      setPaymentId(undefined);
+    }
+    if(setFetchingPaymentId){
+      setFetchingPaymentId(undefined);
+    }
+  }, [setConvertedCurrencyObj, setPaymentId, setFetchingPaymentId]);
+
+  const price = props.price ?? 0;
+  const [url, setUrl] = useState('');
+  const [userEditedAmount, setUserEditedAmount] = useState<CurrencyObject>();
+  const [text, setText] = useState(`Send any amount of ${thisAddressType}`);
+  const [widgetButtonText, setWidgetButtonText] = useState('Send Payment');
+  const [opReturn, setOpReturn] = useState<string | undefined>();
+  const [isCashtabAvailable, setIsCashtabAvailable] = useState<boolean>(false);
 
   const [isAboveMinimumAltpaymentAmount, setIsAboveMinimumAltpaymentAmount] = useState<boolean | null>(null)
 
@@ -494,6 +516,48 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   }, [thisNewTxs, to, apiBaseUrl])
 
   useEffect(() => {
+    if (
+      fetchingPaymentId !== undefined ||
+      paymentId !== undefined
+    ) {
+      return
+    }
+    if (setFetchingPaymentId) {
+      setFetchingPaymentId(true)
+    }
+    const initializePaymentId = async () => {
+      if (paymentId === undefined && !disablePaymentId) {
+        if (to) {
+          try {
+            const amountToUse =
+                    (isFiat(currency) || randomSatoshis) && convertedCurrencyObj
+                    ? convertedCurrencyObj.float
+                    : props.amount
+            const responsePaymentId = await createPayment(amountToUse || undefined, to, apiBaseUrl);
+            if (setPaymentId) {
+              setPaymentId(responsePaymentId);
+            }
+            if (setFetchingPaymentId) {
+              setFetchingPaymentId(false);
+            }
+          } catch (error) {
+            console.error('Error creating payment ID:', error);
+          }
+        }
+      } else {
+        if (setPaymentId) {
+          setPaymentId(paymentId);
+        }
+        if (setFetchingPaymentId) {
+          setFetchingPaymentId(false);
+        }
+      }
+    };
+
+    initializePaymentId();
+  }, [paymentId, disablePaymentId, props.amount, to, apiBaseUrl, setPaymentId, setFetchingPaymentId, fetchingPaymentId, convertedCurrencyObj]);
+
+  useEffect(() => {
     const invalidAmount = thisAmount !== undefined && thisAmount && isNaN(+thisAmount)
     if (isValidCashAddress(to) || isValidXecAddress(to)) {
       setDisabled(isPropsTrue(props.disabled))
@@ -539,14 +603,28 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       }
     }
     if (userEditedAmount !== undefined && thisAmount && thisAddressType) {
-      const obj = getCurrencyObject(+thisAmount, currency, false)
-      setThisCurrencyObject(obj)
-      if (props.setCurrencyObject) props.setCurrencyObject(obj)
-    } else if (thisAmount && thisAddressType) {
-      cleanAmount = +thisAmount
-      const obj = getCurrencyObject(cleanAmount, currency, randomSatoshis)
-      setThisCurrencyObject(obj)
-      if (props.setCurrencyObject) props.setCurrencyObject(obj)
+      const obj = getCurrencyObject(+thisAmount, currency, false);
+      setThisCurrencyObject(obj);
+      if (props.setCurrencyObject) {
+        props.setCurrencyObject(obj);
+      }
+      const convertedAmount = obj.float / price
+      const convertedObj = price
+        ? getCurrencyObject(
+          convertedAmount,
+          thisAddressType,
+          randomSatoshis,
+        )
+        : null;
+      updateConvertedCurrencyObj(convertedObj)
+    } else if (thisAmount && thisAddressType && isFiat(currency)) {
+      cleanAmount = +thisAmount;
+
+      const obj = getCurrencyObject(cleanAmount, currency, randomSatoshis);
+      setThisCurrencyObject(obj);
+      if (props.setCurrencyObject) {
+        props.setCurrencyObject(obj);
+      }
     }
   }, [thisAmount, currency, userEditedAmount])
 
@@ -559,11 +637,17 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     } else {
       setWidgetButtonText(`Send with ${thisAddressType} wallet`)
     }
+
     if (thisCurrencyObject && hasPrice) {
-      const convertedAmount = thisCurrencyObject.float / price
-      const convertedObj = price
-        ? getCurrencyObject(convertedAmount, thisAddressType, randomSatoshis)
-        : null
+      // Use convertedAmount prop if available, otherwise calculate locally
+      const convertedAmount = convertedCurrencyObj ? convertedCurrencyObj.float : thisCurrencyObject.float / price
+      const convertedObj = convertedCurrencyObj ? convertedCurrencyObj : price
+        ? getCurrencyObject(
+          convertedAmount,
+          thisAddressType,
+          randomSatoshis,
+        )
+        : null;
       if (convertedObj) {
         setText(
           `Send ${thisCurrencyObject.string} ${thisCurrencyObject.currency} = ${convertedObj.string} ${thisAddressType}`,
