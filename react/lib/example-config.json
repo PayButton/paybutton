@@ -15,5 +15,6 @@
       "https://chronik.pay2stay.com/xec2"
     ],
     "bitcoincash": ["https://bch.paybutton.org", "https://chronik.pay2stay.com/bch"]
-  }
+  },
+  "donationAddress":"ecash:qp2v7kemclu7mv5y3h9qprwp0mrevkqt9gprvmm7yl"
 }
