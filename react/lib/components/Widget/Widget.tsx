@@ -376,6 +376,10 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         animationDelay: '0.7s',
         opacity: 0,
       },
+      footerSeparator: {
+        marginLeft: '7px',
+        marginRight: '4px'
+      },
       sideShiftLink: {
         fontSize: '14px',
         cursor: 'pointer',
@@ -1069,10 +1073,11 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
 
           <Box py={0.8}>
             <Typography sx={classes.footer}>
-              <span>Powered by PayButton.org |{' '}</span>
+              <Box>Powered by PayButton.org</Box>
+              <Box sx={classes.footerSeparator}>|</Box>
               {thisAddressType === 'XEC' && thisCurrencyObject?.float && thisCurrencyObject.float > 0 ? (
                 <Tooltip title="Send us some love with a dev donation" arrow placement="top">
-                  <Box>
+                  <Box display="flex" alignItems="center">
                   <IconButton
                     onClick={handleDonationToggle}
                     disabled={success}
@@ -1085,8 +1090,8 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                     <Box
                       component="svg"
                       sx={{
-                        width: '18px',
-                        height: '18px',
+                        width: '13px',
+                        height: '13px',
                         fill: donationEnabled ? '#f44336' : 'none',
                         stroke: donationEnabled ? '#f44336' : '#5c5c5c',
                         strokeWidth: donationEnabled ? 0 : 1.5,
@@ -1114,24 +1119,20 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                           min: 0, 
                           max: 100,
                           step: 1,
-                          style: {
-                            fontSize: '0.75rem',
-                            padding: '4px 8px',
-                          }
                         }}
                         size="small"
                         disabled={success}
                         placeholder="0"
                         sx={{
-                          width: '50px',
+                          width: '30px',
                           '& .MuiOutlinedInput-root': {
-                            height: '26px',
-                            fontSize: '0.75rem',
+                            height: '18px',
                             '& input': {
-                              padding: '4px 8px',
-                              fontSize: '0.75rem',
+                              padding: '0px 2px 0px 4px',
+                              fontSize: '0.6rem',
                               textAlign: 'left',
                               color: '#5c5c5c',
+                              lineHeight: '1.5em',
                             },
                             '& fieldset': {
                               borderWidth: '1px',
@@ -1142,10 +1143,10 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                       <Typography
                         component="span"
                         sx={{
-                          fontSize: '0.75rem',
+                          fontSize: '0.6rem',
                           color: '#5c5c5c',
                           flexShrink: 0,
-                          marginLeft: '5px',
+                          marginLeft: '2px',
                         }}
                       >
                         %
