@@ -403,8 +403,20 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       },
       donationRateContainer: {
         display: 'flex',
+        flexDirection: 'column',
+        gap: '0.5rem',
+      },
+      donationRateLabel: {
+        fontSize: '0.75rem',
+        color: '#000000',
+        opacity: 0.7,
+        marginBottom: '10px',
+        marginTop: '20px',
+        textAlign: 'center'
+      },
+      donationRateInputRow: {
+        display: 'flex',
         alignItems: 'center',
-        justifyContent: 'flex-end',
         gap: '0.5rem',
       },
     }
@@ -1014,57 +1026,74 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
           ) : null}
 
           <Box py={1} px={2} width="100%" sx={classes.donationRateContainer}>
-            <TextField
-              type="number"
-              value={userDonationRate}
-              onChange={(e) => {
-                const value = parseFloat(e.target.value) || 0
-                handleDonationRateChange(value)
-              }}
-              inputProps={{ 
-                min: 0, 
-                max: 100,
-                step: 0.1
-              }}
-              size="small"
-              fullWidth
-              disabled={success}
-              placeholder="Donation %"
-              sx={{
-                opacity: donationEnabled ? 1 : 0.6,
-              }}
-            />
-            <IconButton
-              onClick={handleDonationToggle}
-              disabled={success}
-              sx={{
-                color: donationEnabled ? '#f44336' : theme.palette.tertiary,
-                padding: '8px',
-                '&:hover': {
-                  color: donationEnabled ? '#d32f2f' : '#f44336',
-                },
-              }}
-              aria-label={donationEnabled ? 'Disable donation' : 'Enable donation'}
-            >
-              <Box
-                component="svg"
+            <Typography sx={classes.donationRateLabel}>
+              Send a dev donation?
+            </Typography>
+            <Box sx={classes.donationRateInputRow}>
+              <IconButton
+                onClick={handleDonationToggle}
+                disabled={success}
                 sx={{
-                  width: '24px',
-                  height: '24px',
-                  fill: donationEnabled ? '#f44336' : 'none',
-                  stroke: donationEnabled ? '#f44336' : theme.palette.tertiary,
-                  strokeWidth: donationEnabled ? 0 : 1.5,
-                  transition: 'all 0.2s ease-in-out',
+                  color: donationEnabled ? '#f44336' : '#5c5c5c',
+                  padding: '8px',
+                  flexShrink: 0,
                   '&:hover': {
-                    fill: donationEnabled ? '#d32f2f' : 'rgba(244, 67, 54, 0.1)',
-                    stroke: donationEnabled ? '#d32f2f' : '#f44336',
+                    color: donationEnabled ? '#d32f2f' : '#f44336',
                   },
                 }}
-                viewBox="0 0 24 24"
+                aria-label={donationEnabled ? 'Disable donation' : 'Enable donation'}
               >
-                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-              </Box>
-            </IconButton>
+                <Box
+                  component="svg"
+                  sx={{
+                    width: '24px',
+                    height: '24px',
+                    fill: donationEnabled ? '#f44336' : 'none',
+                    stroke: donationEnabled ? '#f44336' : '#5c5c5c',
+                    strokeWidth: donationEnabled ? 0 : 1.5,
+                    transition: 'all 0.2s ease-in-out',
+                    '&:hover': {
+                      fill: donationEnabled ? '#d32f2f' : 'rgba(244, 67, 54, 0.1)',
+                      stroke: donationEnabled ? '#d32f2f' : '#f44336',
+                    },
+                  }}
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                </Box>
+              </IconButton>
+              <TextField
+                type="number"
+                value={userDonationRate}
+                onChange={(e) => {
+                  const value = parseFloat(e.target.value) || 0
+                  handleDonationRateChange(value)
+                }}
+                inputProps={{ 
+                  min: 0, 
+                  max: 100,
+                  step: 0.1
+                }}
+                size="small"
+                fullWidth
+                disabled={success}
+                placeholder="0"
+                sx={{
+                  opacity: donationEnabled ? 1 : 0.6,
+                }}
+              />
+              <Typography
+                component="span"
+                sx={{
+                  fontSize: '0.875rem',
+                  color: '#5c5c5c',
+                  flexShrink: 0,
+                  opacity: donationEnabled ? 1 : 0.6,
+                }}
+              >
+                %
+              </Typography>
+            </Box>
           </Box>
 
           <Box py={0.8}>
