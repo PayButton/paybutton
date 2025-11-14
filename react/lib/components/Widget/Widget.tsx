@@ -248,7 +248,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const [goalPercent, setGoalPercent] = useState(0)
   const [altpaymentEditable, setAltpaymentEditable] = useState<boolean>(false)
   
-  // Load donation rate from localStorage on mount, falling back to prop/default
+  // Load donation rate from localStorage on mount, defaulting to 0 (off) if not set
   const getInitialDonationRate = useCallback(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
       try {
@@ -260,12 +260,13 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
           }
         }
       } catch (e) {
-        // If localStorage is unavailable or parsing fails, fall back to prop/default
+        // If localStorage is unavailable or parsing fails, default to off
         console.warn('Failed to load donation rate from localStorage:', e)
       }
     }
-    return donationRate
-  }, [donationRate])
+    // Default to 0 (donation off) if no localStorage value
+    return 0
+  }, [])
 
   const initialDonationRate = useMemo(() => getInitialDonationRate(), [getInitialDonationRate])
   const [userDonationRate, setUserDonationRate] = useState<number>(initialDonationRate)
@@ -369,6 +370,12 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         color: '#a8a8a8',
         fontWeight: 'normal',
         userSelect: 'none',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        animation: 'fade-slide-up 0.6s ease-out forwards',
+        animationDelay: '0.7s',
+        opacity: 0,
       },
       sideShiftLink: {
         fontSize: '14px',
@@ -426,15 +433,6 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         opacity: 0,
         animation: 'button-slide 0.6s ease-in-out forwards',
         animationDelay: '0.4s',
-      },
-      donationRateInputRow: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: '15px',
-        animation: 'fade-slide-up 0.6s ease-out forwards',
-        animationDelay: '0.7s',
-        opacity: 0,
       },
     }
   }, [success, loading, theme, recentlyCopied, copied])
@@ -630,7 +628,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
             randomSatoshis,
           )
           convertedAmountToDisplay = convertedAmountWithDonationObj.string
-          setDonationAmount(convertedAmountWithDonationObj.float)
+          setDonationAmount(convertedDonationAmount)
         } else if (!donationEnabled || !userDonationRate || userDonationRate === 0) {
           // Reset donation amount when disabled
           setDonationAmount(null)
@@ -646,11 +644,31 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         thisCurrencyObject?.float !== undefined && thisCurrencyObject.float > 0
       if (!isFiat(currency) && thisCurrencyObject && notZeroValue) {
         const cur: string = thisCurrencyObject.currency
-        setText(`Send ${thisCurrencyObject.string} ${cur}`)
-        nextUrl = resolveUrl(cur, thisCurrencyObject?.float)
+        let amountToDisplay = thisCurrencyObject.string
+        let amountToSend = thisCurrencyObject.float
+        
+        // Add donation amount if enabled
+        if (donationEnabled && userDonationRate && userDonationRate > 0 && cur === 'XEC') {
+          const donationAmountValue = thisCurrencyObject.float * (userDonationRate / 100)
+          const amountWithDonation = thisCurrencyObject.float + donationAmountValue
+          const amountWithDonationObj = getCurrencyObject(
+            amountWithDonation,
+            cur,
+            false,
+          )
+          amountToDisplay = amountWithDonationObj.string
+          amountToSend = amountWithDonationObj.float
+          setDonationAmount(donationAmountValue)
+        } else {
+          setDonationAmount(null)
+        }
+        
+        setText(`Send ${amountToDisplay} ${cur}`)
+        nextUrl = resolveUrl(cur, amountToSend)
       } else {
         setText(`Send any amount of ${thisAddressType}`)
         nextUrl = resolveUrl(thisAddressType)
+        setDonationAmount(null)
       }
       setUrl(nextUrl ?? '')
     }
@@ -687,23 +705,8 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     }
   }, [userDonationRate])
 
-  // Only sync with prop if there's no localStorage value (on first mount)
-  useEffect(() => {
-    if (typeof window !== 'undefined' && window.localStorage) {
-      const stored = localStorage.getItem(DONATION_RATE_STORAGE_KEY)
-      if (stored === null) {
-        // No stored value, use prop/default
-        setUserDonationRate(donationRate)
-        setDonationEnabled(donationRate > 0)
-        setPreviousDonationRate(donationRate > 0 ? donationRate : previousDonationRate)
-      }
-    } else {
-      // localStorage not available, use prop
-      setUserDonationRate(donationRate)
-      setDonationEnabled(donationRate > 0)
-      setPreviousDonationRate(donationRate > 0 ? donationRate : previousDonationRate)
-    }
-  }, [donationRate])
+  // Don't sync with prop - we default to off (0) if no localStorage value
+  // This ensures user preference (stored in localStorage) always takes precedence
 
   const handleDonationToggle = () => {
     if (donationEnabled) {
@@ -1065,97 +1068,94 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
             </Box>
           ) : null}
 
-          {thisAddressType === 'XEC' && thisCurrencyObject?.float && thisCurrencyObject.float > 0 ? (
-            <Tooltip title="Send us some love with a dev donation" arrow placement="top">
-              <Box sx={classes.donationRateInputRow}>
-              <IconButton
-                onClick={handleDonationToggle}
-                disabled={success}
-                sx={{
-                  color: donationEnabled ? '#f44336' : '#5c5c5c',
-                  padding: '6px',
-                  flexShrink: 0,
-                  '&:hover': {
-                    color: donationEnabled ? '#d32f2f' : '#f44336',
-                  },
-                }}
-                aria-label={donationEnabled ? 'Disable donation' : 'Enable donation'}
-              >
-                <Box
-                  component="svg"
-                  sx={{
-                    width: '18px',
-                    height: '18px',
-                    fill: donationEnabled ? '#f44336' : 'none',
-                    stroke: donationEnabled ? '#f44336' : '#5c5c5c',
-                    strokeWidth: donationEnabled ? 0 : 1.5,
-                    transition: 'all 0.2s ease-in-out',
-                    '&:hover': {
-                      fill: donationEnabled ? '#d32f2f' : 'rgba(244, 67, 54, 0.1)',
-                      stroke: donationEnabled ? '#d32f2f' : '#f44336',
-                    },
-                  }}
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                </Box>
-              </IconButton>
-              <TextField
-                type="number"
-                value={userDonationRate}
-                onChange={(e) => {
-                  const value = parseFloat(e.target.value) || 0
-                  handleDonationRateChange(value)
-                }}
-                inputProps={{ 
-                  min: 0, 
-                  max: 100,
-                  step: 0.1,
-                  style: {
-                    fontSize: '0.75rem',
-                    padding: '4px 8px',
-                  }
-                }}
-                size="small"
-                disabled={success}
-                placeholder="0"
-                sx={{
-                  width: '50px',
-                  opacity: donationEnabled ? 1 : 0.6,
-                  '& .MuiOutlinedInput-root': {
-                    height: '26px',
-                    fontSize: '0.75rem',
-                    '& input': {
-                      padding: '4px 8px',
-                      fontSize: '0.75rem',
-                      textAlign: 'left',
-                      color: '#5c5c5c',
-                    },
-                    '& fieldset': {
-                      borderWidth: '1px',
-                    },
-                  },
-                }}
-              />
-              <Typography
-                component="span"
-                sx={{
-                  fontSize: '0.75rem',
-                  color: '#5c5c5c',
-                  flexShrink: 0,
-                  opacity: donationEnabled ? 1 : 0.6,
-                  marginLeft: '5px',
-                }}
-              >
-                %
-              </Typography>
-            </Box>
-            </Tooltip>
-          ) : null}
-
           <Box py={0.8}>
             <Typography sx={classes.footer}>
-              Powered by PayButton.org
+              <span>Powered by PayButton.org |{' '}</span>
+              {thisAddressType === 'XEC' && thisCurrencyObject?.float && thisCurrencyObject.float > 0 ? (
+                <Tooltip title="Send us some love with a dev donation" arrow placement="top">
+                  <Box>
+                  <IconButton
+                    onClick={handleDonationToggle}
+                    disabled={success}
+                    sx={{
+                      padding: '4px',
+                      flexShrink: 0,
+                    }}
+                    aria-label={donationEnabled ? 'Disable donation' : 'Enable donation'}
+                  >
+                    <Box
+                      component="svg"
+                      sx={{
+                        width: '18px',
+                        height: '18px',
+                        fill: donationEnabled ? '#f44336' : 'none',
+                        stroke: donationEnabled ? '#f44336' : '#5c5c5c',
+                        strokeWidth: donationEnabled ? 0 : 1.5,
+                        transition: 'all 0.2s ease-in-out',
+                        '&:hover': {
+                          fill: donationEnabled ? '#d32f2f' : 'rgba(244, 67, 54, 0.1)',
+                          stroke: donationEnabled ? '#d32f2f' : '#f44336',
+                        },
+                      }}
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                    </Box>
+                  </IconButton>
+                  {donationEnabled ? (
+                    <>
+                      <TextField
+                        type="number"
+                        value={userDonationRate}
+                        onChange={(e) => {
+                          const value = parseFloat(e.target.value) || 0
+                          handleDonationRateChange(value)
+                        }}
+                        inputProps={{ 
+                          min: 0, 
+                          max: 100,
+                          step: 1,
+                          style: {
+                            fontSize: '0.75rem',
+                            padding: '4px 8px',
+                          }
+                        }}
+                        size="small"
+                        disabled={success}
+                        placeholder="0"
+                        sx={{
+                          width: '50px',
+                          '& .MuiOutlinedInput-root': {
+                            height: '26px',
+                            fontSize: '0.75rem',
+                            '& input': {
+                              padding: '4px 8px',
+                              fontSize: '0.75rem',
+                              textAlign: 'left',
+                              color: '#5c5c5c',
+                            },
+                            '& fieldset': {
+                              borderWidth: '1px',
+                            },
+                          },
+                        }}
+                      />
+                      <Typography
+                        component="span"
+                        sx={{
+                          fontSize: '0.75rem',
+                          color: '#5c5c5c',
+                          flexShrink: 0,
+                          marginLeft: '5px',
+                        }}
+                      >
+                        %
+                      </Typography>
+                    </>
+                  ) : null}
+                </Box>
+                </Tooltip>
+              ) : null}
             </Typography>
           </Box>
         </Box>
