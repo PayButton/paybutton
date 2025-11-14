@@ -5,6 +5,7 @@ import {
   Typography,
   TextField,
   IconButton,
+  Tooltip,
 } from '@mui/material'
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import copyToClipboard from 'copy-to-clipboard'
@@ -277,6 +278,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
 @keyframes fade-scale { from { opacity: 0; transform: scale(0.3); } 80% { opacity: 1; transform: scale(1.3); } to { opacity: 1; transform: scale(1); } }
 @keyframes button-slide { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0px); } }
 @keyframes button-slide-out { from { opacity: 1; transform: translateY(0px); } to { opacity: 0; transform: translateY(20px); } }
+@keyframes fade-slide-up { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0px); } }
 @keyframes copy-qr { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
 @keyframes copy-svg { 0% { opacity: 1; } 50% { opacity: 0; } 100% { opacity: 1; } }
 @keyframes copy-icon { 0% { transform: scale(1); } 50% { transform: scale(0.7); } 100% { transform: scale(1); } }
@@ -402,23 +404,14 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         animation: 'button-slide 0.6s ease-in-out forwards',
         animationDelay: '0.4s',
       },
-      donationRateContainer: {
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '0.5rem',
-      },
-      donationRateLabel: {
-        fontSize: '0.75rem',
-        color: '#000000',
-        opacity: 0.7,
-        marginBottom: '10px',
-        marginTop: '20px',
-        textAlign: 'center'
-      },
       donationRateInputRow: {
         display: 'flex',
         alignItems: 'center',
-        gap: '0.5rem',
+        justifyContent: 'center',
+        marginTop: '15px',
+        animation: 'fade-slide-up 0.6s ease-out forwards',
+        animationDelay: '0.7s',
+        opacity: 0,
       },
     }
   }, [success, loading, theme, recentlyCopied, copied])
@@ -1026,17 +1019,15 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
             </Box>
           ) : null}
 
-          <Box py={1} px={2} width="100%" sx={classes.donationRateContainer}>
-            <Typography sx={classes.donationRateLabel}>
-              Send a dev donation?
-            </Typography>
-            <Box sx={classes.donationRateInputRow}>
+          {thisAddressType === 'XEC' && thisCurrencyObject?.float && thisCurrencyObject.float > 0 ? (
+            <Tooltip title="Send us some love with a dev donation" arrow placement="top">
+              <Box sx={classes.donationRateInputRow}>
               <IconButton
                 onClick={handleDonationToggle}
                 disabled={success}
                 sx={{
                   color: donationEnabled ? '#f44336' : '#5c5c5c',
-                  padding: '8px',
+                  padding: '6px',
                   flexShrink: 0,
                   '&:hover': {
                     color: donationEnabled ? '#d32f2f' : '#f44336',
@@ -1047,8 +1038,8 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                 <Box
                   component="svg"
                   sx={{
-                    width: '24px',
-                    height: '24px',
+                    width: '18px',
+                    height: '18px',
                     fill: donationEnabled ? '#f44336' : 'none',
                     stroke: donationEnabled ? '#f44336' : '#5c5c5c',
                     strokeWidth: donationEnabled ? 0 : 1.5,
@@ -1073,29 +1064,48 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                 inputProps={{ 
                   min: 0, 
                   max: 100,
-                  step: 0.1
+                  step: 0.1,
+                  style: {
+                    fontSize: '0.75rem',
+                    padding: '4px 8px',
+                  }
                 }}
                 size="small"
-                fullWidth
                 disabled={success}
                 placeholder="0"
                 sx={{
+                  width: '50px',
                   opacity: donationEnabled ? 1 : 0.6,
+                  '& .MuiOutlinedInput-root': {
+                    height: '26px',
+                    fontSize: '0.75rem',
+                    '& input': {
+                      padding: '4px 8px',
+                      fontSize: '0.75rem',
+                      textAlign: 'left',
+                      color: '#5c5c5c',
+                    },
+                    '& fieldset': {
+                      borderWidth: '1px',
+                    },
+                  },
                 }}
               />
               <Typography
                 component="span"
                 sx={{
-                  fontSize: '0.875rem',
+                  fontSize: '0.75rem',
                   color: '#5c5c5c',
                   flexShrink: 0,
                   opacity: donationEnabled ? 1 : 0.6,
+                  marginLeft: '5px',
                 }}
               >
                 %
               </Typography>
             </Box>
-          </Box>
+            </Tooltip>
+          ) : null}
 
           <Box py={0.8}>
             <Typography sx={classes.footer}>
