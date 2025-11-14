@@ -118,6 +118,8 @@ interface StyleProps {
   copied: boolean
 }
 
+const DONATION_RATE_STORAGE_KEY = 'paybutton_donation_rate'
+
 export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const {
     to,
@@ -245,9 +247,30 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const [goalText, setGoalText] = useState('')
   const [goalPercent, setGoalPercent] = useState(0)
   const [altpaymentEditable, setAltpaymentEditable] = useState<boolean>(false)
-  const [userDonationRate, setUserDonationRate] = useState<number>(donationRate)
-  const [donationEnabled, setDonationEnabled] = useState<boolean>(donationRate > 0)
-  const [previousDonationRate, setPreviousDonationRate] = useState<number>(donationRate)
+  
+  // Load donation rate from localStorage on mount, falling back to prop/default
+  const getInitialDonationRate = useCallback(() => {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      try {
+        const stored = localStorage.getItem(DONATION_RATE_STORAGE_KEY)
+        if (stored !== null) {
+          const parsed = parseFloat(stored)
+          if (!isNaN(parsed) && parsed >= 0 && parsed <= 100) {
+            return parsed
+          }
+        }
+      } catch (e) {
+        // If localStorage is unavailable or parsing fails, fall back to prop/default
+        console.warn('Failed to load donation rate from localStorage:', e)
+      }
+    }
+    return donationRate
+  }, [donationRate])
+
+  const initialDonationRate = useMemo(() => getInitialDonationRate(), [getInitialDonationRate])
+  const [userDonationRate, setUserDonationRate] = useState<number>(initialDonationRate)
+  const [donationEnabled, setDonationEnabled] = useState<boolean>(initialDonationRate > 0)
+  const [previousDonationRate, setPreviousDonationRate] = useState<number>(initialDonationRate)
 
   const price = props.price ?? 0
   const [url, setUrl] = useState('')
@@ -653,10 +676,33 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     setThisAmount(props.amount)
   }, [props.amount])
 
+  // Save donation rate to localStorage whenever it changes
   useEffect(() => {
-    setUserDonationRate(donationRate)
-    setDonationEnabled(donationRate > 0)
-    setPreviousDonationRate(donationRate > 0 ? donationRate : previousDonationRate)
+    if (typeof window !== 'undefined' && window.localStorage) {
+      try {
+        localStorage.setItem(DONATION_RATE_STORAGE_KEY, userDonationRate.toString())
+      } catch (e) {
+        console.warn('Failed to save donation rate to localStorage:', e)
+      }
+    }
+  }, [userDonationRate])
+
+  // Only sync with prop if there's no localStorage value (on first mount)
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const stored = localStorage.getItem(DONATION_RATE_STORAGE_KEY)
+      if (stored === null) {
+        // No stored value, use prop/default
+        setUserDonationRate(donationRate)
+        setDonationEnabled(donationRate > 0)
+        setPreviousDonationRate(donationRate > 0 ? donationRate : previousDonationRate)
+      }
+    } else {
+      // localStorage not available, use prop
+      setUserDonationRate(donationRate)
+      setDonationEnabled(donationRate > 0)
+      setPreviousDonationRate(donationRate > 0 ? donationRate : previousDonationRate)
+    }
   }, [donationRate])
 
   const handleDonationToggle = () => {
