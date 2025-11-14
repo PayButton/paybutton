@@ -4,6 +4,7 @@ import {
   Fade,
   Typography,
   TextField,
+  IconButton,
 } from '@mui/material'
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import copyToClipboard from 'copy-to-clipboard'
@@ -242,6 +243,9 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const [goalText, setGoalText] = useState('')
   const [goalPercent, setGoalPercent] = useState(0)
   const [altpaymentEditable, setAltpaymentEditable] = useState<boolean>(false)
+  const [userDonationRate, setUserDonationRate] = useState<number>(donationRate)
+  const [donationEnabled, setDonationEnabled] = useState<boolean>(donationRate > 0)
+  const [previousDonationRate, setPreviousDonationRate] = useState<number>(donationRate)
 
   const price = props.price ?? 0
   const [url, setUrl] = useState('')
@@ -396,6 +400,12 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         opacity: 0,
         animation: 'button-slide 0.6s ease-in-out forwards',
         animationDelay: '0.4s',
+      },
+      donationRateContainer: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+        gap: '0.5rem',
       },
     }
   }, [success, loading, theme, recentlyCopied, copied])
@@ -573,8 +583,8 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       if (convertedObj) {
         let amountToDisplay = thisCurrencyObject.string;
         let convertedAmountToDisplay = convertedObj.string
-        if ( donationRate && donationRate >= 5){
-          const thisDonationAmount = thisCurrencyObject.float * (donationRate / 100)
+        if ( donationEnabled && userDonationRate && userDonationRate > 0){
+          const thisDonationAmount = thisCurrencyObject.float * (userDonationRate / 100)
           const amountWithDonation = thisCurrencyObject.float + thisDonationAmount
           const amountWithDonationObj = getCurrencyObject(
             amountWithDonation,
@@ -583,7 +593,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
           )
           amountToDisplay = amountWithDonationObj.string
 
-          const convertedDonationAmount = convertedObj.float * (donationRate / 100)
+          const convertedDonationAmount = convertedObj.float * (userDonationRate / 100)
           const convertedAmountWithDonation = convertedObj.float + convertedDonationAmount
           const convertedAmountWithDonationObj = getCurrencyObject(
             convertedAmountWithDonation,
@@ -592,6 +602,9 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
           )
           convertedAmountToDisplay = convertedAmountWithDonationObj.string
           setDonationAmount(convertedAmountWithDonationObj.float)
+        } else if (!donationEnabled || !userDonationRate || userDonationRate === 0) {
+          // Reset donation amount when disabled
+          setDonationAmount(null)
         }
         setText(
           `Send ${amountToDisplay} ${thisCurrencyObject.currency} = ${convertedAmountToDisplay} ${thisAddressType}`,
@@ -612,7 +625,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       }
       setUrl(nextUrl ?? '')
     }
-  }, [to, thisCurrencyObject, price, thisAmount, opReturn, hasPrice, isCashtabAvailable])
+  }, [to, thisCurrencyObject, price, thisAmount, opReturn, hasPrice, isCashtabAvailable, userDonationRate, donationAmount, donationEnabled, disabled, donationAddress, currency, randomSatoshis, thisAddressType])
 
   useEffect(() => {
     try {
@@ -633,6 +646,41 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   useEffect(() => {
     setThisAmount(props.amount)
   }, [props.amount])
+
+  useEffect(() => {
+    setUserDonationRate(donationRate)
+    setDonationEnabled(donationRate > 0)
+    setPreviousDonationRate(donationRate > 0 ? donationRate : previousDonationRate)
+  }, [donationRate])
+
+  const handleDonationToggle = () => {
+    if (donationEnabled) {
+      // Turning off - save current rate and set to 0
+      setPreviousDonationRate(userDonationRate)
+      setUserDonationRate(0)
+      setDonationEnabled(false)
+    } else {
+      // Turning on - restore previous rate or use default
+      const rateToRestore = previousDonationRate > 0 ? previousDonationRate : DEFAULT_DONATE_RATE
+      setUserDonationRate(rateToRestore)
+      setDonationEnabled(true)
+    }
+  }
+
+  const handleDonationRateChange = (value: number) => {
+    const clampedValue = Math.max(0, Math.min(100, value))
+    setUserDonationRate(clampedValue)
+    if (clampedValue > 0) {
+      // Auto-enable donation if user enters a value > 0
+      if (!donationEnabled) {
+        setDonationEnabled(true)
+      }
+      setPreviousDonationRate(clampedValue)
+    } else if (clampedValue === 0) {
+      // Auto-disable donation if user enters 0
+      setDonationEnabled(false)
+    }
+  }
 
   let cleanGoalAmount: any
   if (goalAmount) {
@@ -697,12 +745,12 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     let thisUrl = `${prefix}:${to.replace(/^.*:/, '')}`;
 
     if (amount) {
-      if (donationAddress && donationRate && Number(donationRate)) {
+      if (donationAddress && donationEnabled && userDonationRate && Number(userDonationRate)) {
         const network = Object.entries(CURRENCY_PREFIXES_MAP).find(
           ([, value]) => value === prefix
         )?.[0];
         const decimals = network ? DECIMALS[network.toUpperCase()] : undefined;
-        const donationPercent = donationRate / 100
+        const donationPercent = userDonationRate / 100
         const thisDonationAmount = donationAmount ? donationAmount : amount * donationPercent
 
         thisUrl+=`?amount=${amount}`
@@ -721,7 +769,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
 
     return thisUrl;
     },
-    [disabled, to, opReturn]
+    [disabled, to, opReturn, userDonationRate, donationAddress, donationAmount, donationEnabled]
   )
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -964,6 +1012,60 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
               {foot as any}
             </Box>
           ) : null}
+
+          <Box py={1} px={2} width="100%" sx={classes.donationRateContainer}>
+            <TextField
+              type="number"
+              value={userDonationRate}
+              onChange={(e) => {
+                const value = parseFloat(e.target.value) || 0
+                handleDonationRateChange(value)
+              }}
+              inputProps={{ 
+                min: 0, 
+                max: 100,
+                step: 0.1
+              }}
+              size="small"
+              fullWidth
+              disabled={success}
+              placeholder="Donation %"
+              sx={{
+                opacity: donationEnabled ? 1 : 0.6,
+              }}
+            />
+            <IconButton
+              onClick={handleDonationToggle}
+              disabled={success}
+              sx={{
+                color: donationEnabled ? '#f44336' : theme.palette.tertiary,
+                padding: '8px',
+                '&:hover': {
+                  color: donationEnabled ? '#d32f2f' : '#f44336',
+                },
+              }}
+              aria-label={donationEnabled ? 'Disable donation' : 'Enable donation'}
+            >
+              <Box
+                component="svg"
+                sx={{
+                  width: '24px',
+                  height: '24px',
+                  fill: donationEnabled ? '#f44336' : 'none',
+                  stroke: donationEnabled ? '#f44336' : theme.palette.tertiary,
+                  strokeWidth: donationEnabled ? 0 : 1.5,
+                  transition: 'all 0.2s ease-in-out',
+                  '&:hover': {
+                    fill: donationEnabled ? '#d32f2f' : 'rgba(244, 67, 54, 0.1)',
+                    stroke: donationEnabled ? '#d32f2f' : '#f44336',
+                  },
+                }}
+                viewBox="0 0 24 24"
+              >
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+              </Box>
+            </IconButton>
+          </Box>
 
           <Box py={0.8}>
             <Typography sx={classes.footer}>
