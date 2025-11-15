@@ -1118,14 +1118,14 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                         }}
                         inputProps={{ 
                           min: 0, 
-                          max: 100,
+                          max: 99,
                           step: 1,
                         }}
                         size="small"
                         disabled={success}
                         placeholder="0"
                         sx={{
-                          width: '30px',
+                          width: '34px',
                           '& .MuiOutlinedInput-root': {
                             height: '18px',
                             '& input': {
