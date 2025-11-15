@@ -165,7 +165,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     setAltpaymentError,
     isChild,
     donationAddress = config.donationAddress,
-    donationRate: _donationRate = DEFAULT_DONATE_RATE // Unused - we default to 0 (off) if no localStorage value
+    donationRate = DEFAULT_DONATE_RATE,
   } = props
   const [loading, setLoading] = useState(true)
 
@@ -254,7 +254,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         const stored = localStorage.getItem(DONATION_RATE_STORAGE_KEY)
         if (stored !== null) {
           const parsed = parseFloat(stored)
-          if (!isNaN(parsed) && parsed >= 0 && parsed <= 100) {
+          if (!isNaN(parsed) && parsed >= 0 && parsed <= 99) {
             return parsed
           }
         }
@@ -270,7 +270,10 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const initialDonationRate = useMemo(() => getInitialDonationRate(), [getInitialDonationRate])
   const [userDonationRate, setUserDonationRate] = useState<number>(initialDonationRate)
   const [donationEnabled, setDonationEnabled] = useState<boolean>(initialDonationRate > 0)
-  const [previousDonationRate, setPreviousDonationRate] = useState<number>(initialDonationRate)
+  // Initialize previousDonationRate with prop value so it's available when user first enables donation
+  const [previousDonationRate, setPreviousDonationRate] = useState<number>(
+    initialDonationRate > 0 ? initialDonationRate : donationRate
+  )
 
   const price = props.price ?? 0
   const [url, setUrl] = useState('')
@@ -675,7 +678,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       }
       setUrl(nextUrl ?? '')
     }
-  }, [to, thisCurrencyObject, price, thisAmount, opReturn, hasPrice, isCashtabAvailable, userDonationRate, donationAmount, donationEnabled, disabled, donationAddress, currency, randomSatoshis, thisAddressType])
+  }, [to, thisCurrencyObject, price, thisAmount, opReturn, hasPrice, isCashtabAvailable, userDonationRate, donationEnabled, disabled, donationAddress, currency, randomSatoshis, thisAddressType])
 
   useEffect(() => {
     try {
@@ -718,8 +721,8 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       setUserDonationRate(0)
       setDonationEnabled(false)
     } else {
-      // Turning on - restore previous rate or use default
-      const rateToRestore = previousDonationRate > 0 ? previousDonationRate : DEFAULT_DONATE_RATE
+      // Turning on - restore previous rate or use prop/default
+      const rateToRestore = previousDonationRate > 0 ? previousDonationRate : donationRate
       setUserDonationRate(rateToRestore)
       setDonationEnabled(true)
     }
@@ -803,7 +806,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     let thisUrl = `${prefix}:${to.replace(/^.*:/, '')}`;
 
     if (amount) {
-      if (donationAddress && donationEnabled && userDonationRate && Number(userDonationRate)) {
+      if (donationAddress && donationEnabled && userDonationRate) {
         const network = Object.entries(CURRENCY_PREFIXES_MAP).find(
           ([, value]) => value === prefix
         )?.[0];
