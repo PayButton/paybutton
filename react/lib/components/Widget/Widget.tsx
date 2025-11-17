@@ -290,7 +290,6 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const [thisCurrencyObject, setThisCurrencyObject] = useState(props.currencyObject)
 
   const blurCSS = isPropsTrue(disabled) ? { filter: 'blur(5px)' } : {}
-  const [donationAmount, setDonationAmount] = useState<number | null>(null)
   // inject keyframes once (replacement for @global in makeStyles)
   useEffect(() => {
     const id = 'paybutton-widget-keyframes'
@@ -632,10 +631,6 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
             randomSatoshis,
           )
           convertedAmountToDisplay = convertedAmountWithDonationObj.string
-          setDonationAmount(convertedDonationAmount)
-        } else if (!donationEnabled || !userDonationRate || userDonationRate === 0) {
-          // Reset donation amount when disabled
-          setDonationAmount(null)
         }
         setText(
           `Send ${amountToDisplay} ${thisCurrencyObject.currency} = ${convertedAmountToDisplay} ${thisAddressType}`,
@@ -649,7 +644,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       if (!isFiat(currency) && thisCurrencyObject && notZeroValue) {
         const cur: string = thisCurrencyObject.currency
         let amountToDisplay = thisCurrencyObject.string
-        let amountToSend = thisCurrencyObject.float
+        const baseAmount = thisCurrencyObject.float // Base amount without donation
         
         // Add donation amount if enabled
         if (donationEnabled && userDonationRate && userDonationRate > 0 && cur === 'XEC') {
@@ -661,18 +656,14 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
             false,
           )
           amountToDisplay = amountWithDonationObj.string
-          amountToSend = amountWithDonationObj.float
-          setDonationAmount(donationAmountValue)
-        } else {
-          setDonationAmount(null)
         }
         
         setText(`Send ${amountToDisplay} ${cur}`)
-        nextUrl = resolveUrl(cur, amountToSend)
+        // Pass base amount (without donation) to resolveUrl
+        nextUrl = resolveUrl(cur, baseAmount)
       } else {
         setText(`Send any amount of ${thisAddressType}`)
         nextUrl = resolveUrl(thisAddressType)
-        setDonationAmount(null)
       }
       setUrl(nextUrl ?? '')
     }
@@ -804,7 +795,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     let thisUrl = `${prefix}:${to.replace(/^.*:/, '')}`;
 
     if (amount) {
-      if (donationAddress && donationEnabled && userDonationRate) {
+      if (donationAddress && donationEnabled && userDonationRate && userDonationRate > 0) {
         const network = Object.entries(CURRENCY_PREFIXES_MAP).find(
           ([, value]) => value === prefix
         )?.[0];
@@ -828,7 +819,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
 
     return thisUrl;
     },
-    [disabled, to, opReturn, userDonationRate, donationAddress, donationAmount, donationEnabled]
+    [disabled, to, opReturn, userDonationRate, donationAddress, donationEnabled]
   )
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
