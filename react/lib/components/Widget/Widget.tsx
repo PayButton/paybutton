@@ -247,7 +247,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const [goalPercent, setGoalPercent] = useState(0)
   const [altpaymentEditable, setAltpaymentEditable] = useState<boolean>(false)
   
-  // Load donation rate from localStorage on mount, defaulting to 0 (off) if not set
+  // Load donation rate from localStorage on mount
   const getInitialDonationRate = useCallback(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
       try {
@@ -259,11 +259,9 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
           }
         }
       } catch (e) {
-        // If localStorage is unavailable or parsing fails, default to off
         console.warn('Failed to load donation rate from localStorage:', e)
       }
     }
-    // Default to 0 (donation off) if no localStorage value
     return 0
   }, [])
 
