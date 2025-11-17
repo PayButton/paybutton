@@ -15,6 +15,7 @@ import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes'
 import { Button, animation } from '../Button/Button'
 import BarChart from '../BarChart/BarChart'
 import config from '../../paybutton-config.json'
+import { DONATION_RATE_STORAGE_KEY } from '../../util/constants'
 import {
   getAddressBalance,
   Currency,
@@ -117,8 +118,6 @@ interface StyleProps {
   recentlyCopied: boolean
   copied: boolean
 }
-
-const DONATION_RATE_STORAGE_KEY = 'paybutton_donation_rate'
 
 export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const {
