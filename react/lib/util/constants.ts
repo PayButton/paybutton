@@ -21,3 +21,5 @@ export type ButtonSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | "extrasmall" | "smal
 export const DEFAULT_DONATE_RATE = 2;
 
 export const DEFAULT_MINIMUM_DONATE_AMOUNT = 10;
+
+export const DONATION_RATE_STORAGE_KEY = 'paybutton_donation_rate'
