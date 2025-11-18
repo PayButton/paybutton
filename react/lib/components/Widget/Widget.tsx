@@ -613,7 +613,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       if (convertedObj) {
         let amountToDisplay = thisCurrencyObject.string;
         let convertedAmountToDisplay = convertedObj.string
-        if ( donationEnabled && userDonationRate >= DONATION_RATE_FIAT_THRESHOLD){
+        if ( donationEnabled && userDonationRate && userDonationRate > 0){
           const thisDonationAmount = thisCurrencyObject.float * (userDonationRate / 100)
           const amountWithDonation = thisCurrencyObject.float + thisDonationAmount
           const amountWithDonationObj = getCurrencyObject(
