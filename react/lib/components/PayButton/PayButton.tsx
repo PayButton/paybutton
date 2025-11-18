@@ -20,7 +20,7 @@ import {
   setupChronikWebSocket,
   CryptoCurrency,
   ButtonSize,
-  DEFAULT_DONATE_RATE
+  DEFAULT_DONATION_RATE
 } from '../../util';
 import { PaymentDialog } from '../PaymentDialog';
 import { AltpaymentCoin, AltpaymentError, AltpaymentPair, AltpaymentShift } from '../../altpayment';
@@ -91,7 +91,7 @@ export const PayButton = ({
   contributionOffset,
   size = 'md',
   sizeScaleAlreadyApplied = false,
-  donationRate = DEFAULT_DONATE_RATE,
+  donationRate = DEFAULT_DONATION_RATE,
   donationAddress = config.donationAddress
 }: PayButtonProps): React.ReactElement => {
   const [dialogOpen, setDialogOpen] = useState(false);

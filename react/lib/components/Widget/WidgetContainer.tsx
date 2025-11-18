@@ -19,7 +19,7 @@ import {
   resolveNumber,
   shouldTriggerOnSuccess,
   isPropsTrue,
-  DEFAULT_DONATE_RATE,
+  DEFAULT_DONATION_RATE,
 } from '../../util';
 
 import Widget, { WidgetProps } from './Widget';
@@ -145,7 +145,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
     const thisNewTxs = setNewTxs ? newTxs : internalNewTxs;
     const thisSetNewTxs = setNewTxs ?? setInternalNewTxs;
     if (donationRate === undefined){
-      donationRate = DEFAULT_DONATE_RATE
+      donationRate = DEFAULT_DONATION_RATE
     }
     const [thisPaymentId, setThisPaymentId] = useState<string | undefined>();
     const [thisPrice, setThisPrice] = useState(0);

@@ -34,8 +34,9 @@ import {
   setupChronikWebSocket,
   setupAltpaymentSocket,
   CryptoCurrency,
-  DEFAULT_DONATE_RATE,
-  DEFAULT_MINIMUM_DONATE_AMOUNT
+  DEFAULT_DONATION_RATE,
+  DEFAULT_MINIMUM_DONATION_AMOUNT,
+  DONATION_RATE_FIAT_THRESHOLD
 } from '../../util';
 import AltpaymentWidget from './AltpaymentWidget'
 import {
@@ -161,9 +162,9 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     setAltpaymentError,
     isChild,
     donationAddress = config.donationAddress,
-    donationRate = DEFAULT_DONATE_RATE
-  } = props
-  const [loading, setLoading] = useState(true)
+    donationRate = DEFAULT_DONATION_RATE
+  } = props;
+  const [loading, setLoading] = useState(true);
 
   // websockets if standalone
   const [internalTxsSocket, setInternalTxsSocket] = useState<Socket | undefined>(undefined)
@@ -573,7 +574,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       if (convertedObj) {
         let amountToDisplay = thisCurrencyObject.string;
         let convertedAmountToDisplay = convertedObj.string
-        if ( donationRate && donationRate >= 5){
+        if ( donationRate && donationRate >= DONATION_RATE_FIAT_THRESHOLD){
           const thisDonationAmount = thisCurrencyObject.float * (donationRate / 100)
           const amountWithDonation = thisCurrencyObject.float + thisDonationAmount
           const amountWithDonationObj = getCurrencyObject(
@@ -704,9 +705,9 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         const decimals = network ? DECIMALS[network.toUpperCase()] : undefined;
         const donationPercent = donationRate / 100
         const thisDonationAmount = donationAmount ? donationAmount : amount * donationPercent
-
+        const minimumDonationAmount = network ? DEFAULT_MINIMUM_DONATION_AMOUNT[network.toUpperCase()] : 0;
         thisUrl+=`?amount=${amount}`
-        if(thisDonationAmount > DEFAULT_MINIMUM_DONATE_AMOUNT){
+        if(thisDonationAmount > minimumDonationAmount){
           thisUrl += `&addr=${donationAddress}&amount=${thisDonationAmount.toFixed(decimals)}`;
         }
       }else{
