@@ -1066,87 +1066,90 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
           <Box py={0.8}>
             <Typography sx={classes.footer}>
               <Box>Powered by PayButton.org</Box>
-              <Box sx={classes.footerSeparator}>|</Box>
-              {thisAddressType === 'XEC' && thisCurrencyObject?.float && thisCurrencyObject.float > 0 ? (
-                <Tooltip title="Send us some love with a dev donation" arrow placement="top">
-                  <Box display="flex" alignItems="center">
-                  <IconButton
-                    onClick={handleDonationToggle}
-                    disabled={success}
-                    sx={{
-                      padding: '4px',
-                      flexShrink: 0,
-                    }}
-                    aria-label={donationEnabled ? 'Disable donation' : 'Enable donation'}
-                  >
-                    <Box
-                      component="svg"
+              
+              {thisAddressType === 'XEC' && thisCurrencyObject?.float && thisCurrencyObject.float > 0 && thisCurrencyObject.float >= 1000 ? (
+                <>
+                <Box sx={classes.footerSeparator}>|</Box>
+                  <Tooltip title="Send us some love with a dev donation" arrow placement="top">
+                    <Box display="flex" alignItems="center">
+                    <IconButton
+                      onClick={handleDonationToggle}
+                      disabled={success}
                       sx={{
-                        width: '13px',
-                        height: '13px',
-                        fill: donationEnabled ? '#f44336' : 'none',
-                        stroke: donationEnabled ? '#f44336' : '#5c5c5c',
-                        strokeWidth: donationEnabled ? 0 : 1.5,
-                        transition: 'all 0.2s ease-in-out',
-                        '&:hover': {
-                          fill: donationEnabled ? '#d32f2f' : 'rgba(244, 67, 54, 0.1)',
-                          stroke: donationEnabled ? '#d32f2f' : '#f44336',
-                        },
+                        padding: '4px',
+                        flexShrink: 0,
                       }}
-                      viewBox="0 0 24 24"
+                      aria-label={donationEnabled ? 'Disable donation' : 'Enable donation'}
                     >
-                      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                    </Box>
-                  </IconButton>
-                  {donationEnabled ? (
-                    <>
-                      <TextField
-                        type="number"
-                        value={userDonationRate}
-                        onChange={(e) => {
-                          const value = parseFloat(e.target.value) || 0
-                          handleDonationRateChange(value)
-                        }}
-                        inputProps={{ 
-                          min: 0, 
-                          max: 99,
-                          step: 1,
-                        }}
-                        size="small"
-                        disabled={success}
-                        placeholder="0"
+                      <Box
+                        component="svg"
                         sx={{
-                          width: '34px',
-                          '& .MuiOutlinedInput-root': {
-                            height: '18px',
-                            '& input': {
-                              padding: '0px 2px 0px 4px',
-                              fontSize: '0.6rem',
-                              textAlign: 'left',
-                              color: '#5c5c5c',
-                              lineHeight: '1.5em',
-                            },
-                            '& fieldset': {
-                              borderWidth: '1px',
-                            },
+                          width: '13px',
+                          height: '13px',
+                          fill: donationEnabled ? '#f44336' : 'none',
+                          stroke: donationEnabled ? '#f44336' : '#5c5c5c',
+                          strokeWidth: donationEnabled ? 0 : 1.5,
+                          transition: 'all 0.2s ease-in-out',
+                          '&:hover': {
+                            fill: donationEnabled ? '#d32f2f' : 'rgba(244, 67, 54, 0.1)',
+                            stroke: donationEnabled ? '#d32f2f' : '#f44336',
                           },
                         }}
-                      />
-                      <Typography
-                        component="span"
-                        sx={{
-                          fontSize: '0.6rem',
-                          color: '#5c5c5c',
-                          flexShrink: 0,
-                          marginLeft: '2px',
-                        }}
+                        viewBox="0 0 24 24"
                       >
-                        %
-                      </Typography>
-                    </>
-                  ) : null}
-                </Box>
-                </Tooltip>
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                      </Box>
+                    </IconButton>
+                    {donationEnabled ? (
+                      <>
+                        <TextField
+                          type="number"
+                          value={userDonationRate}
+                          onChange={(e) => {
+                            const value = parseFloat(e.target.value) || 0
+                            handleDonationRateChange(value)
+                          }}
+                          inputProps={{ 
+                            min: 0, 
+                            max: 99,
+                            step: 1,
+                          }}
+                          size="small"
+                          disabled={success}
+                          placeholder="0"
+                          sx={{
+                            width: '34px',
+                            '& .MuiOutlinedInput-root': {
+                              height: '18px',
+                              '& input': {
+                                padding: '0px 2px 0px 4px',
+                                fontSize: '0.6rem',
+                                textAlign: 'left',
+                                color: '#5c5c5c',
+                                lineHeight: '1.5em',
+                              },
+                              '& fieldset': {
+                                borderWidth: '1px',
+                              },
+                            },
+                          }}
+                        />
+                        <Typography
+                          component="span"
+                          sx={{
+                            fontSize: '0.6rem',
+                            color: '#5c5c5c',
+                            flexShrink: 0,
+                            marginLeft: '2px',
+                          }}
+                        >
+                          %
+                        </Typography>
+                      </>
+                    ) : null}
+                  </Box>
+                  </Tooltip>
+                </>
               ) : null}
             </Typography>
           </Box>
