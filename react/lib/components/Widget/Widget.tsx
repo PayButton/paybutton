@@ -165,9 +165,9 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     setAltpaymentError,
     isChild,
     donationAddress = config.donationAddress,
-    donationRate = DEFAULT_DONATION_RATE,
-  } = props
-  const [loading, setLoading] = useState(true)
+    donationRate = DEFAULT_DONATION_RATE
+  } = props;
+  const [loading, setLoading] = useState(true);
 
   // websockets if standalone
   const [internalTxsSocket, setInternalTxsSocket] = useState<Socket | undefined>(undefined)
