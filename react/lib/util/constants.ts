@@ -20,8 +20,6 @@ export type ButtonSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | "extrasmall" | "smal
 
 export const DEFAULT_DONATION_RATE = 2;
 
-export const DEFAULT_MINIMUM_DONATE_AMOUNT = 10;
-
 export const DONATION_RATE_STORAGE_KEY = 'paybutton_donation_rate'
 export const DONATION_RATE_FIAT_THRESHOLD = 5;
 
@@ -30,5 +28,3 @@ export const DEFAULT_MINIMUM_DONATION_AMOUNT: { [key: string]: number } = {
     BCH: 0.00001000,
     XEC: 10,
 };
-
-export const DONATION_RATE_STORAGE_KEY = 'paybutton_donation_rate'
