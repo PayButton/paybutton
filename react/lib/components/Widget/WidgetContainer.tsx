@@ -19,6 +19,7 @@ import {
   resolveNumber,
   shouldTriggerOnSuccess,
   isPropsTrue,
+  DEFAULT_DONATION_RATE,
 } from '../../util';
 
 import Widget, { WidgetProps } from './Widget';
@@ -51,6 +52,8 @@ export interface WidgetContainerProps
   setNewTxs: Function
   disableSound?: boolean
   transactionText?: string
+  donationAddress?: string
+  donationRate?: number
 }
 
 const snackbarOptionsSuccess: OptionsObject = {
@@ -131,6 +134,8 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
       isChild,
       disableSound,
       transactionText,
+      donationAddress,
+      donationRate,
       ...widgetProps
     } = props;
     const [internalCurrencyObj, setInternalCurrencyObj] = useState<CurrencyObject>();
@@ -139,7 +144,9 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
     const [internalNewTxs, setInternalNewTxs] = useState<Transaction[] | undefined>();
     const thisNewTxs = setNewTxs ? newTxs : internalNewTxs;
     const thisSetNewTxs = setNewTxs ?? setInternalNewTxs;
-
+    if (donationRate === undefined){
+      donationRate = DEFAULT_DONATION_RATE
+    }
     const [thisPaymentId, setThisPaymentId] = useState<string | undefined>();
     const [thisPrice, setThisPrice] = useState(0);
     const [usdPrice, setUsdPrice] = useState(0);
@@ -238,7 +245,8 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
         altpaymentShift,
         thisPrice,
         currencyObj,
-        randomSatoshis
+        randomSatoshis,
+        donationRate
       ],
     );
 
@@ -316,6 +324,8 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
           disableAltpayment={disableAltpayment}
           contributionOffset={contributionOffset}
           transactionText={transactionText}
+          donationAddress={donationAddress}
+          donationRate={donationRate}
         />
       </React.Fragment>
     );

@@ -33,6 +33,8 @@
   - [auto-close](/?id=auto-close)
   - [disable-sound](/?id=disable-sound)
   - [size](/?id=size)
+  - [donation-rate](/?id=donation-rate)
+
 - [Contribute](/?id=contribute)
   - [Developer Quick Start](/?id=developer-quick-start)
     - [Getting Started](/?id=getting-started)

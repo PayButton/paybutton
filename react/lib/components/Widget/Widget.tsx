@@ -12,6 +12,7 @@ import { Socket } from 'socket.io-client'
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes'
 import { Button, animation } from '../Button/Button'
 import BarChart from '../BarChart/BarChart'
+import config from '../../paybutton-config.json'
 import {
   getAddressBalance,
   Currency,
@@ -33,7 +34,10 @@ import {
   setupChronikWebSocket,
   setupAltpaymentSocket,
   CryptoCurrency,
-} from '../../util'
+  DEFAULT_DONATION_RATE,
+  DEFAULT_MINIMUM_DONATION_AMOUNT,
+  DONATION_RATE_FIAT_THRESHOLD
+} from '../../util';
 import AltpaymentWidget from './AltpaymentWidget'
 import {
   AltpaymentPair,
@@ -100,6 +104,8 @@ export interface WidgetProps {
   setAddressType?: Function
   newTxText?: string
   transactionText?: string
+  donationAddress?: string
+  donationRate?: number
 }
 
 interface StyleProps {
@@ -155,9 +161,10 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     altpaymentError,
     setAltpaymentError,
     isChild,
-  } = props
-
-  const [loading, setLoading] = useState(true)
+    donationAddress = config.donationAddress,
+    donationRate = DEFAULT_DONATION_RATE
+  } = props;
+  const [loading, setLoading] = useState(true);
 
   // websockets if standalone
   const [internalTxsSocket, setInternalTxsSocket] = useState<Socket | undefined>(undefined)
@@ -249,6 +256,12 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
 
   const theme = useTheme(props.theme, isValidXecAddress(to))
 
+  const [thisAmount, setThisAmount] = useState(props.amount)
+  const [hasPrice, setHasPrice] = useState(props.price !== undefined && props.price > 0)
+  const [thisCurrencyObject, setThisCurrencyObject] = useState(props.currencyObject)
+
+  const blurCSS = isPropsTrue(disabled) ? { filter: 'blur(5px)' } : {}
+  const [donationAmount, setDonationAmount] = useState<number | null>(null)
   // inject keyframes once (replacement for @global in makeStyles)
   useEffect(() => {
     const id = 'paybutton-widget-keyframes'
@@ -387,12 +400,6 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       },
     }
   }, [success, loading, theme, recentlyCopied, copied])
-
-  const [thisAmount, setThisAmount] = useState(props.amount)
-  const [hasPrice, setHasPrice] = useState(props.price !== undefined && props.price > 0)
-  const [thisCurrencyObject, setThisCurrencyObject] = useState(props.currencyObject)
-
-  const blurCSS = isPropsTrue(disabled) ? { filter: 'blur(5px)' } : {}
 
   const bchSvg = useMemo((): string => {
     const color = theme.palette.logo ?? theme.palette.primary
@@ -565,11 +572,33 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         ? getCurrencyObject(convertedAmount, thisAddressType, randomSatoshis)
         : null
       if (convertedObj) {
+        let amountToDisplay = thisCurrencyObject.string;
+        let convertedAmountToDisplay = convertedObj.string
+        if ( donationRate && donationRate >= DONATION_RATE_FIAT_THRESHOLD){
+          const thisDonationAmount = thisCurrencyObject.float * (donationRate / 100)
+          const amountWithDonation = thisCurrencyObject.float + thisDonationAmount
+          const amountWithDonationObj = getCurrencyObject(
+            amountWithDonation,
+            currency,
+            false,
+          )
+          amountToDisplay = amountWithDonationObj.string
+
+          const convertedDonationAmount = convertedObj.float * (donationRate / 100)
+          const convertedAmountWithDonation = convertedObj.float + convertedDonationAmount
+          const convertedAmountWithDonationObj = getCurrencyObject(
+            convertedAmountWithDonation,
+            thisAddressType,
+            randomSatoshis,
+          )
+          convertedAmountToDisplay = convertedAmountWithDonationObj.string
+          setDonationAmount(convertedAmountWithDonationObj.float)
+        }
         setText(
-          `Send ${thisCurrencyObject.string} ${thisCurrencyObject.currency} = ${convertedObj.string} ${thisAddressType}`,
+          `Send ${amountToDisplay} ${thisCurrencyObject.currency} = ${convertedAmountToDisplay} ${thisAddressType}`,
         )
-        nextUrl = resolveUrl(thisAddressType, convertedObj.float)
-        setUrl(nextUrl ?? '')
+        const url = resolveUrl(thisAddressType, convertedObj.float)
+        setUrl(url ?? "")
       }
     } else {
       const notZeroValue =
@@ -660,20 +689,38 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     setRecentlyCopied(true)
   }, [disabled, to, url, setCopied, setRecentlyCopied])
 
-  const resolveUrl = useCallback(
-    (currencyCode: string, amount?: number) => {
-      if (disabled || !to) return
-      const prefix = CURRENCY_PREFIXES_MAP[currencyCode.toLowerCase() as (typeof CRYPTO_CURRENCIES)[number]]
-      if (!prefix) return
-      let thisUrl = `${prefix}:${to.replace(/^.*:/, '')}`
-      if (amount) {
+  const resolveUrl = useCallback((currency: string, amount?: number) => {
+    if (disabled || !to) return;
+
+    const prefix = CURRENCY_PREFIXES_MAP[currency.toLowerCase() as typeof CRYPTO_CURRENCIES[number]];
+    if (!prefix) return;
+
+    let thisUrl = `${prefix}:${to.replace(/^.*:/, '')}`;
+
+    if (amount) {
+      if (donationAddress && donationRate && Number(donationRate)) {
+        const network = Object.entries(CURRENCY_PREFIXES_MAP).find(
+          ([, value]) => value === prefix
+        )?.[0];
+        const decimals = network ? DECIMALS[network.toUpperCase()] : undefined;
+        const donationPercent = donationRate / 100
+        const thisDonationAmount = donationAmount ? donationAmount : amount * donationPercent
+        const minimumDonationAmount = network ? DEFAULT_MINIMUM_DONATION_AMOUNT[network.toUpperCase()] : 0;
+        thisUrl += `?amount=${amount}`
+        if(thisDonationAmount > minimumDonationAmount){
+          thisUrl += `&addr=${donationAddress}&amount=${thisDonationAmount.toFixed(decimals)}`;
+        }
+      }else{
         thisUrl += `?amount=${amount}`
       }
-      if (opReturn) {
-        const separator = thisUrl.includes('?') ? '&' : '?'
-        thisUrl += `${separator}op_return_raw=${opReturn}`
-      }
-      return thisUrl
+    }
+
+    if (opReturn) {
+      const separator = thisUrl.includes('?') ? '&' : '?';
+      thisUrl += `${separator}op_return_raw=${opReturn}`;
+    }
+
+    return thisUrl;
     },
     [disabled, to, opReturn]
   )

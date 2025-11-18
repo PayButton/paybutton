@@ -1093,6 +1093,35 @@ disableSound: false
 disableSound = false
 ```
 <!-- tabs:end -->
+## donation-rate
+
+> **「donationRate」參數用於設定將捐贈到捐贈地址的金額。**
+
+?> donationRate 參數是可選的，接受的值為 0 到 100 之間的整數。預設值為 2。
+
+
+**Example:**
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+donation-rate="10"
+```
+
+#### ** JavaScript **
+
+```javascript
+donationRate: 10
+```
+
+#### ** React **
+
+```react
+donationRate = 10
+```
+<!-- tabs:end -->
+
 
 # 貢獻
 

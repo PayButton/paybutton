@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
 import Button, { ButtonProps } from '../Button/Button';
 import { Socket } from 'socket.io-client';
-
+import config from '../../paybutton-config.json'
 import {
   Transaction,
   Currency,
@@ -19,7 +19,8 @@ import {
   setupAltpaymentSocket,
   setupChronikWebSocket,
   CryptoCurrency,
-  ButtonSize
+  ButtonSize,
+  DEFAULT_DONATION_RATE
 } from '../../util';
 import { PaymentDialog } from '../PaymentDialog';
 import { AltpaymentCoin, AltpaymentError, AltpaymentPair, AltpaymentShift } from '../../altpayment';
@@ -56,6 +57,8 @@ export interface PayButtonProps extends ButtonProps {
   contributionOffset?:number
   size?: ButtonSize;
   sizeScaleAlreadyApplied?: boolean;
+  donationAddress?: string;
+  donationRate?: number;
 }
 
 export const PayButton = ({
@@ -88,6 +91,8 @@ export const PayButton = ({
   contributionOffset,
   size = 'md',
   sizeScaleAlreadyApplied = false,
+  donationRate = DEFAULT_DONATION_RATE,
+  donationAddress = config.donationAddress
 }: PayButtonProps): React.ReactElement => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [disabled, setDisabled] = useState(false);
@@ -109,7 +114,6 @@ export const PayButton = ({
   const [newTxs, setNewTxs] = useState<Transaction[] | undefined>();
   const priceRef = useRef<number>(price);
   const cryptoAmountRef = useRef<string | undefined>(cryptoAmount);
-
 
 
   const [paymentId] = useState(!disablePaymentId ? generatePaymentId(8) : undefined);
@@ -204,6 +208,7 @@ export const PayButton = ({
           expectedOpReturn: opReturn,
           expectedPaymentId: paymentId,
           currencyObj,
+          donationRate
         }
       })
     }
@@ -347,6 +352,8 @@ export const PayButton = ({
         newTxs={newTxs}
         disableSound={disableSound}
         transactionText={transactionText}
+        donationAddress={donationAddress}
+        donationRate={donationRate}
       />
       {errorMsg && (
         <p

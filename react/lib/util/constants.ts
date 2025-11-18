@@ -17,3 +17,13 @@ export const CURRENCY_PREFIXES_MAP: Record<typeof CRYPTO_CURRENCIES[number], str
 };
 
 export type ButtonSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | "extrasmall" | "small" | "medium" | "large" | "extralarge" | undefined;
+
+export const DEFAULT_DONATION_RATE = 2;
+
+export const DONATION_RATE_FIAT_THRESHOLD = 5;
+
+
+export const DEFAULT_MINIMUM_DONATION_AMOUNT: { [key: string]: number } = {
+    BCH: 0.00001000,
+    XEC: 10,
+};
