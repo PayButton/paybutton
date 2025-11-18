@@ -247,7 +247,29 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const [goalPercent, setGoalPercent] = useState(0)
   const [altpaymentEditable, setAltpaymentEditable] = useState<boolean>(false)
   
+  const price = props.price ?? 0
+  const [hasPrice, setHasPrice] = useState(props.price !== undefined && props.price > 0)
+  
+  // Determine if we're in a fiat context (fiat currency or fiat conversion)
+  // This needs to be calculated early for initialization
+  const isFiatContext = useMemo(() => {
+    return hasPrice || isFiat(currency)
+  }, [hasPrice, currency])
+
+  // Calculate minimum donation rate based on context
+  // Fiat requires 5% minimum, crypto allows 1% minimum
+  const minDonationRate = useMemo(() => {
+    return isFiatContext ? DONATION_RATE_FIAT_THRESHOLD : 1
+  }, [isFiatContext])
+
+  // Calculate default donation rate based on context
+  // Fiat defaults to 5%, crypto defaults to prop/default (2%)
+  const defaultDonationRate = useMemo(() => {
+    return isFiatContext ? DONATION_RATE_FIAT_THRESHOLD : donationRate
+  }, [isFiatContext, donationRate])
+  
   // Load donation rate from localStorage on mount
+  // If stored rate is below minimum for current context, disable donations
   const getInitialDonationRate = useCallback(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
       try {
@@ -255,6 +277,10 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         if (stored !== null) {
           const parsed = parseFloat(stored)
           if (!isNaN(parsed) && parsed >= 0 && parsed <= 99) {
+            // If stored rate is below minimum for current context, return 0 to disable
+            if (parsed > 0 && parsed < minDonationRate) {
+              return 0
+            }
             return parsed
           }
         }
@@ -263,17 +289,15 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       }
     }
     return 0
-  }, [])
+  }, [minDonationRate])
 
   const initialDonationRate = useMemo(() => getInitialDonationRate(), [getInitialDonationRate])
   const [userDonationRate, setUserDonationRate] = useState<number>(initialDonationRate)
   const [donationEnabled, setDonationEnabled] = useState<boolean>(initialDonationRate > 0)
   // Initialize previousDonationRate with prop value so it's available when user first enables donation
   const [previousDonationRate, setPreviousDonationRate] = useState<number>(
-    initialDonationRate > 0 ? initialDonationRate : donationRate
+    initialDonationRate > 0 ? initialDonationRate : defaultDonationRate
   )
-
-  const price = props.price ?? 0
   const [url, setUrl] = useState('')
   const [userEditedAmount, setUserEditedAmount] = useState<CurrencyObject>()
   const [text, setText] = useState(`Send any amount of ${thisAddressType}`)
@@ -286,7 +310,6 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const theme = useTheme(props.theme, isValidXecAddress(to))
 
   const [thisAmount, setThisAmount] = useState(props.amount)
-  const [hasPrice, setHasPrice] = useState(props.price !== undefined && props.price > 0)
   const [thisCurrencyObject, setThisCurrencyObject] = useState(props.currencyObject)
 
   const blurCSS = isPropsTrue(disabled) ? { filter: 'blur(5px)' } : {}
@@ -710,18 +733,22 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       setUserDonationRate(0)
       setDonationEnabled(false)
     } else {
-      // Turning on - restore previous rate or use prop/default
-      const rateToRestore = previousDonationRate > 0 ? previousDonationRate : donationRate
+      // Turning on - restore previous rate or use context-appropriate default
+      // If previous rate is below minimum for current context, use default
+      const rateToRestore = previousDonationRate > 0 && previousDonationRate >= minDonationRate
+        ? previousDonationRate
+        : defaultDonationRate
       setUserDonationRate(rateToRestore)
       setDonationEnabled(true)
     }
   }
 
   const handleDonationRateChange = (value: number) => {
-    const clampedValue = Math.max(0, Math.min(99, value))
+    // Enforce minimum based on context (5% for fiat, 1% for crypto)
+    const clampedValue = Math.max(minDonationRate, Math.min(99, value))
     setUserDonationRate(clampedValue)
-    if (clampedValue > 0) {
-      // Auto-enable donation if user enters a value > 0
+    if (clampedValue >= minDonationRate) {
+      // Auto-enable donation if user enters a value >= minimum
       if (!donationEnabled) {
         setDonationEnabled(true)
       }
@@ -1112,7 +1139,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                             handleDonationRateChange(value)
                           }}
                           inputProps={{ 
-                            min: 0, 
+                            min: minDonationRate, 
                             max: 99,
                             step: 1,
                           }}
