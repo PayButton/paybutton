@@ -165,9 +165,9 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     setAltpaymentError,
     isChild,
     donationAddress = config.donationAddress,
-    donationRate = DEFAULT_DONATION_RATE
-  } = props;
-  const [loading, setLoading] = useState(true);
+    donationRate = DEFAULT_DONATION_RATE,
+  } = props
+  const [loading, setLoading] = useState(true)
 
   // websockets if standalone
   const [internalTxsSocket, setInternalTxsSocket] = useState<Socket | undefined>(undefined)
@@ -646,8 +646,8 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         let amountToDisplay = thisCurrencyObject.string
         const baseAmount = thisCurrencyObject.float // Base amount without donation
         
-        // Add donation amount if enabled
-        if (donationEnabled && userDonationRate && userDonationRate > 0 && cur === 'XEC') {
+        // Add donation amount if enabled (for XEC and BCH)
+        if (donationEnabled && userDonationRate && userDonationRate > 0 && (cur === 'XEC' || cur === 'BCH')) {
           const donationAmountValue = thisCurrencyObject.float * (userDonationRate / 100)
           const amountWithDonation = thisCurrencyObject.float + donationAmountValue
           const amountWithDonationObj = getCurrencyObject(
@@ -801,8 +801,10 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         )?.[0];
         const decimals = network ? DECIMALS[network.toUpperCase()] : undefined;
         const donationPercent = userDonationRate / 100
-        const thisDonationAmount = donationAmount ? donationAmount : amount * donationPercent
-        const minimumDonationAmount = network ? DEFAULT_MINIMUM_DONATION_AMOUNT[network.toUpperCase()] : 0;
+        // Calculate donation amount from base amount
+        const thisDonationAmount = amount * donationPercent
+        const minimumDonationAmount = network ? DEFAULT_MINIMUM_DONATION_AMOUNT[network.toUpperCase()] : 0
+
         thisUrl += `?amount=${amount}`
         if(thisDonationAmount > minimumDonationAmount){
           thisUrl += `&addr=${donationAddress}&amount=${thisDonationAmount.toFixed(decimals)}`;
@@ -1067,7 +1069,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
             <Typography sx={classes.footer}>
               <Box>Powered by PayButton.org</Box>
               
-              {thisAddressType === 'XEC' && thisCurrencyObject?.float && thisCurrencyObject.float > 0 && thisCurrencyObject.float >= 1000 ? (
+              {((thisAddressType === 'XEC' || thisAddressType === 'BCH') && thisCurrencyObject?.float && thisCurrencyObject.float > 0 && thisCurrencyObject.float >= (DEFAULT_MINIMUM_DONATION_AMOUNT[thisAddressType.toUpperCase()] || 0) * 100) ? (
                 <>
                 <Box sx={classes.footerSeparator}>|</Box>
                   <Tooltip title="Send us some love with a dev donation" arrow placement="top">
