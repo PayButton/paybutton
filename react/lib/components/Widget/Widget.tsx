@@ -37,8 +37,9 @@ import {
   setupChronikWebSocket,
   setupAltpaymentSocket,
   CryptoCurrency,
-  DEFAULT_DONATE_RATE,
-  DEFAULT_MINIMUM_DONATE_AMOUNT
+  DEFAULT_DONATION_RATE,
+  DEFAULT_MINIMUM_DONATION_AMOUNT,
+  DONATION_RATE_FIAT_THRESHOLD
 } from '../../util';
 import AltpaymentWidget from './AltpaymentWidget'
 import {
@@ -804,7 +805,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         const thisDonationAmount = amount * donationPercent
 
         thisUrl+=`?amount=${amount}`
-        if(thisDonationAmount > DEFAULT_MINIMUM_DONATE_AMOUNT){
+        if(thisDonationAmount > minimumDonationAmount){
           thisUrl += `&addr=${donationAddress}&amount=${thisDonationAmount.toFixed(decimals)}`;
         }
       }else{
