@@ -165,7 +165,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     setAltpaymentError,
     isChild,
     donationAddress = config.donationAddress,
-    donationRate = DEFAULT_DONATE_RATE,
+    donationRate = DEFAULT_DONATION_RATE,
   } = props
   const [loading, setLoading] = useState(true)
 
@@ -803,6 +803,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         const donationPercent = userDonationRate / 100
         // Calculate donation amount from base amount
         const thisDonationAmount = amount * donationPercent
+        const minimumDonationAmount = network ? DEFAULT_MINIMUM_DONATION_AMOUNT[network.toUpperCase()] : 10
 
         thisUrl+=`?amount=${amount}`
         if(thisDonationAmount > minimumDonationAmount){
@@ -1068,7 +1069,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
             <Typography sx={classes.footer}>
               <Box>Powered by PayButton.org</Box>
               
-              {thisAddressType === 'XEC' && thisCurrencyObject?.float && thisCurrencyObject.float > 0 && thisCurrencyObject.float >= 1000 ? (
+              {thisAddressType === 'XEC' && thisCurrencyObject?.float && thisCurrencyObject.float > 0 && thisCurrencyObject.float >= DEFAULT_MINIMUM_DONATION_AMOUNT[thisAddressType.toUpperCase()] * 100 ? (
                 <>
                 <Box sx={classes.footerSeparator}>|</Box>
                   <Tooltip title="Send us some love with a dev donation" arrow placement="top">
