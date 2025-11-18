@@ -304,6 +304,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const [widgetButtonText, setWidgetButtonText] = useState('Send Payment')
   const [opReturn, setOpReturn] = useState<string | undefined>()
   const [isCashtabAvailable, setIsCashtabAvailable] = useState<boolean>(false)
+  const [convertedCryptoAmount, setConvertedCryptoAmount] = useState<number | undefined>(undefined)
 
   const [isAboveMinimumAltpaymentAmount, setIsAboveMinimumAltpaymentAmount] = useState<boolean | null>(null)
 
@@ -634,6 +635,8 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         ? getCurrencyObject(convertedAmount, thisAddressType, randomSatoshis)
         : null
       if (convertedObj) {
+        // Store converted crypto amount for donation UI visibility check
+        setConvertedCryptoAmount(convertedObj.float)
         let amountToDisplay = thisCurrencyObject.string;
         let convertedAmountToDisplay = convertedObj.string
         if ( donationEnabled && userDonationRate && userDonationRate >= DONATION_RATE_FIAT_THRESHOLD){
@@ -662,6 +665,8 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         setUrl(url ?? "")
       }
     } else {
+      // Clear converted amount when not in fiat conversion mode
+      setConvertedCryptoAmount(undefined)
       const notZeroValue =
         thisCurrencyObject?.float !== undefined && thisCurrencyObject.float > 0
       if (!isFiat(currency) && thisCurrencyObject && notZeroValue) {
@@ -1096,7 +1101,18 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
             <Typography sx={classes.footer}>
               <Box>Powered by PayButton.org</Box>
               
-              {((thisAddressType === 'XEC' || thisAddressType === 'BCH') && thisCurrencyObject?.float && thisCurrencyObject.float > 0 && thisCurrencyObject.float >= (DEFAULT_MINIMUM_DONATION_AMOUNT[thisAddressType.toUpperCase()] || 0) * 100) ? (
+              {(() => {
+                // For fiat conversions, check the converted crypto amount
+                // For crypto-only, check the currency object amount
+                const amountToCheck = hasPrice && convertedCryptoAmount !== undefined 
+                  ? convertedCryptoAmount 
+                  : thisCurrencyObject?.float
+                const minDonationAmount = (DEFAULT_MINIMUM_DONATION_AMOUNT[thisAddressType.toUpperCase()] || 0) * 100
+                return (thisAddressType === 'XEC' || thisAddressType === 'BCH') && 
+                       amountToCheck !== undefined && 
+                       amountToCheck > 0 && 
+                       amountToCheck >= minDonationAmount
+              })() ? (
                 <>
                 <Box sx={classes.footerSeparator}>|</Box>
                   <Tooltip title="Send us some love with a dev donation" arrow placement="top">
