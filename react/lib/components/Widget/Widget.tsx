@@ -706,7 +706,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         const donationPercent = donationRate / 100
         const thisDonationAmount = donationAmount ? donationAmount : amount * donationPercent
         const minimumDonationAmount = network ? DEFAULT_MINIMUM_DONATION_AMOUNT[network.toUpperCase()] : 0;
-        thisUrl+=`?amount=${amount}`
+        thisUrl += `?amount=${amount}`
         if(thisDonationAmount > minimumDonationAmount){
           thisUrl += `&addr=${donationAddress}&amount=${thisDonationAmount.toFixed(decimals)}`;
         }
