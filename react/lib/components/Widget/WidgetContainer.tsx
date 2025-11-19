@@ -20,12 +20,11 @@ import {
   isPropsTrue,
   DEFAULT_DONATION_RATE,
 } from '../../util';
-import { createPayment } from '../../util/api-client';
 
 import Widget, { WidgetProps } from './Widget';
 
 export interface WidgetContainerProps
-  extends Omit<WidgetProps, 'success' | 'setCurrencyObject' | 'shiftCompleted' | 'setShiftCompleted'  > {
+  extends Omit<WidgetProps, 'success' | 'setCurrencyObject' | 'shiftCompleted' | 'setShiftCompleted' | 'setPaymentId' | 'setFetchingPaymentId' | 'fetchingPaymentId'  > {
   active?: boolean;
   amount?: number;
   opReturn?: string;
@@ -151,36 +150,10 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
       donationRate = DEFAULT_DONATION_RATE
     }
     const [thisPaymentId, setThisPaymentId] = useState<string | undefined>();
+
     const [fetchingPaymentId, setFetchingPaymentId] = useState<boolean | undefined>();
     const [thisPrice, setThisPrice] = useState(0);
     const [usdPrice, setUsdPrice] = useState(0);
-    useEffect(() => {
-      if (
-        fetchingPaymentId !== undefined ||
-        thisPaymentId !== undefined
-      ) {
-        return
-      }
-      setFetchingPaymentId(true)
-      const initializePaymentId = async () => {
-        if (paymentId === undefined && !disablePaymentId) {
-          if (to) {
-            try {
-              const responsePaymentId = await createPayment(amount, to, apiBaseUrl);
-              setThisPaymentId(responsePaymentId);
-              setFetchingPaymentId(false);
-            } catch (error) {
-              console.error('Error creating payment ID:', error);
-            }
-          }
-        } else {
-          setThisPaymentId(paymentId);
-          setFetchingPaymentId(false);
-        }
-      };
-
-      initializePaymentId();
-    }, [paymentId, disablePaymentId, amount, to, apiBaseUrl]);
     const [success, setSuccess] = useState(false);
     const { enqueueSnackbar } = useSnackbar();
 
@@ -351,6 +324,9 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
           donationRate={donationRate}
           convertedCurrencyObj={convertedCurrencyObj}
           setConvertedCurrencyObj={setConvertedCurrencyObj}
+          setPaymentId={setThisPaymentId}
+          setFetchingPaymentId={setFetchingPaymentId}
+          fetchingPaymentId={fetchingPaymentId}
         />
       </React.Fragment>
     );

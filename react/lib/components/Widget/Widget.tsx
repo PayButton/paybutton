@@ -50,6 +50,8 @@ import {
   MINIMUM_ALTPAYMENT_CAD_AMOUNT,
 } from '../../altpayment'
 
+import { createPayment } from '../../util/api-client';
+
 export interface WidgetProps {
   to: string
   isChild?: boolean
@@ -110,6 +112,9 @@ export interface WidgetProps {
   transactionText?: string;
   convertedCurrencyObj?: CurrencyObject;
   setConvertedCurrencyObj?: Function;
+  setPaymentId?: Function;
+  setFetchingPaymentId?: Function;
+  fetchingPaymentId?: boolean;
 }
 
 interface StyleProps {
@@ -169,6 +174,9 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     donationAddress = config.donationAddress,
     donationRate = DEFAULT_DONATION_RATE,
     setConvertedCurrencyObj = () => {},
+    setPaymentId,
+    setFetchingPaymentId,
+    fetchingPaymentId,
   } = props;
   const [loading, setLoading] = useState(true);
 
@@ -295,6 +303,15 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const [opReturn, setOpReturn] = useState<string | undefined>()
   const [isCashtabAvailable, setIsCashtabAvailable] = useState<boolean>(false)
   const [convertedCryptoAmount, setConvertedCryptoAmount] = useState<number | undefined>(undefined)
+  const updateConvertedCurrencyObj = useCallback((convertedObj: CurrencyObject | null) => {
+    setConvertedCurrencyObj(convertedObj);
+    if(setPaymentId){
+      setPaymentId(undefined);
+    }
+    if(setFetchingPaymentId){
+      setFetchingPaymentId(undefined);
+    }
+  }, [setConvertedCurrencyObj, setPaymentId, setFetchingPaymentId]);
 
   const [isAboveMinimumAltpaymentAmount, setIsAboveMinimumAltpaymentAmount] = useState<boolean | null>(null)
 
@@ -554,6 +571,48 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   }, [thisNewTxs, to, apiBaseUrl])
 
   useEffect(() => {
+    if (
+      fetchingPaymentId !== undefined ||
+      paymentId !== undefined
+    ) {
+      return
+    }
+    if (setFetchingPaymentId) {
+      setFetchingPaymentId(true)
+    }
+    const initializePaymentId = async () => {
+      if (paymentId === undefined && !disablePaymentId) {
+        if (to) {
+          try {
+            const amountToUse =
+                    (isFiat(currency) || randomSatoshis) && convertedCurrencyObj
+                    ? convertedCurrencyObj.float
+                    : props.amount
+            const responsePaymentId = await createPayment(amountToUse || undefined, to, apiBaseUrl);
+            if (setPaymentId) {
+              setPaymentId(responsePaymentId);
+            }
+            if (setFetchingPaymentId) {
+              setFetchingPaymentId(false);
+            }
+          } catch (error) {
+            console.error('Error creating payment ID:', error);
+          }
+        }
+      } else {
+        if (setPaymentId) {
+          setPaymentId(paymentId);
+        }
+        if (setFetchingPaymentId) {
+          setFetchingPaymentId(false);
+        }
+      }
+    };
+
+    initializePaymentId();
+  }, [paymentId, disablePaymentId, props.amount, to, apiBaseUrl, setPaymentId, setFetchingPaymentId, fetchingPaymentId, convertedCurrencyObj]);
+
+  useEffect(() => {
     const invalidAmount = thisAmount !== undefined && thisAmount && isNaN(+thisAmount)
     if (isValidCashAddress(to) || isValidXecAddress(to)) {
       setDisabled(isPropsTrue(props.disabled))
@@ -612,12 +671,15 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
           randomSatoshis,
         )
         : null;
-      setConvertedCurrencyObj(convertedObj)
+      updateConvertedCurrencyObj(convertedObj)
     } else if (thisAmount && thisAddressType) {
       cleanAmount = +thisAmount;
 
       const obj = getCurrencyObject(cleanAmount, currency, randomSatoshis);
       setThisCurrencyObject(obj);
+      if(!isFiat(currency)) {
+        updateConvertedCurrencyObj(obj);
+      }
       if (props.setCurrencyObject) {
         props.setCurrencyObject(obj);
       }
