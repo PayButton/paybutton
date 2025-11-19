@@ -722,17 +722,14 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   }
 
   const handleDonationRateChange = (value: number) => {
-    const clampedValue = Math.max(0, Math.min(99, value))
+    const clampedValue = Math.max(1, Math.min(99, value))
     setUserDonationRate(clampedValue)
-    if (clampedValue > 0) {
+    if (clampedValue >= 1) {
       // Auto-enable donation if user enters a value > 0
       if (!donationEnabled) {
         setDonationEnabled(true)
       }
       setPreviousDonationRate(clampedValue)
-    } else if (clampedValue === 0) {
-      // Auto-disable donation if user enters 0
-      setDonationEnabled(false)
     }
   }
 
@@ -1127,7 +1124,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                             handleDonationRateChange(value)
                           }}
                           inputProps={{ 
-                            min: 0, 
+                            min: 1, 
                             max: 99,
                             step: 1,
                           }}
