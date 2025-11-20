@@ -596,6 +596,27 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     }
   }, [thisAmount, currency, userEditedAmount])
 
+  // Helper function to check if amount meets minimum for donation UI visibility
+  const shouldShowDonationUI = useCallback((amount: number, currencyType: string): boolean => {
+    // Normalize currency type to uppercase for comparison
+    const normalizedCurrency = currencyType.toUpperCase()
+    if (normalizedCurrency !== 'XEC' && normalizedCurrency !== 'BCH') {
+      return false
+    }
+    // Check if 1% of the amount is >= minimum donation amount
+    const onePercentOfAmount = amount * 0.01
+    const minimumDonationAmount = DEFAULT_MINIMUM_DONATION_AMOUNT[normalizedCurrency] || 0
+    return onePercentOfAmount >= minimumDonationAmount
+  }, [])
+
+  // Helper function to check if donation should be applied
+  const shouldApplyDonation = useCallback((amount: number, currencyType: string): boolean => {
+    if (!donationEnabled || !userDonationRate || userDonationRate <= 0) {
+      return false
+    }
+    return shouldShowDonationUI(amount, currencyType)
+  }, [donationEnabled, userDonationRate, shouldShowDonationUI])
+
   useEffect(() => {
     if (to === undefined) return
     let nextUrl: string | undefined
@@ -615,7 +636,9 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         setConvertedCryptoAmount(convertedObj.float)
         let amountToDisplay = thisCurrencyObject.string;
         let convertedAmountToDisplay = convertedObj.string
-        if ( donationEnabled && userDonationRate && userDonationRate > 0){
+        
+        // Only apply donation if 1% of converted crypto amount is >= minimum donation amount
+        if (shouldApplyDonation(convertedObj.float, thisAddressType)) {
           const thisDonationAmount = thisCurrencyObject.float * (userDonationRate / 100)
           const amountWithDonation = thisCurrencyObject.float + thisDonationAmount
           const amountWithDonationObj = getCurrencyObject(
@@ -647,13 +670,13 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         thisCurrencyObject?.float !== undefined && thisCurrencyObject.float > 0
       if (!isFiat(currency) && thisCurrencyObject && notZeroValue) {
         const cur: string = thisCurrencyObject.currency
-        let amountToDisplay = thisCurrencyObject.string
         const baseAmount = thisCurrencyObject.float // Base amount without donation
         
-        // Add donation amount if enabled (for XEC and BCH)
-        if (donationEnabled && userDonationRate && userDonationRate > 0 && (cur === 'XEC' || cur === 'BCH')) {
-          const donationAmountValue = thisCurrencyObject.float * (userDonationRate / 100)
-          const amountWithDonation = thisCurrencyObject.float + donationAmountValue
+        // Only apply donation if 1% of amount is >= minimum donation amount
+        let amountToDisplay = thisCurrencyObject.string
+        if (shouldApplyDonation(baseAmount, cur)) {
+          const donationAmountValue = baseAmount * (userDonationRate / 100)
+          const amountWithDonation = baseAmount + donationAmountValue
           const amountWithDonationObj = getCurrencyObject(
             amountWithDonation,
             cur,
@@ -671,7 +694,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       }
       setUrl(nextUrl ?? '')
     }
-  }, [to, thisCurrencyObject, price, thisAmount, opReturn, hasPrice, isCashtabAvailable, userDonationRate, donationEnabled, disabled, donationAddress, currency, randomSatoshis, thisAddressType])
+  }, [to, thisCurrencyObject, price, thisAmount, opReturn, hasPrice, isCashtabAvailable, userDonationRate, donationEnabled, disabled, donationAddress, currency, randomSatoshis, thisAddressType, shouldApplyDonation])
 
   useEffect(() => {
     try {
@@ -796,21 +819,18 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     let thisUrl = `${prefix}:${to.replace(/^.*:/, '')}`;
 
     if (amount) {
-      if (donationAddress && donationEnabled && userDonationRate && userDonationRate > 0) {
-        const network = Object.entries(CURRENCY_PREFIXES_MAP).find(
-          ([, value]) => value === prefix
-        )?.[0];
-        const decimals = network ? DECIMALS[network.toUpperCase()] : undefined;
+      // Check if donation should be applied (1% of amount >= minimum)
+      const currencyType = currency.toUpperCase()
+      
+      if (donationAddress && shouldApplyDonation(amount, currencyType)) {
+        const decimals = DECIMALS[currencyType] || DECIMALS.XEC;
         const donationPercent = userDonationRate / 100
         // Calculate donation amount from base amount
         const thisDonationAmount = amount * donationPercent
-        const minimumDonationAmount = network ? DEFAULT_MINIMUM_DONATION_AMOUNT[network.toUpperCase()] : 0
 
         thisUrl += `?amount=${amount}`
-        if(thisDonationAmount >= minimumDonationAmount){
-          thisUrl += `&addr=${donationAddress}&amount=${thisDonationAmount.toFixed(decimals)}`;
-        }
-      }else{
+        thisUrl += `&addr=${donationAddress}&amount=${thisDonationAmount.toFixed(decimals)}`;
+      } else {
         thisUrl += `?amount=${amount}`
       }
     }
@@ -822,7 +842,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
 
     return thisUrl;
     },
-    [disabled, to, opReturn, userDonationRate, donationAddress, donationEnabled]
+    [disabled, to, opReturn, userDonationRate, donationAddress, donationEnabled, shouldApplyDonation]
   )
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -1076,11 +1096,11 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                 const amountToCheck = hasPrice && convertedCryptoAmount !== undefined 
                   ? convertedCryptoAmount 
                   : thisCurrencyObject?.float
-                const minDonationAmount = (DEFAULT_MINIMUM_DONATION_AMOUNT[thisAddressType.toUpperCase()] || 0) * 100
+                // Show donation UI if amount meets minimum (1% >= 10 XEC), regardless of enabled state
                 return (thisAddressType === 'XEC' || thisAddressType === 'BCH') && 
                        amountToCheck !== undefined && 
                        amountToCheck > 0 && 
-                       amountToCheck >= minDonationAmount
+                       shouldShowDonationUI(amountToCheck, thisAddressType)
               })() ? (
                 <>
                 <Box sx={classes.footerSeparator}>|</Box>
