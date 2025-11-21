@@ -249,6 +249,12 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const price = props.price ?? 0
   const [hasPrice, setHasPrice] = useState(props.price !== undefined && props.price > 0)
   
+  // Helper to clamp donation rate to valid range (1-99 if > 0, or 0)
+  const clampDonationRate = useCallback((value: number): number => {
+    if (value <= 0) return 0
+    return Math.max(1, Math.min(99, value))
+  }, [])
+
   // Load donation rate from localStorage on mount
   const getInitialDonationRate = useCallback(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
@@ -256,8 +262,9 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         const stored = localStorage.getItem(DONATION_RATE_STORAGE_KEY)
         if (stored !== null) {
           const parsed = parseFloat(stored)
-          if (!isNaN(parsed) && parsed >= 0 && parsed <= 99) {
-            return parsed
+          if (!isNaN(parsed) && parsed >= 0) {
+            // Clamp to 1-99 range if > 0, or return 0
+            return clampDonationRate(parsed)
           }
         }
       } catch (e) {
@@ -265,14 +272,17 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       }
     }
     return 0
-  }, [])
+  }, [clampDonationRate])
+
+  // Clamp the donationRate prop to ensure it's in valid range
+  const clampedDonationRateProp = useMemo(() => clampDonationRate(donationRate), [donationRate, clampDonationRate])
 
   const initialDonationRate = useMemo(() => getInitialDonationRate(), [getInitialDonationRate])
   const [userDonationRate, setUserDonationRate] = useState<number>(initialDonationRate)
   const [donationEnabled, setDonationEnabled] = useState<boolean>(initialDonationRate > 0)
-  // Initialize previousDonationRate with prop value so it's available when user first enables donation
+  // Initialize previousDonationRate with clamped prop value so it's available when user first enables donation
   const [previousDonationRate, setPreviousDonationRate] = useState<number>(
-    initialDonationRate > 0 ? initialDonationRate : donationRate
+    initialDonationRate > 0 ? initialDonationRate : clampedDonationRateProp
   )
   const [url, setUrl] = useState('')
   const [userEditedAmount, setUserEditedAmount] = useState<CurrencyObject>()
@@ -732,23 +742,29 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
 
   const handleDonationToggle = () => {
     if (donationEnabled) {
-      // Turning off - save current rate and set to 0
+      // Turning off - save current rate (already clamped) and set to 0
       setPreviousDonationRate(userDonationRate)
       setUserDonationRate(0)
       setDonationEnabled(false)
     } else {
-      // Turning on - restore previous rate or use prop/default
-      const rateToRestore = previousDonationRate > 0 ? previousDonationRate : donationRate
-      setUserDonationRate(rateToRestore)
+      // Turning on - restore previous rate or use clamped prop/default
+      // Use same clamping logic as handleDonationRateChange to ensure 1-99 range
+      const rateToRestore = previousDonationRate > 0 ? previousDonationRate : clampedDonationRateProp
+      const clampedRate = clampDonationRate(rateToRestore)
+      setUserDonationRate(clampedRate)
       setDonationEnabled(true)
+      // Update previousDonationRate to the clamped value
+      if (clampedRate > 0) {
+        setPreviousDonationRate(clampedRate)
+      }
     }
   }
 
   const handleDonationRateChange = (value: number) => {
-    const clampedValue = Math.max(1, Math.min(99, value))
+    const clampedValue = clampDonationRate(value)
     setUserDonationRate(clampedValue)
     if (clampedValue >= 1) {
-      // Auto-enable donation if user enters a value > 0
+      // Auto-enable donation if user enters a value >= 1
       if (!donationEnabled) {
         setDonationEnabled(true)
       }
