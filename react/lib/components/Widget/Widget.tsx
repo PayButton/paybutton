@@ -4,6 +4,8 @@ import {
   Fade,
   Typography,
   TextField,
+  IconButton,
+  Tooltip,
 } from '@mui/material'
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import copyToClipboard from 'copy-to-clipboard'
@@ -13,6 +15,7 @@ import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes'
 import { Button, animation } from '../Button/Button'
 import BarChart from '../BarChart/BarChart'
 import config from '../../paybutton-config.json'
+import { DONATION_RATE_STORAGE_KEY } from '../../util/constants'
 import {
   getAddressBalance,
   Currency,
@@ -36,7 +39,6 @@ import {
   CryptoCurrency,
   DEFAULT_DONATION_RATE,
   DEFAULT_MINIMUM_DONATION_AMOUNT,
-  DONATION_RATE_FIAT_THRESHOLD
 } from '../../util';
 import AltpaymentWidget from './AltpaymentWidget'
 import {
@@ -243,25 +245,61 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const [goalText, setGoalText] = useState('')
   const [goalPercent, setGoalPercent] = useState(0)
   const [altpaymentEditable, setAltpaymentEditable] = useState<boolean>(false)
-
+  
   const price = props.price ?? 0
+  const [hasPrice, setHasPrice] = useState(props.price !== undefined && props.price > 0)
+  
+  // Helper to clamp donation rate to valid range (1-99 if > 0, or 0)
+  const clampDonationRate = useCallback((value: number): number => {
+    if (value <= 0) return 0
+    return Math.max(1, Math.min(99, value))
+  }, [])
+
+  // Load donation rate from localStorage on mount
+  const getInitialDonationRate = useCallback(() => {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      try {
+        const stored = localStorage.getItem(DONATION_RATE_STORAGE_KEY)
+        if (stored !== null) {
+          const parsed = parseFloat(stored)
+          if (!isNaN(parsed) && parsed >= 0) {
+            // Clamp to 1-99 range if > 0, or return 0
+            return clampDonationRate(parsed)
+          }
+        }
+      } catch (e) {
+        console.warn('Failed to load donation rate from localStorage:', e)
+      }
+    }
+    return 0
+  }, [clampDonationRate])
+
+  // Clamp the donationRate prop to ensure it's in valid range
+  const clampedDonationRateProp = useMemo(() => clampDonationRate(donationRate), [donationRate, clampDonationRate])
+
+  const initialDonationRate = useMemo(() => getInitialDonationRate(), [getInitialDonationRate])
+  const [userDonationRate, setUserDonationRate] = useState<number>(initialDonationRate)
+  const [donationEnabled, setDonationEnabled] = useState<boolean>(initialDonationRate > 0)
+  // Initialize previousDonationRate with clamped prop value so it's available when user first enables donation
+  const [previousDonationRate, setPreviousDonationRate] = useState<number>(
+    initialDonationRate > 0 ? initialDonationRate : clampedDonationRateProp
+  )
   const [url, setUrl] = useState('')
   const [userEditedAmount, setUserEditedAmount] = useState<CurrencyObject>()
   const [text, setText] = useState(`Send any amount of ${thisAddressType}`)
   const [widgetButtonText, setWidgetButtonText] = useState('Send Payment')
   const [opReturn, setOpReturn] = useState<string | undefined>()
   const [isCashtabAvailable, setIsCashtabAvailable] = useState<boolean>(false)
+  const [convertedCryptoAmount, setConvertedCryptoAmount] = useState<number | undefined>(undefined)
 
   const [isAboveMinimumAltpaymentAmount, setIsAboveMinimumAltpaymentAmount] = useState<boolean | null>(null)
 
   const theme = useTheme(props.theme, isValidXecAddress(to))
 
   const [thisAmount, setThisAmount] = useState(props.amount)
-  const [hasPrice, setHasPrice] = useState(props.price !== undefined && props.price > 0)
   const [thisCurrencyObject, setThisCurrencyObject] = useState(props.currencyObject)
 
   const blurCSS = isPropsTrue(disabled) ? { filter: 'blur(5px)' } : {}
-  const [donationAmount, setDonationAmount] = useState<number | null>(null)
   // inject keyframes once (replacement for @global in makeStyles)
   useEffect(() => {
     const id = 'paybutton-widget-keyframes'
@@ -273,6 +311,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
 @keyframes fade-scale { from { opacity: 0; transform: scale(0.3); } 80% { opacity: 1; transform: scale(1.3); } to { opacity: 1; transform: scale(1); } }
 @keyframes button-slide { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0px); } }
 @keyframes button-slide-out { from { opacity: 1; transform: translateY(0px); } to { opacity: 0; transform: translateY(20px); } }
+@keyframes fade-slide-up { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0px); } }
 @keyframes copy-qr { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
 @keyframes copy-svg { 0% { opacity: 1; } 50% { opacity: 0; } 100% { opacity: 1; } }
 @keyframes copy-icon { 0% { transform: scale(1); } 50% { transform: scale(0.7); } 100% { transform: scale(1); } }
@@ -340,6 +379,16 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         color: '#a8a8a8',
         fontWeight: 'normal',
         userSelect: 'none',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        animation: 'fade-slide-up 0.6s ease-out forwards',
+        animationDelay: '0.7s',
+        opacity: 0,
+      },
+      footerSeparator: {
+        marginLeft: '7px',
+        marginRight: '4px'
       },
       sideShiftLink: {
         fontSize: '14px',
@@ -557,6 +606,27 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     }
   }, [thisAmount, currency, userEditedAmount])
 
+  // Helper function to check if amount meets minimum for donation UI visibility
+  const shouldShowDonationUI = useCallback((amount: number, currencyType: string): boolean => {
+    // Normalize currency type to uppercase for comparison
+    const normalizedCurrency = currencyType.toUpperCase()
+    if (normalizedCurrency !== 'XEC' && normalizedCurrency !== 'BCH') {
+      return false
+    }
+    // Check if 1% of the amount is >= minimum donation amount
+    const onePercentOfAmount = amount * 0.01
+    const minimumDonationAmount = DEFAULT_MINIMUM_DONATION_AMOUNT[normalizedCurrency] || 0
+    return onePercentOfAmount >= minimumDonationAmount
+  }, [])
+
+  // Helper function to check if donation should be applied
+  const shouldApplyDonation = useCallback((amount: number, currencyType: string): boolean => {
+    if (!donationEnabled || !userDonationRate || userDonationRate <= 0) {
+      return false
+    }
+    return shouldShowDonationUI(amount, currencyType)
+  }, [donationEnabled, userDonationRate, shouldShowDonationUI])
+
   useEffect(() => {
     if (to === undefined) return
     let nextUrl: string | undefined
@@ -572,10 +642,14 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         ? getCurrencyObject(convertedAmount, thisAddressType, randomSatoshis)
         : null
       if (convertedObj) {
+        // Store converted crypto amount for donation UI visibility check
+        setConvertedCryptoAmount(convertedObj.float)
         let amountToDisplay = thisCurrencyObject.string;
         let convertedAmountToDisplay = convertedObj.string
-        if ( donationRate && donationRate >= DONATION_RATE_FIAT_THRESHOLD){
-          const thisDonationAmount = thisCurrencyObject.float * (donationRate / 100)
+        
+        // Only apply donation if 1% of converted crypto amount is >= minimum donation amount
+        if (shouldApplyDonation(convertedObj.float, thisAddressType)) {
+          const thisDonationAmount = thisCurrencyObject.float * (userDonationRate / 100)
           const amountWithDonation = thisCurrencyObject.float + thisDonationAmount
           const amountWithDonationObj = getCurrencyObject(
             amountWithDonation,
@@ -584,7 +658,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
           )
           amountToDisplay = amountWithDonationObj.string
 
-          const convertedDonationAmount = convertedObj.float * (donationRate / 100)
+          const convertedDonationAmount = convertedObj.float * (userDonationRate / 100)
           const convertedAmountWithDonation = convertedObj.float + convertedDonationAmount
           const convertedAmountWithDonationObj = getCurrencyObject(
             convertedAmountWithDonation,
@@ -592,7 +666,6 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
             randomSatoshis,
           )
           convertedAmountToDisplay = convertedAmountWithDonationObj.string
-          setDonationAmount(convertedAmountWithDonationObj.float)
         }
         setText(
           `Send ${amountToDisplay} ${thisCurrencyObject.currency} = ${convertedAmountToDisplay} ${thisAddressType}`,
@@ -601,19 +674,37 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         setUrl(url ?? "")
       }
     } else {
+      // Clear converted amount when not in fiat conversion mode
+      setConvertedCryptoAmount(undefined)
       const notZeroValue =
         thisCurrencyObject?.float !== undefined && thisCurrencyObject.float > 0
       if (!isFiat(currency) && thisCurrencyObject && notZeroValue) {
         const cur: string = thisCurrencyObject.currency
-        setText(`Send ${thisCurrencyObject.string} ${cur}`)
-        nextUrl = resolveUrl(cur, thisCurrencyObject?.float)
+        const baseAmount = thisCurrencyObject.float // Base amount without donation
+        
+        // Only apply donation if 1% of amount is >= minimum donation amount
+        let amountToDisplay = thisCurrencyObject.string
+        if (shouldApplyDonation(baseAmount, cur)) {
+          const donationAmountValue = baseAmount * (userDonationRate / 100)
+          const amountWithDonation = baseAmount + donationAmountValue
+          const amountWithDonationObj = getCurrencyObject(
+            amountWithDonation,
+            cur,
+            false,
+          )
+          amountToDisplay = amountWithDonationObj.string
+        }
+        
+        setText(`Send ${amountToDisplay} ${cur}`)
+        // Pass base amount (without donation) to resolveUrl
+        nextUrl = resolveUrl(cur, baseAmount)
       } else {
         setText(`Send any amount of ${thisAddressType}`)
         nextUrl = resolveUrl(thisAddressType)
       }
       setUrl(nextUrl ?? '')
     }
-  }, [to, thisCurrencyObject, price, thisAmount, opReturn, hasPrice, isCashtabAvailable])
+  }, [to, thisCurrencyObject, price, thisAmount, opReturn, hasPrice, isCashtabAvailable, userDonationRate, donationEnabled, disabled, donationAddress, currency, randomSatoshis, thisAddressType, shouldApplyDonation])
 
   useEffect(() => {
     try {
@@ -634,6 +725,52 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   useEffect(() => {
     setThisAmount(props.amount)
   }, [props.amount])
+
+  // Save donation rate to localStorage whenever it changes
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      try {
+        localStorage.setItem(DONATION_RATE_STORAGE_KEY, userDonationRate.toString())
+      } catch (e) {
+        console.warn('Failed to save donation rate to localStorage:', e)
+      }
+    }
+  }, [userDonationRate])
+
+  // Don't sync with prop - we default to off (0) if no localStorage value
+  // This ensures user preference (stored in localStorage) always takes precedence
+
+  const handleDonationToggle = () => {
+    if (donationEnabled) {
+      // Turning off - save current rate (already clamped) and set to 0
+      setPreviousDonationRate(userDonationRate)
+      setUserDonationRate(0)
+      setDonationEnabled(false)
+    } else {
+      // Turning on - restore previous rate or use clamped prop/default
+      // Use same clamping logic as handleDonationRateChange to ensure 1-99 range
+      const rateToRestore = previousDonationRate > 0 ? previousDonationRate : clampedDonationRateProp
+      const clampedRate = clampDonationRate(rateToRestore)
+      setUserDonationRate(clampedRate)
+      setDonationEnabled(true)
+      // Update previousDonationRate to the clamped value
+      if (clampedRate > 0) {
+        setPreviousDonationRate(clampedRate)
+      }
+    }
+  }
+
+  const handleDonationRateChange = (value: number) => {
+    const clampedValue = clampDonationRate(value)
+    setUserDonationRate(clampedValue)
+    if (clampedValue >= 1) {
+      // Auto-enable donation if user enters a value >= 1
+      if (!donationEnabled) {
+        setDonationEnabled(true)
+      }
+      setPreviousDonationRate(clampedValue)
+    }
+  }
 
   let cleanGoalAmount: any
   if (goalAmount) {
@@ -698,19 +835,18 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     let thisUrl = `${prefix}:${to.replace(/^.*:/, '')}`;
 
     if (amount) {
-      if (donationAddress && donationRate && Number(donationRate)) {
-        const network = Object.entries(CURRENCY_PREFIXES_MAP).find(
-          ([, value]) => value === prefix
-        )?.[0];
-        const decimals = network ? DECIMALS[network.toUpperCase()] : undefined;
-        const donationPercent = donationRate / 100
-        const thisDonationAmount = donationAmount ? donationAmount : amount * donationPercent
-        const minimumDonationAmount = network ? DEFAULT_MINIMUM_DONATION_AMOUNT[network.toUpperCase()] : 0;
+      // Check if donation should be applied (1% of amount >= minimum)
+      const currencyType = currency.toUpperCase()
+      
+      if (donationAddress && shouldApplyDonation(amount, currencyType)) {
+        const decimals = DECIMALS[currencyType] || DECIMALS.XEC;
+        const donationPercent = userDonationRate / 100
+        // Calculate donation amount from base amount
+        const thisDonationAmount = amount * donationPercent
+
         thisUrl += `?amount=${amount}`
-        if(thisDonationAmount > minimumDonationAmount){
-          thisUrl += `&addr=${donationAddress}&amount=${thisDonationAmount.toFixed(decimals)}`;
-        }
-      }else{
+        thisUrl += `&addr=${donationAddress}&amount=${thisDonationAmount.toFixed(decimals)}`;
+      } else {
         thisUrl += `?amount=${amount}`
       }
     }
@@ -722,7 +858,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
 
     return thisUrl;
     },
-    [disabled, to, opReturn]
+    [disabled, to, opReturn, userDonationRate, donationAddress, donationEnabled, shouldApplyDonation]
   )
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -968,7 +1104,103 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
 
           <Box py={0.8}>
             <Typography sx={classes.footer}>
-              Powered by PayButton.org
+              <Box>Powered by PayButton.org</Box>
+              
+              {(() => {
+                // For fiat conversions, check the converted crypto amount
+                // For crypto-only, check the currency object amount
+                const amountToCheck = hasPrice && convertedCryptoAmount !== undefined 
+                  ? convertedCryptoAmount 
+                  : thisCurrencyObject?.float
+                // Show donation UI if amount meets minimum (1% >= 10 XEC), regardless of enabled state
+                return (thisAddressType === 'XEC' || thisAddressType === 'BCH') && 
+                       amountToCheck !== undefined && 
+                       amountToCheck > 0 && 
+                       shouldShowDonationUI(amountToCheck, thisAddressType)
+              })() ? (
+                <>
+                <Box sx={classes.footerSeparator}>|</Box>
+                  <Tooltip title="Send us some love with a dev donation" arrow placement="top">
+                    <Box display="flex" alignItems="center">
+                    <IconButton
+                      onClick={handleDonationToggle}
+                      disabled={success}
+                      sx={{
+                        padding: '4px',
+                        flexShrink: 0,
+                      }}
+                      aria-label={donationEnabled ? 'Disable donation' : 'Enable donation'}
+                    >
+                      <Box
+                        component="svg"
+                        sx={{
+                          width: '13px',
+                          height: '13px',
+                          fill: donationEnabled ? '#f44336' : 'none',
+                          stroke: donationEnabled ? '#f44336' : '#5c5c5c',
+                          strokeWidth: donationEnabled ? 0 : 1.5,
+                          transition: 'all 0.2s ease-in-out',
+                          '&:hover': {
+                            fill: donationEnabled ? '#d32f2f' : 'rgba(244, 67, 54, 0.1)',
+                            stroke: donationEnabled ? '#d32f2f' : '#f44336',
+                          },
+                        }}
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                      </Box>
+                    </IconButton>
+                    {donationEnabled ? (
+                      <>
+                        <TextField
+                          type="number"
+                          value={userDonationRate}
+                          onChange={(e) => {
+                            const value = parseFloat(e.target.value) || 0
+                            handleDonationRateChange(value)
+                          }}
+                          inputProps={{ 
+                            min: 1, 
+                            max: 99,
+                            step: 1,
+                          }}
+                          size="small"
+                          disabled={success}
+                          placeholder="0"
+                          sx={{
+                            width: '34px',
+                            '& .MuiOutlinedInput-root': {
+                              height: '18px',
+                              '& input': {
+                                padding: '0px 2px 0px 4px',
+                                fontSize: '0.6rem',
+                                textAlign: 'left',
+                                color: '#5c5c5c',
+                                lineHeight: '1.5em',
+                              },
+                              '& fieldset': {
+                                borderWidth: '1px',
+                              },
+                            },
+                          }}
+                        />
+                        <Typography
+                          component="span"
+                          sx={{
+                            fontSize: '0.6rem',
+                            color: '#5c5c5c',
+                            flexShrink: 0,
+                            marginLeft: '2px',
+                          }}
+                        >
+                          %
+                        </Typography>
+                      </>
+                    ) : null}
+                  </Box>
+                  </Tooltip>
+                </>
+              ) : null}
             </Typography>
           </Box>
         </Box>
