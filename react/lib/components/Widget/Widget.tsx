@@ -1120,7 +1120,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
               })() ? (
                 <>
                 <Box sx={classes.footerSeparator}>|</Box>
-                  <Tooltip title="Send us some love with a dev donation" arrow placement="top">
+                  <Tooltip title="Send us some love with a small donation" arrow placement="top">
                     <Box display="flex" alignItems="center">
                     <IconButton
                       onClick={handleDonationToggle}
