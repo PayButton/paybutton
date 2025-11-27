@@ -16,6 +16,11 @@ export const CURRENCY_PREFIXES_MAP: Record<typeof CRYPTO_CURRENCIES[number], str
     xec: 'ecash',
 };
 
+export const CURRENCY_TYPES_MAP: Record<typeof CRYPTO_CURRENCIES[number], string> = {
+  bitcoincash: 'BCH',
+  ecash: 'XEC'
+};
+
 export type ButtonSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | "extrasmall" | "small" | "medium" | "large" | "extralarge" | undefined;
 
 export const DEFAULT_DONATION_RATE = 2;
