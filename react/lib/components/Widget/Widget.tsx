@@ -178,7 +178,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const [loading, setLoading] = useState(true);
   const [draftAmount, setDraftAmount] = useState<string>("")
   const inputRef = React.useRef<HTMLInputElement>(null)
-  const lastEffectiveAmountRef = React.useRef<number | undefined>(undefined)
+  const lastEffectiveAmountRef = React.useRef<number | undefined | null>(undefined)
 
   const isWaitingForPaymentId =
     isChild === true &&
@@ -599,7 +599,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
 
     const initializePaymentId = async () => {
       try {
-        let effectiveAmount: number | undefined;
+        let effectiveAmount: number | null;
 
         if (typeof convertedCryptoAmount === 'number') {
           effectiveAmount = convertedCryptoAmount;
@@ -611,13 +611,12 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
           thisAmount !== ''
         ) {
           const n = Number(thisAmount);
-          if (!Number.isNaN(n)) {
-            effectiveAmount = n;
+          if (Number.isNaN(n)) {
+            return
           }
-        }
-
-        if (effectiveAmount === undefined) {
-          return;
+          effectiveAmount = n;
+        } else {
+          effectiveAmount = null
         }
 
         if (lastEffectiveAmountRef.current === effectiveAmount) {
@@ -626,7 +625,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         lastEffectiveAmountRef.current = effectiveAmount;
 
         const responsePaymentId = await createPayment(
-          effectiveAmount,
+          effectiveAmount ?? undefined,
           to,
           apiBaseUrl,
         );
