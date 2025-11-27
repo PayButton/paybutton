@@ -197,7 +197,7 @@ export const PayButton = ({
       }
       effectiveAmount = amountNumber;
     }
-    if (paymentId && lastPaymentAmount.current === effectiveAmount) {
+    if (lastPaymentAmount.current === effectiveAmount) {
       return;
     }
 
