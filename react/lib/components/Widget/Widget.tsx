@@ -585,7 +585,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         const amountToUse =
           (isFiat(currency) || randomSatoshis) && convertedCurrencyObj
           ? convertedCurrencyObj.float
-          : props.amount
+          : thisAmount
         const responsePaymentId = await createPayment(amountToUse || undefined, to, apiBaseUrl);
         setPaymentId(responsePaymentId)
       } catch (error) {
@@ -602,7 +602,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     currency,
     randomSatoshis,
     convertedCurrencyObj,
-    props.amount,
+    thisAmount,
     apiBaseUrl,
     setPaymentId
   ]);
