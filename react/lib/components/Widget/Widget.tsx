@@ -24,6 +24,7 @@ import {
   openCashtabPayment,
   initializeCashtabStatus,
   DECIMALS,
+  MAX_AMOUNT,
   CurrencyObject,
   getCurrencyObject,
   formatPrice,
@@ -866,6 +867,11 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     if (amount === '') {
       amount = '0'
     }
+    // Enforce max amount limit based on currency type
+    const maxAmount = MAX_AMOUNT[thisAddressType] || MAX_AMOUNT.XEC
+    if (+amount > maxAmount) {
+      amount = maxAmount.toString()
+    }
     const userEdited = getCurrencyObject(+amount, currency, false)
     setUserEditedAmount(userEdited)
     updateAmount(amount)
@@ -1042,9 +1048,14 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
               <Box sx={classes.editAmount} component="div">
                 <TextField
                   label="Edit amount"
+                  type="number"
                   value={thisCurrencyObject?.float || 0}
                   onChange={handleAmountChange}
-                  inputProps={{ maxLength: 12 }}
+                  inputProps={{ 
+                    max: MAX_AMOUNT[thisAddressType] || MAX_AMOUNT.XEC,
+                    min: 0,
+                    step: thisAddressType === 'BCH' ? 0.00000001 : 0.01,
+                  }}
                   name="Amount"
                   placeholder="Enter Amount"
                   id="userEditedAmount"
