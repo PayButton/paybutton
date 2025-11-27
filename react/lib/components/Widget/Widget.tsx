@@ -12,6 +12,7 @@ import copyToClipboard from 'copy-to-clipboard'
 import { QRCodeSVG } from 'qrcode.react'
 import { Socket } from 'socket.io-client'
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes'
+import { NumericFormat } from 'react-number-format';
 import { Button, animation } from '../Button/Button'
 import BarChart from '../BarChart/BarChart'
 import config from '../../paybutton-config.json'
@@ -175,6 +176,9 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     setPaymentId,
   } = props;
   const [loading, setLoading] = useState(true);
+  const [draftAmount, setDraftAmount] = useState<string>("")
+  const inputRef = React.useRef<HTMLInputElement>(null)
+
   const isWaitingForPaymentId =
     isChild === true &&
     !disablePaymentId &&
@@ -487,6 +491,13 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       color,
     )}' stroke='%23fff' stroke-width='.6'/%3E%3Cpath d='m7.2979 14.697-2.6964-2.6966 0.89292-0.8934c0.49111-0.49137 0.90364-0.88958 0.91675-0.88491 0.013104 0.0047 0.71923 0.69866 1.5692 1.5422 0.84994 0.84354 1.6548 1.6397 1.7886 1.7692l0.24322 0.23547 7.5834-7.5832 1.8033 1.8033-9.4045 9.4045z' fill='%23fff' stroke-width='.033708'/%3E%3C/svg%3E%0A`
   }, [theme])
+
+  useEffect(() => {
+    if (thisCurrencyObject?.string !== undefined) {
+      const raw = stripFormatting(thisCurrencyObject.string);
+      setDraftAmount(raw);
+    }
+  }, [thisCurrencyObject?.string]);
 
   useEffect(() => {
     if (!recentlyCopied) return
@@ -942,15 +953,36 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     [disabled, to, opReturn, userDonationRate, donationAddress, donationEnabled, shouldApplyDonation]
   )
 
-  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let amount = e.target.value
-    if (amount === '') {
-      amount = '0'
-    }
-    const userEdited = getCurrencyObject(+amount, currency, false)
-    setUserEditedAmount(userEdited)
-    updateAmount(amount)
+  const stripFormatting = (s: string) => {
+    return s.replace(/,/g, '').replace(/(\.\d*?[1-9])0+$/, '$1').replace(/\.0+$/, '');
   }
+
+
+  const applyDraftAmount = () => {
+    if (!draftAmount) return
+
+    const raw = draftAmount.trim()
+
+    if (raw === '' || isNaN(+raw)) return
+
+    const numeric = +raw
+
+    const newObj = getCurrencyObject(numeric, currency, false)
+    setUserEditedAmount(newObj)
+
+    updateAmount(String(numeric))
+  }
+
+  const isDraftValid =
+    draftAmount.trim() !== '' &&
+    !isNaN(+draftAmount) &&
+    +draftAmount > 0
+
+  const isSameAmount =
+    isDraftValid &&
+    +draftAmount === thisCurrencyObject?.float
+
+
 
   const updateAmount = (amount: string) => {
     setThisAmount(amount)
@@ -1121,17 +1153,33 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
 
             {isPropsTrue(editable) ? (
               <Box sx={classes.editAmount} component="div">
-                <TextField
+                <NumericFormat
+                  value={draftAmount}
+                  onValueChange={(values) => {
+                    setDraftAmount(values.value); // raw numeric value without commas
+                  }}
+                  thousandSeparator
+                  allowLeadingZeros={false}
+                  decimalScale={8}
+                  inputRef={inputRef}
+                  customInput={TextField}
                   label="Edit amount"
-                  value={thisCurrencyObject?.float || 0}
-                  onChange={handleAmountChange}
-                  inputProps={{ maxLength: 12 }}
-                  name="Amount"
-                  placeholder="Enter Amount"
-                  id="userEditedAmount"
                   disabled={success}
+                  InputProps={{
+                    endAdornment: (
+                      <IconButton
+                        onClick={applyDraftAmount}
+                        disabled={!isDraftValid || isSameAmount}
+                        edge="end"
+                        sx={{ marginRight: '-6px' }}
+                      >
+                        ✓
+                      </IconButton>
+                    ),
+                  }}
                 />
-                <Typography component="span">{currency}</Typography>
+                <Typography component="span" sx={{ marginLeft: '4px' }}>{currency}</Typography>
+
               </Box>
             ) : null}
 
