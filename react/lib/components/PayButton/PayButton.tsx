@@ -110,7 +110,6 @@ export const PayButton = ({
 
   const [currencyObj, setCurrencyObj] = useState<CurrencyObject | undefined>();
   const [cryptoAmount, setCryptoAmount] = useState<string>();
-  const [convertedAmount, setConvertedAmount] = useState<number>();
   const [convertedCurrencyObj, setConvertedCurrencyObj] = useState<CurrencyObject | undefined>();
 
   const [price, setPrice] = useState(0);
@@ -144,32 +143,36 @@ export const PayButton = ({
 
 
   const getPaymentId = useCallback(async (
-    currency: Currency,
-    amount: number,
-    convertedAmount: number | undefined,
-    to: string | undefined,
-  ): Promise<string | undefined> => {
-    if (disablePaymentId || !to) return undefined
-    try {
-      const amountToUse =
-        (isFiat(currency) || randomSatoshis) && convertedAmount
-        ? convertedAmount
-        : amount
+      currency: Currency,
+      amount: number,
+      to: string | undefined,
+    ): Promise<string | undefined> => {
+      if (disablePaymentId || !to) return undefined
 
-      const responsePaymentId = await createPayment(amountToUse, to, apiBaseUrl)
+      try {
+        const convertedBaseAmount = convertedCurrencyObj?.float
 
-      setPaymentId(responsePaymentId)
-      return responsePaymentId
-    } catch (err) {
-      console.error('Error creating payment ID:', err)
-      return undefined
-    }
-  }, [disablePaymentId, apiBaseUrl, randomSatoshis, setPaymentId])
+        const amountToUse =
+          (isFiat(currency) || randomSatoshis) && convertedBaseAmount !== undefined
+          ? convertedBaseAmount
+          : amount
 
-  const lastPaymentAmount = useRef<number | null>(null);
+        const responsePaymentId = await createPayment(amountToUse, to, apiBaseUrl)
+
+        setPaymentId(responsePaymentId)
+        return responsePaymentId
+      } catch (err) {
+        console.error('Error creating payment ID:', err)
+        return undefined
+      }
+    },
+    [disablePaymentId, apiBaseUrl, randomSatoshis, convertedCurrencyObj]
+  )
+
+  const lastPaymentAmount = useRef<number | null>(null)
   useEffect(() => {
     const noAmount =
-      amount === undefined || amount === null || amount === ''
+      amount === undefined || amount === null || amount === '';
 
     if (
       !dialogOpen ||
@@ -177,23 +180,35 @@ export const PayButton = ({
       !to ||
       noAmount
     ) {
-      return
+      return;
     }
 
-    const amountNumber = Number(amount)
-    if (paymentId && lastPaymentAmount.current === amountNumber) {
-      return
+    let effectiveAmount: number
+    if (isFiat(currency)) {
+      if (!convertedCurrencyObj) {
+        // Conversion not ready yet – wait for convertedCurrencyObj update
+        return;
+      }
+      effectiveAmount = convertedCurrencyObj.float;
+    } else {
+      const amountNumber = Number(amount);
+      if (Number.isNaN(amountNumber)) {
+        return;
+      }
+      effectiveAmount = amountNumber;
+    }
+    if (paymentId && lastPaymentAmount.current === effectiveAmount) {
+      return;
     }
 
-    lastPaymentAmount.current = amountNumber
+    lastPaymentAmount.current = effectiveAmount;
 
     void getPaymentId(
       currency,
-      Number(amount),
-      convertedAmount,
+      effectiveAmount,
       to
-    )
-  }, [amount, convertedAmount, currency, to, dialogOpen, disablePaymentId, paymentId, getPaymentId])
+    );
+  }, [amount, currency, to, dialogOpen, disablePaymentId, paymentId, getPaymentId, convertedCurrencyObj]);
 
 
   const handleButtonClick = useCallback(async (): Promise<void> => {
@@ -215,7 +230,6 @@ export const PayButton = ({
     paymentId,
     disablePaymentId,
     getPaymentId,
-    convertedAmount,
   ])
 
   const handleCloseDialog = (success?: boolean, paymentId?: string): void => {
@@ -338,7 +352,7 @@ export const PayButton = ({
 
   useEffect(() => {
     if (currencyObj && isFiat(currency) && price) {
-      if(!convertedCurrencyObj) {
+      if (!convertedCurrencyObj) {
         const addressType: Currency = getCurrencyTypeFromAddress(to);
         const convertedObj = getCurrencyObject(
           currencyObj.float / price,
@@ -346,17 +360,15 @@ export const PayButton = ({
           randomSatoshis,
         );
         setCryptoAmount(convertedObj.string);
-        setConvertedAmount(convertedObj.float);
         setConvertedCurrencyObj(convertedObj);
       }
-    } else if (!isFiat(currency) && randomSatoshis && !convertedCurrencyObj){
+    } else if (!isFiat(currency) && randomSatoshis && !convertedCurrencyObj) {
       const convertedObj = getCurrencyObject(
         amount as number,
         addressType,
         randomSatoshis,
       );
       setCryptoAmount(convertedObj.string);
-      setConvertedAmount(convertedObj.float);
       setConvertedCurrencyObj(convertedObj);
     } else if (!isFiat(currency) && !randomSatoshis) {
       setCryptoAmount(amount?.toString());
