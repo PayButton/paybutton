@@ -144,8 +144,8 @@ export const PayButton = ({
 
   const getPaymentId = useCallback(async (
       currency: Currency,
-      amount: number,
       to: string | undefined,
+      amount?: number,
     ): Promise<string | undefined> => {
       if (disablePaymentId || !to) return undefined
 
@@ -169,27 +169,26 @@ export const PayButton = ({
     [disablePaymentId, apiBaseUrl, randomSatoshis, convertedCurrencyObj]
   )
 
-  const lastPaymentAmount = useRef<number | null>(null)
+  const lastPaymentAmount = useRef<number | null | undefined>(undefined)
   useEffect(() => {
-    const noAmount =
-      amount === undefined || amount === null || amount === '';
 
     if (
       !dialogOpen ||
       disablePaymentId ||
-      !to ||
-      noAmount
+      !to
     ) {
       return;
     }
 
-    let effectiveAmount: number
+    let effectiveAmount: number | null
     if (isFiat(currency)) {
       if (!convertedCurrencyObj) {
         // Conversion not ready yet – wait for convertedCurrencyObj update
         return;
       }
       effectiveAmount = convertedCurrencyObj.float;
+    } else if (amount === undefined) {
+      effectiveAmount = null
     } else {
       const amountNumber = Number(amount);
       if (Number.isNaN(amountNumber)) {
@@ -205,8 +204,8 @@ export const PayButton = ({
 
     void getPaymentId(
       currency,
-      effectiveAmount,
-      to
+      to,
+      effectiveAmount ?? undefined,
     );
   }, [amount, currency, to, dialogOpen, disablePaymentId, paymentId, getPaymentId, convertedCurrencyObj]);
 
