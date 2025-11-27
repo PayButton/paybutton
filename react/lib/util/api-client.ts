@@ -102,7 +102,7 @@ export const createPayment = async (
   if (status === 200) {
     return data.paymentId;
   }
-  throw new Error("Failed to generate payment Id.") // WIP
+  throw new Error(`Failed to generate payment ID. Status: ${status}, Response: ${JSON.stringify(data)}`)
 
 };
 

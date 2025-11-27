@@ -610,7 +610,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     };
 
     initializePaymentId();
-  }, [paymentId, disablePaymentId, props.amount, to, apiBaseUrl, setPaymentId, setFetchingPaymentId, fetchingPaymentId, convertedCurrencyObj]);
+  }, [paymentId, disablePaymentId, props.amount, to, apiBaseUrl, setPaymentId, setFetchingPaymentId, convertedCurrencyObj]);
 
   useEffect(() => {
     const invalidAmount = thisAmount !== undefined && thisAmount && isNaN(+thisAmount)

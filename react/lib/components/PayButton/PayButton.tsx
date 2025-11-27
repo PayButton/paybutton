@@ -148,7 +148,7 @@ export const PayButton = ({
     convertedAmount: number | undefined,
     to: string | undefined,
   ): Promise<string | undefined> => {
-    if (disablePaymentId || !to) return paymentId
+    if (disablePaymentId || !to) return undefined
     try {
       const amountToUse =
         (isFiat(currency) || randomSatoshis) && convertedAmount
@@ -163,7 +163,7 @@ export const PayButton = ({
       console.error('Error creating payment ID:', err)
       return undefined
     }
-  }, [disablePaymentId, apiBaseUrl, isFiat, randomSatoshis])
+  }, [disablePaymentId, apiBaseUrl, randomSatoshis, setPaymentId])
 
   const handleButtonClick = useCallback(async (): Promise<void> => {
 
@@ -182,7 +182,6 @@ export const PayButton = ({
     setDialogOpen(true)
   }, [
     onOpen,
-    isFiat,
     currency,
     amount,
     to,
@@ -323,7 +322,7 @@ export const PayButton = ({
         setConvertedAmount(convertedObj.float);
         setConvertedCurrencyObj(convertedObj);
       }
-    } else if (!isFiat(currency) && randomSatoshis && !convertedAmount){
+    } else if (!isFiat(currency) && randomSatoshis && !convertedCurrencyObj){
       const convertedObj = getCurrencyObject(
         amount as number,
         addressType,
