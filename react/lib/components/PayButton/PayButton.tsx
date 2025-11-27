@@ -142,6 +142,7 @@ export const PayButton = ({
     }, 300);
   };
 
+
   const getPaymentId = useCallback(async (
     currency: Currency,
     amount: number,
@@ -165,6 +166,7 @@ export const PayButton = ({
     }
   }, [disablePaymentId, apiBaseUrl, randomSatoshis, setPaymentId])
 
+  const lastPaymentAmount = useRef<number | null>(null);
   useEffect(() => {
     const noAmount =
       amount === undefined || amount === null || amount === ''
@@ -178,13 +180,20 @@ export const PayButton = ({
       return
     }
 
+    const amountNumber = Number(amount)
+    if (paymentId && lastPaymentAmount.current === amountNumber) {
+      return
+    }
+
+    lastPaymentAmount.current = amountNumber
+
     void getPaymentId(
       currency,
       Number(amount),
       convertedAmount,
       to
     )
-  }, [amount, convertedAmount, currency, to, dialogOpen, disablePaymentId, getPaymentId])
+  }, [amount, convertedAmount, currency, to, dialogOpen, disablePaymentId, paymentId, getPaymentId])
 
 
   const handleButtonClick = useCallback(async (): Promise<void> => {
@@ -195,10 +204,6 @@ export const PayButton = ({
       } else {
         onOpen(amount, to, paymentId)
       }
-    }
-
-    if (!disablePaymentId && !paymentId) {
-      await getPaymentId(currency, Number(amount), convertedAmount, to)
     }
 
     setDialogOpen(true)
