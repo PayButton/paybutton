@@ -165,6 +165,28 @@ export const PayButton = ({
     }
   }, [disablePaymentId, apiBaseUrl, randomSatoshis, setPaymentId])
 
+  useEffect(() => {
+    const noAmount =
+      amount === undefined || amount === null || amount === ''
+
+    if (
+      !dialogOpen ||
+      disablePaymentId ||
+      !to ||
+      noAmount
+    ) {
+      return
+    }
+
+    void getPaymentId(
+      currency,
+      Number(amount),
+      convertedAmount,
+      to
+    )
+  }, [amount, convertedAmount, currency, to, dialogOpen, disablePaymentId, getPaymentId])
+
+
   const handleButtonClick = useCallback(async (): Promise<void> => {
 
     if (onOpen) {
@@ -327,7 +349,7 @@ export const PayButton = ({
         amount as number,
         addressType,
         randomSatoshis,
-      ); 
+      );
       setCryptoAmount(convertedObj.string);
       setConvertedAmount(convertedObj.float);
       setConvertedCurrencyObj(convertedObj);

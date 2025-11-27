@@ -175,6 +175,13 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     setPaymentId,
   } = props;
   const [loading, setLoading] = useState(true);
+  const isWaitingForPaymentId =
+    isChild === true &&
+    !disablePaymentId &&
+    paymentId === undefined
+
+  const qrLoading = loading || isWaitingForPaymentId
+
 
   // websockets if standalone
   const [internalTxsSocket, setInternalTxsSocket] = useState<Socket | undefined>(undefined)
@@ -336,7 +343,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   }, [])
 
   const classes = useMemo(() => {
-    const base: StyleProps = { success, loading, theme, recentlyCopied, copied }
+    const base: StyleProps = { success, loading: qrLoading, theme, recentlyCopied, copied }
     return {
       root: {
         minWidth: '240px',
@@ -462,7 +469,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         animationDelay: '0.4s',
       },
     }
-  }, [success, loading, theme, recentlyCopied, copied])
+  }, [success, qrLoading, theme, recentlyCopied, copied])
 
   const bchSvg = useMemo((): string => {
     const color = theme.palette.logo ?? theme.palette.primary
@@ -994,7 +1001,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
             {(() => {
               if (errorMsg) return errorMsg
               if (disabled) return 'Not yet ready for payment'
-              if (loading) return 'Loading...'
+              if (qrLoading) return 'Loading...'
               if (success) return successText
               return text
             })()}
@@ -1074,7 +1081,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
               sx={classes.qrCode}
               onClick={handleQrCodeClick}
             >
-              <Fade in={!loading && url !== ''}>
+              <Fade in={!qrLoading && url !== ''}>
                 {/* one single child for Fade, cast to any to satisfy MUI/React types */}
                 <Box component="span">
                   {qrCode}
@@ -1092,7 +1099,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                 </Box>
               </Fade>
 
-              {loading ? (
+              {qrLoading ? (
                 <Box
                   position="absolute"
                   top={0}
