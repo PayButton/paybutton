@@ -1158,6 +1158,11 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                   onValueChange={(values) => {
                     setDraftAmount(values.value); // raw numeric value without commas
                   }}
+                  onKeyDown={(e: React.KeyboardEvent) => {
+                    if (e.key === 'Enter' && isDraftValid && !isSameAmount) {
+                      applyDraftAmount();
+                    }
+                  }}
                   thousandSeparator
                   allowLeadingZeros={false}
                   decimalScale={8}
@@ -1167,14 +1172,27 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                   disabled={success}
                   InputProps={{
                     endAdornment: (
-                      <IconButton
+                      <Box
+                        component="button"
                         onClick={applyDraftAmount}
-                        disabled={!isDraftValid || isSameAmount}
-                        edge="end"
-                        sx={{ marginRight: '-6px' }}
+                        sx={{
+                          padding: '4px 10px',
+                          fontSize: '0.75rem',
+                          fontWeight: 500,
+                          color: '#fff',
+                          backgroundColor: theme.palette.primary,
+                          border: 'none',
+                          borderRadius: '4px',
+                          cursor: 'pointer',
+                          transition: 'background-color 0.2s ease, opacity 0.2s ease',
+                          visibility: isDraftValid && !isSameAmount ? 'visible' : 'hidden',
+                          '&:hover': {
+                            backgroundColor: theme.palette.logo ?? theme.palette.primary,
+                          },
+                        }}
                       >
-                        ✓
-                      </IconButton>
+                        Confirm
+                      </Box>
                     ),
                   }}
                 />
