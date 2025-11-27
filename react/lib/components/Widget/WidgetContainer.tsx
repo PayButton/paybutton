@@ -24,7 +24,7 @@ import {
 import Widget, { WidgetProps } from './Widget';
 
 export interface WidgetContainerProps
-  extends Omit<WidgetProps, 'success' | 'setCurrencyObject' | 'shiftCompleted' | 'setShiftCompleted' | 'setPaymentId' | 'setFetchingPaymentId' | 'fetchingPaymentId'  > {
+  extends Omit<WidgetProps, 'success' | 'setCurrencyObject' | 'shiftCompleted' | 'setShiftCompleted' | 'setPaymentId' > {
   active?: boolean;
   amount?: number;
   opReturn?: string;
@@ -149,9 +149,11 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
     if (donationRate === undefined){
       donationRate = DEFAULT_DONATION_RATE
     }
-    const [thisPaymentId, setThisPaymentId] = useState<string | undefined>();
 
-    const [fetchingPaymentId, setFetchingPaymentId] = useState<boolean | undefined>();
+    const [internalPaymentId, setInternalPaymentId] = useState<string | undefined>(undefined)
+    const thisPaymentId = paymentId ?? internalPaymentId
+    const setThisPaymentId = setInternalPaymentId
+
     const [thisPrice, setThisPrice] = useState(0);
     const [usdPrice, setUsdPrice] = useState(0);
     const [success, setSuccess] = useState(false);
@@ -325,8 +327,6 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
           convertedCurrencyObj={convertedCurrencyObj}
           setConvertedCurrencyObj={setConvertedCurrencyObj}
           setPaymentId={setThisPaymentId}
-          setFetchingPaymentId={setFetchingPaymentId}
-          fetchingPaymentId={fetchingPaymentId}
         />
       </React.Fragment>
     );

@@ -113,8 +113,6 @@ export interface WidgetProps {
   convertedCurrencyObj?: CurrencyObject;
   setConvertedCurrencyObj?: Function;
   setPaymentId?: Function;
-  setFetchingPaymentId?: Function;
-  fetchingPaymentId?: boolean;
 }
 
 interface StyleProps {
@@ -175,8 +173,6 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     donationRate = DEFAULT_DONATION_RATE,
     setConvertedCurrencyObj = () => {},
     setPaymentId,
-    setFetchingPaymentId,
-    fetchingPaymentId,
   } = props;
   const [loading, setLoading] = useState(true);
 
@@ -257,10 +253,10 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const [goalText, setGoalText] = useState('')
   const [goalPercent, setGoalPercent] = useState(0)
   const [altpaymentEditable, setAltpaymentEditable] = useState<boolean>(false)
-  
+
   const price = props.price ?? 0
   const [hasPrice, setHasPrice] = useState(props.price !== undefined && props.price > 0)
-  
+
   // Helper to clamp donation rate to valid range (1-99 if > 0, or 0)
   const clampDonationRate = useCallback((value: number): number => {
     if (value <= 0) return 0
@@ -305,13 +301,10 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const [convertedCryptoAmount, setConvertedCryptoAmount] = useState<number | undefined>(undefined)
   const updateConvertedCurrencyObj = useCallback((convertedObj: CurrencyObject | null) => {
     setConvertedCurrencyObj(convertedObj);
-    if(setPaymentId){
+    if (!isChild && !disablePaymentId && setPaymentId !== undefined) {
       setPaymentId(undefined);
     }
-    if(setFetchingPaymentId){
-      setFetchingPaymentId(undefined);
-    }
-  }, [setConvertedCurrencyObj, setPaymentId, setFetchingPaymentId]);
+  }, [setConvertedCurrencyObj, setPaymentId]);
 
   const [isAboveMinimumAltpaymentAmount, setIsAboveMinimumAltpaymentAmount] = useState<boolean | null>(null)
 
@@ -572,45 +565,40 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
 
   useEffect(() => {
     if (
-      fetchingPaymentId !== undefined ||
-      paymentId !== undefined
+      isChild ||
+      disablePaymentId ||
+      paymentId !== undefined ||
+      setPaymentId === undefined ||
+      to === ''
     ) {
       return
     }
-    if (setFetchingPaymentId) {
-      setFetchingPaymentId(true)
-    }
     const initializePaymentId = async () => {
-      if (paymentId === undefined && !disablePaymentId) {
-        if (to) {
-          try {
-            const amountToUse =
-                    (isFiat(currency) || randomSatoshis) && convertedCurrencyObj
-                    ? convertedCurrencyObj.float
-                    : props.amount
-            const responsePaymentId = await createPayment(amountToUse || undefined, to, apiBaseUrl);
-            if (setPaymentId) {
-              setPaymentId(responsePaymentId);
-            }
-            if (setFetchingPaymentId) {
-              setFetchingPaymentId(false);
-            }
-          } catch (error) {
-            console.error('Error creating payment ID:', error);
-          }
-        }
-      } else {
-        if (setPaymentId) {
-          setPaymentId(paymentId);
-        }
-        if (setFetchingPaymentId) {
-          setFetchingPaymentId(false);
-        }
+      try {
+        const amountToUse =
+          (isFiat(currency) || randomSatoshis) && convertedCurrencyObj
+          ? convertedCurrencyObj.float
+          : props.amount
+        const responsePaymentId = await createPayment(amountToUse || undefined, to, apiBaseUrl);
+        setPaymentId(responsePaymentId)
+      } catch (error) {
+        console.error('Error creating payment ID:', error);
       }
     };
 
-    initializePaymentId();
-  }, [paymentId, disablePaymentId, props.amount, to, apiBaseUrl, setPaymentId, setFetchingPaymentId, convertedCurrencyObj]);
+    void initializePaymentId();
+  }, [
+    isChild,
+    disablePaymentId,
+    paymentId,
+    to,
+    currency,
+    randomSatoshis,
+    convertedCurrencyObj,
+    props.amount,
+    apiBaseUrl,
+    setPaymentId
+  ]);
 
   useEffect(() => {
     const invalidAmount = thisAmount !== undefined && thisAmount && isNaN(+thisAmount)
@@ -732,7 +720,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         setConvertedCryptoAmount(convertedObj.float)
         let amountToDisplay = thisCurrencyObject.string;
         let convertedAmountToDisplay = convertedObj.string
-        
+
         // Only apply donation if 1% of converted crypto amount is >= minimum donation amount
         if (shouldApplyDonation(convertedObj.float, thisAddressType)) {
           const thisDonationAmount = thisCurrencyObject.float * (userDonationRate / 100)
@@ -767,7 +755,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       if (!isFiat(currency) && thisCurrencyObject && notZeroValue) {
         const cur: string = thisCurrencyObject.currency
         const baseAmount = thisCurrencyObject.float // Base amount without donation
-        
+
         // Only apply donation if 1% of amount is >= minimum donation amount
         let amountToDisplay = thisCurrencyObject.string
         if (shouldApplyDonation(baseAmount, cur)) {
@@ -780,7 +768,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
           )
           amountToDisplay = amountWithDonationObj.string
         }
-        
+
         setText(`Send ${amountToDisplay} ${cur}`)
         // Pass base amount (without donation) to resolveUrl
         nextUrl = resolveUrl(cur, baseAmount)
@@ -923,7 +911,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     if (amount) {
       // Check if donation should be applied (1% of amount >= minimum)
       const currencyType = currency.toUpperCase()
-      
+
       if (donationAddress && shouldApplyDonation(amount, currencyType)) {
         const decimals = DECIMALS[currencyType] || DECIMALS.XEC;
         const donationPercent = userDonationRate / 100
@@ -1191,17 +1179,17 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
           <Box py={0.8}>
             <Typography sx={classes.footer}>
               <Box>Powered by PayButton.org</Box>
-              
+
               {(() => {
                 // For fiat conversions, check the converted crypto amount
                 // For crypto-only, check the currency object amount
-                const amountToCheck = hasPrice && convertedCryptoAmount !== undefined 
-                  ? convertedCryptoAmount 
+                const amountToCheck = hasPrice && convertedCryptoAmount !== undefined
+                  ? convertedCryptoAmount
                   : thisCurrencyObject?.float
                 // Show donation UI if amount meets minimum (1% >= 10 XEC), regardless of enabled state
-                return (thisAddressType === 'XEC' || thisAddressType === 'BCH') && 
-                       amountToCheck !== undefined && 
-                       amountToCheck > 0 && 
+                return (thisAddressType === 'XEC' || thisAddressType === 'BCH') &&
+                       amountToCheck !== undefined &&
+                       amountToCheck > 0 &&
                        shouldShowDonationUI(amountToCheck, thisAddressType)
               })() ? (
                 <>
@@ -1245,8 +1233,8 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                             const value = parseFloat(e.target.value) || 0
                             handleDonationRateChange(value)
                           }}
-                          inputProps={{ 
-                            min: 1, 
+                          inputProps={{
+                            min: 1,
                             max: 99,
                             step: 1,
                           }}
