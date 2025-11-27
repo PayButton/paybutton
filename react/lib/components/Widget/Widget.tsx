@@ -178,6 +178,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const [loading, setLoading] = useState(true);
   const [draftAmount, setDraftAmount] = useState<string>("")
   const inputRef = React.useRef<HTMLInputElement>(null)
+  const lastEffectiveAmountRef = React.useRef<number | undefined>(undefined)
 
   const isWaitingForPaymentId =
     isChild === true &&
@@ -585,20 +586,51 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     if (
       isChild ||
       disablePaymentId ||
-      paymentId !== undefined ||
       setPaymentId === undefined ||
       to === ''
     ) {
-      return
+      return;
     }
+
+    // For fiat, wait until we have a converted crypto amount
+    if (isFiat(currency) && convertedCryptoAmount === undefined) {
+      return;
+    }
+
     const initializePaymentId = async () => {
       try {
-        const amountToUse =
-          (isFiat(currency) || randomSatoshis) && convertedCurrencyObj
-          ? convertedCurrencyObj.float
-          : thisAmount
-        const responsePaymentId = await createPayment(amountToUse || undefined, to, apiBaseUrl);
-        setPaymentId(responsePaymentId)
+        let effectiveAmount: number | undefined;
+
+        if (typeof convertedCryptoAmount === 'number') {
+          effectiveAmount = convertedCryptoAmount;
+        } else if (convertedCurrencyObj && typeof convertedCurrencyObj.float === 'number') {
+          effectiveAmount = convertedCurrencyObj.float;
+        } else if (
+          thisAmount !== undefined &&
+          thisAmount !== null &&
+          thisAmount !== ''
+        ) {
+          const n = Number(thisAmount);
+          if (!Number.isNaN(n)) {
+            effectiveAmount = n;
+          }
+        }
+
+        if (effectiveAmount === undefined) {
+          return;
+        }
+
+        if (lastEffectiveAmountRef.current === effectiveAmount) {
+          return;
+        }
+        lastEffectiveAmountRef.current = effectiveAmount;
+
+        const responsePaymentId = await createPayment(
+          effectiveAmount,
+          to,
+          apiBaseUrl,
+        );
+        setPaymentId(responsePaymentId);
       } catch (error) {
         console.error('Error creating payment ID:', error);
       }
@@ -608,15 +640,16 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   }, [
     isChild,
     disablePaymentId,
-    paymentId,
     to,
     currency,
-    randomSatoshis,
+    convertedCryptoAmount,
     convertedCurrencyObj,
     thisAmount,
     apiBaseUrl,
-    setPaymentId
+    setPaymentId,
+    lastEffectiveAmountRef,
   ]);
+
 
   useEffect(() => {
     const invalidAmount = thisAmount !== undefined && thisAmount && isNaN(+thisAmount)
