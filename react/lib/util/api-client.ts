@@ -1,7 +1,7 @@
 import axios from 'axios';
 import _ from 'lodash';
 import config from '../paybutton-config.json'
-import { isValidCashAddress, isValidXecAddress } from './address';
+import { getAddressPrefix, isValidCashAddress, isValidXecAddress } from './address';
 import {
   Transaction,
   UtxoDetails,
@@ -10,6 +10,7 @@ import {
   Currency,
 } from './types';
 import { isFiat } from './currency';
+import { CURRENCY_TYPES_MAP, DECIMALS } from './constants';
 
 export const getAddressDetails = async (
   address: string,
@@ -88,6 +89,29 @@ export const getTransactionDetails = async (
   const res = await fetch(`${rootUrl}/transactions/details/${txid}`);
   return res.json();
 };
+
+export const createPayment = async (
+  amount: string | number | undefined,
+  address: string,
+  rootUrl = config.apiBaseUrl,
+): Promise<string | undefined> => {
+  const prefix = getAddressPrefix(address)
+  const decimals = DECIMALS[CURRENCY_TYPES_MAP[prefix]]
+  const safeAmount = amount !== undefined && amount !== null
+    ? Number(amount).toFixed(decimals)
+    : undefined
+  const { data, status } = await axios.post(
+    `${rootUrl}/api/payments/paymentId`,
+    { amount: safeAmount, address }
+  );
+
+  if (status === 200) {
+    return data.paymentId;
+  }
+  throw new Error(`Failed to generate payment ID. Status: ${status}, Response: ${JSON.stringify(data)}`)
+
+};
+
 
 export default {
   getAddressDetails,

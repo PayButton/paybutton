@@ -12,6 +12,7 @@ import copyToClipboard from 'copy-to-clipboard'
 import { QRCodeSVG } from 'qrcode.react'
 import { Socket } from 'socket.io-client'
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes'
+import { NumericFormat } from 'react-number-format';
 import { Button, animation } from '../Button/Button'
 import BarChart from '../BarChart/BarChart'
 import config from '../../paybutton-config.json'
@@ -50,6 +51,8 @@ import {
   MINIMUM_ALTPAYMENT_CAD_AMOUNT,
 } from '../../altpayment'
 
+import { createPayment } from '../../util/api-client';
+
 export interface WidgetProps {
   to: string
   isChild?: boolean
@@ -74,7 +77,7 @@ export interface WidgetProps {
   price?: number | undefined
   usdPrice?: number | undefined
   editable?: boolean
-  setNewTxs: Function
+  setNewTxs?: Function
   newTxs?: Transaction[]
   wsBaseUrl?: string
   apiBaseUrl?: string
@@ -91,23 +94,26 @@ export interface WidgetProps {
   altpaymentSocket?: Socket
   setAltpaymentSocket?: Function
   shiftCompleted?: boolean
-  setShiftCompleted?: Function
-  setCoins?: Function
-  coins?: AltpaymentCoin[]
-  setCoinPair?: Function
-  coinPair?: AltpaymentPair
-  setLoadingPair?: Function
-  loadingPair?: boolean
-  setLoadingShift?: Function
-  loadingShift?: boolean
-  setAltpaymentError?: Function
-  altpaymentError?: AltpaymentError
-  addressType?: Currency
-  setAddressType?: Function
-  newTxText?: string
-  transactionText?: string
   donationAddress?: string
   donationRate?: number
+  setShiftCompleted?: Function;
+  setCoins?: Function;
+  coins?: AltpaymentCoin[];
+  setCoinPair?: Function;
+  coinPair?: AltpaymentPair;
+  setLoadingPair?: Function;
+  loadingPair?: boolean;
+  setLoadingShift?: Function;
+  loadingShift?: boolean;
+  setAltpaymentError?: Function;
+  altpaymentError?: AltpaymentError;
+  addressType?: Currency,
+  setAddressType?: Function,
+  newTxText?: string;
+  transactionText?: string;
+  convertedCurrencyObj?: CurrencyObject;
+  setConvertedCurrencyObj?: Function;
+  setPaymentId?: Function;
 }
 
 interface StyleProps {
@@ -163,10 +169,24 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     altpaymentError,
     setAltpaymentError,
     isChild,
+    convertedCurrencyObj,
     donationAddress = config.donationAddress,
-    donationRate = DEFAULT_DONATION_RATE
+    donationRate = DEFAULT_DONATION_RATE,
+    setConvertedCurrencyObj = () => {},
+    setPaymentId,
   } = props;
   const [loading, setLoading] = useState(true);
+  const [draftAmount, setDraftAmount] = useState<string>("")
+  const inputRef = React.useRef<HTMLInputElement>(null)
+  const lastEffectiveAmountRef = React.useRef<number | undefined | null>(undefined)
+
+  const isWaitingForPaymentId =
+    isChild === true &&
+    !disablePaymentId &&
+    paymentId === undefined
+
+  const qrLoading = loading || isWaitingForPaymentId
+
 
   // websockets if standalone
   const [internalTxsSocket, setInternalTxsSocket] = useState<Socket | undefined>(undefined)
@@ -245,10 +265,10 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const [goalText, setGoalText] = useState('')
   const [goalPercent, setGoalPercent] = useState(0)
   const [altpaymentEditable, setAltpaymentEditable] = useState<boolean>(false)
-  
+
   const price = props.price ?? 0
   const [hasPrice, setHasPrice] = useState(props.price !== undefined && props.price > 0)
-  
+
   // Helper to clamp donation rate to valid range (1-99 if > 0, or 0)
   const clampDonationRate = useCallback((value: number): number => {
     if (value <= 0) return 0
@@ -291,6 +311,12 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const [opReturn, setOpReturn] = useState<string | undefined>()
   const [isCashtabAvailable, setIsCashtabAvailable] = useState<boolean>(false)
   const [convertedCryptoAmount, setConvertedCryptoAmount] = useState<number | undefined>(undefined)
+  const updateConvertedCurrencyObj = useCallback((convertedObj: CurrencyObject | null) => {
+    setConvertedCurrencyObj(convertedObj);
+    if (!isChild && !disablePaymentId && setPaymentId !== undefined) {
+      setPaymentId(undefined);
+    }
+  }, [setConvertedCurrencyObj, setPaymentId]);
 
   const [isAboveMinimumAltpaymentAmount, setIsAboveMinimumAltpaymentAmount] = useState<boolean | null>(null)
 
@@ -322,7 +348,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   }, [])
 
   const classes = useMemo(() => {
-    const base: StyleProps = { success, loading, theme, recentlyCopied, copied }
+    const base: StyleProps = { success, loading: qrLoading, theme, recentlyCopied, copied }
     return {
       root: {
         minWidth: '240px',
@@ -448,7 +474,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         animationDelay: '0.4s',
       },
     }
-  }, [success, loading, theme, recentlyCopied, copied])
+  }, [success, qrLoading, theme, recentlyCopied, copied])
 
   const bchSvg = useMemo((): string => {
     const color = theme.palette.logo ?? theme.palette.primary
@@ -466,6 +492,13 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       color,
     )}' stroke='%23fff' stroke-width='.6'/%3E%3Cpath d='m7.2979 14.697-2.6964-2.6966 0.89292-0.8934c0.49111-0.49137 0.90364-0.88958 0.91675-0.88491 0.013104 0.0047 0.71923 0.69866 1.5692 1.5422 0.84994 0.84354 1.6548 1.6397 1.7886 1.7692l0.24322 0.23547 7.5834-7.5832 1.8033 1.8033-9.4045 9.4045z' fill='%23fff' stroke-width='.033708'/%3E%3C/svg%3E%0A`
   }, [theme])
+
+  useEffect(() => {
+    if (thisCurrencyObject?.string !== undefined) {
+      const raw = stripFormatting(thisCurrencyObject.string);
+      setDraftAmount(raw);
+    }
+  }, [thisCurrencyObject?.string]);
 
   useEffect(() => {
     if (!recentlyCopied) return
@@ -550,6 +583,74 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   }, [thisNewTxs, to, apiBaseUrl])
 
   useEffect(() => {
+    if (
+      isChild ||
+      disablePaymentId ||
+      setPaymentId === undefined ||
+      to === ''
+    ) {
+      return;
+    }
+
+    // For fiat, wait until we have a converted crypto amount
+    if (isFiat(currency) && convertedCryptoAmount === undefined) {
+      return;
+    }
+
+    const initializePaymentId = async () => {
+      try {
+        let effectiveAmount: number | null;
+
+        if (typeof convertedCryptoAmount === 'number') {
+          effectiveAmount = convertedCryptoAmount;
+        } else if (convertedCurrencyObj && typeof convertedCurrencyObj.float === 'number') {
+          effectiveAmount = convertedCurrencyObj.float;
+        } else if (
+          thisAmount !== undefined &&
+          thisAmount !== null &&
+          thisAmount !== ''
+        ) {
+          const n = Number(thisAmount);
+          if (Number.isNaN(n)) {
+            return
+          }
+          effectiveAmount = n;
+        } else {
+          effectiveAmount = null
+        }
+
+        if (lastEffectiveAmountRef.current === effectiveAmount) {
+          return;
+        }
+        lastEffectiveAmountRef.current = effectiveAmount;
+
+        const responsePaymentId = await createPayment(
+          effectiveAmount ?? undefined,
+          to,
+          apiBaseUrl,
+        );
+        setPaymentId(responsePaymentId);
+      } catch (error) {
+        console.error('Error creating payment ID:', error);
+      }
+    };
+
+    void initializePaymentId();
+  }, [
+    isChild,
+    disablePaymentId,
+    to,
+    currency,
+    convertedCryptoAmount,
+    convertedCurrencyObj,
+    thisAmount,
+    apiBaseUrl,
+    setPaymentId,
+    lastEffectiveAmountRef,
+  ]);
+
+
+  useEffect(() => {
     const invalidAmount = thisAmount !== undefined && thisAmount && isNaN(+thisAmount)
     if (isValidCashAddress(to) || isValidXecAddress(to)) {
       setDisabled(isPropsTrue(props.disabled))
@@ -595,14 +696,31 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       }
     }
     if (userEditedAmount !== undefined && thisAmount && thisAddressType) {
-      const obj = getCurrencyObject(+thisAmount, currency, false)
-      setThisCurrencyObject(obj)
-      if (props.setCurrencyObject) props.setCurrencyObject(obj)
+      const obj = getCurrencyObject(+thisAmount, currency, false);
+      setThisCurrencyObject(obj);
+      if (props.setCurrencyObject) {
+        props.setCurrencyObject(obj);
+      }
+      const convertedAmount = obj.float / price
+      const convertedObj = price
+        ? getCurrencyObject(
+          convertedAmount,
+          thisAddressType,
+          randomSatoshis,
+        )
+        : null;
+      updateConvertedCurrencyObj(convertedObj)
     } else if (thisAmount && thisAddressType) {
-      cleanAmount = +thisAmount
-      const obj = getCurrencyObject(cleanAmount, currency, randomSatoshis)
-      setThisCurrencyObject(obj)
-      if (props.setCurrencyObject) props.setCurrencyObject(obj)
+      cleanAmount = +thisAmount;
+
+      const obj = getCurrencyObject(cleanAmount, currency, randomSatoshis);
+      setThisCurrencyObject(obj);
+      if(!isFiat(currency)) {
+        updateConvertedCurrencyObj(obj);
+      }
+      if (props.setCurrencyObject) {
+        props.setCurrencyObject(obj);
+      }
     }
   }, [thisAmount, currency, userEditedAmount])
 
@@ -636,17 +754,23 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     } else {
       setWidgetButtonText(`Send with ${thisAddressType} wallet`)
     }
+
     if (thisCurrencyObject && hasPrice) {
-      const convertedAmount = thisCurrencyObject.float / price
-      const convertedObj = price
-        ? getCurrencyObject(convertedAmount, thisAddressType, randomSatoshis)
-        : null
+      // Use convertedAmount prop if available, otherwise calculate locally
+      const convertedAmount = convertedCurrencyObj ? convertedCurrencyObj.float : thisCurrencyObject.float / price
+      const convertedObj = convertedCurrencyObj ? convertedCurrencyObj : price
+        ? getCurrencyObject(
+          convertedAmount,
+          thisAddressType,
+          randomSatoshis,
+        )
+        : null;
       if (convertedObj) {
         // Store converted crypto amount for donation UI visibility check
         setConvertedCryptoAmount(convertedObj.float)
         let amountToDisplay = thisCurrencyObject.string;
         let convertedAmountToDisplay = convertedObj.string
-        
+
         // Only apply donation if 1% of converted crypto amount is >= minimum donation amount
         if (shouldApplyDonation(convertedObj.float, thisAddressType)) {
           const thisDonationAmount = thisCurrencyObject.float * (userDonationRate / 100)
@@ -681,7 +805,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       if (!isFiat(currency) && thisCurrencyObject && notZeroValue) {
         const cur: string = thisCurrencyObject.currency
         const baseAmount = thisCurrencyObject.float // Base amount without donation
-        
+
         // Only apply donation if 1% of amount is >= minimum donation amount
         let amountToDisplay = thisCurrencyObject.string
         if (shouldApplyDonation(baseAmount, cur)) {
@@ -694,7 +818,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
           )
           amountToDisplay = amountWithDonationObj.string
         }
-        
+
         setText(`Send ${amountToDisplay} ${cur}`)
         // Pass base amount (without donation) to resolveUrl
         nextUrl = resolveUrl(cur, baseAmount)
@@ -837,7 +961,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     if (amount) {
       // Check if donation should be applied (1% of amount >= minimum)
       const currencyType = currency.toUpperCase()
-      
+
       if (donationAddress && shouldApplyDonation(amount, currencyType)) {
         const decimals = DECIMALS[currencyType] || DECIMALS.XEC;
         const donationPercent = userDonationRate / 100
@@ -861,15 +985,36 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     [disabled, to, opReturn, userDonationRate, donationAddress, donationEnabled, shouldApplyDonation]
   )
 
-  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let amount = e.target.value
-    if (amount === '') {
-      amount = '0'
-    }
-    const userEdited = getCurrencyObject(+amount, currency, false)
-    setUserEditedAmount(userEdited)
-    updateAmount(amount)
+  const stripFormatting = (s: string) => {
+    return s.replace(/,/g, '').replace(/(\.\d*?[1-9])0+$/, '$1').replace(/\.0+$/, '');
   }
+
+
+  const applyDraftAmount = () => {
+    if (!draftAmount) return
+
+    const raw = draftAmount.trim()
+
+    if (raw === '' || isNaN(+raw)) return
+
+    const numeric = +raw
+
+    const newObj = getCurrencyObject(numeric, currency, false)
+    setUserEditedAmount(newObj)
+
+    updateAmount(String(numeric))
+  }
+
+  const isDraftValid =
+    draftAmount.trim() !== '' &&
+    !isNaN(+draftAmount) &&
+    +draftAmount > 0
+
+  const isSameAmount =
+    isDraftValid &&
+    +draftAmount === thisCurrencyObject?.float
+
+
 
   const updateAmount = (amount: string) => {
     setThisAmount(amount)
@@ -920,7 +1065,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
             {(() => {
               if (errorMsg) return errorMsg
               if (disabled) return 'Not yet ready for payment'
-              if (loading) return 'Loading...'
+              if (qrLoading) return 'Loading...'
               if (success) return successText
               return text
             })()}
@@ -1000,7 +1145,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
               sx={classes.qrCode}
               onClick={handleQrCodeClick}
             >
-              <Fade in={!loading && url !== ''}>
+              <Fade in={!qrLoading && url !== ''}>
                 {/* one single child for Fade, cast to any to satisfy MUI/React types */}
                 <Box component="span">
                   {qrCode}
@@ -1018,7 +1163,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                 </Box>
               </Fade>
 
-              {loading ? (
+              {qrLoading ? (
                 <Box
                   position="absolute"
                   top={0}
@@ -1040,17 +1185,51 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
 
             {isPropsTrue(editable) ? (
               <Box sx={classes.editAmount} component="div">
-                <TextField
+                <NumericFormat
+                  value={draftAmount}
+                  onValueChange={(values) => {
+                    setDraftAmount(values.value); // raw numeric value without commas
+                  }}
+                  onKeyDown={(e: React.KeyboardEvent) => {
+                    if (e.key === 'Enter' && isDraftValid && !isSameAmount) {
+                      applyDraftAmount();
+                    }
+                  }}
+                  thousandSeparator
+                  allowLeadingZeros={false}
+                  decimalScale={8}
+                  inputRef={inputRef}
+                  customInput={TextField}
                   label="Edit amount"
-                  value={thisCurrencyObject?.float || 0}
-                  onChange={handleAmountChange}
-                  inputProps={{ maxLength: 12 }}
-                  name="Amount"
-                  placeholder="Enter Amount"
-                  id="userEditedAmount"
                   disabled={success}
+                  InputProps={{
+                    endAdornment: (
+                      <Box
+                        component="button"
+                        onClick={applyDraftAmount}
+                        sx={{
+                          padding: '4px 10px',
+                          fontSize: '0.75rem',
+                          fontWeight: 500,
+                          color: '#fff',
+                          backgroundColor: theme.palette.primary,
+                          border: 'none',
+                          borderRadius: '4px',
+                          cursor: 'pointer',
+                          transition: 'background-color 0.2s ease, opacity 0.2s ease',
+                          visibility: isDraftValid && !isSameAmount ? 'visible' : 'hidden',
+                          '&:hover': {
+                            backgroundColor: theme.palette.logo ?? theme.palette.primary,
+                          },
+                        }}
+                      >
+                        Confirm
+                      </Box>
+                    ),
+                  }}
                 />
-                <Typography component="span">{currency}</Typography>
+                <Typography component="span" sx={{ marginLeft: '4px' }}>{currency}</Typography>
+
               </Box>
             ) : null}
 
@@ -1105,17 +1284,17 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
           <Box py={0.8}>
             <Typography sx={classes.footer}>
               <Box>Powered by PayButton.org</Box>
-              
+
               {(() => {
                 // For fiat conversions, check the converted crypto amount
                 // For crypto-only, check the currency object amount
-                const amountToCheck = hasPrice && convertedCryptoAmount !== undefined 
-                  ? convertedCryptoAmount 
+                const amountToCheck = hasPrice && convertedCryptoAmount !== undefined
+                  ? convertedCryptoAmount
                   : thisCurrencyObject?.float
                 // Show donation UI if amount meets minimum (1% >= 10 XEC), regardless of enabled state
-                return (thisAddressType === 'XEC' || thisAddressType === 'BCH') && 
-                       amountToCheck !== undefined && 
-                       amountToCheck > 0 && 
+                return (thisAddressType === 'XEC' || thisAddressType === 'BCH') &&
+                       amountToCheck !== undefined &&
+                       amountToCheck > 0 &&
                        shouldShowDonationUI(amountToCheck, thisAddressType)
               })() ? (
                 <>
@@ -1159,8 +1338,8 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                             const value = parseFloat(e.target.value) || 0
                             handleDonationRateChange(value)
                           }}
-                          inputProps={{ 
-                            min: 1, 
+                          inputProps={{
+                            min: 1,
                             max: 99,
                             step: 1,
                           }}
