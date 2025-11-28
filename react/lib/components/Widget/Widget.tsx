@@ -1182,7 +1182,6 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                 </Box>
               ) : null}
             </Box>
-
             {isPropsTrue(editable) ? (
               <Box sx={classes.editAmount} component="div">
                 <NumericFormat
@@ -1193,16 +1192,26 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                   onKeyDown={(e: React.KeyboardEvent) => {
                     if (e.key === 'Enter' && isDraftValid && !isSameAmount) {
                       applyDraftAmount();
-                    }
+                  }
                   }}
                   thousandSeparator
                   allowLeadingZeros={false}
                   decimalScale={8}
                   inputRef={inputRef}
                   customInput={TextField}
+                  isAllowed={
+                    (values) => {
+                      const { floatValue } = values
+                      return (
+                        floatValue === undefined ||
+                        (
+                          floatValue <= (MAX_AMOUNT[thisAddressType] ?? MAX_AMOUNT.XEC) &&
+                          floatValue >= 0
+                        )
+                      )
+                    }
+                  }
                   label="Edit amount"
-                  min={0}
-                  max={MAX_AMOUNT[thisAddressType] ?? MAX_AMOUNT.XEC}
                   step={STEP_AMOUNT[thisAddressType] ?? STEP_AMOUNT.XEC}
                   name="Amount"
                   placeholder="Enter Amount"
@@ -1215,18 +1224,18 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                         onClick={applyDraftAmount}
                         sx={{
                           padding: '4px 10px',
-                          fontSize: '0.75rem',
-                          fontWeight: 500,
-                          color: '#fff',
-                          backgroundColor: theme.palette.primary,
-                          border: 'none',
-                          borderRadius: '4px',
-                          cursor: 'pointer',
-                          transition: 'background-color 0.2s ease, opacity 0.2s ease',
-                          visibility: isDraftValid && !isSameAmount ? 'visible' : 'hidden',
-                          '&:hover': {
-                            backgroundColor: theme.palette.logo ?? theme.palette.primary,
-                          },
+                            fontSize: '0.75rem',
+                            fontWeight: 500,
+                            color: '#fff',
+                            backgroundColor: theme.palette.primary,
+                            border: 'none',
+                            borderRadius: '4px',
+                            cursor: 'pointer',
+                            transition: 'background-color 0.2s ease, opacity 0.2s ease',
+                            visibility: isDraftValid && !isSameAmount ? 'visible' : 'hidden',
+                            '&:hover': {
+                              backgroundColor: theme.palette.logo ?? theme.palette.primary,
+                        },
                         }}
                       >
                         Confirm
