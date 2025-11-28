@@ -443,7 +443,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         width: '100%',
         margin: '12px auto 10px',
         display: 'flex',
-        alignItems: 'flex-end',
+        alignItems: 'center',
         '& > div': { width: '100%' },
         '& span': { marginLeft: '4px', fontSize: '16px' },
       },
