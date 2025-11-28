@@ -412,6 +412,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         animation: 'fade-slide-up 0.6s ease-out forwards',
         animationDelay: '0.7s',
         opacity: 0,
+        lineHeight: 2.5,
       },
       footerSeparator: {
         marginLeft: '7px',
