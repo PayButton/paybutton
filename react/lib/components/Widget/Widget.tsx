@@ -77,7 +77,7 @@ export interface WidgetProps {
   price?: number | undefined
   usdPrice?: number | undefined
   editable?: boolean
-  setNewTxs: Function
+  setNewTxs?: Function
   newTxs?: Transaction[]
   wsBaseUrl?: string
   apiBaseUrl?: string
