@@ -8,6 +8,11 @@ export const DECIMALS: { [key: string]: number } = {
     FIAT: 2,
 };
 
+export const MAX_AMOUNT: { [key: string]: number } = {
+    BCH: 999999.99999999,
+    XEC: 999999999999.99,
+};
+
 // Default delay (ms) before auto-closing success dialog when autoClose is enabled
 export const AUTO_CLOSE_DEFAULT_MS = 2000;
 

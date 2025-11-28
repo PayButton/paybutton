@@ -24,6 +24,7 @@
     "build:react:clean": "yarn clean:react && yarn build:react",
     "clean:paybutton": "rm -rf paybutton/node_modules paybutton/dist",
     "clean:app": "yarn clean:react && yarn clean:paybutton",
-    "clean:build": "yarn clean:app && yarn build"
+    "clean:build": "yarn clean:app && yarn build",
+    "clean:watch": "yarn clean:build && yarn watch"
   }
 }

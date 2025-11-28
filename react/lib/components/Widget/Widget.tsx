@@ -25,6 +25,7 @@ import {
   openCashtabPayment,
   initializeCashtabStatus,
   DECIMALS,
+  MAX_AMOUNT,
   CurrencyObject,
   getCurrencyObject,
   formatPrice,
@@ -985,7 +986,6 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     },
     [disabled, to, opReturn, userDonationRate, donationAddress, donationEnabled, shouldApplyDonation]
   )
-
   const stripFormatting = (s: string) => {
     return s.replace(/,/g, '').replace(/(\.\d*?[1-9])0+$/, '$1').replace(/\.0+$/, '');
   }
@@ -1183,7 +1183,6 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                 </Box>
               ) : null}
             </Box>
-
             {isPropsTrue(editable) ? (
               <Box sx={classes.editAmount} component="div">
                 <NumericFormat
@@ -1194,14 +1193,39 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                   onKeyDown={(e: React.KeyboardEvent) => {
                     if (e.key === 'Enter' && isDraftValid && !isSameAmount) {
                       applyDraftAmount();
-                    }
+                  }
                   }}
                   thousandSeparator
                   allowLeadingZeros={false}
                   decimalScale={8}
                   inputRef={inputRef}
                   customInput={TextField}
+                  isAllowed={(values) => {
+                    const { floatValue, value } = values
+
+                    if (floatValue === undefined) {
+                      return true
+                    }
+
+                    const maxAmount = MAX_AMOUNT[thisAddressType] ?? MAX_AMOUNT.XEC
+                    if (floatValue < 0 || floatValue > maxAmount) {
+                      return false
+                    }
+
+                    const stepDecimals = DECIMALS[thisAddressType] ?? DECIMALS.XEC
+                    const decimals = value.split('.')[1]?.length ?? 0
+
+                    // Do not allow more decimal places than step supports
+                    if (decimals > stepDecimals) {
+                      return false
+                    }
+
+                    return true
+                  }}
                   label="Edit amount"
+                  name="Amount"
+                  placeholder="Enter Amount"
+                  id="userEditedAmount"
                   disabled={success}
                   InputProps={{
                     endAdornment: (
@@ -1210,18 +1234,18 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                         onClick={applyDraftAmount}
                         sx={{
                           padding: '4px 10px',
-                          fontSize: '0.75rem',
-                          fontWeight: 500,
-                          color: '#fff',
-                          backgroundColor: theme.palette.primary,
-                          border: 'none',
-                          borderRadius: '4px',
-                          cursor: 'pointer',
-                          transition: 'background-color 0.2s ease, opacity 0.2s ease',
-                          visibility: isDraftValid && !isSameAmount ? 'visible' : 'hidden',
-                          '&:hover': {
-                            backgroundColor: theme.palette.logo ?? theme.palette.primary,
-                          },
+                            fontSize: '0.75rem',
+                            fontWeight: 500,
+                            color: '#fff',
+                            backgroundColor: theme.palette.primary,
+                            border: 'none',
+                            borderRadius: '4px',
+                            cursor: 'pointer',
+                            transition: 'background-color 0.2s ease, opacity 0.2s ease',
+                            visibility: isDraftValid && !isSameAmount ? 'visible' : 'hidden',
+                            '&:hover': {
+                              backgroundColor: theme.palette.logo ?? theme.palette.primary,
+                        },
                         }}
                       >
                         Confirm
