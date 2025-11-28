@@ -8,11 +8,6 @@ export const DECIMALS: { [key: string]: number } = {
     FIAT: 2,
 };
 
-export const STEP_AMOUNT: { [key: string]: number } = {
-    BCH: 0.00000001,
-    XEC: 0.01
-};
-
 export const MAX_AMOUNT: { [key: string]: number } = {
     BCH: 999999.99999999,
     XEC: 999999999999.99,

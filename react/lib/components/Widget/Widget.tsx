@@ -16,7 +16,7 @@ import { NumericFormat } from 'react-number-format';
 import { Button, animation } from '../Button/Button'
 import BarChart from '../BarChart/BarChart'
 import config from '../../paybutton-config.json'
-import { DONATION_RATE_STORAGE_KEY, STEP_AMOUNT } from '../../util/constants'
+import { DONATION_RATE_STORAGE_KEY } from '../../util/constants'
 import {
   getAddressBalance,
   Currency,
@@ -1200,20 +1200,29 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                   decimalScale={8}
                   inputRef={inputRef}
                   customInput={TextField}
-                  isAllowed={
-                    (values) => {
-                      const { floatValue } = values
-                      return (
-                        floatValue === undefined ||
-                        (
-                          floatValue <= (MAX_AMOUNT[thisAddressType] ?? MAX_AMOUNT.XEC) &&
-                          floatValue >= 0
-                        )
-                      )
+                  isAllowed={(values) => {
+                    const { floatValue, value } = values
+
+                    if (floatValue === undefined) {
+                      return true
                     }
-                  }
+
+                    const maxAmount = MAX_AMOUNT[thisAddressType] ?? MAX_AMOUNT.XEC
+                    if (floatValue < 0 || floatValue > maxAmount) {
+                      return false
+                    }
+
+                    const stepDecimals = DECIMALS[thisAddressType] ?? DECIMALS.XEC
+                    const decimals = value.split('.')[1]?.length ?? 0
+
+                    // Do not allow more decimal places than step supports
+                    if (decimals > stepDecimals) {
+                      return false
+                    }
+
+                    return true
+                  }}
                   label="Edit amount"
-                  step={STEP_AMOUNT[thisAddressType] ?? STEP_AMOUNT.XEC}
                   name="Amount"
                   placeholder="Enter Amount"
                   id="userEditedAmount"
