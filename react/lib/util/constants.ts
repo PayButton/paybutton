@@ -8,6 +8,11 @@ export const DECIMALS: { [key: string]: number } = {
     FIAT: 2,
 };
 
+export const STEP_AMOUNT: { [key: string]: number } = {
+    BCH: 0.00000001,
+    XEC: 0.01
+};
+
 export const MAX_AMOUNT: { [key: string]: number } = {
     BCH: 999999.99999999,
     XEC: 999999999999.99,
@@ -19,6 +24,11 @@ export const AUTO_CLOSE_DEFAULT_MS = 2000;
 export const CURRENCY_PREFIXES_MAP: Record<typeof CRYPTO_CURRENCIES[number], string> = {
     bch: 'bitcoincash',
     xec: 'ecash',
+};
+
+export const CURRENCY_TYPES_MAP: Record<typeof CRYPTO_CURRENCIES[number], string> = {
+  bitcoincash: 'BCH',
+  ecash: 'XEC'
 };
 
 export type ButtonSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | "extrasmall" | "small" | "medium" | "large" | "extralarge" | undefined;
