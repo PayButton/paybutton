@@ -164,7 +164,7 @@ describe('PayButton', () => {
     })
   })
 
-  it('does not create payment id when amount is missing', async () => {
+  it('create payment id when amount is missing', async () => {
     const user = userEvent.setup()
 
     render(
@@ -177,7 +177,7 @@ describe('PayButton', () => {
     await user.click(screen.getByRole('button', { name: /donate/i }))
 
     await waitFor(() => {
-      expect(createPayment).not.toHaveBeenCalled()
+      expect(createPayment).toHaveBeenCalledTimes(1)
     })
   })
 
