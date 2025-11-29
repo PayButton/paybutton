@@ -355,6 +355,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         minWidth: '240px',
         background: '#f5f5f7',
         position: 'relative',
+        overflow: 'hidden',
       },
       qrCode: {
         background: '#fff',
