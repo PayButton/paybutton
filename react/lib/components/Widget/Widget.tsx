@@ -323,11 +323,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const [isAboveMinimumAltpaymentAmount, setIsAboveMinimumAltpaymentAmount] = useState<boolean | null>(null)
 
   const theme = useTheme(props.theme, isValidXecAddress(to))
-  const isDarkMode = useMemo(() => {
-    const result = darkMode(theme.palette.tertiary);
-    console.log('darkMode debug:', { tertiary: theme.palette.tertiary, isDarkMode: result });
-    return result;
-  }, [theme.palette.tertiary])
+  const isDarkMode = useMemo(() => darkMode(theme.palette.tertiary), [theme.palette.tertiary])
 
   const [thisAmount, setThisAmount] = useState(props.amount)
   const [thisCurrencyObject, setThisCurrencyObject] = useState(props.currencyObject)

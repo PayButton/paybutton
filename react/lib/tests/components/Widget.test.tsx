@@ -6,7 +6,7 @@ import Widget from '../../components/Widget/Widget'
 jest.mock('copy-to-clipboard', () => jest.fn())
 
 jest.mock('../../util', () => ({
-  __esModule: true,
+  ...jest.requireActual('../../util'),
   // network / balance
   getAddressBalance: jest.fn().mockResolvedValue(0),
   // address / currency helpers
