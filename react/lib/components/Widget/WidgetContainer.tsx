@@ -286,6 +286,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
     );
 
     // Handle pending transactions for XEC finality (step 1: payment detected)
+    // Only shows visual animation - no callbacks or toasts
     const handlePendingTransaction = useCallback(
       (tx: Transaction) => {
         if (isGreaterThanZero(resolveNumber(tx.amount))) {
@@ -302,8 +303,8 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
             opReturn,
             currencyObj
           )) {
+            // Only set visual pending state - no callbacks fired here
             setPendingFinality(true);
-            setPendingTxs([tx]);
           }
         }
       },
