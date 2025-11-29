@@ -237,11 +237,17 @@ function getSortedInputAddresses (networkSlug: string, transaction: Tx): string[
   return sortedInputAddresses
 }
 
+export interface ParseWebsocketMessageCallbacks {
+    onPendingTx?: (transactions: Transaction[]) => void;
+    onFinalizedTx?: (transactions: Transaction[]) => void;
+}
+
 export const parseWebsocketMessage = async (
     wsMsg: any,
     setNewTx: Function,
     chronik: ChronikClient,
-    address: string
+    address: string,
+    callbacks?: ParseWebsocketMessageCallbacks
 ): Promise<void> => {
     const { type } = wsMsg;
     if (type === 'Error') {
@@ -251,20 +257,42 @@ export const parseWebsocketMessage = async (
     switch (msgType) {
       case 'TX_ADDED_TO_MEMPOOL': {
         const rawTransaction = await chronik.tx(wsMsg.txid);
-
         const transaction = await getTransactionFromChronikTransaction(rawTransaction, address ?? '')
-
-        setNewTx([transaction]);
-        break;
+        
+        // For XEC (ecash), mark as pending and use callback if provided
+        const networkSlug = getAddressPrefix(address);
+        if (networkSlug === 'ecash' && callbacks?.onPendingTx) {
+          transaction.status = 'pending';
+          callbacks.onPendingTx([transaction]);
+        } else {
+          // For BCH or if no pending callback, use original behavior
+          setNewTx([transaction]);
         }
-        default:
-            return;
+        break;
+      }
+      case 'TX_FINALIZED': {
+        // XEC only: Transaction has achieved Avalanche finality
+        const rawTransaction = await chronik.tx(wsMsg.txid);
+        const transaction = await getTransactionFromChronikTransaction(rawTransaction, address ?? '')
+        transaction.status = 'finalized';
+        
+        if (callbacks?.onFinalizedTx) {
+          callbacks.onFinalizedTx([transaction]);
+        } else {
+          // Fallback to setNewTx for backward compatibility
+          setNewTx([transaction]);
+        }
+        break;
+      }
+      default:
+        return;
     }
 };
 
 export const initializeChronikWebsocket = async (
     address: string,
-    setNewTx: Function
+    setNewTx: Function,
+    callbacks?: ParseWebsocketMessageCallbacks
 ): Promise<WsEndpoint> => {
     const networkSlug = getAddressPrefix(address)
     const blockchainUrls = config.networkBlockchainURLs[networkSlug];
@@ -279,7 +307,8 @@ export const initializeChronikWebsocket = async (
                 msg,
                 setNewTx,
                 chronik,
-                address
+                address,
+                callbacks
             );
         },
     });

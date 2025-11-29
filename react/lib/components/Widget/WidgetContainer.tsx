@@ -157,6 +157,8 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
     const [thisPrice, setThisPrice] = useState(0);
     const [usdPrice, setUsdPrice] = useState(0);
     const [success, setSuccess] = useState(false);
+    const [pendingFinality, setPendingFinality] = useState(false);
+    const [pendingTxs, setPendingTxs] = useState<Transaction[] | undefined>();
     const { enqueueSnackbar } = useSnackbar();
 
     const [shiftCompleted, setShiftCompleted] = useState(false);
@@ -184,6 +186,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
             if (sound && !isPropsTrue(disableSound)) txSound.play().catch(() => {});
             onSuccess?.(transaction);
             setShiftCompleted(true)
+            setPendingFinality(false);
           }
         } else {
           const expectedAmount = currencyObj ? currencyObj?.float : undefined
@@ -212,6 +215,8 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
                 }Received ${receivedAmount} ${currencyTicker}`,
                 snackbarOptionsSuccess,
               );
+            // Clear pending state and show success
+            setPendingFinality(false);
             setSuccess(true);
             onSuccess?.(transaction);
           } else {
@@ -280,6 +285,37 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
       [handlePayment],
     );
 
+    // Handle pending transactions for XEC finality (step 1: payment detected)
+    const handlePendingTransaction = useCallback(
+      (tx: Transaction) => {
+        if (isGreaterThanZero(resolveNumber(tx.amount))) {
+          const expectedAmount = currencyObj ? currencyObj?.float : undefined
+          // Validate the transaction before showing pending state
+          if (shouldTriggerOnSuccess(
+            tx,
+            currency,
+            thisPrice,
+            randomSatoshis,
+            disablePaymentId,
+            thisPaymentId,
+            expectedAmount,
+            opReturn,
+            currencyObj
+          )) {
+            setPendingFinality(true);
+            setPendingTxs([tx]);
+          }
+        }
+      },
+      [currency, thisPrice, randomSatoshis, disablePaymentId, thisPaymentId, opReturn, currencyObj],
+    );
+
+    useEffect(() => {
+      pendingTxs?.map(tx => {
+        handlePendingTransaction(tx);
+      });
+    }, [pendingTxs, handlePendingTransaction]);
+
     useEffect(() => {
       thisNewTxs?.map(tx => {
         handleNewTransaction(tx);
@@ -327,6 +363,9 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
           convertedCurrencyObj={convertedCurrencyObj}
           setConvertedCurrencyObj={setConvertedCurrencyObj}
           setPaymentId={setThisPaymentId}
+          pendingFinality={pendingFinality}
+          setPendingTxs={setPendingTxs}
+          pendingTxs={pendingTxs}
         />
       </React.Fragment>
     );

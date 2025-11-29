@@ -115,6 +115,9 @@ export interface WidgetProps {
   convertedCurrencyObj?: CurrencyObject;
   setConvertedCurrencyObj?: Function;
   setPaymentId?: Function;
+  pendingFinality?: boolean;
+  setPendingTxs?: Function;
+  pendingTxs?: Transaction[];
 }
 
 interface StyleProps {
@@ -123,6 +126,7 @@ interface StyleProps {
   theme: Theme
   recentlyCopied: boolean
   copied: boolean
+  pendingFinality: boolean
 }
 
 export const Widget: React.FunctionComponent<WidgetProps> = props => {
@@ -175,6 +179,8 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     donationRate = DEFAULT_DONATION_RATE,
     setConvertedCurrencyObj = () => {},
     setPaymentId,
+    pendingFinality = false,
+    setPendingTxs,
   } = props;
   const [loading, setLoading] = useState(true);
   const [draftAmount, setDraftAmount] = useState<string>("")
@@ -344,12 +350,16 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
 @keyframes copy-icon { 0% { transform: scale(1); } 50% { transform: scale(0.7); } 100% { transform: scale(1); } }
 @keyframes success-qr { 0% { transform: scale(1); } 50% { transform: scale(0.7); } 100% { transform: scale(1); } }
 @keyframes success-icon { 0% { transform: rotate(0deg); } 20% { transform: rotate(-10deg); } 60% { transform: rotate(370deg); } 100% { transform: rotate(360deg); } }
+@keyframes pending-pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(0.98); } }
+@keyframes pending-glow { 0%, 100% { box-shadow: 0 0 5px 0px rgba(0, 116, 194, 0.4); } 50% { box-shadow: 0 0 20px 5px rgba(0, 116, 194, 0.6); } }
+@keyframes pending-icon-pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.8; } }
+@keyframes pending-rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 `
     document.head.appendChild(style)
   }, [])
 
   const classes = useMemo(() => {
-    const base: StyleProps = { success, loading: qrLoading, theme, recentlyCopied, copied }
+    const base: StyleProps = { success, loading: qrLoading, theme, recentlyCopied, copied, pendingFinality }
     return {
       root: {
         minWidth: '240px',
@@ -374,7 +384,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
           margin: '-1px',
         },
         '& path': {
-          opacity: base.loading ? 0 : base.success ? 0.35 : 1,
+          opacity: base.loading ? 0 : base.success ? 0.35 : base.pendingFinality ? 0.5 : 1,
           color: base.theme.palette.secondary,
         },
         '& image': { opacity: base.loading ? 0 : 1 },
@@ -452,6 +462,8 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       qrAnimations: {
         animation: base.success
           ? 'success-qr 0.4s ease-in-out forwards'
+          : base.pendingFinality
+          ? 'pending-pulse 2s ease-in-out infinite'
           : base.recentlyCopied
           ? 'copy-qr 0.3s ease-in-out forwards'
           : !base.loading && !base.copied
@@ -463,6 +475,8 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         '& image': {
           animation: base.success
             ? 'success-icon 1s ease-in-out forwards'
+            : base.pendingFinality
+            ? 'pending-icon-pulse 1.5s ease-in-out infinite'
             : base.recentlyCopied
             ? 'copy-icon 0.3s ease-in-out forwards'
             : !base.loading && !base.copied
@@ -471,13 +485,24 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
           transformOrigin: 'center center',
         },
       },
+      // Pending finality overlay styles for the glowing border effect
+      pendingOverlay: {
+        position: 'absolute' as const,
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        borderRadius: '4px',
+        pointerEvents: 'none' as const,
+        animation: base.pendingFinality ? 'pending-glow 2s ease-in-out infinite' : 'none',
+      },
       button_container: {
         opacity: 0,
         animation: 'button-slide 0.6s ease-in-out forwards',
         animationDelay: '0.4s',
       },
     }
-  }, [success, qrLoading, theme, recentlyCopied, copied])
+  }, [success, qrLoading, theme, recentlyCopied, copied, pendingFinality])
 
   const bchSvg = useMemo((): string => {
     const color = theme.palette.logo ?? theme.palette.primary
@@ -537,6 +562,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
           wsBaseUrl,
           setTxsSocket: setThisTxsSocket,
           setNewTxs: setThisNewTxs,
+          setPendingTxs: setPendingTxs,
         })
         if (thisUseAltpayment) {
           await setupAltpaymentSocket({
@@ -1069,6 +1095,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
               if (disabled) return 'Not yet ready for payment'
               if (qrLoading) return 'Loading...'
               if (success) return successText
+              if (pendingFinality) return 'Finalizing...'
               return text
             })()}
           </Typography>
@@ -1183,6 +1210,9 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                   />
                 </Box>
               ) : null}
+
+              {/* Pending finality glow overlay for XEC */}
+              {pendingFinality && <Box sx={classes.pendingOverlay} />}
             </Box>
             {isPropsTrue(editable) ? (
               <Box sx={classes.editAmount} component="div">

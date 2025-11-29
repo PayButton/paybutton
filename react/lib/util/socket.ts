@@ -120,6 +120,7 @@ interface SetupTxsSocketParams {
   wsBaseUrl?: string
   setTxsSocket: Function
   setNewTxs: Function
+  setPendingTxs?: Function
   setDialogOpen?: Function
   checkSuccessInfo?: CheckSuccessInfo
 }
@@ -145,9 +146,20 @@ export const setupChronikWebSocket = async (params: SetupTxsSocketParams): Promi
     params.setTxsSocket(undefined);
   }
   
-  const newChronikSocket = await initializeChronikWebsocket(params.address, (transactions: Transaction[]) => { 
-    params.setNewTxs(transactions);
-  }); 
+  const newChronikSocket = await initializeChronikWebsocket(
+    params.address,
+    (transactions: Transaction[]) => { 
+      params.setNewTxs(transactions);
+    },
+    {
+      onPendingTx: params.setPendingTxs ? (transactions: Transaction[]) => {
+        params.setPendingTxs!(transactions);
+      } : undefined,
+      onFinalizedTx: (transactions: Transaction[]) => {
+        params.setNewTxs(transactions);
+      }
+    }
+  ); 
   
   params.setTxsSocket(newChronikSocket);
 }

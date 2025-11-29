@@ -18,6 +18,8 @@ export interface Transaction {
     rawMessage?: string
     inputAddresses?: string[]
     opReturn?: string
+    /** XEC only: 'pending' when detected but awaiting Avalanche finality, 'finalized' when confirmed final */
+    status?: 'pending' | 'finalized'
 }
 
 export interface UtxoDetails {
