@@ -73,5 +73,8 @@ export const getLuminance = (color: string): number => {
  * This threshold can be adjusted based on needs
  */
 export const darkMode = (color: string, threshold = 0.5): boolean => {
-  return getLuminance(color) > threshold;
+  const luminance = getLuminance(color);
+  const result = luminance > threshold;
+  console.log('darkMode:', { color, luminance, threshold, result });
+  return result;
 };
