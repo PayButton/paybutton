@@ -41,7 +41,7 @@ import {
   CryptoCurrency,
   DEFAULT_DONATION_RATE,
   DEFAULT_MINIMUM_DONATION_AMOUNT,
-  isLightColor,
+  darkMode,
 } from '../../util';
 import AltpaymentWidget from './AltpaymentWidget'
 import {
@@ -323,7 +323,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const [isAboveMinimumAltpaymentAmount, setIsAboveMinimumAltpaymentAmount] = useState<boolean | null>(null)
 
   const theme = useTheme(props.theme, isValidXecAddress(to))
-  const isLightTertiary = useMemo(() => isLightColor(theme.palette.tertiary), [theme.palette.tertiary])
+  const isDarkMode = useMemo(() => darkMode(theme.palette.tertiary), [theme.palette.tertiary])
 
   const [thisAmount, setThisAmount] = useState(props.amount)
   const [thisCurrencyObject, setThisCurrencyObject] = useState(props.currencyObject)
@@ -355,13 +355,13 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     return {
       root: {
         minWidth: '240px',
-        background: isLightTertiary ? '#2a2a2a' : '#f5f5f7',
+        background: isDarkMode ? '#2a2a2a' : '#f5f5f7',
         position: 'relative',
         overflow: 'hidden',
       },
       qrCode: {
-        background: isLightTertiary ? '#1a1a1a' : '#fff',
-        border: isLightTertiary ? '1px solid #333' : '1px solid #eee',
+        background: isDarkMode ? '#1a1a1a' : '#fff',
+        border: isDarkMode ? '1px solid #333' : '1px solid #eee',
         borderRadius: '4px',
         outline: 'none',
         lineHeight: 0,
@@ -383,19 +383,19 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       },
       copyTextContainer: {
         display: base.loading ? 'none' : 'block',
-        background: isLightTertiary ? '#1a1a1acc' : '#ffffffcc',
+        background: isDarkMode ? '#1a1a1acc' : '#ffffffcc',
         padding: '0 0.15rem 0.15rem 0',
       },
       copyText: {
         lineHeight: '1.2em',
         fontSize: '0.7em',
         color: base.theme.palette.tertiary,
-        textShadow: isLightTertiary
+        textShadow: isDarkMode
           ? '#000 -2px 0 1px, #000 0 -2px 1px, #000 0 2px 1px, #000 2px 0 1px'
           : '#fff -2px 0 1px, #fff 0 -2px 1px, #fff 0 2px 1px, #fff 2px 0 1px',
         '&:disabled span': {
           filter: 'blur(2px)',
-          color: isLightTertiary ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)',
+          color: isDarkMode ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)',
         },
       },
       text: {
@@ -407,7 +407,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       },
       footer: {
         fontSize: '0.6rem',
-        color: isLightTertiary ? '#888888' : '#a8a8a8',
+        color: isDarkMode ? '#888888' : '#a8a8a8',
         fontWeight: 'normal',
         userSelect: 'none',
         display: 'flex',
@@ -427,8 +427,8 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         cursor: 'pointer',
         padding: '6px 12px',
         marginTop: '20px',
-        background: isLightTertiary ? '#444444' : '#e9e9e9',
-        color: isLightTertiary ? '#ffffff' : 'inherit',
+        background: isDarkMode ? '#444444' : '#e9e9e9',
+        color: isDarkMode ? '#ffffff' : 'inherit',
         borderRadius: '5px',
         transition: 'all ease-in-out 200ms',
         opacity: 0,
@@ -481,7 +481,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         animationDelay: '0.4s',
       },
     }
-  }, [success, qrLoading, theme, recentlyCopied, copied, isLightTertiary])
+  }, [success, qrLoading, theme, recentlyCopied, copied, isDarkMode])
 
   const bchSvg = useMemo((): string => {
     const color = theme.palette.logo ?? theme.palette.primary
@@ -1035,7 +1035,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         size={300}
         level="H"
         value={url}
-        bgColor={isLightTertiary ? '#1a1a1a' : '#ffffff'}
+        bgColor={isDarkMode ? '#1a1a1a' : '#ffffff'}
         fgColor={theme.palette.tertiary as unknown as string}
         imageSettings={{
           src: success ? checkSvg : isValidCashAddress(to) ? bchSvg : xecSvg,
@@ -1064,7 +1064,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         <Box
           flex="shrink"
           alignSelf="stretch"
-          style={{ background: isLightTertiary ? '#3a3a3a' : '#fff' }}
+          style={{ background: isDarkMode ? '#3a3a3a' : '#fff' }}
           py={1}
           textAlign="center"
         >
@@ -1347,7 +1347,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                           width: '13px',
                           height: '13px',
                           fill: donationEnabled ? '#f44336' : 'none',
-                          stroke: donationEnabled ? '#f44336' : (isLightTertiary ? '#a0a0a0' : '#5c5c5c'),
+                          stroke: donationEnabled ? '#f44336' : (isDarkMode ? '#a0a0a0' : '#5c5c5c'),
                           strokeWidth: donationEnabled ? 0 : 1.5,
                           transition: 'all 0.2s ease-in-out',
                           '&:hover': {
@@ -1385,7 +1385,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                                 padding: '0px 2px 0px 4px',
                                 fontSize: '0.6rem',
                                 textAlign: 'left',
-                                color: isLightTertiary ? '#b0b0b0' : '#5c5c5c',
+                                color: isDarkMode ? '#b0b0b0' : '#5c5c5c',
                                 lineHeight: '1.5em',
                               },
                               '& fieldset': {
@@ -1398,7 +1398,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                           component="span"
                           sx={{
                             fontSize: '0.6rem',
-                            color: isLightTertiary ? '#b0b0b0' : '#5c5c5c',
+                            color: isDarkMode ? '#b0b0b0' : '#5c5c5c',
                             flexShrink: 0,
                             marginLeft: '2px',
                           }}
