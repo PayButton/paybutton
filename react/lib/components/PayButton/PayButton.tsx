@@ -132,15 +132,6 @@ export const PayButton = ({
     cryptoAmountRef.current = cryptoAmount;
   }, [cryptoAmount]);
 
-  const waitPrice = (callback: Function) => {
-    const intervalId = setInterval(() => {
-      if (priceRef.current !== 0) {
-        clearInterval(intervalId);
-        callback();
-      }
-    }, 300);
-  };
-
 
   const getPaymentId = useCallback(async (
       currency: Currency,
@@ -169,58 +160,38 @@ export const PayButton = ({
     [disablePaymentId, apiBaseUrl, randomSatoshis, convertedCurrencyObj]
   )
 
-  const lastPaymentAmount = useRef<number | null | undefined>(undefined)
-  useEffect(() => {
-
-    if (
-      !dialogOpen ||
-      disablePaymentId ||
-      !to
-    ) {
-      return;
-    }
-
-    let effectiveAmount: number | null
-    if (isFiat(currency)) {
-      if (!convertedCurrencyObj) {
-        // Conversion not ready yet – wait for convertedCurrencyObj update
-        return;
-      }
-      effectiveAmount = convertedCurrencyObj.float;
-    } else if (amount === undefined) {
-      effectiveAmount = null
-    } else {
-      const amountNumber = Number(amount);
-      if (Number.isNaN(amountNumber)) {
-        return;
-      }
-      effectiveAmount = amountNumber;
-    }
-    if (lastPaymentAmount.current === effectiveAmount) {
-      return;
-    }
-
-    lastPaymentAmount.current = effectiveAmount;
-
-    void getPaymentId(
-      currency,
-      to,
-      effectiveAmount ?? undefined,
-    );
-  }, [amount, currency, to, dialogOpen, disablePaymentId, paymentId, getPaymentId, convertedCurrencyObj]);
-
+  const lastPaymentAmount = useRef<number | undefined>(undefined);
 
   const handleButtonClick = useCallback(async (): Promise<void> => {
+    let finalPaymentId = paymentId;
+
+    if (!disablePaymentId && to && (!finalPaymentId || lastPaymentAmount.current === undefined)) {
+      let effectiveAmount: number | undefined;
+
+      if (isFiat(currency)) {
+        effectiveAmount = convertedCurrencyObj?.float;
+      } else if (amount !== undefined) {
+        const parsed = Number(amount);
+        if (!Number.isNaN(parsed)) {
+          effectiveAmount = parsed;
+        }
+      }
+
+      finalPaymentId = await getPaymentId(currency, to, effectiveAmount);
+
+      lastPaymentAmount.current = effectiveAmount;
+    }
+
 
     if (onOpen) {
       if (isFiat(currency)) {
-        void waitPrice(() => onOpen(cryptoAmountRef.current, to, paymentId))
+        onOpen(cryptoAmountRef.current, to, finalPaymentId);
       } else {
-        onOpen(amount, to, paymentId)
+        onOpen(amount, to, finalPaymentId);
       }
     }
 
-    setDialogOpen(true)
+    setDialogOpen(true);
   }, [
     onOpen,
     currency,
@@ -229,7 +200,29 @@ export const PayButton = ({
     paymentId,
     disablePaymentId,
     getPaymentId,
-  ])
+    convertedCurrencyObj,
+  ]);
+
+  useEffect(() => {
+    if (!dialogOpen || disablePaymentId || !to) return;
+
+    let effectiveAmount: number | undefined;
+
+    if (isFiat(currency)) {
+      effectiveAmount = convertedCurrencyObj?.float;
+    } else if (amount !== undefined) {
+      const parsed = Number(amount);
+      if (!Number.isNaN(parsed)) {
+        effectiveAmount = parsed;
+      }
+    }
+
+    if (effectiveAmount !== undefined && lastPaymentAmount.current !== effectiveAmount) {
+      lastPaymentAmount.current = effectiveAmount;
+      void getPaymentId(currency, to, effectiveAmount);
+    }
+  }, [dialogOpen, amount, convertedCurrencyObj, currency, getPaymentId, disablePaymentId, to]);
+
 
   const handleCloseDialog = (success?: boolean, paymentId?: string): void => {
     if (onClose !== undefined) onClose(success, paymentId);
