@@ -321,6 +321,43 @@ describe('PayButton', () => {
       expect(createPayment).toHaveBeenCalledTimes(1)
     })
   })
+  it('does not regenerate paymentId when using fixed numeric amount across reopen', async () => {
+    const user = userEvent.setup()
+    const onOpen = jest.fn()
+
+    // sanity check — should start at zero
+    expect(createPayment).toHaveBeenCalledTimes(0)
+
+    render(
+      <PayButton
+        to="ecash:qz3wrtmwtuycud3k6w7afkmn3285vw2lfy36y43nvk"
+        amount={7}
+        currency="XEC"
+        onOpen={onOpen}
+      />
+    )
+
+    // still 0 after mount
+    expect(createPayment).toHaveBeenCalledTimes(0)
+
+    // first open
+    await user.click(screen.getByRole('button', { name: /donate/i }))
+    await waitFor(() => {
+      expect(createPayment).toHaveBeenCalledTimes(1)
+    })
+
+    // second open with same amount
+    await user.click(screen.getByRole('button', { name: /donate/i }))
+    await waitFor(() => {
+      expect(createPayment).toHaveBeenCalledTimes(1)
+    })
+
+    // third open: still same amount
+    await user.click(screen.getByRole('button', { name: /donate/i }))
+    await waitFor(() => {
+      expect(createPayment).toHaveBeenCalledTimes(1)
+    })
+  })
 })
 
 
