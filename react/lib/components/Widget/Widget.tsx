@@ -1308,7 +1308,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
           ) : null}
 
           <Box py={0.8}>
-            <Typography sx={classes.footer}>
+            <Typography component="div" sx={classes.footer}>
               <Box>Powered by PayButton.org</Box>
 
               {(() => {
