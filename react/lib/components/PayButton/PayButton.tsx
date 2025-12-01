@@ -160,13 +160,13 @@ export const PayButton = ({
     [disablePaymentId, apiBaseUrl, randomSatoshis, convertedCurrencyObj]
   )
 
-  const lastPaymentAmount = useRef<number | undefined>(undefined);
+  const lastPaymentAmount = useRef<number | undefined | null>(undefined);
 
   const handleButtonClick = useCallback(async (): Promise<void> => {
     let finalPaymentId = paymentId;
 
     if (!disablePaymentId && to && (!finalPaymentId || lastPaymentAmount.current === undefined)) {
-      let effectiveAmount: number | undefined;
+      let effectiveAmount: number | null | undefined;
 
       if (isFiat(currency)) {
         effectiveAmount = convertedCurrencyObj?.float;
@@ -175,9 +175,11 @@ export const PayButton = ({
         if (!Number.isNaN(parsed)) {
           effectiveAmount = parsed;
         }
+      } else {
+          effectiveAmount = null
       }
 
-      finalPaymentId = await getPaymentId(currency, to, effectiveAmount);
+      finalPaymentId = await getPaymentId(currency, to, effectiveAmount ?? undefined);
 
       lastPaymentAmount.current = effectiveAmount;
     }
