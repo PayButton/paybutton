@@ -1,8 +1,22 @@
 // FILE: react/lib/tests/components/PayButton.test.tsx
-import { render, screen, waitFor } from '@testing-library/react'
+import { act, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { PayButton } from '../../components/PayButton'
 import { createPayment } from '../../util/api-client'
+
+const realConsoleError = console.error
+beforeAll(() => {
+  console.error = (...args: any[]) => {
+    if (args.some(a => typeof a === 'string' && a.includes('Error creating payment ID'))) {
+      return
+    }
+    realConsoleError(...args)
+  }
+})
+
+afterAll(() => {
+  console.error = realConsoleError
+})
 
 jest.mock('../../util', () => ({
   ...jest.requireActual('../../util'),
@@ -11,33 +25,38 @@ jest.mock('../../util', () => ({
   setupAltpaymentSocket: jest.fn(() => Promise.resolve(undefined)),
 }))
 
+let externalSetConvertedCurrencyObj: any = null;
+
 jest.mock('../../components/PaymentDialog', () => ({
-  PaymentDialog: (props: any) => (
-    <div data-testid="payment-dialog">
-      <button
-        type="button"
-        onClick={() =>
-          props.setAmount?.((prev: any) =>
-            typeof prev === 'number' ? prev + 1 : 1
-          )
-        }
-      >
-        mock-change-amount
-      </button>
-      <button
-        type="button"
-        onClick={() =>
-          props.setConvertedCurrencyObj?.({
-            float: 0.12345678,
-            string: '0.12345678',
-            currency: 'XEC',
-          })
-        }
-      >
-        mock-set-converted
-      </button>
-    </div>
-  ),
+  PaymentDialog: (props: any) => {
+    externalSetConvertedCurrencyObj = props.setConvertedCurrencyObj;
+    return (
+      <div data-testid="payment-dialog">
+        <button
+          type="button"
+          onClick={() =>
+            props.setAmount?.((prev: any) =>
+              typeof prev === 'number' ? prev + 1 : 1
+            )
+          }
+        >
+          mock-change-amount
+        </button>
+        <button
+          type="button"
+          onClick={() =>
+            props.setConvertedCurrencyObj?.({
+              float: 0.12345678,
+              string: '0.12345678',
+              currency: 'XEC',
+            })
+          }
+        >
+          mock-set-converted
+        </button>
+      </div>
+    )
+  },
 }))
 
 jest.mock('../../util/api-client', () => ({
@@ -358,6 +377,235 @@ describe('PayButton', () => {
       expect(createPayment).toHaveBeenCalledTimes(1)
     })
   })
+  it('regenerates paymentId only when the numeric amount actually changes while dialog is open (crypto)', async () => {
+    const user = userEvent.setup()
+    const onOpen = jest.fn()
+
+    expect(createPayment).toHaveBeenCalledTimes(0)
+
+    render(
+      <PayButton
+        to="ecash:qz3wrtmwtuycud3k6w7afkmn3285vw2lfy36y43nvk"
+        amount={2}
+        currency="XEC"
+        onOpen={onOpen}
+      />
+    )
+
+    // First open → generate paymentId(2)
+    await user.click(screen.getByRole('button', { name: /donate/i }))
+    await waitFor(() => {
+      expect(createPayment).toHaveBeenCalledTimes(1)
+    })
+
+    // Change to 3 → regenerate paymentId
+    await user.click(screen.getByRole('button', { name: 'mock-change-amount' }))
+    await waitFor(() => {
+      expect(createPayment).toHaveBeenCalledTimes(2)
+    })
+
+    // Change to 4 → regenerate paymentId again
+    await user.click(screen.getByRole('button', { name: 'mock-change-amount' }))
+    await waitFor(() => {
+      expect(createPayment).toHaveBeenCalledTimes(3)
+    })
+
+    // Reopen multiple times at amount=4 → must not regenerate
+    await user.click(screen.getByRole('button', { name: /donate/i }))
+    await user.click(screen.getByRole('button', { name: /donate/i }))
+    await user.click(screen.getByRole('button', { name: /donate/i }))
+
+    await waitFor(() => {
+      expect(createPayment).toHaveBeenCalledTimes(3)
+    })
+  })
+  it('uses convertedCurrencyObj.float as the effective amount for fiat, not the raw amount', async () => {
+    const user = userEvent.setup()
+    const onOpen = jest.fn()
+
+    expect(createPayment).toHaveBeenCalledTimes(0)
+
+    render(
+      <PayButton
+        to="ecash:qz3wrtmwtuycud3k6w7afkmn3285vw2lfy36y43nvk"
+        amount={100}
+        currency="USD"
+        onOpen={onOpen}
+      />
+    )
+
+    // simulate conversion (first computed by dialog)
+    await user.click(
+      screen.getByRole('button', { name: 'mock-set-converted' })
+    )
+
+    // open dialog
+    await user.click(screen.getByRole('button', { name: /donate/i }))
+
+    await waitFor(() => {
+      expect(createPayment).toHaveBeenCalledTimes(1)
+    })
+
+    // Check that raw amount=100 was NOT used
+    const [firstAmountUsed] = (createPayment as jest.Mock).mock.calls[0]
+
+    expect(firstAmountUsed).not.toBe(100)
+    expect(firstAmountUsed).toBeCloseTo(0.12345678, 8)
+  })
+  it('does not regenerate paymentId for fiat when only raw amount changes and converted stays same', async () => {
+    const user = userEvent.setup()
+    const onOpen = jest.fn()
+
+    expect(createPayment).toHaveBeenCalledTimes(0)
+
+    render(
+      <PayButton
+        to="ecash:qz3wrtmwtuycud3k6w7afkmn3285vw2lfy36y43nvk"
+        amount={50}
+        currency="USD"
+        onOpen={onOpen}
+      />
+    )
+
+    // Initial conversion
+    await user.click(screen.getByRole('button', { name: 'mock-set-converted' }))
+
+    // First open (convertedAmount=0.12345678)
+    await user.click(screen.getByRole('button', { name: /donate/i }))
+    await waitFor(() => {
+      expect(createPayment).toHaveBeenCalledTimes(1)
+    })
+
+    // Change raw amount 50 → 51
+    await user.click(screen.getByRole('button', { name: 'mock-change-amount' }))
+
+    // no new createPayment
+    await waitFor(() => {
+      expect(createPayment).toHaveBeenCalledTimes(1)
+    })
+  })
+  it('regenerates paymentId for fiat only when convertedCurrencyObj.float changes', async () => {
+    const user = userEvent.setup()
+
+    expect(createPayment).toHaveBeenCalledTimes(0)
+
+    render(
+      <PayButton
+        to="ecash:qz3wrtmwtuycud3k6w7afkmn3285vw2lfy36y43nvk"
+        amount={20}
+        currency="USD"
+      />
+    )
+
+    // First conversion
+    await user.click(screen.getByRole('button', { name: 'mock-set-converted' }))
+
+    // First open → ID created at 0.12345678
+    await user.click(screen.getByRole('button', { name: /donate/i }))
+    await waitFor(() => {
+      expect(createPayment).toHaveBeenCalledTimes(1)
+    })
+
+    // reset counter
+    ;(createPayment as jest.Mock).mockClear()
+
+    // Now simulate a different conversion manually
+    await act(async () => {
+      externalSetConvertedCurrencyObj({
+        float: 0.98765432,
+        string: '0.98765432',
+        currency: 'XEC',
+      })
+    })
+
+    // Now must regenerate
+    await waitFor(() => {
+      expect(createPayment).toHaveBeenCalledTimes(1)
+    })
+  })
+  it('ensures onOpen always receives a defined paymentId and reuses it across reopen', async () => {
+    const user = userEvent.setup()
+    const onOpen = jest.fn()
+
+    render(
+      <PayButton
+        to="ecash:qz3wrtmwtuycud3k6w7afkmn3285vw2lfy36y43nvk"
+        amount={4}
+        currency="XEC"
+        onOpen={onOpen}
+      />
+    )
+
+    // First open
+    await user.click(screen.getByRole('button', { name: /donate/i }))
+    await waitFor(() => {
+      expect(onOpen).toHaveBeenCalledTimes(1)
+    })
+
+    const firstArgs = (onOpen as jest.Mock).mock.calls[0]
+    expect(firstArgs[2]).toBe('mock-payment-id')
+
+    // Reopen multiple times
+    await user.click(screen.getByRole('button', { name: /donate/i }))
+    await user.click(screen.getByRole('button', { name: /donate/i }))
+
+    await waitFor(() => {
+      expect(onOpen).toHaveBeenCalledTimes(3)
+    })
+
+    const secondArgs = (onOpen as jest.Mock).mock.calls[1]
+    const thirdArgs  = (onOpen as jest.Mock).mock.calls[2]
+
+    expect(secondArgs[2]).toBe('mock-payment-id')
+    expect(thirdArgs[2]).toBe('mock-payment-id')
+  })
+  it('never generates paymentId when disablePaymentId=true', async () => {
+    const user = userEvent.setup()
+
+    render(
+      <PayButton
+        to="ecash:qz3wrtmwtuycud3k6w7afkmn3285vw2lfy36y43nvk"
+        amount={10}
+        currency="XEC"
+        disablePaymentId
+      />
+    )
+
+    await user.click(screen.getByRole('button', { name: /donate/i }))
+    await user.click(screen.getByRole('button', { name: /donate/i }))
+    await user.click(screen.getByRole('button', { name: /donate/i }))
+
+    await waitFor(() => {
+      expect(createPayment).not.toHaveBeenCalled()
+    })
+  })
+  it('handles getPaymentId failure without crashing and does not call onOpen with undefined id', async () => {
+    const user = userEvent.setup()
+    const onOpen = jest.fn()
+
+    ;(createPayment as jest.Mock).mockImplementationOnce(async () => {
+      throw new Error('server offline')
+    })
+
+    render(
+      <PayButton
+        to="ecash:qz3wrtmwtuycud3k6w7afkmn3285vw2lfy36y43nvk"
+        amount={5}
+        currency="XEC"
+        onOpen={onOpen}
+      />
+    )
+
+    await user.click(screen.getByRole('button', { name: /donate/i }))
+
+    await waitFor(() => {
+      expect(onOpen).toHaveBeenCalledTimes(1)
+    })
+
+    const args = (onOpen as jest.Mock).mock.calls[0]
+    expect(args[2]).toBeUndefined()
+  })
+
 })
 
 
