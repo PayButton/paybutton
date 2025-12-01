@@ -289,5 +289,38 @@ describe('PayButton', () => {
       expect(createPayment).toHaveBeenCalledTimes(1)
     })
   })
+
+
+  it('does not regenerate paymentId when amount is undefined across reopen', async () => {
+    const user = userEvent.setup()
+    const onOpen = jest.fn()
+
+    // createPayment calls should start at 0 for this test
+    expect(createPayment).toHaveBeenCalledTimes(0)
+
+    render(
+      <PayButton
+        to="ecash:qz3wrtmwtuycud3k6w7afkmn3285vw2lfy36y43nvk"
+        currency="XEC"
+        onOpen={onOpen}
+      />
+    )
+
+    // Still 0 right after render, before opening
+    expect(createPayment).toHaveBeenCalledTimes(0)
+
+    // First open
+    await user.click(screen.getByRole('button', { name: /donate/i }))
+    await waitFor(() => {
+      expect(createPayment).toHaveBeenCalledTimes(1)
+    })
+
+    // Second open (we don't actually need a close button for the paymentId behavior)
+    await user.click(screen.getByRole('button', { name: /donate/i }))
+    await waitFor(() => {
+      expect(createPayment).toHaveBeenCalledTimes(1)
+    })
+  })
 })
+
 
