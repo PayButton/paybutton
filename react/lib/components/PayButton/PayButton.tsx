@@ -163,37 +163,39 @@ export const PayButton = ({
   const lastPaymentAmount = useRef<number | undefined | null>(undefined);
 
   const handleButtonClick = useCallback(async (): Promise<void> => {
-    let finalPaymentId = paymentId;
-
-    if (!disablePaymentId && to && (!finalPaymentId || lastPaymentAmount.current === undefined)) {
-      let effectiveAmount: number | null | undefined;
-
-      if (isFiat(currency)) {
-        effectiveAmount = convertedCurrencyObj?.float;
-      } else if (amount !== undefined) {
-        const parsed = Number(amount);
-        if (!Number.isNaN(parsed)) {
-          effectiveAmount = parsed;
-        }
-      } else {
-          effectiveAmount = null
-      }
-
-      finalPaymentId = await getPaymentId(currency, to, effectiveAmount ?? undefined);
-
-      lastPaymentAmount.current = effectiveAmount;
-    }
-
-
-    if (onOpen) {
-      if (isFiat(currency)) {
-        onOpen(cryptoAmountRef.current, to, finalPaymentId);
-      } else {
-        onOpen(amount, to, finalPaymentId);
-      }
-    }
-
+    // OPEN UI IMMEDIATELY
     setDialogOpen(true);
+
+    // Fetch paymentId async — but don’t block UI
+    queueMicrotask(async () => {
+      let finalPaymentId = paymentId;
+
+      if (!disablePaymentId && to && (!finalPaymentId || lastPaymentAmount.current === undefined)) {
+        let effectiveAmount: number | null | undefined;
+
+        if (isFiat(currency)) {
+          effectiveAmount = convertedCurrencyObj?.float;
+        } else if (amount !== undefined) {
+          const parsed = Number(amount);
+          if (!Number.isNaN(parsed)) {
+            effectiveAmount = parsed;
+          }
+        } else {
+            effectiveAmount = null
+        }
+
+        finalPaymentId = await getPaymentId(currency, to, effectiveAmount ?? undefined);
+        lastPaymentAmount.current = effectiveAmount;
+      }
+
+      if (onOpen) {
+        if (isFiat(currency)) {
+          onOpen(cryptoAmountRef.current, to, finalPaymentId);
+        } else {
+          onOpen(amount, to, finalPaymentId);
+        }
+      }
+    });
   }, [
     onOpen,
     currency,
@@ -204,27 +206,6 @@ export const PayButton = ({
     getPaymentId,
     convertedCurrencyObj,
   ]);
-
-  useEffect(() => {
-    if (!dialogOpen || disablePaymentId || !to) return;
-
-    let effectiveAmount: number | undefined;
-
-    if (isFiat(currency)) {
-      effectiveAmount = convertedCurrencyObj?.float;
-    } else if (amount !== undefined) {
-      const parsed = Number(amount);
-      if (!Number.isNaN(parsed)) {
-        effectiveAmount = parsed;
-      }
-    }
-
-    if (effectiveAmount !== undefined && lastPaymentAmount.current !== effectiveAmount) {
-      lastPaymentAmount.current = effectiveAmount;
-      void getPaymentId(currency, to, effectiveAmount);
-    }
-  }, [dialogOpen, amount, convertedCurrencyObj, currency, getPaymentId, disablePaymentId, to]);
-
 
   const handleCloseDialog = (success?: boolean, paymentId?: string): void => {
     if (onClose !== undefined) onClose(success, paymentId);
