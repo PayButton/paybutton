@@ -161,51 +161,93 @@ export const PayButton = ({
   )
 
   const lastPaymentAmount = useRef<number | undefined | null>(undefined);
+  const lastOnOpenPaymentId = useRef<string | undefined>(undefined);
+  const hasFiredOnOpenRef = useRef(false);
 
-  const handleButtonClick = useCallback(async (): Promise<void> => {
-    // OPEN UI IMMEDIATELY
-    setDialogOpen(true);
+  useEffect(() => {
+    if (!dialogOpen || disablePaymentId || !to) return;
 
-    // Fetch paymentId async — but don’t block UI
-    queueMicrotask(async () => {
-      let finalPaymentId = paymentId;
+    let effectiveAmount: number | null | undefined;
 
-      if (!disablePaymentId && to && (!finalPaymentId || lastPaymentAmount.current === undefined)) {
-        let effectiveAmount: number | null | undefined;
+    if (isFiat(currency)) {
+      effectiveAmount = convertedCurrencyObj?.float ?? null;
+    } else if (amount !== undefined) {
+      const parsed = Number(amount);
+      effectiveAmount = Number.isNaN(parsed) ? null : parsed;
+    } else {
+      effectiveAmount = null;
+    }
 
-        if (isFiat(currency)) {
-          effectiveAmount = convertedCurrencyObj?.float;
-        } else if (amount !== undefined) {
-          const parsed = Number(amount);
-          if (!Number.isNaN(parsed)) {
-            effectiveAmount = parsed;
-          }
-        } else {
-            effectiveAmount = null
-        }
+    if (effectiveAmount === lastPaymentAmount.current) {
+      return;
+    }
 
-        finalPaymentId = await getPaymentId(currency, to, effectiveAmount ?? undefined);
-        lastPaymentAmount.current = effectiveAmount;
-      }
+    lastPaymentAmount.current = effectiveAmount;
 
-      if (onOpen) {
-        if (isFiat(currency)) {
-          onOpen(cryptoAmountRef.current, to, finalPaymentId);
-        } else {
-          onOpen(amount, to, finalPaymentId);
-        }
-      }
-    });
+    // Clear current paymentId so child widget goes into "waiting" state
+    setPaymentId(undefined);
+
+    void getPaymentId(currency, to, effectiveAmount ?? undefined);
   }, [
+    dialogOpen,
+    currency,
+    amount,
+    convertedCurrencyObj,
+    disablePaymentId,
+    to,
+    getPaymentId,
+  ]);
+
+  useEffect(() => {
+    if (!dialogOpen) {
+      hasFiredOnOpenRef.current = false;
+      lastOnOpenPaymentId.current = undefined;
+      return;
+    }
+
+    if (!onOpen || hasFiredOnOpenRef.current) {
+      return;
+    }
+
+    if (disablePaymentId) {
+      hasFiredOnOpenRef.current = true;
+      lastOnOpenPaymentId.current = '__no_paymentid__';
+
+      if (isFiat(currency)) {
+        onOpen(cryptoAmountRef.current, to, undefined);
+      } else {
+        onOpen(amount, to, undefined);
+      }
+      return;
+    }
+
+    if (!paymentId) {
+      return;
+    }
+
+    hasFiredOnOpenRef.current = true;
+    lastOnOpenPaymentId.current = paymentId;
+
+    if (isFiat(currency)) {
+      onOpen(cryptoAmountRef.current, to, paymentId);
+    } else {
+      onOpen(amount, to, paymentId);
+    }
+  }, [
+    dialogOpen,
     onOpen,
+    paymentId,
     currency,
     amount,
     to,
-    paymentId,
     disablePaymentId,
-    getPaymentId,
-    convertedCurrencyObj,
   ]);
+
+
+  const handleButtonClick = useCallback((): void => {
+    setDialogOpen(true);
+  }, []);
+
 
   const handleCloseDialog = (success?: boolean, paymentId?: string): void => {
     if (onClose !== undefined) onClose(success, paymentId);
@@ -296,18 +338,16 @@ export const PayButton = ({
   }, [dialogOpen, useAltpayment]);
 
   useEffect(() => {
-    if (dialogOpen === false && initialAmount && currency) {
+    if (initialAmount != null && currency) {
       const obj = getCurrencyObject(
         Number(initialAmount),
         currency,
         randomSatoshis,
       );
-      setTimeout(() => {
-        setAmount(obj.float);
-        setCurrencyObj(obj);
-      }, 300);
+      setAmount(obj.float);
+      setCurrencyObj(obj);
     }
-  }, [dialogOpen, initialAmount, currency, randomSatoshis]);
+  }, [initialAmount, currency, randomSatoshis])
 
   const getPrice = useCallback(
     async () => {

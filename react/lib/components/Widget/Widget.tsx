@@ -181,10 +181,14 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const inputRef = React.useRef<HTMLInputElement>(null)
   const lastEffectiveAmountRef = React.useRef<number | undefined | null>(undefined)
 
+  const [standalonePaymentPending, setStandalonePaymentPending] = useState(false)
+
   const isWaitingForPaymentId =
-    isChild === true &&
-    !disablePaymentId &&
-    paymentId === undefined
+    !disablePaymentId && (
+      (isChild === true && paymentId === undefined) ||
+      (isChild !== true && standalonePaymentPending)
+    )
+
 
   const qrLoading = loading || isWaitingForPaymentId
 
@@ -627,6 +631,8 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         }
         lastEffectiveAmountRef.current = effectiveAmount;
 
+        setStandalonePaymentPending(true)
+
         const responsePaymentId = await createPayment(
           effectiveAmount ?? undefined,
           to,
@@ -635,6 +641,8 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         setPaymentId(responsePaymentId);
       } catch (error) {
         console.error('Error creating payment ID:', error);
+      } finally {
+        setStandalonePaymentPending(false)
       }
     };
 
