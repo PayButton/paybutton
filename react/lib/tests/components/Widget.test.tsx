@@ -1,272 +1,411 @@
-// lib/tests/components/Widget.test.tsx
-import { render, screen, waitFor } from '@testing-library/react'
+// react/lib/tests/components/Widget.test.tsx
+import { render, screen, waitFor, cleanup } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import Widget from '../../components/Widget/Widget'
+import { TEST_ADDRESSES } from '../util/constants'
+import copyToClipboard from 'copy-to-clipboard'
+import type { Currency } from '../../util'
 
 jest.mock('copy-to-clipboard', () => jest.fn())
 
-jest.mock('../../util', () => ({
-  __esModule: true,
-  // network / balance
-  getAddressBalance: jest.fn().mockResolvedValue(0),
-  // address / currency helpers
-  isFiat: jest.fn((c: string) => ['USD', 'CAD', 'EUR'].includes(c)),
-  isValidCashAddress: jest.fn().mockReturnValue(false),
-  isValidXecAddress: jest.fn().mockReturnValue(true),
-  getCurrencyTypeFromAddress: jest.fn().mockReturnValue('XEC'),
-  CURRENCY_PREFIXES_MAP: {
-    xec: 'ecash',
-    bch: 'bitcoincash',
-  },
-  CRYPTO_CURRENCIES: ['xec', 'bch'],
-  DECIMALS: {
-    XEC: 2,
-    BCH: 8,
-    USD: 2,
-    CAD: 2,
-  },
-  // cashtab / sockets
-  openCashtabPayment: jest.fn(),
-  initializeCashtabStatus: jest.fn().mockResolvedValue(false),
-  setupChronikWebSocket: jest.fn().mockResolvedValue(undefined),
-  setupAltpaymentSocket: jest.fn().mockResolvedValue(undefined),
-  // misc helpers
-  getCurrencyObject: jest.fn((amount: number, currency: string) => ({
-    float: Number(amount),
-    string: String(amount),
-    currency,
-  })),
-  formatPrice: jest.fn((value: number, currency: string) => `${value} ${currency}`),
-  encodeOpReturnProps: jest.fn(() => 'deadbeef'),
-  isPropsTrue: (v: unknown) => Boolean(v),
-  DEFAULT_DONATION_RATE: 0,
-  DEFAULT_MINIMUM_DONATION_AMOUNT: {
-    XEC: 10,
-    BCH: 0.0001,
-  },
-}))
+jest.mock('../../util', () => {
+  const real = jest.requireActual('../../util')
+
+  return {
+    __esModule: true,
+    ...real,
+    setupChronikWebSocket: jest.fn().mockResolvedValue(undefined),
+    setupAltpaymentSocket: jest.fn().mockResolvedValue(undefined),
+    getAddressBalance: jest.fn().mockResolvedValue(0),
+    openCashtabPayment: jest.fn(),
+  }
+})
 
 jest.mock('../../util/api-client', () => ({
   __esModule: true,
   createPayment: jest.fn(),
 }))
 
-import copyToClipboard from 'copy-to-clipboard'
 import { createPayment } from '../../util/api-client'
 
-const ADDRESS = 'ecash:qz3wrtmwtuycud3k6w7afkmn3285vw2lfy36y43nvk'
-const API_BASE_URL = 'https://api.example.com'
+const CRYPTO_CASES: { label: string; currency: Currency; to: string }[] = [
+  { label: 'XEC', currency: 'XEC' as Currency, to: TEST_ADDRESSES.ecash },
+  { label: 'BCH', currency: 'BCH' as Currency, to: TEST_ADDRESSES.bitcoincash },
+]
+
+const FIAT_CASES: { label: string; currency: Currency; price: number, to: string }[] = [
+  { label: 'USD', currency: 'USD' as Currency, price: 10, to: TEST_ADDRESSES.ecash },
+  { label: 'CAD', currency: 'CAD' as Currency, price: 20, to: TEST_ADDRESSES.ecash},
+]
 
 beforeEach(() => {
   jest.clearAllMocks()
+  cleanup()
 })
 
-describe('Widget – paymentId creation (standalone)', () => {
-  test('creates paymentId once on initial render when standalone', async () => {
-    ;(createPayment as jest.Mock).mockResolvedValue('pid-1')
-    const setPaymentId = jest.fn()
+describe('Widget – standalone paymentId (crypto)', () => {
+  test.each(CRYPTO_CASES)(
+    '%s – first render triggers createPayment(amount)',
+    async ({ currency, to }) => {
+      ;(createPayment as jest.Mock).mockResolvedValue('pid-crypto-1')
+      const setPaymentId = jest.fn()
 
-    render(
-      <Widget
-        to={ADDRESS}
-        success={false}
-        disabled={false}
-        setPaymentId={setPaymentId}
-        apiBaseUrl={API_BASE_URL}
-      />,
-    )
+      render(
+        <Widget
+          to={to}
+          amount={5}
+          currency={currency}
+          price={0}
+          setPaymentId={setPaymentId}
+        />
+      )
 
-    await waitFor(() => {
-      expect(createPayment).toHaveBeenCalledTimes(1)
-    })
+      await waitFor(() => {
+        expect(createPayment).toHaveBeenCalledWith(5, to, undefined)
+      })
+    }
+  )
 
-    expect(createPayment).toHaveBeenCalledWith(undefined, ADDRESS, API_BASE_URL)
-    expect(setPaymentId).toHaveBeenCalledWith('pid-1')
-  })
+  test.each(CRYPTO_CASES)(
+    '%s – amount change triggers new paymentId',
+    async ({ currency, to }) => {
+      ;(createPayment as jest.Mock)
+        .mockResolvedValueOnce('pid-crypto-1')
+        .mockResolvedValueOnce('pid-crypto-2')
 
-  test('does not create paymentId when isChild is true', async () => {
-    const setPaymentId = jest.fn()
+      const setPaymentId = jest.fn()
 
-    render(
-      <Widget
-        to={ADDRESS}
-        success={false}
-        disabled={false}
-        isChild={true}
-        setPaymentId={setPaymentId}
-        apiBaseUrl={API_BASE_URL}
-      />,
-    )
+      const { rerender } = render(
+        <Widget
+          to={to}
+          amount={5}
+          currency={currency}
+          price={0}
+          setPaymentId={setPaymentId}
+        />
+      )
 
-    await waitFor(() => {
-      expect(createPayment).not.toHaveBeenCalled()
-    })
-    expect(setPaymentId).not.toHaveBeenCalled()
-  })
+      await waitFor(() => {
+        expect(createPayment).toHaveBeenCalledTimes(1)
+      })
 
-  test('does not create paymentId when disablePaymentId is true', async () => {
-    const setPaymentId = jest.fn()
+      rerender(
+        <Widget
+          to={to}
+          amount={8}
+          currency={currency}
+          price={0}
+          setPaymentId={setPaymentId}
+        />
+      )
 
-    render(
-      <Widget
-        to={ADDRESS}
-        success={false}
-        disabled={false}
-        disablePaymentId={true}
-        setPaymentId={setPaymentId}
-        apiBaseUrl={API_BASE_URL}
-      />,
-    )
+      await waitFor(() => {
+        expect(createPayment).toHaveBeenCalledTimes(2)
+      })
+      expect((createPayment as jest.Mock).mock.calls[1][0]).toBe(8)
+    }
+  )
 
-    await waitFor(() => {
-      expect(createPayment).not.toHaveBeenCalled()
-    })
-    expect(setPaymentId).not.toHaveBeenCalled()
-  })
+  test.each(CRYPTO_CASES)(
+    '%s – same amount across rerender does NOT regenerate',
+    async ({ currency, to }) => {
+      ;(createPayment as jest.Mock).mockResolvedValue('pid-crypto')
 
-  test('creates paymentId with undefined amount when amount is not provided', async () => {
-    ;(createPayment as jest.Mock).mockResolvedValue('pid-2')
-    const setPaymentId = jest.fn()
+      const setPaymentId = jest.fn()
 
-    render(
-      <Widget
-        to={ADDRESS}
-        success={false}
-        disabled={false}
-        setPaymentId={setPaymentId}
-        apiBaseUrl={API_BASE_URL}
-      />,
-    )
+      const { rerender } = render(
+        <Widget
+          to={to}
+          amount={5}
+          currency={currency}
+          price={0}
+          setPaymentId={setPaymentId}
+        />
+      )
 
-    await waitFor(() => {
-      expect(createPayment).toHaveBeenCalledTimes(1)
-    })
+      await waitFor(() => {
+        expect(createPayment).toHaveBeenCalledTimes(1)
+      })
 
-    expect(createPayment).toHaveBeenCalledWith(undefined, ADDRESS, API_BASE_URL)
-  })
+      rerender(
+        <Widget
+          to={to}
+          amount={5}
+          currency={currency}
+          price={0}
+          setPaymentId={setPaymentId}
+        />
+      )
 
-  test('creates paymentId with numeric amount when amount is given', async () => {
-    ;(createPayment as jest.Mock).mockResolvedValue('pid-3')
-    const setPaymentId = jest.fn()
-
-    render(
-      <Widget
-        to={ADDRESS}
-        success={false}
-        disabled={false}
-        amount={10}
-        setPaymentId={setPaymentId}
-        apiBaseUrl={API_BASE_URL}
-      />,
-    )
-
-    await waitFor(() => {
-      expect(createPayment).toHaveBeenCalledTimes(1)
-    })
-
-    expect(createPayment).toHaveBeenCalledWith(10, ADDRESS, API_BASE_URL)
-  })
-
-  test('creates new paymentId if amount changes to a different value', async () => {
-    ;(createPayment as jest.Mock)
-      .mockResolvedValueOnce('pid-1')
-      .mockResolvedValueOnce('pid-2')
-
-    const setPaymentId = jest.fn()
-
-    const { rerender } = render(
-      <Widget
-        to={ADDRESS}
-        success={false}
-        disabled={false}
-        amount={5}
-        setPaymentId={setPaymentId}
-        apiBaseUrl={API_BASE_URL}
-      />,
-    )
-
-    await waitFor(() => {
-      expect(createPayment).toHaveBeenCalledTimes(1)
-    })
-    expect(createPayment).toHaveBeenLastCalledWith(5, ADDRESS, API_BASE_URL)
-
-    rerender(
-      <Widget
-        to={ADDRESS}
-        success={false}
-        disabled={false}
-        amount={10}
-        setPaymentId={setPaymentId}
-        apiBaseUrl={API_BASE_URL}
-      />,
-    )
-
-    await waitFor(() => {
-      expect(createPayment).toHaveBeenCalledTimes(2)
-    })
-    expect(createPayment).toHaveBeenLastCalledWith(10, ADDRESS, API_BASE_URL)
-  })
-
-  test('does not create new paymentId if amount changes to the same effective value', async () => {
-    ;(createPayment as jest.Mock).mockResolvedValue('pid-1')
-    const setPaymentId = jest.fn()
-
-    const { rerender } = render(
-      <Widget
-        to={ADDRESS}
-        success={false}
-        disabled={false}
-        amount={5}
-        setPaymentId={setPaymentId}
-        apiBaseUrl={API_BASE_URL}
-      />,
-    )
-
-    await waitFor(() => {
-      expect(createPayment).toHaveBeenCalledTimes(1)
-    })
-
-    rerender(
-      <Widget
-        to={ADDRESS}
-        success={false}
-        disabled={false}
-        amount={5}
-        setPaymentId={setPaymentId}
-        apiBaseUrl={API_BASE_URL}
-      />,
-    )
-
-    await waitFor(() => {
       // still only the first call
-      expect(createPayment).toHaveBeenCalledTimes(1)
-    })
-  })
+      await waitFor(() => {
+        expect(createPayment).toHaveBeenCalledTimes(1)
+      })
+    }
+  )
+
+  test.each(CRYPTO_CASES)(
+    '%s – no paymentId when disablePaymentId=true',
+    async ({ currency, to }) => {
+      const setPaymentId = jest.fn()
+
+      render(
+        <Widget
+          to={to}
+          amount={5}
+          currency={currency}
+          price={0}
+          disablePaymentId={true}
+          setPaymentId={setPaymentId}
+        />
+      )
+
+      await waitFor(() => {
+        expect(createPayment).not.toHaveBeenCalled()
+      })
+      expect(setPaymentId).not.toHaveBeenCalled()
+    }
+  )
+
+  test.each(CRYPTO_CASES)(
+    '%s – no paymentId when isChild=true',
+    async ({ currency, to }) => {
+      const setPaymentId = jest.fn()
+
+      render(
+        <Widget
+          to={to}
+          amount={5}
+          currency={currency}
+          price={0}
+          isChild={true}
+          setPaymentId={setPaymentId}
+        />
+      )
+
+      await waitFor(() => {
+        expect(createPayment).not.toHaveBeenCalled()
+      })
+      expect(setPaymentId).not.toHaveBeenCalled()
+    }
+  )
+
+  test.each(CRYPTO_CASES)(
+    '%s – undefined amount passes undefined to createPayment',
+    async ({ currency, to }) => {
+      ;(createPayment as jest.Mock).mockResolvedValue('pid-crypto-undef')
+      const setPaymentId = jest.fn()
+
+      render(
+        <Widget
+          to={to}
+          currency={currency}
+          price={0}
+          setPaymentId={setPaymentId}
+        />
+      )
+
+      await waitFor(() => {
+        expect(createPayment).toHaveBeenCalledTimes(1)
+      })
+      expect(createPayment).toHaveBeenCalledWith(undefined, to, undefined)
+    }
+  )
 })
 
-describe('Widget – QR copy behaviour', () => {
-  test('clicking QR copies payment URL and triggers feedback behaviour', async () => {
-    const setPaymentId = jest.fn()
+describe('Widget – standalone paymentId (fiat)', () => {
+  test.each(FIAT_CASES)(
+    '%s – uses internal conversion (amount / price) for paymentId',
+    async ({ currency, price }) => {
+      ;(createPayment as jest.Mock).mockResolvedValue('pid-fiat-1')
+      const setPaymentId = jest.fn()
+      const amount = 50
 
-    render(
-      <Widget
-        to={ADDRESS}
-        success={false}
-        disabled={false}
-        setPaymentId={setPaymentId}
-        apiBaseUrl={API_BASE_URL}
-      />,
-    )
+      const to = TEST_ADDRESSES.ecash
 
-    await waitFor(() => {
-      expect(screen.getByText(/click to copy/i)).toBeTruthy()
-    })
+      render(
+        <Widget
+          to={to}
+          amount={amount}
+          currency={currency}
+          price={price}
+          setPaymentId={setPaymentId}
+        />
+      )
 
-    const user = userEvent.setup()
-    await user.click(screen.getByText(/click to copy/i))
+      const expectedCrypto = amount / price
 
-    expect(copyToClipboard).toHaveBeenCalledTimes(1)
-    expect((copyToClipboard as jest.Mock).mock.calls[0][0]).toContain('ecash:')
-  })
+      await waitFor(() => {
+        expect(createPayment).toHaveBeenCalledWith(expectedCrypto, to, undefined)
+      })
+    }
+  )
+
+  test.each(FIAT_CASES)(
+    '%s – new converted amount regenerates paymentId',
+    async ({ currency, price }) => {
+      ;(createPayment as jest.Mock)
+        .mockResolvedValueOnce('pid-fiat-1')
+        .mockResolvedValueOnce('pid-fiat-2')
+
+      const setPaymentId = jest.fn()
+      const to = TEST_ADDRESSES.ecash
+
+      const { rerender } = render(
+        <Widget
+          to={to}
+          amount={50}
+          currency={currency}
+          price={price}
+          setPaymentId={setPaymentId}
+        />
+      )
+
+      await waitFor(() => {
+        expect(createPayment).toHaveBeenCalledTimes(1)
+      })
+
+      rerender(
+        <Widget
+          to={to}
+          amount={90}
+          currency={currency}
+          price={price}
+          setPaymentId={setPaymentId}
+        />
+      )
+
+      await waitFor(() => {
+        expect(createPayment).toHaveBeenCalledTimes(2)
+      })
+
+      const lastCall = (createPayment as jest.Mock).mock.calls[1]
+      expect(lastCall[0]).toBe(90 / price)
+      expect(lastCall[1]).toBe(to)
+    }
+  )
+})
+
+describe('Widget – editable amount input (crypto)', () => {
+  test.each(CRYPTO_CASES)(
+    '%s – editing amount to a new value regenerates paymentId',
+    async ({ currency, to }) => {
+      ;(createPayment as jest.Mock)
+        .mockResolvedValueOnce('pid-edit-1')
+        .mockResolvedValueOnce('pid-edit-2')
+
+      const setPaymentId = jest.fn()
+      const user = userEvent.setup()
+
+      render(
+        <Widget
+          to={to}
+          amount={5}
+          currency={currency}
+          price={0}
+          editable={true}
+          setPaymentId={setPaymentId}
+        />
+      )
+
+      await waitFor(() => {
+        expect(createPayment).toHaveBeenCalledTimes(1)
+      })
+
+      const input = screen.getByLabelText(/edit amount/i)
+
+      await user.clear(input)
+      await user.type(input, '8')
+      await user.keyboard('{Enter}')
+
+      await waitFor(() => {
+        expect(createPayment).toHaveBeenCalledTimes(2)
+      })
+
+      const lastCall = (createPayment as jest.Mock).mock.calls[1]
+      expect(lastCall[0]).toBe(8)
+      expect(lastCall[1]).toBe(to)
+    }
+  )
+
+  test.each(CRYPTO_CASES)(
+    '%s – editing amount to SAME value does NOT regenerate paymentId',
+    async ({ currency, to }) => {
+      ;(createPayment as jest.Mock).mockResolvedValue('pid-edit-same')
+
+      const setPaymentId = jest.fn()
+      const user = userEvent.setup()
+
+      render(
+        <Widget
+          to={to}
+          amount={5}
+          currency={currency}
+          price={0}
+          editable={true}
+          setPaymentId={setPaymentId}
+        />
+      )
+
+      await waitFor(() => {
+        expect(createPayment).toHaveBeenCalledTimes(1)
+      })
+
+      const input = screen.getByLabelText(/edit amount/i)
+
+      await user.clear(input)
+      await user.type(input, '5')
+      await user.keyboard('{Enter}')
+
+      // applyDraftAmount should not fire (isSameAmount=true), so no new call
+      await waitFor(() => {
+        expect(createPayment).toHaveBeenCalledTimes(1)
+      })
+    }
+  )
+})
+
+import { act } from 'react-dom/test-utils'
+
+describe('Widget – QR copy interaction', () => {
+  test.each([...CRYPTO_CASES, ...FIAT_CASES])(
+    'clicking QR copies full URL for %s address',
+    async ({ currency, to, label }) => {
+
+      await act(async () => {
+        ;(createPayment as jest.Mock).mockResolvedValue(`pid-qr-${label}`)
+        ;(copyToClipboard as jest.Mock).mockReturnValue(true)
+
+        const setPaymentId = jest.fn()
+
+        render(
+          <Widget
+            to={to}
+            amount={10}
+            currency={currency}
+            price={0}
+            setPaymentId={setPaymentId}
+          />
+        )
+      })
+
+      const user = userEvent.setup()
+      await waitFor(() => {
+        expect(screen.queryByText(/Click to copy/i)).toBeTruthy()
+      })
+
+      const qrBox = screen.getByTestId('qr-click-area')
+      await user.click(qrBox)
+
+      expect(copyToClipboard).toHaveBeenCalledTimes(1)
+      const copied = (copyToClipboard as jest.Mock).mock.calls[0][0] as string
+
+      if (currency === 'XEC') {
+        expect(copied).toContain('ecash:')
+      } else if (currency === 'BCH') {
+        expect(copied).toContain('bitcoincash:')
+      }
+    }
+  )
 })
 
