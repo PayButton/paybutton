@@ -64,11 +64,11 @@ export interface WidgetProps {
   disablePaymentId?: boolean
   text?: string
   ButtonComponent?: React.ComponentType
-  success: boolean
+  success?: boolean
   successText?: string
   theme?: ThemeName | Theme
   foot?: React.ReactNode
-  disabled: boolean
+  disabled?: boolean
   goalAmount?: number | string | null
   currency?: Currency
   animation?: animation
@@ -1275,7 +1275,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                     text: widgetButtonText,
                     hoverText,
                     onClick: handleButtonClick,
-                    disabled: isPropsTrue(disabled),
+                    disabled: isPropsTrue(disabled) || qrLoading,
                     animation,
                     size: 'medium',
                   })
