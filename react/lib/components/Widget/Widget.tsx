@@ -947,7 +947,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   }
 
   const handleQrCodeClick = useCallback((): void => {
-    if (disabled || to === undefined) return
+    if (disabled || to === undefined || qrLoading) return
     if (!url || !copyToClipboard(url)) return
     setCopied(true)
     setRecentlyCopied(true)
