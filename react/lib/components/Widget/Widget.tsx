@@ -951,7 +951,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     if (!url || !copyToClipboard(url)) return
     setCopied(true)
     setRecentlyCopied(true)
-  }, [disabled, to, url, setCopied, setRecentlyCopied])
+  }, [disabled, to, url, setCopied, setRecentlyCopied, qrLoading])
 
   const resolveUrl = useCallback((currency: string, amount?: number) => {
     if (disabled || !to) return;
