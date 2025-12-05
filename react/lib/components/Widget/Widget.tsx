@@ -65,11 +65,11 @@ export interface WidgetProps {
   disablePaymentId?: boolean
   text?: string
   ButtonComponent?: React.ComponentType
-  success: boolean
+  success?: boolean
   successText?: string
   theme?: ThemeName | Theme
   foot?: React.ReactNode
-  disabled: boolean
+  disabled?: boolean
   goalAmount?: number | string | null
   currency?: Currency
   animation?: animation
@@ -951,11 +951,11 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   }
 
   const handleQrCodeClick = useCallback((): void => {
-    if (disabled || to === undefined) return
+    if (disabled || to === undefined || qrLoading) return
     if (!url || !copyToClipboard(url)) return
     setCopied(true)
     setRecentlyCopied(true)
-  }, [disabled, to, url, setCopied, setRecentlyCopied])
+  }, [disabled, to, url, setCopied, setRecentlyCopied, qrLoading])
 
   const resolveUrl = useCallback((currency: string, amount?: number) => {
     if (disabled || !to) return;
@@ -1272,7 +1272,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                     text: widgetButtonText,
                     hoverText,
                     onClick: handleButtonClick,
-                    disabled: isPropsTrue(disabled),
+                    disabled: isPropsTrue(disabled) || qrLoading,
                     animation,
                     size: 'medium',
                   })
