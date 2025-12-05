@@ -1,6 +1,7 @@
 export * from './address';
 export * from './api-client';
 export * from './cashtab';
+export * from './color';
 export * from './constants';
 export * from './format';
 export * from './opReturn';
