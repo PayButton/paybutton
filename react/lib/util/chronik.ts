@@ -113,6 +113,24 @@ export async function satoshisToUnit(satoshis: bigint, networkFormat: string): P
     throw new Error('[CHRONIK]: Invalid address')
 }
 
+const getTokenAmount = async (transaction: Tx, tokenId: string, address: string, networkSlug: string): Promise<string> => {
+  let totalTokenOutput = BigInt(0);
+  
+  for (const output of transaction.outputs) {
+    if (output.token?.tokenId === tokenId) {
+      const outputAddress = outputScriptToAddress(networkSlug, output.outputScript)
+
+      if(outputAddress === address) {
+        const atoms = BigInt(output.token.atoms);
+
+        totalTokenOutput += atoms / BigInt(100);
+      }
+    }
+  }
+
+  return totalTokenOutput.toString();
+}
+
 const getTransactionAmountAndData = async  (transaction: Tx, addressString: string): Promise<{amount: string, opReturn: string}> => {
     let totalOutput = BigInt(0);
     let totalInput = BigInt(0);
@@ -145,14 +163,15 @@ const getTransactionAmountAndData = async  (transaction: Tx, addressString: stri
     }
 }
 
-const getTransactionFromChronikTransaction = async (transaction: Tx, address: string): Promise<Transaction> => {
+const getTransactionFromChronikTransaction = async (transaction: Tx, address: string, tokenId?: string): Promise<Transaction> => {
     const { amount, opReturn } = await getTransactionAmountAndData(transaction, address)
     const parsedOpReturn = resolveOpReturn(opReturn)
     const networkSlug = getAddressPrefix(address)
     const inputAddresses = getSortedInputAddresses(networkSlug, transaction)
+    const tokenAmount = tokenId ? await getTokenAmount(transaction, tokenId, address, networkSlug) : undefined;
     return {
       hash: transaction.txid,
-      amount,
+      amount: tokenId ? tokenAmount! : amount,
       address,
       timestamp: transaction.block !== undefined ? transaction.block.timestamp : transaction.timeFirstSeen,
       confirmed: transaction.block !== undefined,
@@ -241,7 +260,8 @@ export const parseWebsocketMessage = async (
     wsMsg: any,
     setNewTx: Function,
     chronik: ChronikClient,
-    address: string
+    address: string,
+    tokenId?: string
 ): Promise<void> => {
     const { type } = wsMsg;
     if (type === 'Error') {
@@ -252,7 +272,7 @@ export const parseWebsocketMessage = async (
       case 'TX_ADDED_TO_MEMPOOL': {
         const rawTransaction = await chronik.tx(wsMsg.txid);
 
-        const transaction = await getTransactionFromChronikTransaction(rawTransaction, address ?? '')
+        const transaction = await getTransactionFromChronikTransaction(rawTransaction, address ?? '', tokenId)
 
         setNewTx([transaction]);
         break;
@@ -264,7 +284,8 @@ export const parseWebsocketMessage = async (
 
 export const initializeChronikWebsocket = async (
     address: string,
-    setNewTx: Function
+    setNewTx: Function,
+    tokenId?: string
 ): Promise<WsEndpoint> => {
     const networkSlug = getAddressPrefix(address)
     const blockchainUrls = config.networkBlockchainURLs[networkSlug];
@@ -279,7 +300,8 @@ export const initializeChronikWebsocket = async (
                 msg,
                 setNewTx,
                 chronik,
-                address
+                address,
+                tokenId
             );
         },
     });

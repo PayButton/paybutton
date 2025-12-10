@@ -116,6 +116,7 @@ export interface WidgetProps {
   convertedCurrencyObj?: CurrencyObject;
   setConvertedCurrencyObj?: Function;
   setPaymentId?: Function;
+  tokenId?: string;
 }
 
 interface StyleProps {
@@ -176,6 +177,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     donationRate = DEFAULT_DONATION_RATE,
     setConvertedCurrencyObj = () => {},
     setPaymentId,
+    tokenId,
   } = props;
   const [loading, setLoading] = useState(true);
   const [draftAmount, setDraftAmount] = useState<string>("")
@@ -541,6 +543,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
           wsBaseUrl,
           setTxsSocket: setThisTxsSocket,
           setNewTxs: setThisNewTxs,
+          tokenId,
         })
         if (thisUseAltpayment) {
           await setupAltpaymentSocket({
