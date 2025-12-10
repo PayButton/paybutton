@@ -19,9 +19,9 @@ import {
   setupChronikWebSocket,
   CryptoCurrency,
   ButtonSize,
-  DEFAULT_DONATION_RATE
+  DEFAULT_DONATION_RATE,
+  createPayment
 } from '../../util';
-import { createPayment } from '../../util/api-client';
 import { PaymentDialog } from '../PaymentDialog';
 import { AltpaymentCoin, AltpaymentError, AltpaymentPair, AltpaymentShift } from '../../altpayment';
 export interface PayButtonProps extends ButtonProps {

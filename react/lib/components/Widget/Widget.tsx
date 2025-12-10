@@ -41,6 +41,7 @@ import {
   CryptoCurrency,
   DEFAULT_DONATION_RATE,
   DEFAULT_MINIMUM_DONATION_AMOUNT,
+  createPayment
 } from '../../util';
 import AltpaymentWidget from './AltpaymentWidget'
 import {
@@ -52,7 +53,6 @@ import {
   MINIMUM_ALTPAYMENT_CAD_AMOUNT,
 } from '../../altpayment'
 
-import { createPayment } from '../../util/api-client';
 
 export interface WidgetProps {
   to: string
@@ -1241,6 +1241,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                     endAdornment: (
                       <Box
                         component="button"
+                        data-testid="confirm-button"
                         onClick={applyDraftAmount}
                         sx={{
                           padding: '4px 10px',
