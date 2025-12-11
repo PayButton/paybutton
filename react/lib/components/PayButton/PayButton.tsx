@@ -115,7 +115,7 @@ export const PayButton = ({
   const [price, setPrice] = useState(0);
   const [newTxs, setNewTxs] = useState<Transaction[] | undefined>();
   const priceRef = useRef<number>(price);
-  const cryptoAmountRef = useRef<string | undefined>(cryptoAmount);
+  const cryptoAmountRef = useRef<number | undefined>(cryptoAmount);
 
   const [paymentId, setPaymentId] = useState<string | undefined>(undefined);
   const [addressType, setAddressType] = useState<CryptoCurrency>(
@@ -129,8 +129,8 @@ export const PayButton = ({
   }, [price]);
 
   useEffect(() => {
-    cryptoAmountRef.current = cryptoAmount;
-  }, [cryptoAmount]);
+    cryptoAmountRef.current = convertedCurrencyObj?.float;
+  }, [cryptoAmount, convertedCurrencyObj]);
 
 
   const getPaymentId = useCallback(async (

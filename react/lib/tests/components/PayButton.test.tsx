@@ -96,9 +96,6 @@ describe('PayButton – onOpen behavior', () => {
       expect(onOpen).toHaveBeenCalledTimes(1)
 
       await waitFor(() => {
-        expect(onOpen).toHaveBeenCalledTimes(1)
-      }, { timeout: 3000 }) // wIP WTF
-      await waitFor(() => {
         const { getFiatPrice } = require('../../util')
         expect(getFiatPrice).toHaveBeenCalledTimes(1)
       })
@@ -119,24 +116,53 @@ describe('PayButton – Payment ID lifecycle', () => {
     'creates payment ID once for crypto open (%s)',
     async ({ currency, address }) => {
       const user = userEvent.setup()
+      const onOpen = jest.fn()
 
       render(
         <PayButton
           to={address}
-          amount={1}
+          amount={17}
           currency={currency as any}
+          editable={true}
+          onOpen={onOpen}
         />
       )
 
       await user.click(screen.getByRole('button', { name: /donate/i }))
 
+      const { createPayment } = require('../../util');
       await waitFor(() => {
-        const { createPayment } = require('../../util');
         expect(createPayment).toHaveBeenCalledTimes(1)
       })
+      expect(createPayment).toHaveBeenCalledWith(17, address, undefined);
+      await waitFor(() => expect(onOpen).toHaveBeenCalledTimes(1));
+      (createPayment as jest.Mock).mockResolvedValueOnce('11112233445566778899aabbccddeeff')
 
-      const { createPayment } = require('../../util');
-      expect(createPayment).toHaveBeenCalledWith(1, address, undefined)
+      const input = await screen.findByLabelText(/edit amount/i)
+      await user.clear(input)
+      await user.type(input, '100')
+      await user.click(screen.getByRole('button', { name: /confirm/i }))
+      await waitFor(() => {
+        expect(createPayment).toHaveBeenCalledTimes(2)
+      })
+      const backdrop = document.querySelector('.MuiBackdrop-root')!;
+      await user.click(backdrop);
+      await waitFor(() =>
+        expect(screen.queryByText(/send with.*wallet/i)).toBeNull()
+      );
+
+      await user.click(screen.getByRole('button', { name: /donate/i }))
+      await waitFor(() => expect(onOpen).toHaveBeenCalledTimes(2))
+
+      const firstCallArgs = (onOpen as jest.Mock).mock.calls[0]
+      const secondCallArgs = (onOpen as jest.Mock).mock.calls[1]
+      expect(firstCallArgs[0]).toBeCloseTo(17, 8)
+      expect(firstCallArgs[1]).toBe(address)
+      expect(firstCallArgs[2]).toBe('00112233445566778899aabbccddeeff')
+      expect(Number(secondCallArgs[0])).toBeCloseTo(100.00000000, 8)
+      expect(secondCallArgs[1]).toBe(address)
+      expect(secondCallArgs[2]).toBe('11112233445566778899aabbccddeeff')
+
     }
   )
 
@@ -144,13 +170,15 @@ describe('PayButton – Payment ID lifecycle', () => {
     'payment ID uses converted value for fiat (%s)',
     async ({ currency, address }) => {
       const user = userEvent.setup()
+      const onOpen = jest.fn()
 
       render(
         <PayButton
           to={address}
-          amount={5}
+          amount={1000}
           currency={currency as any}
           editable
+          onOpen={onOpen}
         />
       )
 
@@ -159,8 +187,10 @@ describe('PayButton – Payment ID lifecycle', () => {
 
       const { createPayment } = require('../../util');
       await waitFor(() => expect(createPayment).toHaveBeenCalledTimes(1))
-      const input = await screen.findByLabelText(/edit amount/i)
+      await waitFor(() => expect(onOpen).toHaveBeenCalledTimes(1))
+      const input = await screen.findByLabelText(/edit amount/i);
 
+      (createPayment as jest.Mock).mockResolvedValueOnce('11112233445566778899aabbccddeeff')
       // user types something that triggers conversion
       await user.clear(input)
       await user.type(input, '100')
@@ -168,10 +198,23 @@ describe('PayButton – Payment ID lifecycle', () => {
 
       await waitFor(() => expect(createPayment).toHaveBeenCalledTimes(2))
 
-      const [amountUsed] = (createPayment as jest.Mock).mock.calls[0]
-      expect(amountUsed).toBeCloseTo(0.05, 8)
-      const [secondAmountUsed] = (createPayment as jest.Mock).mock.calls[1]
-      expect(secondAmountUsed).toBeCloseTo(1.0000000, 8)
+      const backdrop = document.querySelector('.MuiBackdrop-root')!;
+      await user.click(backdrop);
+      await waitFor(() =>
+        expect(screen.queryByText(/send with xec wallet/i)).toBeNull()
+      );
+
+      await user.click(screen.getByRole('button', { name: /donate/i }))
+      await waitFor(() => expect(onOpen).toHaveBeenCalledTimes(2))
+
+      const firstCallArgs = (onOpen as jest.Mock).mock.calls[0]
+      const secondCallArgs = (onOpen as jest.Mock).mock.calls[1]
+      expect(firstCallArgs[0]).toBeCloseTo(10, 8)
+      expect(firstCallArgs[1]).toBe(address)
+      expect(firstCallArgs[2]).toBe('00112233445566778899aabbccddeeff')
+      expect(Number(secondCallArgs[0])).toBeCloseTo(1.0000000, 8)
+      expect(secondCallArgs[1]).toBe(address)
+      expect(secondCallArgs[2]).toBe('11112233445566778899aabbccddeeff')
     }
   )
 
