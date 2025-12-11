@@ -218,7 +218,7 @@ describe('PayButton – Payment ID lifecycle', () => {
 
       const firstCallArgs = (onOpen as jest.Mock).mock.calls[0]
       const secondCallArgs = (onOpen as jest.Mock).mock.calls[1]
-      expect(firstCallArgs[0]).toBeCloseTo(10, 8)
+      expect(Number(firstCallArgs[0])).toBeCloseTo(10, 8)
       expect(firstCallArgs[1]).toBe(address)
       expect(firstCallArgs[2]).toBe('00112233445566778899aabbccddeeff')
       expect(Number(secondCallArgs[0])).toBeCloseTo(1.0000000, 8)
