@@ -599,8 +599,8 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       return;
     }
 
-    // For fiat, wait until we have a converted crypto amount
-    if (isFiat(currency) && convertedCryptoAmount === undefined) {
+    // For fiat with defined amount, wait until we have a converted crypto amount
+    if (isFiat(currency) && convertedCryptoAmount === undefined && thisAmount !== undefined ) {
       return;
     }
 
