@@ -6,6 +6,15 @@ jest.mock('../../util', () => ({
   getAddressBalance: jest.fn(async () => 0),
   createPayment: jest.fn(async () => '00112233445566778899aabbccddeeff'),
 }))
+jest.mock('qrcode.react', () => ({
+  QRCodeSVG: ({ value, 'data-testid': tid, imageSettings, fgColor, ...rest }: any) =>
+    require('react').createElement(
+      'svg',
+      { 'data-testid': tid, 'data-value': value, ...rest },
+      null
+    ),
+}));
+
 import { act, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { PayButton } from '../../components/PayButton'
@@ -113,7 +122,7 @@ describe('PayButton – onOpen behavior', () => {
 describe('PayButton – Payment ID lifecycle', () => {
 
   test.each(CRYPTO_CASES)(
-    'creates payment ID once for crypto open (%s)',
+    'onOpen opens with updated paymentId & amount after editing amount (crypto)',
     async ({ currency, address }) => {
       const user = userEvent.setup()
       const onOpen = jest.fn()
@@ -167,7 +176,7 @@ describe('PayButton – Payment ID lifecycle', () => {
   )
 
   test.each(FIAT_CASES)(
-    'payment ID uses converted value for fiat (%s)',
+    'onOpen opens with updated paymentId & amount after editing amount (fiat)',
     async ({ currency, address }) => {
       const user = userEvent.setup()
       const onOpen = jest.fn()
@@ -366,3 +375,91 @@ describe('PayButton – failure cases', () => {
     }
   )
 })
+
+
+describe('PayButton – UI shows updated amount + QR after reopen', () => {
+  test.each(CRYPTO_CASES)(
+    'reopens using latest amount and paymentId (crypto) (%s)',
+    async ({ currency, address }) => {
+      const user = userEvent.setup()
+
+      render(
+        <PayButton
+          to={address}
+          amount={10}
+          currency={currency as any}
+          editable
+        />
+      )
+
+      await user.click(screen.getByRole('button', { name: /donate/i }))
+      const { createPayment } = require('../../util')
+      await waitFor(() => expect(createPayment).toHaveBeenCalledTimes(1))
+
+      const input = await screen.findByLabelText(/edit amount/i)
+      ;(createPayment as jest.Mock).mockResolvedValueOnce('ffff2233445566778899aabbccddeeff')
+
+      await user.clear(input)
+      await user.type(input, '1789')
+      await user.click(screen.getByRole('button', { name: /confirm/i }))
+      await waitFor(() => expect(createPayment).toHaveBeenCalledTimes(2))
+
+      const backdrop = document.querySelector('.MuiBackdrop-root')!
+        await user.click(backdrop)
+      await waitFor(() =>
+        expect(screen.queryByText(/send with/i)).toBeNull()
+      )
+
+      await user.click(screen.getByRole('button', { name: /donate/i }))
+      await waitFor(() => expect(createPayment).toHaveBeenCalledTimes(2))
+
+      await expect(screen.findByText(/1,789/)).resolves.toBeDefined()
+
+      const qr = screen.getByTestId('qr-code')
+      expect(qr.getAttribute('data-value')).toBe(`${address}?amount=1789&op_return_raw=0450415900000010ffff2233445566778899aabbccddeeff`);
+    }
+  )
+  test.each(FIAT_CASES)(
+    'reopens using latest amount and paymentId (fiat) (%s)',
+    async ({ currency, address }) => {
+      const user = userEvent.setup()
+
+      render(
+        <PayButton
+          to={address}
+          amount={10}
+          currency={currency as any}
+          editable
+        />
+      )
+
+      await user.click(screen.getByRole('button', { name: /donate/i }))
+      await user.click(screen.getByRole('button', { name: /donate/i }))
+      const { createPayment } = require('../../util')
+      await waitFor(() => expect(createPayment).toHaveBeenCalledTimes(1))
+
+      const input = await screen.findByLabelText(/edit amount/i)
+      ;(createPayment as jest.Mock).mockResolvedValueOnce('ffff2233445566778899aabbccddeeff')
+
+      await user.clear(input)
+      await user.type(input, '1789')
+      await user.click(screen.getByRole('button', { name: /confirm/i }))
+      await waitFor(() => expect(createPayment).toHaveBeenCalledTimes(2))
+
+      const backdrop = document.querySelector('.MuiBackdrop-root')!
+        await user.click(backdrop)
+      await waitFor(() =>
+        expect(screen.queryByText(/send with/i)).toBeNull()
+      )
+
+      await user.click(screen.getByRole('button', { name: /donate/i }))
+      await waitFor(() => expect(createPayment).toHaveBeenCalledTimes(2))
+
+      await expect(screen.findByText(/17.89/)).resolves.toBeDefined()
+
+      const qr = screen.getByTestId('qr-code')
+      expect(qr.getAttribute('data-value')).toBe('ecash:qz3wrtmwtuycud3k6w7afkmn3285vw2lfy36y43nvk?amount=17.89&op_return_raw=0450415900000010ffff2233445566778899aabbccddeeff');
+    }
+  )
+})
+

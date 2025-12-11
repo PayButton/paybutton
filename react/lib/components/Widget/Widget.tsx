@@ -1038,6 +1038,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       <QRCodeSVG
         size={300}
         level="H"
+        data-testid="qr-code"
         value={url}
         fgColor={theme.palette.tertiary as unknown as string}
         imageSettings={{
