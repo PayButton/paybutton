@@ -389,31 +389,46 @@ describe('Widget – QR copy interaction', () => {
   )
 })
 
-describe.skip('Widget – loading behaviour (WIP)', () => {
-  test.each([...CRYPTO_CASES, ...FIAT_CASES])(
-    'handleQrCodeClick does nothing while component is loading (%s)', async ({ currency, to }) => {
-      const { createPayment } = require('../../util');
-      ;(createPayment as jest.Mock).mockImplementation(() =>
-      new Promise(resolve => setTimeout(() => resolve('some-payment-id'), 5000)),
+describe('Widget – loading behaviour (WIP)', () => {
+  const CASES = [...CRYPTO_CASES, ...FIAT_CASES]
+
+  const WITH_AMOUNTS = CASES.flatMap(base => [
+    { ...base, amount: 3 },
+    { ...base, amount: undefined },
+  ])
+
+  test.each(WITH_AMOUNTS)(
+    'handleQrCodeClick does nothing while component is loading (%s, amount=%s)',
+    async ({ currency, to, amount }) => {
+      const { createPayment } = require('../../util')
+      ;(createPayment as jest.Mock).mockImplementation(
+        () =>
+        new Promise(resolve =>
+          setTimeout(() => resolve('some-payment-id'), 5000),
+        ),
     )
 
-    render(
-      <Widget
-        to={to}
-        currency={currency}
-      />,
-    )
+    render(<Widget to={to} amount={amount} currency={currency} />)
 
-    await waitFor(() => expect(screen.getByText(/loading/i)).toBeTruthy())
+    await waitFor(() => {
+      expect(screen.getByText(/loading/i)).toBeTruthy()
+    })
 
+    const qr = await screen.findByTestId('qr-click-area')
     const user = userEvent.setup()
-    expect(copyToClipboard).not.toHaveBeenCalled()
-    await user.click(screen.getByTestId('qr-click-area'))
-    expect(copyToClipboard).not.toHaveBeenCalled()
-  })
 
-  test.each([...CRYPTO_CASES, ...FIAT_CASES])(
-  'widget button is disabled while component is loading', async ({ currency, to }) => {
+    await waitFor(() => {
+      expect(screen.getByText(/loading/i)).toBeTruthy()
+    })
+
+    expect(copyToClipboard).not.toHaveBeenCalled()
+    await user.click(qr)
+    expect(copyToClipboard).not.toHaveBeenCalled()
+  },
+)
+
+  test.each(WITH_AMOUNTS)(
+  'widget button is disabled while component is loading', async ({ currency, to, amount }) => {
     const { createPayment } = require('../../util');
     ;(createPayment as jest.Mock).mockImplementation(() =>
       new Promise(resolve => setTimeout(() => resolve('some-payment-id'), 5000)),
@@ -423,12 +438,18 @@ describe.skip('Widget – loading behaviour (WIP)', () => {
       <Widget
         to={to}
         currency={currency}
+        amount={amount}
       />,
     )
 
     await waitFor(() => expect(screen.getByText(/loading/i)).toBeTruthy())
 
-    const btn = screen.getByRole('button', { name: /send with xec wallet/i })
+    const btn = screen.getByRole('button', { name: /send with.*wallet/i })
+
+    await waitFor(() => {
+      expect(screen.getByText(/loading/i)).toBeTruthy()
+    })
+
     expect(btn.hasAttribute('disabled')).toBeTruthy()
   })
 })
