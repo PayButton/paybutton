@@ -1,5 +1,6 @@
 // react/lib/tests/components/Widget.test.tsx
 import { render, screen, waitFor, cleanup } from '@testing-library/react'
+import { act } from 'react'
 import userEvent from '@testing-library/user-event'
 import Widget from '../../components/Widget/Widget'
 import { TEST_ADDRESSES } from '../util/constants'
@@ -364,8 +365,6 @@ describe('Widget – editable amount input (crypto)', () => {
     }
   )
 })
-
-import { act } from 'react-dom/test-utils'
 
 describe('Widget – QR copy interaction', () => {
   test.each([...CRYPTO_CASES, ...FIAT_CASES])(
