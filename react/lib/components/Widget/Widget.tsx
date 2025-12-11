@@ -502,6 +502,10 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     )}' stroke='%23fff' stroke-width='.6'/%3E%3Cpath d='m7.2979 14.697-2.6964-2.6966 0.89292-0.8934c0.49111-0.49137 0.90364-0.88958 0.91675-0.88491 0.013104 0.0047 0.71923 0.69866 1.5692 1.5422 0.84994 0.84354 1.6548 1.6397 1.7886 1.7692l0.24322 0.23547 7.5834-7.5832 1.8033 1.8033-9.4045 9.4045z' fill='%23fff' stroke-width='.033708'/%3E%3C/svg%3E%0A`
   }, [theme])
 
+  const getTokenIconUrl = useCallback((tokenId: string): string => {
+    return `https://icons.etokens.cash/128/${tokenId}.png`
+  }, [])
+
   useEffect(() => {
     if (thisCurrencyObject?.string !== undefined) {
       const raw = stripFormatting(thisCurrencyObject.string);
@@ -1036,6 +1040,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     }
   }
 
+
   const qrCode = (
     <Box sx={classes.qrAnimations}>
       <QRCodeSVG
@@ -1046,7 +1051,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         bgColor={isDarkMode ? '#1a1a1a' : '#ffffff'}
         fgColor={theme.palette.tertiary as unknown as string}
         imageSettings={{
-          src: success ? checkSvg : isValidCashAddress(to) ? bchSvg : xecSvg,
+          src: success ? checkSvg : tokenId ? getTokenIconUrl(tokenId) : isValidCashAddress(to) ? bchSvg : xecSvg,
           excavate: false,
           height: 112,
           width: 112,
