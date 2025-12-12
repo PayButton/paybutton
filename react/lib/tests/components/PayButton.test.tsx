@@ -1,6 +1,12 @@
+import { isFiat } from '../../util';
 jest.mock('../../util', () => ({
   ...jest.requireActual('../../util'),
-  getFiatPrice: jest.fn(async () => 100),
+  getFiatPrice: jest.fn(async (currency:  string, to: string) => {
+    if (isFiat(currency)) {
+      return 100
+    }
+    return null
+  }),
   setupChronikWebSocket: jest.fn(() => Promise.resolve(undefined)),
   setupAltpaymentSocket: jest.fn(() => Promise.resolve(undefined)),
   getAddressBalance: jest.fn(async () => 0),

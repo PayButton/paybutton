@@ -6,6 +6,7 @@ import { WidgetContainer as Widget } from '../../components/Widget/WidgetContain
 import { TEST_ADDRESSES } from '../util/constants'
 import copyToClipboard from 'copy-to-clipboard'
 import type { Currency } from '../../util'
+import { isFiat } from '../../util';
 
 jest.mock('copy-to-clipboard', () => jest.fn())
 
@@ -15,11 +16,17 @@ jest.mock('../../util', () => {
   return {
     __esModule: true,
     ...real,
+    getFiatPrice: jest.fn(async (currency:  string, to: string) => {
+      if (isFiat(currency)) {
+        return 100
+      }
+      return null
+    }),
     setupChronikWebSocket: jest.fn().mockResolvedValue(undefined),
     setupAltpaymentSocket: jest.fn().mockResolvedValue(undefined),
     getAddressBalance: jest.fn().mockResolvedValue(0),
     openCashtabPayment: jest.fn(),
-    createPayment: jest.fn(),
+    createPayment: jest.fn(async () => '00112233445566778899aabbccddeeff'),
   }
 })
 
@@ -51,7 +58,6 @@ describe('Widget – standalone paymentId (crypto)', () => {
           to={to}
           amount={5}
           currency={currency}
-          price={0}
         />
       )
 
@@ -75,7 +81,6 @@ describe('Widget – standalone paymentId (crypto)', () => {
           to={to}
           amount={5}
           currency={currency}
-          price={0}
         />
       )
 
@@ -88,7 +93,6 @@ describe('Widget – standalone paymentId (crypto)', () => {
           to={to}
           amount={8}
           currency={currency}
-          price={0}
         />
       )
 
@@ -111,7 +115,6 @@ describe('Widget – standalone paymentId (crypto)', () => {
           to={to}
           amount={5}
           currency={currency}
-          price={0}
         />
       )
 
@@ -124,7 +127,6 @@ describe('Widget – standalone paymentId (crypto)', () => {
           to={to}
           amount={5}
           currency={currency}
-          price={0}
         />
       )
 
@@ -144,7 +146,6 @@ describe('Widget – standalone paymentId (crypto)', () => {
           to={to}
           amount={5}
           currency={currency}
-          price={0}
           disablePaymentId={true}
         />
       )
@@ -166,7 +167,6 @@ describe('Widget – standalone paymentId (crypto)', () => {
           to={to}
           amount={5}
           currency={currency}
-          price={0}
           isChild={true}
         />
       )
@@ -189,7 +189,6 @@ describe('Widget – standalone paymentId (crypto)', () => {
         <Widget
           to={to}
           currency={currency}
-          price={0}
         />
       )
 
@@ -276,9 +275,6 @@ describe('Widget – editable amount input (crypto)', () => {
     '%s – editing amount to a new value regenerates paymentId',
     async ({ currency, to }) => {
       const { createPayment } = require('../../util');
-      ;(createPayment as jest.Mock)
-        .mockResolvedValueOnce('pid-edit-1')
-        .mockResolvedValueOnce('pid-edit-2')
 
       const user = userEvent.setup()
 
@@ -287,7 +283,6 @@ describe('Widget – editable amount input (crypto)', () => {
           to={to}
           amount={5}
           currency={currency}
-          price={0}
           editable={true}
         />
       )
@@ -296,6 +291,7 @@ describe('Widget – editable amount input (crypto)', () => {
         expect(createPayment).toHaveBeenCalledTimes(1)
       })
 
+      ;(createPayment as jest.Mock).mockResolvedValueOnce('aa112233445566778899aabbccddeeff')
       const input = screen.getByLabelText(/edit amount/i)
 
       await user.clear(input)
@@ -325,7 +321,6 @@ describe('Widget – editable amount input (crypto)', () => {
           to={to}
           amount={5}
           currency={currency}
-          price={0}
           editable={true}
         />
       )
@@ -364,7 +359,6 @@ describe('Widget – QR copy interaction', () => {
             to={to}
             amount={10}
             currency={currency}
-            price={0}
           />
         )
       })
