@@ -398,7 +398,7 @@ describe('Widget – loading behaviour (WIP)', () => {
       ;(createPayment as jest.Mock).mockImplementation(
         () =>
         new Promise(resolve =>
-          setTimeout(() => resolve('some-payment-id'), 5000),
+          setTimeout(() => resolve('some-payment-id'), 1000),
         ),
     )
 
@@ -425,7 +425,7 @@ describe('Widget – loading behaviour (WIP)', () => {
   'widget button is disabled while component is loading', async ({ currency, to, amount }) => {
     const { createPayment } = require('../../util');
     ;(createPayment as jest.Mock).mockImplementation(() =>
-      new Promise(resolve => setTimeout(() => resolve('some-payment-id'), 5000)),
+      new Promise(resolve => setTimeout(() => resolve('some-payment-id'), 1000)),
     )
 
     render(
