@@ -34,21 +34,21 @@ export interface WidgetContainerProps
   currencyObj?: CurrencyObject;
   cryptoAmount?: string;
   price?: number;
-  setCurrencyObj: Function;
+  setCurrencyObj?: Function;
   randomSatoshis?: boolean | number;
   hideToasts?: boolean;
   onSuccess?: (transaction: Transaction) => void;
   onTransaction?: (transaction: Transaction) => void;
   sound?: boolean;
   goalAmount?: number | string;
-  disabled: boolean;
-  editable: boolean;
+  disabled?: boolean;
+  editable?: boolean;
   wsBaseUrl?: string;
   apiBaseUrl?: string;
   successText?: string;
   disableAltpayment?: boolean
   contributionOffset?: number
-  setNewTxs: Function
+  setNewTxs?: Function
   disableSound?: boolean
   transactionText?: string
   donationAddress?: string

@@ -19,9 +19,9 @@ import {
   setupChronikWebSocket,
   CryptoCurrency,
   ButtonSize,
-  DEFAULT_DONATION_RATE
+  DEFAULT_DONATION_RATE,
+  createPayment
 } from '../../util';
-import { createPayment } from '../../util/api-client';
 import { PaymentDialog } from '../PaymentDialog';
 import { AltpaymentCoin, AltpaymentError, AltpaymentPair, AltpaymentShift } from '../../altpayment';
 export interface PayButtonProps extends ButtonProps {
@@ -129,17 +129,8 @@ export const PayButton = ({
   }, [price]);
 
   useEffect(() => {
-    cryptoAmountRef.current = cryptoAmount;
-  }, [cryptoAmount]);
-
-  const waitPrice = (callback: Function) => {
-    const intervalId = setInterval(() => {
-      if (priceRef.current !== 0) {
-        clearInterval(intervalId);
-        callback();
-      }
-    }, 300);
-  };
+    cryptoAmountRef.current = convertedCurrencyObj?.string;
+  }, [cryptoAmount, convertedCurrencyObj]);
 
 
   const getPaymentId = useCallback(async (
@@ -169,67 +160,94 @@ export const PayButton = ({
     [disablePaymentId, apiBaseUrl, randomSatoshis, convertedCurrencyObj]
   )
 
-  const lastPaymentAmount = useRef<number | null | undefined>(undefined)
+  const lastPaymentAmount = useRef<number | undefined | null>(undefined);
+  const lastOnOpenPaymentId = useRef<string | undefined>(undefined);
+  const hasFiredOnOpenRef = useRef(false);
+
   useEffect(() => {
+    if (!dialogOpen || disablePaymentId || !to) return;
 
-    if (
-      !dialogOpen ||
-      disablePaymentId ||
-      !to
-    ) {
-      return;
-    }
+    let effectiveAmount: number | null | undefined;
 
-    let effectiveAmount: number | null
     if (isFiat(currency)) {
-      if (!convertedCurrencyObj) {
-        // Conversion not ready yet – wait for convertedCurrencyObj update
-        return;
-      }
-      effectiveAmount = convertedCurrencyObj.float;
-    } else if (amount === undefined) {
-      effectiveAmount = null
+      effectiveAmount = convertedCurrencyObj?.float ?? null;
+    } else if (amount !== undefined) {
+      const parsed = Number(amount);
+      effectiveAmount = Number.isNaN(parsed) ? null : parsed;
     } else {
-      const amountNumber = Number(amount);
-      if (Number.isNaN(amountNumber)) {
-        return;
-      }
-      effectiveAmount = amountNumber;
+      effectiveAmount = null;
     }
-    if (lastPaymentAmount.current === effectiveAmount) {
+
+    if (effectiveAmount === lastPaymentAmount.current) {
       return;
     }
 
     lastPaymentAmount.current = effectiveAmount;
 
-    void getPaymentId(
-      currency,
-      to,
-      effectiveAmount ?? undefined,
-    );
-  }, [amount, currency, to, dialogOpen, disablePaymentId, paymentId, getPaymentId, convertedCurrencyObj]);
+    // Clear current paymentId so child widget goes into "waiting" state
+    setPaymentId(undefined);
 
+    void getPaymentId(currency, to, effectiveAmount ?? undefined);
+  }, [
+    dialogOpen,
+    currency,
+    amount,
+    convertedCurrencyObj,
+    disablePaymentId,
+    to,
+    getPaymentId,
+  ]);
 
-  const handleButtonClick = useCallback(async (): Promise<void> => {
-
-    if (onOpen) {
-      if (isFiat(currency)) {
-        void waitPrice(() => onOpen(cryptoAmountRef.current, to, paymentId))
-      } else {
-        onOpen(amount, to, paymentId)
-      }
+  useEffect(() => {
+    if (!dialogOpen) {
+      hasFiredOnOpenRef.current = false;
+      lastOnOpenPaymentId.current = undefined;
+      return;
     }
 
-    setDialogOpen(true)
+    if (!onOpen || hasFiredOnOpenRef.current) {
+      return;
+    }
+
+    if (disablePaymentId) {
+      hasFiredOnOpenRef.current = true;
+      lastOnOpenPaymentId.current = '__no_paymentid__';
+
+      if (isFiat(currency)) {
+        onOpen(cryptoAmountRef.current, to, undefined);
+      } else {
+        onOpen(amount, to, undefined);
+      }
+      return;
+    }
+
+    if (!paymentId) {
+      return;
+    }
+
+    hasFiredOnOpenRef.current = true;
+    lastOnOpenPaymentId.current = paymentId;
+
+    if (isFiat(currency)) {
+      onOpen(cryptoAmountRef.current, to, paymentId);
+    } else {
+      onOpen(amount, to, paymentId);
+    }
   }, [
+    dialogOpen,
     onOpen,
+    paymentId,
     currency,
     amount,
     to,
-    paymentId,
     disablePaymentId,
-    getPaymentId,
-  ])
+  ]);
+
+
+  const handleButtonClick = useCallback((): void => {
+    setDialogOpen(true);
+  }, []);
+
 
   const handleCloseDialog = (success?: boolean, paymentId?: string): void => {
     if (onClose !== undefined) onClose(success, paymentId);
@@ -320,18 +338,16 @@ export const PayButton = ({
   }, [dialogOpen, useAltpayment]);
 
   useEffect(() => {
-    if (dialogOpen === false && initialAmount && currency) {
+    if (initialAmount != null && currency) {
       const obj = getCurrencyObject(
         Number(initialAmount),
         currency,
         randomSatoshis,
       );
-      setTimeout(() => {
-        setAmount(obj.float);
-        setCurrencyObj(obj);
-      }, 300);
+      setAmount(obj.float);
+      setCurrencyObj(obj);
     }
-  }, [dialogOpen, initialAmount, currency, randomSatoshis]);
+  }, [initialAmount, currency, randomSatoshis])
 
   const getPrice = useCallback(
     async () => {

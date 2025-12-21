@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>Paybutton Bundle Test</title>
+  <style>
+    body {
+      padding: auto;
+      font-family: Arial, sans-serif;
+    }
+  </style>
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+  <script src="./paybutton.js"></script>
+
+    <div class="paybutton" to="ecash:qr64gaal5zx97judme7nmqxpru6gnx8p3uwgvx585h" text="Purchase" amount="1001"
+      editable="true"
+      currency="XEC" goal-amount="2.5" success-text="WOW!" on-close="myClose" on-open="myOpen"
+      on-success="mySuccessFunction" on-transaction="myTransactionFunction" size="lg"></div>
+  <script>
+    function mySuccessFunction(tx) {
+      console.log('Ran mySuccess', { tx })
+    }
+
+    function myTransactionFunction(tx) {
+      console.log('Ran myTransaction', { tx })
+    }
+
+    function myClose(success, paymentId) {
+      console.log('Ran myClose', { success, paymentId})
+    }
+
+    function myOpen(amount, to, paymentId) {
+      console.log('Ran myOpen', { amount, to, paymentId })
+    }
+  </script>
+</body>

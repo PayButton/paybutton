@@ -41,7 +41,8 @@ import {
   CryptoCurrency,
   DEFAULT_DONATION_RATE,
   DEFAULT_MINIMUM_DONATION_AMOUNT,
-  darkMode,
+  createPayment,
+  darkMode
 } from '../../util';
 import AltpaymentWidget from './AltpaymentWidget'
 import {
@@ -53,7 +54,6 @@ import {
   MINIMUM_ALTPAYMENT_CAD_AMOUNT,
 } from '../../altpayment'
 
-import { createPayment } from '../../util/api-client';
 
 export interface WidgetProps {
   to: string
@@ -182,10 +182,14 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const inputRef = React.useRef<HTMLInputElement>(null)
   const lastEffectiveAmountRef = React.useRef<number | undefined | null>(undefined)
 
+  const [standalonePaymentPending, setStandalonePaymentPending] = useState(false)
+
   const isWaitingForPaymentId =
-    isChild === true &&
-    !disablePaymentId &&
-    paymentId === undefined
+    !disablePaymentId && (
+      (isChild === true && paymentId === undefined) ||
+      (isChild !== true && standalonePaymentPending)
+    )
+
 
   const qrLoading = loading || isWaitingForPaymentId
 
@@ -599,8 +603,8 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       return;
     }
 
-    // For fiat, wait until we have a converted crypto amount
-    if (isFiat(currency) && convertedCryptoAmount === undefined) {
+    // For fiat with defined amount, wait until we have a converted crypto amount
+    if (isFiat(currency) && convertedCryptoAmount === undefined && thisAmount !== undefined ) {
       return;
     }
 
@@ -631,6 +635,8 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         }
         lastEffectiveAmountRef.current = effectiveAmount;
 
+        setStandalonePaymentPending(true)
+
         const responsePaymentId = await createPayment(
           effectiveAmount ?? undefined,
           to,
@@ -639,6 +645,8 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         setPaymentId(responsePaymentId);
       } catch (error) {
         console.error('Error creating payment ID:', error);
+      } finally {
+        setStandalonePaymentPending(false)
       }
     };
 
@@ -1034,6 +1042,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       <QRCodeSVG
         size={300}
         level="H"
+        data-testid="qr-code"
         value={url}
         bgColor={isDarkMode ? '#1a1a1a' : '#ffffff'}
         fgColor={theme.palette.tertiary as unknown as string}
@@ -1147,6 +1156,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
             )}
 
             <Box
+              data-testid="qr-click-area"
               flex={1}
               position="relative"
               sx={classes.qrCode}
@@ -1237,6 +1247,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                     endAdornment: (
                       <Box
                         component="button"
+                        data-testid="confirm-button"
                         onClick={applyDraftAmount}
                         sx={{
                           padding: '4px 10px',
@@ -1313,7 +1324,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
           ) : null}
 
           <Box py={0.8}>
-            <Typography sx={classes.footer}>
+            <Typography component="div" sx={classes.footer}>
               <Box>Powered by PayButton.org</Box>
 
               {(() => {
