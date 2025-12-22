@@ -375,9 +375,6 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         padding: '1rem',
         cursor: 'pointer',
         userSelect: 'none',
-        '&:active': {
-          boxShadow: isDarkMode ? '0 0 0 2px #444' : '0 0 0 2px #ddd',
-        },
         '& path': {
           opacity: base.loading ? 0 : base.success ? 0.35 : 1,
           color: base.theme.palette.secondary,
