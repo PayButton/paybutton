@@ -4,17 +4,14 @@
   "altpaymentClient": "mocked",
   "networkBlockchainURLs": {
     "ecash": [
-      "https://xec.paybutton.org",
-      "https://chronik1.alitayin.com",
-      "https://chronik2.alitayin.com",
+      "https://xec.paybutton.io",
       "https://chronik.e.cash",
-      "https://chronik-native1.fabien.cash",
-      "https://chronik-native2.fabien.cash",
-      "https://chronik-native3.fabien.cash",
-      "https://chronik.pay2stay.com/xec",
-      "https://chronik.pay2stay.com/xec2"
+      "https://chronik.pay2stay.com/xec"
     ],
-    "bitcoincash": ["https://bch.paybutton.org", "https://chronik.pay2stay.com/bch"]
+    "bitcoincash": [
+      "https://bch.paybutton.io",
+      "https://chronik.pay2stay.com/bch"
+    ]
   },
   "donationAddress":"ecash:qp2v7kemclu7mv5y3h9qprwp0mrevkqt9gprvmm7yl"
 }
