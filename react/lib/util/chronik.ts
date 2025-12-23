@@ -255,6 +255,18 @@ function getSortedInputAddresses (networkSlug: string, transaction: Tx): string[
 
   return sortedInputAddresses
 }
+export const getTokenInfo = async (tokenId: string, address:string) => {
+  const networkSlug = getAddressPrefix(address)
+  const blockchainUrls = config.networkBlockchainURLs[networkSlug];
+
+  const chronik = await ChronikClient.useStrategy(
+    ConnectionStrategy.AsOrdered,
+    blockchainUrls,
+  );
+  const tokenInfo = await chronik.token(tokenId);
+  
+  return tokenInfo;
+}
 
 export const parseWebsocketMessage = async (
     wsMsg: any,
@@ -273,7 +285,6 @@ export const parseWebsocketMessage = async (
         const rawTransaction = await chronik.tx(wsMsg.txid);
 
         const transaction = await getTransactionFromChronikTransaction(rawTransaction, address ?? '', tokenId)
-
         setNewTx([transaction]);
         break;
         }

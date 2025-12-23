@@ -54,6 +54,7 @@ import {
   MINIMUM_ALTPAYMENT_CAD_AMOUNT,
 } from '../../altpayment'
 
+import { getTokenInfo } from '../../util/chronik'
 
 export interface WidgetProps {
   to: string
@@ -333,6 +334,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
 
   const [thisAmount, setThisAmount] = useState(props.amount)
   const [thisCurrencyObject, setThisCurrencyObject] = useState(props.currencyObject)
+  const [tokenName, setTokenName] = useState<string | null>(null)
 
   const blurCSS = isPropsTrue(disabled) ? { filter: 'blur(5px)' } : {}
   // inject keyframes once (replacement for @global in makeStyles)
@@ -597,6 +599,19 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   }, [thisNewTxs, to, apiBaseUrl])
 
   useEffect(() => {
+    ;(async (): Promise<void> => {
+      if (tokenId && tokenId !== null && tokenId !== '' ) {
+        const tokenInfo = await getTokenInfo(tokenId, to)
+        const name = tokenInfo.genesisInfo.tokenTicker ?? null
+        setTokenName(name)
+        
+        return
+      }
+      setLoading(false)
+    })()
+  }, [tokenId, to])
+
+  useEffect(() => {
     if (
       isChild ||
       disablePaymentId ||
@@ -812,7 +827,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         setText(
           `Send ${amountToDisplay} ${thisCurrencyObject.currency} = ${convertedAmountToDisplay} ${thisAddressType}`,
         )
-        const url = resolveUrl(thisAddressType, convertedObj.float)
+        const url = resolveUrl(thisAddressType, convertedObj.float, tokenId)
         setUrl(url ?? "")
       }
     } else {
@@ -837,16 +852,16 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
           amountToDisplay = amountWithDonationObj.string
         }
 
-        setText(`Send ${amountToDisplay} ${cur}`)
+        setText(`Send ${amountToDisplay} ${tokenId ? tokenName : cur}`)
         // Pass base amount (without donation) to resolveUrl
-        nextUrl = resolveUrl(cur, baseAmount)
+        nextUrl = resolveUrl(cur, baseAmount, tokenId)
       } else {
-        setText(`Send any amount of ${thisAddressType}`)
-        nextUrl = resolveUrl(thisAddressType)
+        setText(`Send any amount of ${tokenId ? tokenName : thisAddressType}`)
+        nextUrl = resolveUrl(thisAddressType, undefined, tokenId) 
       }
       setUrl(nextUrl ?? '')
     }
-  }, [to, thisCurrencyObject, price, thisAmount, opReturn, hasPrice, isCashtabAvailable, userDonationRate, donationEnabled, disabled, donationAddress, currency, randomSatoshis, thisAddressType, shouldApplyDonation])
+  }, [to, thisCurrencyObject, price, thisAmount, opReturn, hasPrice, isCashtabAvailable, userDonationRate, donationEnabled, disabled, donationAddress, currency, randomSatoshis, thisAddressType, shouldApplyDonation, tokenName, tokenId])
 
   useEffect(() => {
     try {
@@ -968,7 +983,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     setRecentlyCopied(true)
   }, [disabled, to, url, setCopied, setRecentlyCopied, qrLoading])
 
-  const resolveUrl = useCallback((currency: string, amount?: number) => {
+  const resolveUrl = useCallback((currency: string, amount?: number, tokenId?: string) => {
     if (disabled || !to) return;
 
     const prefix = CURRENCY_PREFIXES_MAP[currency.toLowerCase() as typeof CRYPTO_CURRENCIES[number]];
@@ -985,11 +1000,18 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         const donationPercent = userDonationRate / 100
         // Calculate donation amount from base amount
         const thisDonationAmount = amount * donationPercent
-
-        thisUrl += `?amount=${amount}`
-        thisUrl += `&addr=${donationAddress}&amount=${thisDonationAmount.toFixed(decimals)}`;
+        if (tokenId) {
+          thisUrl += `?token_decimalized_qty=${amount}`
+        } else {
+          thisUrl += `?amount=${amount}`
+          thisUrl += `&addr=${donationAddress}&amount=${thisDonationAmount.toFixed(decimals)}`;
+        }
       } else {
-        thisUrl += `?amount=${amount}`
+        if (tokenId) {
+          thisUrl += `?token_decimalized_qty=${amount}`
+        } else {
+          thisUrl += `?amount=${amount}`
+        }
       }
     }
 
@@ -998,6 +1020,11 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       thisUrl += `${separator}op_return_raw=${opReturn}`;
     }
 
+    if (tokenId) {
+      const separator = thisUrl.includes('?') ? '&' : '?';
+      thisUrl += `${separator}token_id=${tokenId}`;
+    }
+    
     return thisUrl;
     },
     [disabled, to, opReturn, userDonationRate, donationAddress, donationEnabled, shouldApplyDonation]
