@@ -600,11 +600,18 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
 
   useEffect(() => {
     ;(async (): Promise<void> => {
-      if (tokenId && tokenId !== '' ) {
-        const tokenInfo = await getTokenInfo(tokenId, to)
-        const name = tokenInfo.genesisInfo.tokenTicker ?? null
-        setTokenName(name)
-        
+      if (tokenId && tokenId !== '') {
+        try {
+          const tokenInfo = await getTokenInfo(tokenId, to)
+          const name = tokenInfo.genesisInfo.tokenTicker ?? null
+          setTokenName(name)
+        } catch (err) {
+          console.error('Failed to fetch token info:', err)
+          setTokenName(null)
+          setErrorMsg('Unable to load token information')
+        } finally {
+          setLoading(false)
+        }
         return
       }
       setLoading(false)
