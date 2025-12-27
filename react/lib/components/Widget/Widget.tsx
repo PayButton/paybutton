@@ -600,7 +600,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
 
   useEffect(() => {
     ;(async (): Promise<void> => {
-      if (tokenId && tokenId !== null && tokenId !== '' ) {
+      if (tokenId && tokenId !== '' ) {
         const tokenInfo = await getTokenInfo(tokenId, to)
         const name = tokenInfo.genesisInfo.tokenTicker ?? null
         setTokenName(name)

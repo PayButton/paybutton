@@ -115,6 +115,9 @@ export async function satoshisToUnit(satoshis: bigint, networkFormat: string): P
 
 const getTokenAmount = async (transaction: Tx, tokenId: string, address: string, networkSlug: string): Promise<string> => {
   let totalTokenOutput = BigInt(0);
+  const tokenInfo = await getTokenInfo(tokenId, address);
+  const decimals = tokenInfo.genesisInfo.decimals;
+  const divisor = 10 ** decimals;
   
   for (const output of transaction.outputs) {
     if (output.token?.tokenId === tokenId) {
@@ -123,7 +126,7 @@ const getTokenAmount = async (transaction: Tx, tokenId: string, address: string,
       if(outputAddress === address) {
         const atoms = BigInt(output.token.atoms);
 
-        totalTokenOutput += atoms / BigInt(100);
+        totalTokenOutput += atoms / BigInt(divisor);
       }
     }
   }
