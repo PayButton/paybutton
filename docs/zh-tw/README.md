@@ -1132,19 +1132,19 @@ donationRate = 10
 **Example:**
 <!-- tabs:start -->
 
-#### ** HTML **
+#### **HTML**
 
 ```html
 token-id="c67bf5c2b6d91cfb46a5c1772582eff80d88686887be10aa63b0945479cf4ed4"
 ```
 
-#### ** JavaScript **
+#### **JavaScript**
 
 ```javascript
 tokenId: "c67bf5c2b6d91cfb46a5c1772582eff80d88686887be10aa63b0945479cf4ed4"
 ```
 
-#### ** React **
+#### **React**
 
 ```react
 tokenId = "c67bf5c2b6d91cfb46a5c1772582eff80d88686887be10aa63b0945479cf4ed4"
