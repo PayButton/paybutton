@@ -1034,7 +1034,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     
     return thisUrl;
     },
-    [disabled, to, opReturn, userDonationRate, donationAddress, donationEnabled, shouldApplyDonation]
+    [disabled, to, opReturn, userDonationRate, donationAddress, donationEnabled, shouldApplyDonation, tokenId]
   )
   const stripFormatting = (s: string) => {
     return s.replace(/,/g, '').replace(/(\.\d*?[1-9])0+$/, '$1').replace(/\.0+$/, '');
