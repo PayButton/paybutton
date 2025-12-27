@@ -1122,6 +1122,37 @@ donationRate = 10
 ```
 <!-- tabs:end -->
 
+## token-id
+
+> **「tokenId」 參數用於定義在按鈕或小工具中使用的 eToken。**
+
+?> tokenId 參數為選填。它接受一個包含 token ID 的字串。預設值為 null。
+
+
+**Example:**
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+token-id="c67bf5c2b6d91cfb46a5c1772582eff80d88686887be10aa63b0945479cf4ed4"
+```
+
+#### ** JavaScript **
+
+```javascript
+tokenId: "c67bf5c2b6d91cfb46a5c1772582eff80d88686887be10aa63b0945479cf4ed4"
+```
+
+#### ** React **
+
+```react
+tokenId = "c67bf5c2b6d91cfb46a5c1772582eff80d88686887be10aa63b0945479cf4ed4"
+```
+<!-- tabs:end -->
+
+
+
 
 # 貢獻
 

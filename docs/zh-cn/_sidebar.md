@@ -33,6 +33,8 @@
   - [disable-sound](/zh-cn/?id=disable-sound)
   - [size](/zh-cn/?id=size)
   - [donation-rate](/zh-cn/?id=donation-rate)
+  - [token-id](/zh-cn/?id=token-id)
+
 - [贡献](/zh-cn/?id=贡献)
   - [开发人员快速入门](/zh-cn/?id=开发人员快速入门)
     - [入门](/zh-cn/?id=入门)

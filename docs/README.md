@@ -1127,6 +1127,35 @@ donationRate = 10
 ```
 <!-- tabs:end -->
 
+## token-id
+
+> **The ‘tokenId’ parameter defines the eToken that will be used in the button or widget.**
+
+?> The token ID parameter is optional.It accepts a string containing the token ID. Default value is null. 
+
+
+**Example:**
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+token-id="c67bf5c2b6d91cfb46a5c1772582eff80d88686887be10aa63b0945479cf4ed4"
+```
+
+#### ** JavaScript **
+
+```javascript
+tokenId: "c67bf5c2b6d91cfb46a5c1772582eff80d88686887be10aa63b0945479cf4ed4"
+```
+
+#### ** React **
+
+```react
+tokenId = "c67bf5c2b6d91cfb46a5c1772582eff80d88686887be10aa63b0945479cf4ed4"
+```
+<!-- tabs:end -->
+
 # Contribute
 
 PayButton is a community-driven open-source initiative. Contributions from the community are _crucial_ to the success of the project.
