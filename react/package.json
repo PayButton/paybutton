@@ -1,6 +1,6 @@
 {
   "name": "@paybutton/react",
-  "version": "5.0.3",
+  "version": "5.1.0",
   "description": "The easiest way to accept eCash online",
   "author": "Blockchain Ventures Corp.",
   "license": "MIT",
@@ -105,6 +105,7 @@
     "notistack": "3.0.0",
     "qrcode.react": "3",
     "react-jss": "10.10.0",
+    "react-number-format": "^5.4.4",
     "socket.io-client": "4.7.4",
     "ts-jest": "^29.4.5",
     "xecaddrjs": "^0.0.1"

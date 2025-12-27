@@ -4,14 +4,19 @@ import {
   Fade,
   Typography,
   TextField,
+  IconButton,
+  Tooltip,
 } from '@mui/material'
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import copyToClipboard from 'copy-to-clipboard'
 import { QRCodeSVG } from 'qrcode.react'
 import { Socket } from 'socket.io-client'
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes'
+import { NumericFormat } from 'react-number-format';
 import { Button, animation } from '../Button/Button'
 import BarChart from '../BarChart/BarChart'
+import config from '../../paybutton-config.json'
+import { DONATION_RATE_STORAGE_KEY } from '../../util/constants'
 import {
   getAddressBalance,
   Currency,
@@ -33,7 +38,9 @@ import {
   setupChronikWebSocket,
   setupAltpaymentSocket,
   CryptoCurrency,
-} from '../../util'
+  DEFAULT_DONATION_RATE,
+  DEFAULT_MINIMUM_DONATION_AMOUNT,
+} from '../../util';
 import AltpaymentWidget from './AltpaymentWidget'
 import {
   AltpaymentPair,
@@ -43,6 +50,8 @@ import {
   MINIMUM_ALTPAYMENT_DOLLAR_AMOUNT,
   MINIMUM_ALTPAYMENT_CAD_AMOUNT,
 } from '../../altpayment'
+
+import { createPayment } from '../../util/api-client';
 
 export interface WidgetProps {
   to: string
@@ -68,7 +77,7 @@ export interface WidgetProps {
   price?: number | undefined
   usdPrice?: number | undefined
   editable?: boolean
-  setNewTxs: Function
+  setNewTxs?: Function
   newTxs?: Transaction[]
   wsBaseUrl?: string
   apiBaseUrl?: string
@@ -85,21 +94,26 @@ export interface WidgetProps {
   altpaymentSocket?: Socket
   setAltpaymentSocket?: Function
   shiftCompleted?: boolean
-  setShiftCompleted?: Function
-  setCoins?: Function
-  coins?: AltpaymentCoin[]
-  setCoinPair?: Function
-  coinPair?: AltpaymentPair
-  setLoadingPair?: Function
-  loadingPair?: boolean
-  setLoadingShift?: Function
-  loadingShift?: boolean
-  setAltpaymentError?: Function
-  altpaymentError?: AltpaymentError
-  addressType?: Currency
-  setAddressType?: Function
-  newTxText?: string
-  transactionText?: string
+  donationAddress?: string
+  donationRate?: number
+  setShiftCompleted?: Function;
+  setCoins?: Function;
+  coins?: AltpaymentCoin[];
+  setCoinPair?: Function;
+  coinPair?: AltpaymentPair;
+  setLoadingPair?: Function;
+  loadingPair?: boolean;
+  setLoadingShift?: Function;
+  loadingShift?: boolean;
+  setAltpaymentError?: Function;
+  altpaymentError?: AltpaymentError;
+  addressType?: Currency,
+  setAddressType?: Function,
+  newTxText?: string;
+  transactionText?: string;
+  convertedCurrencyObj?: CurrencyObject;
+  setConvertedCurrencyObj?: Function;
+  setPaymentId?: Function;
 }
 
 interface StyleProps {
@@ -155,9 +169,24 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     altpaymentError,
     setAltpaymentError,
     isChild,
-  } = props
+    convertedCurrencyObj,
+    donationAddress = config.donationAddress,
+    donationRate = DEFAULT_DONATION_RATE,
+    setConvertedCurrencyObj = () => {},
+    setPaymentId,
+  } = props;
+  const [loading, setLoading] = useState(true);
+  const [draftAmount, setDraftAmount] = useState<string>("")
+  const inputRef = React.useRef<HTMLInputElement>(null)
+  const lastEffectiveAmountRef = React.useRef<number | undefined | null>(undefined)
 
-  const [loading, setLoading] = useState(true)
+  const isWaitingForPaymentId =
+    isChild === true &&
+    !disablePaymentId &&
+    paymentId === undefined
+
+  const qrLoading = loading || isWaitingForPaymentId
+
 
   // websockets if standalone
   const [internalTxsSocket, setInternalTxsSocket] = useState<Socket | undefined>(undefined)
@@ -238,17 +267,65 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const [altpaymentEditable, setAltpaymentEditable] = useState<boolean>(false)
 
   const price = props.price ?? 0
+  const [hasPrice, setHasPrice] = useState(props.price !== undefined && props.price > 0)
+
+  // Helper to clamp donation rate to valid range (1-99 if > 0, or 0)
+  const clampDonationRate = useCallback((value: number): number => {
+    if (value <= 0) return 0
+    return Math.max(1, Math.min(99, value))
+  }, [])
+
+  // Load donation rate from localStorage on mount
+  const getInitialDonationRate = useCallback(() => {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      try {
+        const stored = localStorage.getItem(DONATION_RATE_STORAGE_KEY)
+        if (stored !== null) {
+          const parsed = parseFloat(stored)
+          if (!isNaN(parsed) && parsed >= 0) {
+            // Clamp to 1-99 range if > 0, or return 0
+            return clampDonationRate(parsed)
+          }
+        }
+      } catch (e) {
+        console.warn('Failed to load donation rate from localStorage:', e)
+      }
+    }
+    return 0
+  }, [clampDonationRate])
+
+  // Clamp the donationRate prop to ensure it's in valid range
+  const clampedDonationRateProp = useMemo(() => clampDonationRate(donationRate), [donationRate, clampDonationRate])
+
+  const initialDonationRate = useMemo(() => getInitialDonationRate(), [getInitialDonationRate])
+  const [userDonationRate, setUserDonationRate] = useState<number>(initialDonationRate)
+  const [donationEnabled, setDonationEnabled] = useState<boolean>(initialDonationRate > 0)
+  // Initialize previousDonationRate with clamped prop value so it's available when user first enables donation
+  const [previousDonationRate, setPreviousDonationRate] = useState<number>(
+    initialDonationRate > 0 ? initialDonationRate : clampedDonationRateProp
+  )
   const [url, setUrl] = useState('')
   const [userEditedAmount, setUserEditedAmount] = useState<CurrencyObject>()
   const [text, setText] = useState(`Send any amount of ${thisAddressType}`)
   const [widgetButtonText, setWidgetButtonText] = useState('Send Payment')
   const [opReturn, setOpReturn] = useState<string | undefined>()
   const [isCashtabAvailable, setIsCashtabAvailable] = useState<boolean>(false)
+  const [convertedCryptoAmount, setConvertedCryptoAmount] = useState<number | undefined>(undefined)
+  const updateConvertedCurrencyObj = useCallback((convertedObj: CurrencyObject | null) => {
+    setConvertedCurrencyObj(convertedObj);
+    if (!isChild && !disablePaymentId && setPaymentId !== undefined) {
+      setPaymentId(undefined);
+    }
+  }, [setConvertedCurrencyObj, setPaymentId]);
 
   const [isAboveMinimumAltpaymentAmount, setIsAboveMinimumAltpaymentAmount] = useState<boolean | null>(null)
 
   const theme = useTheme(props.theme, isValidXecAddress(to))
 
+  const [thisAmount, setThisAmount] = useState(props.amount)
+  const [thisCurrencyObject, setThisCurrencyObject] = useState(props.currencyObject)
+
+  const blurCSS = isPropsTrue(disabled) ? { filter: 'blur(5px)' } : {}
   // inject keyframes once (replacement for @global in makeStyles)
   useEffect(() => {
     const id = 'paybutton-widget-keyframes'
@@ -260,6 +337,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
 @keyframes fade-scale { from { opacity: 0; transform: scale(0.3); } 80% { opacity: 1; transform: scale(1.3); } to { opacity: 1; transform: scale(1); } }
 @keyframes button-slide { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0px); } }
 @keyframes button-slide-out { from { opacity: 1; transform: translateY(0px); } to { opacity: 0; transform: translateY(20px); } }
+@keyframes fade-slide-up { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0px); } }
 @keyframes copy-qr { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
 @keyframes copy-svg { 0% { opacity: 1; } 50% { opacity: 0; } 100% { opacity: 1; } }
 @keyframes copy-icon { 0% { transform: scale(1); } 50% { transform: scale(0.7); } 100% { transform: scale(1); } }
@@ -270,7 +348,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   }, [])
 
   const classes = useMemo(() => {
-    const base: StyleProps = { success, loading, theme, recentlyCopied, copied }
+    const base: StyleProps = { success, loading: qrLoading, theme, recentlyCopied, copied }
     return {
       root: {
         minWidth: '240px',
@@ -327,6 +405,17 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         color: '#a8a8a8',
         fontWeight: 'normal',
         userSelect: 'none',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        animation: 'fade-slide-up 0.6s ease-out forwards',
+        animationDelay: '0.7s',
+        opacity: 0,
+        lineHeight: 2.5,
+      },
+      footerSeparator: {
+        marginLeft: '7px',
+        marginRight: '4px'
       },
       sideShiftLink: {
         fontSize: '14px',
@@ -386,13 +475,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         animationDelay: '0.4s',
       },
     }
-  }, [success, loading, theme, recentlyCopied, copied])
-
-  const [thisAmount, setThisAmount] = useState(props.amount)
-  const [hasPrice, setHasPrice] = useState(props.price !== undefined && props.price > 0)
-  const [thisCurrencyObject, setThisCurrencyObject] = useState(props.currencyObject)
-
-  const blurCSS = isPropsTrue(disabled) ? { filter: 'blur(5px)' } : {}
+  }, [success, qrLoading, theme, recentlyCopied, copied])
 
   const bchSvg = useMemo((): string => {
     const color = theme.palette.logo ?? theme.palette.primary
@@ -410,6 +493,13 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       color,
     )}' stroke='%23fff' stroke-width='.6'/%3E%3Cpath d='m7.2979 14.697-2.6964-2.6966 0.89292-0.8934c0.49111-0.49137 0.90364-0.88958 0.91675-0.88491 0.013104 0.0047 0.71923 0.69866 1.5692 1.5422 0.84994 0.84354 1.6548 1.6397 1.7886 1.7692l0.24322 0.23547 7.5834-7.5832 1.8033 1.8033-9.4045 9.4045z' fill='%23fff' stroke-width='.033708'/%3E%3C/svg%3E%0A`
   }, [theme])
+
+  useEffect(() => {
+    if (thisCurrencyObject?.string !== undefined) {
+      const raw = stripFormatting(thisCurrencyObject.string);
+      setDraftAmount(raw);
+    }
+  }, [thisCurrencyObject?.string]);
 
   useEffect(() => {
     if (!recentlyCopied) return
@@ -494,6 +584,74 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   }, [thisNewTxs, to, apiBaseUrl])
 
   useEffect(() => {
+    if (
+      isChild ||
+      disablePaymentId ||
+      setPaymentId === undefined ||
+      to === ''
+    ) {
+      return;
+    }
+
+    // For fiat, wait until we have a converted crypto amount
+    if (isFiat(currency) && convertedCryptoAmount === undefined) {
+      return;
+    }
+
+    const initializePaymentId = async () => {
+      try {
+        let effectiveAmount: number | null;
+
+        if (typeof convertedCryptoAmount === 'number') {
+          effectiveAmount = convertedCryptoAmount;
+        } else if (convertedCurrencyObj && typeof convertedCurrencyObj.float === 'number') {
+          effectiveAmount = convertedCurrencyObj.float;
+        } else if (
+          thisAmount !== undefined &&
+          thisAmount !== null &&
+          thisAmount !== ''
+        ) {
+          const n = Number(thisAmount);
+          if (Number.isNaN(n)) {
+            return
+          }
+          effectiveAmount = n;
+        } else {
+          effectiveAmount = null
+        }
+
+        if (lastEffectiveAmountRef.current === effectiveAmount) {
+          return;
+        }
+        lastEffectiveAmountRef.current = effectiveAmount;
+
+        const responsePaymentId = await createPayment(
+          effectiveAmount ?? undefined,
+          to,
+          apiBaseUrl,
+        );
+        setPaymentId(responsePaymentId);
+      } catch (error) {
+        console.error('Error creating payment ID:', error);
+      }
+    };
+
+    void initializePaymentId();
+  }, [
+    isChild,
+    disablePaymentId,
+    to,
+    currency,
+    convertedCryptoAmount,
+    convertedCurrencyObj,
+    thisAmount,
+    apiBaseUrl,
+    setPaymentId,
+    lastEffectiveAmountRef,
+  ]);
+
+
+  useEffect(() => {
     const invalidAmount = thisAmount !== undefined && thisAmount && isNaN(+thisAmount)
     if (isValidCashAddress(to) || isValidXecAddress(to)) {
       setDisabled(isPropsTrue(props.disabled))
@@ -539,16 +697,54 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       }
     }
     if (userEditedAmount !== undefined && thisAmount && thisAddressType) {
-      const obj = getCurrencyObject(+thisAmount, currency, false)
-      setThisCurrencyObject(obj)
-      if (props.setCurrencyObject) props.setCurrencyObject(obj)
+      const obj = getCurrencyObject(+thisAmount, currency, false);
+      setThisCurrencyObject(obj);
+      if (props.setCurrencyObject) {
+        props.setCurrencyObject(obj);
+      }
+      const convertedAmount = obj.float / price
+      const convertedObj = price
+        ? getCurrencyObject(
+          convertedAmount,
+          thisAddressType,
+          randomSatoshis,
+        )
+        : null;
+      updateConvertedCurrencyObj(convertedObj)
     } else if (thisAmount && thisAddressType) {
-      cleanAmount = +thisAmount
-      const obj = getCurrencyObject(cleanAmount, currency, randomSatoshis)
-      setThisCurrencyObject(obj)
-      if (props.setCurrencyObject) props.setCurrencyObject(obj)
+      cleanAmount = +thisAmount;
+
+      const obj = getCurrencyObject(cleanAmount, currency, randomSatoshis);
+      setThisCurrencyObject(obj);
+      if(!isFiat(currency)) {
+        updateConvertedCurrencyObj(obj);
+      }
+      if (props.setCurrencyObject) {
+        props.setCurrencyObject(obj);
+      }
     }
   }, [thisAmount, currency, userEditedAmount])
+
+  // Helper function to check if amount meets minimum for donation UI visibility
+  const shouldShowDonationUI = useCallback((amount: number, currencyType: string): boolean => {
+    // Normalize currency type to uppercase for comparison
+    const normalizedCurrency = currencyType.toUpperCase()
+    if (normalizedCurrency !== 'XEC' && normalizedCurrency !== 'BCH') {
+      return false
+    }
+    // Check if 1% of the amount is >= minimum donation amount
+    const onePercentOfAmount = amount * 0.01
+    const minimumDonationAmount = DEFAULT_MINIMUM_DONATION_AMOUNT[normalizedCurrency] || 0
+    return onePercentOfAmount >= minimumDonationAmount
+  }, [])
+
+  // Helper function to check if donation should be applied
+  const shouldApplyDonation = useCallback((amount: number, currencyType: string): boolean => {
+    if (!donationEnabled || !userDonationRate || userDonationRate <= 0) {
+      return false
+    }
+    return shouldShowDonationUI(amount, currencyType)
+  }, [donationEnabled, userDonationRate, shouldShowDonationUI])
 
   useEffect(() => {
     if (to === undefined) return
@@ -559,32 +755,81 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     } else {
       setWidgetButtonText(`Send with ${thisAddressType} wallet`)
     }
+
     if (thisCurrencyObject && hasPrice) {
-      const convertedAmount = thisCurrencyObject.float / price
-      const convertedObj = price
-        ? getCurrencyObject(convertedAmount, thisAddressType, randomSatoshis)
-        : null
-      if (convertedObj) {
-        setText(
-          `Send ${thisCurrencyObject.string} ${thisCurrencyObject.currency} = ${convertedObj.string} ${thisAddressType}`,
+      // Use convertedAmount prop if available, otherwise calculate locally
+      const convertedAmount = convertedCurrencyObj ? convertedCurrencyObj.float : thisCurrencyObject.float / price
+      const convertedObj = convertedCurrencyObj ? convertedCurrencyObj : price
+        ? getCurrencyObject(
+          convertedAmount,
+          thisAddressType,
+          randomSatoshis,
         )
-        nextUrl = resolveUrl(thisAddressType, convertedObj.float)
-        setUrl(nextUrl ?? '')
+        : null;
+      if (convertedObj) {
+        // Store converted crypto amount for donation UI visibility check
+        setConvertedCryptoAmount(convertedObj.float)
+        let amountToDisplay = thisCurrencyObject.string;
+        let convertedAmountToDisplay = convertedObj.string
+
+        // Only apply donation if 1% of converted crypto amount is >= minimum donation amount
+        if (shouldApplyDonation(convertedObj.float, thisAddressType)) {
+          const thisDonationAmount = thisCurrencyObject.float * (userDonationRate / 100)
+          const amountWithDonation = thisCurrencyObject.float + thisDonationAmount
+          const amountWithDonationObj = getCurrencyObject(
+            amountWithDonation,
+            currency,
+            false,
+          )
+          amountToDisplay = amountWithDonationObj.string
+
+          const convertedDonationAmount = convertedObj.float * (userDonationRate / 100)
+          const convertedAmountWithDonation = convertedObj.float + convertedDonationAmount
+          const convertedAmountWithDonationObj = getCurrencyObject(
+            convertedAmountWithDonation,
+            thisAddressType,
+            randomSatoshis,
+          )
+          convertedAmountToDisplay = convertedAmountWithDonationObj.string
+        }
+        setText(
+          `Send ${amountToDisplay} ${thisCurrencyObject.currency} = ${convertedAmountToDisplay} ${thisAddressType}`,
+        )
+        const url = resolveUrl(thisAddressType, convertedObj.float)
+        setUrl(url ?? "")
       }
     } else {
+      // Clear converted amount when not in fiat conversion mode
+      setConvertedCryptoAmount(undefined)
       const notZeroValue =
         thisCurrencyObject?.float !== undefined && thisCurrencyObject.float > 0
       if (!isFiat(currency) && thisCurrencyObject && notZeroValue) {
         const cur: string = thisCurrencyObject.currency
-        setText(`Send ${thisCurrencyObject.string} ${cur}`)
-        nextUrl = resolveUrl(cur, thisCurrencyObject?.float)
+        const baseAmount = thisCurrencyObject.float // Base amount without donation
+
+        // Only apply donation if 1% of amount is >= minimum donation amount
+        let amountToDisplay = thisCurrencyObject.string
+        if (shouldApplyDonation(baseAmount, cur)) {
+          const donationAmountValue = baseAmount * (userDonationRate / 100)
+          const amountWithDonation = baseAmount + donationAmountValue
+          const amountWithDonationObj = getCurrencyObject(
+            amountWithDonation,
+            cur,
+            false,
+          )
+          amountToDisplay = amountWithDonationObj.string
+        }
+
+        setText(`Send ${amountToDisplay} ${cur}`)
+        // Pass base amount (without donation) to resolveUrl
+        nextUrl = resolveUrl(cur, baseAmount)
       } else {
         setText(`Send any amount of ${thisAddressType}`)
         nextUrl = resolveUrl(thisAddressType)
       }
       setUrl(nextUrl ?? '')
     }
-  }, [to, thisCurrencyObject, price, thisAmount, opReturn, hasPrice, isCashtabAvailable])
+  }, [to, thisCurrencyObject, price, thisAmount, opReturn, hasPrice, isCashtabAvailable, userDonationRate, donationEnabled, disabled, donationAddress, currency, randomSatoshis, thisAddressType, shouldApplyDonation])
 
   useEffect(() => {
     try {
@@ -605,6 +850,52 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   useEffect(() => {
     setThisAmount(props.amount)
   }, [props.amount])
+
+  // Save donation rate to localStorage whenever it changes
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      try {
+        localStorage.setItem(DONATION_RATE_STORAGE_KEY, userDonationRate.toString())
+      } catch (e) {
+        console.warn('Failed to save donation rate to localStorage:', e)
+      }
+    }
+  }, [userDonationRate])
+
+  // Don't sync with prop - we default to off (0) if no localStorage value
+  // This ensures user preference (stored in localStorage) always takes precedence
+
+  const handleDonationToggle = () => {
+    if (donationEnabled) {
+      // Turning off - save current rate (already clamped) and set to 0
+      setPreviousDonationRate(userDonationRate)
+      setUserDonationRate(0)
+      setDonationEnabled(false)
+    } else {
+      // Turning on - restore previous rate or use clamped prop/default
+      // Use same clamping logic as handleDonationRateChange to ensure 1-99 range
+      const rateToRestore = previousDonationRate > 0 ? previousDonationRate : clampedDonationRateProp
+      const clampedRate = clampDonationRate(rateToRestore)
+      setUserDonationRate(clampedRate)
+      setDonationEnabled(true)
+      // Update previousDonationRate to the clamped value
+      if (clampedRate > 0) {
+        setPreviousDonationRate(clampedRate)
+      }
+    }
+  }
+
+  const handleDonationRateChange = (value: number) => {
+    const clampedValue = clampDonationRate(value)
+    setUserDonationRate(clampedValue)
+    if (clampedValue >= 1) {
+      // Auto-enable donation if user enters a value >= 1
+      if (!donationEnabled) {
+        setDonationEnabled(true)
+      }
+      setPreviousDonationRate(clampedValue)
+    }
+  }
 
   let cleanGoalAmount: any
   if (goalAmount) {
@@ -660,33 +951,71 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     setRecentlyCopied(true)
   }, [disabled, to, url, setCopied, setRecentlyCopied])
 
-  const resolveUrl = useCallback(
-    (currencyCode: string, amount?: number) => {
-      if (disabled || !to) return
-      const prefix = CURRENCY_PREFIXES_MAP[currencyCode.toLowerCase() as (typeof CRYPTO_CURRENCIES)[number]]
-      if (!prefix) return
-      let thisUrl = `${prefix}:${to.replace(/^.*:/, '')}`
-      if (amount) {
+  const resolveUrl = useCallback((currency: string, amount?: number) => {
+    if (disabled || !to) return;
+
+    const prefix = CURRENCY_PREFIXES_MAP[currency.toLowerCase() as typeof CRYPTO_CURRENCIES[number]];
+    if (!prefix) return;
+
+    let thisUrl = `${prefix}:${to.replace(/^.*:/, '')}`;
+
+    if (amount) {
+      // Check if donation should be applied (1% of amount >= minimum)
+      const currencyType = currency.toUpperCase()
+
+      if (donationAddress && shouldApplyDonation(amount, currencyType)) {
+        const decimals = DECIMALS[currencyType] || DECIMALS.XEC;
+        const donationPercent = userDonationRate / 100
+        // Calculate donation amount from base amount
+        const thisDonationAmount = amount * donationPercent
+
+        thisUrl += `?amount=${amount}`
+        thisUrl += `&addr=${donationAddress}&amount=${thisDonationAmount.toFixed(decimals)}`;
+      } else {
         thisUrl += `?amount=${amount}`
       }
-      if (opReturn) {
-        const separator = thisUrl.includes('?') ? '&' : '?'
-        thisUrl += `${separator}op_return_raw=${opReturn}`
-      }
-      return thisUrl
+    }
+
+    if (opReturn) {
+      const separator = thisUrl.includes('?') ? '&' : '?';
+      thisUrl += `${separator}op_return_raw=${opReturn}`;
+    }
+
+    return thisUrl;
     },
-    [disabled, to, opReturn]
+    [disabled, to, opReturn, userDonationRate, donationAddress, donationEnabled, shouldApplyDonation]
   )
 
-  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let amount = e.target.value
-    if (amount === '') {
-      amount = '0'
-    }
-    const userEdited = getCurrencyObject(+amount, currency, false)
-    setUserEditedAmount(userEdited)
-    updateAmount(amount)
+  const stripFormatting = (s: string) => {
+    return s.replace(/,/g, '').replace(/(\.\d*?[1-9])0+$/, '$1').replace(/\.0+$/, '');
   }
+
+
+  const applyDraftAmount = () => {
+    if (!draftAmount) return
+
+    const raw = draftAmount.trim()
+
+    if (raw === '' || isNaN(+raw)) return
+
+    const numeric = +raw
+
+    const newObj = getCurrencyObject(numeric, currency, false)
+    setUserEditedAmount(newObj)
+
+    updateAmount(String(numeric))
+  }
+
+  const isDraftValid =
+    draftAmount.trim() !== '' &&
+    !isNaN(+draftAmount) &&
+    +draftAmount > 0
+
+  const isSameAmount =
+    isDraftValid &&
+    +draftAmount === thisCurrencyObject?.float
+
+
 
   const updateAmount = (amount: string) => {
     setThisAmount(amount)
@@ -737,7 +1066,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
             {(() => {
               if (errorMsg) return errorMsg
               if (disabled) return 'Not yet ready for payment'
-              if (loading) return 'Loading...'
+              if (qrLoading) return 'Loading...'
               if (success) return successText
               return text
             })()}
@@ -817,7 +1146,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
               sx={classes.qrCode}
               onClick={handleQrCodeClick}
             >
-              <Fade in={!loading && url !== ''}>
+              <Fade in={!qrLoading && url !== ''}>
                 {/* one single child for Fade, cast to any to satisfy MUI/React types */}
                 <Box component="span">
                   {qrCode}
@@ -835,7 +1164,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                 </Box>
               </Fade>
 
-              {loading ? (
+              {qrLoading ? (
                 <Box
                   position="absolute"
                   top={0}
@@ -857,17 +1186,51 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
 
             {isPropsTrue(editable) ? (
               <Box sx={classes.editAmount} component="div">
-                <TextField
+                <NumericFormat
+                  value={draftAmount}
+                  onValueChange={(values) => {
+                    setDraftAmount(values.value); // raw numeric value without commas
+                  }}
+                  onKeyDown={(e: React.KeyboardEvent) => {
+                    if (e.key === 'Enter' && isDraftValid && !isSameAmount) {
+                      applyDraftAmount();
+                    }
+                  }}
+                  thousandSeparator
+                  allowLeadingZeros={false}
+                  decimalScale={8}
+                  inputRef={inputRef}
+                  customInput={TextField}
                   label="Edit amount"
-                  value={thisCurrencyObject?.float || 0}
-                  onChange={handleAmountChange}
-                  inputProps={{ maxLength: 12 }}
-                  name="Amount"
-                  placeholder="Enter Amount"
-                  id="userEditedAmount"
                   disabled={success}
+                  InputProps={{
+                    endAdornment: (
+                      <Box
+                        component="button"
+                        onClick={applyDraftAmount}
+                        sx={{
+                          padding: '4px 10px',
+                          fontSize: '0.75rem',
+                          fontWeight: 500,
+                          color: '#fff',
+                          backgroundColor: theme.palette.primary,
+                          border: 'none',
+                          borderRadius: '4px',
+                          cursor: 'pointer',
+                          transition: 'background-color 0.2s ease, opacity 0.2s ease',
+                          visibility: isDraftValid && !isSameAmount ? 'visible' : 'hidden',
+                          '&:hover': {
+                            backgroundColor: theme.palette.logo ?? theme.palette.primary,
+                          },
+                        }}
+                      >
+                        Confirm
+                      </Box>
+                    ),
+                  }}
                 />
-                <Typography component="span">{currency}</Typography>
+                <Typography component="span" sx={{ marginLeft: '4px' }}>{currency}</Typography>
+
               </Box>
             ) : null}
 
@@ -921,7 +1284,103 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
 
           <Box py={0.8}>
             <Typography sx={classes.footer}>
-              Powered by PayButton.org
+              <Box>Powered by PayButton.org</Box>
+
+              {(() => {
+                // For fiat conversions, check the converted crypto amount
+                // For crypto-only, check the currency object amount
+                const amountToCheck = hasPrice && convertedCryptoAmount !== undefined
+                  ? convertedCryptoAmount
+                  : thisCurrencyObject?.float
+                // Show donation UI if amount meets minimum (1% >= 10 XEC), regardless of enabled state
+                return (thisAddressType === 'XEC' || thisAddressType === 'BCH') &&
+                       amountToCheck !== undefined &&
+                       amountToCheck > 0 &&
+                       shouldShowDonationUI(amountToCheck, thisAddressType)
+              })() ? (
+                <>
+                <Box sx={classes.footerSeparator}>|</Box>
+                  <Tooltip title="Send us some love with a small donation" arrow placement="top">
+                    <Box display="flex" alignItems="center">
+                    <IconButton
+                      onClick={handleDonationToggle}
+                      disabled={success}
+                      sx={{
+                        padding: '4px',
+                        flexShrink: 0,
+                      }}
+                      aria-label={donationEnabled ? 'Disable donation' : 'Enable donation'}
+                    >
+                      <Box
+                        component="svg"
+                        sx={{
+                          width: '13px',
+                          height: '13px',
+                          fill: donationEnabled ? '#f44336' : 'none',
+                          stroke: donationEnabled ? '#f44336' : '#5c5c5c',
+                          strokeWidth: donationEnabled ? 0 : 1.5,
+                          transition: 'all 0.2s ease-in-out',
+                          '&:hover': {
+                            fill: donationEnabled ? '#d32f2f' : 'rgba(244, 67, 54, 0.1)',
+                            stroke: donationEnabled ? '#d32f2f' : '#f44336',
+                          },
+                        }}
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                      </Box>
+                    </IconButton>
+                    {donationEnabled ? (
+                      <>
+                        <TextField
+                          type="number"
+                          value={userDonationRate}
+                          onChange={(e) => {
+                            const value = parseFloat(e.target.value) || 0
+                            handleDonationRateChange(value)
+                          }}
+                          inputProps={{
+                            min: 1,
+                            max: 99,
+                            step: 1,
+                          }}
+                          size="small"
+                          disabled={success}
+                          placeholder="0"
+                          sx={{
+                            width: '34px',
+                            '& .MuiOutlinedInput-root': {
+                              height: '18px',
+                              '& input': {
+                                padding: '0px 2px 0px 4px',
+                                fontSize: '0.6rem',
+                                textAlign: 'left',
+                                color: '#5c5c5c',
+                                lineHeight: '1.5em',
+                              },
+                              '& fieldset': {
+                                borderWidth: '1px',
+                              },
+                            },
+                          }}
+                        />
+                        <Typography
+                          component="span"
+                          sx={{
+                            fontSize: '0.6rem',
+                            color: '#5c5c5c',
+                            flexShrink: 0,
+                            marginLeft: '2px',
+                          }}
+                        >
+                          %
+                        </Typography>
+                      </>
+                    ) : null}
+                  </Box>
+                  </Tooltip>
+                </>
+              ) : null}
             </Typography>
           </Box>
         </Box>
