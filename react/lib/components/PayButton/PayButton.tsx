@@ -367,17 +367,15 @@ export const PayButton = ({
 
   useEffect(() => {
     if (currencyObj && isFiat(currency) && price) {
-      if (!convertedCurrencyObj) {
-        const addressType: Currency = getCurrencyTypeFromAddress(to);
-        const convertedObj = getCurrencyObject(
-          currencyObj.float / price,
-          addressType,
-          randomSatoshis,
-        );
-        setCryptoAmount(convertedObj.string);
-        setConvertedCurrencyObj(convertedObj);
-      }
-    } else if (!isFiat(currency) && randomSatoshis && !convertedCurrencyObj) {
+      const addressType: Currency = getCurrencyTypeFromAddress(to);
+      const convertedObj = getCurrencyObject(
+        currencyObj.float / price,
+        addressType,
+        randomSatoshis,
+      );
+      setCryptoAmount(convertedObj.string);
+      setConvertedCurrencyObj(convertedObj);
+    } else if (!isFiat(currency) && randomSatoshis) {
       const convertedObj = getCurrencyObject(
         amount as number,
         addressType,
