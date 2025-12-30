@@ -32,6 +32,9 @@
   - [auto-close](/zh-tw/?id=auto-close)
   - [disable-sound](/zh-tw/?id=disable-sound)
   - [size](/zh-tw/?id=size)
+  - [donation-rate](/zh-tw/?id=donation-rate)
+  - [token-id](/zh-tw/?id=token-id)
+
 - [貢獻](/zh-tw/?id=貢獻)
   - [開發人員快速入門](/zh-tw/?id=開發人員快速入門)
     - [入門](/zh-tw/?id=入門)

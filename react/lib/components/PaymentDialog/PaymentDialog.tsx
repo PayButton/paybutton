@@ -67,6 +67,7 @@ export interface PaymentDialogProps extends ButtonProps {
   transactionText?: string
   convertedCurrencyObj?: CurrencyObject;
   setConvertedCurrencyObj?: Function;
+  tokenId?: string;
 }
 
 export const PaymentDialog = ({
@@ -129,7 +130,8 @@ export const PaymentDialog = ({
   setConvertedCurrencyObj,
   theme: themeProp,
   donationAddress,
-  donationRate
+  donationRate,
+  tokenId,
 }: PaymentDialogProps): React.ReactElement => {
   const [success, setSuccess] = useState(false);
   const [internalDisabled, setInternalDisabled] = useState(false);
@@ -259,6 +261,7 @@ export const PaymentDialog = ({
           donationRate={donationRate}
           convertedCurrencyObj={convertedCurrencyObj}
           setConvertedCurrencyObj={setConvertedCurrencyObj}
+          tokenId={tokenId}
           foot={success && (
             <ButtonComponent
               onClick={handleWidgetClose}
