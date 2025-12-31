@@ -157,3 +157,10 @@ export interface CheckSuccessInfo {
   currencyObj?: CurrencyObject,
   donationRate?: number
 }
+
+export type Field = {
+  name: string
+  text: string
+  type: string
+}
+

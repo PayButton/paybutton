@@ -42,7 +42,8 @@ import {
   DEFAULT_DONATION_RATE,
   DEFAULT_MINIMUM_DONATION_AMOUNT,
   createPayment,
-  darkMode
+  darkMode,
+  Field
 } from '../../util';
 import AltpaymentWidget from './AltpaymentWidget'
 import {
@@ -116,6 +117,7 @@ export interface WidgetProps {
   convertedCurrencyObj?: CurrencyObject;
   setConvertedCurrencyObj?: Function;
   setPaymentId?: Function;
+  fields?: Field[];
 }
 
 interface StyleProps {
@@ -176,6 +178,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     donationRate = DEFAULT_DONATION_RATE,
     setConvertedCurrencyObj = () => {},
     setPaymentId,
+    fields
   } = props;
   const [loading, setLoading] = useState(true);
   const [draftAmount, setDraftAmount] = useState<string>("")
@@ -957,6 +960,9 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const handleQrCodeClick = useCallback((): void => {
     if (disabled || to === undefined || qrLoading) return
     if (!url || !copyToClipboard(url)) return
+    console.log({
+      fields
+    })
     setCopied(true)
     setRecentlyCopied(true)
   }, [disabled, to, url, setCopied, setRecentlyCopied, qrLoading])

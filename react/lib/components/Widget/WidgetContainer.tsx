@@ -19,6 +19,7 @@ import {
   shouldTriggerOnSuccess,
   isPropsTrue,
   DEFAULT_DONATION_RATE,
+  Field,
 } from '../../util';
 
 import Widget, { WidgetProps } from './Widget';
@@ -54,6 +55,7 @@ export interface WidgetContainerProps
   donationAddress?: string
   donationRate?: number
   convertedCurrencyObj?: CurrencyObject;
+  fields?: Field[];
 }
 
 const snackbarOptionsSuccess: OptionsObject = {
@@ -138,6 +140,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
       donationRate,
       convertedCurrencyObj,
       setConvertedCurrencyObj,
+      fields,
       ...widgetProps
     } = props;
     const [internalCurrencyObj, setInternalCurrencyObj] = useState<CurrencyObject>();
@@ -327,6 +330,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
           convertedCurrencyObj={convertedCurrencyObj}
           setConvertedCurrencyObj={setConvertedCurrencyObj}
           setPaymentId={setThisPaymentId}
+          fields={fields}
         />
       </React.Fragment>
     );
