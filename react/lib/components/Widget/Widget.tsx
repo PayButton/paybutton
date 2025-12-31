@@ -117,7 +117,7 @@ export interface WidgetProps {
   convertedCurrencyObj?: CurrencyObject;
   setConvertedCurrencyObj?: Function;
   setPaymentId?: Function;
-  fields?: Field[];
+  fields?: Field[] | string;
 }
 
 interface StyleProps {
@@ -178,8 +178,24 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     donationRate = DEFAULT_DONATION_RATE,
     setConvertedCurrencyObj = () => {},
     setPaymentId,
-    fields
+    fields: fieldsProp
   } = props;
+
+  // Parse fields if it's a JSON string
+  const fields = useMemo(() => {
+    if (!fieldsProp) return undefined;
+    if (Array.isArray(fieldsProp)) return fieldsProp;
+    if (typeof fieldsProp === 'string') {
+      try {
+        const parsed = JSON.parse(fieldsProp);
+        return Array.isArray(parsed) ? parsed : undefined;
+      } catch {
+        return undefined;
+      }
+    }
+    return undefined;
+  }, [fieldsProp]);
+
   const [loading, setLoading] = useState(true);
   const [draftAmount, setDraftAmount] = useState<string>("")
   const inputRef = React.useRef<HTMLInputElement>(null)
@@ -961,7 +977,8 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     if (disabled || to === undefined || qrLoading) return
     if (!url || !copyToClipboard(url)) return
     console.log({
-      fields
+      fields,
+      type: typeof fields
     })
     setCopied(true)
     setRecentlyCopied(true)
@@ -1274,6 +1291,42 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                 />
                 <Typography component="span" sx={{ marginLeft: '4px' }}>{currency}</Typography>
 
+              </Box>
+            ) : null}
+
+            {fields && Array.isArray(fields) && fields.length > 0 ? (
+              <Box sx={{ width: '100%', mt: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
+                {fields.map((field, index) => (
+                  <TextField
+                    key={index}
+                    label={field.text}
+                    name={field.name}
+                    type={field.type}
+                    size="small"
+                    fullWidth
+                    disabled={success}
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        backgroundColor: isDarkMode ? '#1a1a1a' : '#fff',
+                        '& fieldset': {
+                          borderColor: isDarkMode ? '#333' : '#ddd',
+                        },
+                        '&:hover fieldset': {
+                          borderColor: theme.palette.primary,
+                        },
+                        '&.Mui-focused fieldset': {
+                          borderColor: theme.palette.primary,
+                        },
+                      },
+                      '& .MuiInputLabel-root': {
+                        color: isDarkMode ? '#b0b0b0' : '#666',
+                      },
+                      '& .MuiInputBase-input': {
+                        color: isDarkMode ? '#e0e0e0' : '#333',
+                      },
+                    }}
+                  />
+                ))}
               </Box>
             ) : null}
 
