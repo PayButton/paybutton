@@ -34,6 +34,8 @@
   - [disable-sound](/?id=disable-sound)
   - [size](/?id=size)
   - [donation-rate](/?id=donation-rate)
+  - [token-id](/?id=token-id)
+
 
 - [Contribute](/?id=contribute)
   - [Developer Quick Start](/?id=developer-quick-start)
