@@ -8,6 +8,7 @@ import {
   PriceData,
   TransactionDetails,
   Currency,
+  Field,
 } from './types';
 import { isFiat } from './currency';
 import { CURRENCY_TYPES_MAP, DECIMALS } from './constants';
@@ -94,6 +95,7 @@ export const createPayment = async (
   amount: string | number | undefined,
   address: string,
   rootUrl = config.apiBaseUrl,
+  fields?: Field[],
 ): Promise<string | undefined> => {
   const prefix = getAddressPrefix(address)
   const decimals = DECIMALS[CURRENCY_TYPES_MAP[prefix]]
@@ -102,7 +104,7 @@ export const createPayment = async (
     : undefined
   const { data, status } = await axios.post(
     `${rootUrl}/api/payments/paymentId`,
-    { amount: safeAmount, address }
+    { amount: safeAmount, address, fields }
   );
 
   if (status === 200) {

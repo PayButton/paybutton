@@ -118,6 +118,7 @@ export interface WidgetProps {
   setConvertedCurrencyObj?: Function;
   setPaymentId?: Function;
   fields?: Field[] | string;
+  onFieldsSubmit?: (fieldValues: Record<string, string>) => void;
 }
 
 interface StyleProps {
@@ -178,8 +179,14 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     donationRate = DEFAULT_DONATION_RATE,
     setConvertedCurrencyObj = () => {},
     setPaymentId,
-    fields: fieldsProp
+    fields: fieldsProp,
+    onFieldsSubmit
   } = props;
+
+  // State to track field values
+  const [fieldValues, setFieldValues] = useState<Record<string, string>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [fieldsSubmitted, setFieldsSubmitted] = useState(false);
 
   // Parse fields if it's a JSON string
   const fields = useMemo(() => {
@@ -657,6 +664,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
           to,
           apiBaseUrl,
         );
+        console.log("entrou aqui carai")
         setPaymentId(responsePaymentId);
       } catch (error) {
         console.error('Error creating payment ID:', error);
@@ -858,10 +866,13 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       }
       setUrl(nextUrl ?? '')
     }
-  }, [to, thisCurrencyObject, price, thisAmount, opReturn, hasPrice, isCashtabAvailable, userDonationRate, donationEnabled, disabled, donationAddress, currency, randomSatoshis, thisAddressType, shouldApplyDonation])
+  }, [to, thisCurrencyObject, price, thisAmount, opReturn, hasPrice, isCashtabAvailable, userDonationRate, donationEnabled, disabled, donationAddress, currency, randomSatoshis, thisAddressType, shouldApplyDonation, paymentId])
 
   useEffect(() => {
     try {
+      console.log({
+        opReturn: props.opReturn,
+      })
       setOpReturn(
         encodeOpReturnProps({
           opReturn: props.opReturn,
@@ -977,12 +988,55 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     if (disabled || to === undefined || qrLoading) return
     if (!url || !copyToClipboard(url)) return
     console.log({
-      fields,
-      type: typeof fields
+      url,
+      paymentId
     })
     setCopied(true)
     setRecentlyCopied(true)
-  }, [disabled, to, url, setCopied, setRecentlyCopied, qrLoading])
+  }, [disabled, to, url, setCopied, setRecentlyCopied, qrLoading, paymentId])
+
+  const handleFieldsSubmit = useCallback(async (): Promise<void> => {
+    if (!fields || success || isSubmitting) return;
+
+    const missingFields = fields.filter(
+      (field) => field.required && !fieldValues[field.name]?.trim()
+    );
+
+    if (missingFields.length > 0) {
+      console.warn('Missing required fields:', missingFields.map(f => f.name));
+      return;
+    }
+
+    const fieldsWithValues = fields.map((field) => ({
+      ...field,
+      value: fieldValues[field.name] || ''
+    }));
+
+    setIsSubmitting(true);
+
+    try {
+      if (!disablePaymentId && to) {
+        const effectiveAmount = convertedCryptoAmount ?? thisCurrencyObject?.float;
+        const newPaymentId = await createPayment(effectiveAmount, to, apiBaseUrl, fieldsWithValues);
+        console.log({ newPaymentId, setPaymentId });
+        if (setPaymentId && newPaymentId) {
+          setPaymentId(newPaymentId);
+        }
+      }
+
+      if (onFieldsSubmit) {
+        onFieldsSubmit(fieldValues);
+      }
+      setFieldsSubmitted(true);
+      setTimeout(() => {
+        setFieldsSubmitted(false);
+      }, 2000);
+    } catch (error) {
+      console.error('Error submitting fields:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, [fields, fieldValues, success, isSubmitting, onFieldsSubmit, disablePaymentId, to, convertedCryptoAmount, thisCurrencyObject, apiBaseUrl, setPaymentId])
 
   const resolveUrl = useCallback((currency: string, amount?: number) => {
     if (disabled || !to) return;
@@ -1305,6 +1359,13 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                     size="small"
                     fullWidth
                     disabled={success}
+                    value={fieldValues[field.name] || ''}
+                    onChange={(e) => {
+                      setFieldValues(prev => ({
+                        ...prev,
+                        [field.name]: e.target.value
+                      }));
+                    }}
                     sx={{
                       '& .MuiOutlinedInput-root': {
                         backgroundColor: isDarkMode ? '#1a1a1a' : '#fff',
@@ -1327,6 +1388,55 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                     }}
                   />
                 ))}
+                <Box
+                  component="button"
+                  data-testid="fields-submit-button"
+                  onClick={handleFieldsSubmit}
+                  sx={{
+                    mt: 1,
+                    padding: '10px 20px',
+                    fontSize: '0.875rem',
+                    fontWeight: 600,
+                    color: '#fff',
+                    backgroundColor: fieldsSubmitted 
+                      ? (theme.palette.logo ?? theme.palette.primary) 
+                      : theme.palette.primary,
+                    border: 'none',
+                    borderRadius: '6px',
+                    cursor: isSubmitting || success || fieldsSubmitted ? 'not-allowed' : 'pointer',
+                    transition: 'background-color 0.2s ease, transform 0.1s ease',
+                    width: '100%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px',
+                    '&:hover': {
+                      backgroundColor: fieldsSubmitted 
+                        ? (theme.palette.logo ?? theme.palette.primary)
+                        : (theme.palette.logo ?? theme.palette.primary),
+                      transform: isSubmitting || success || fieldsSubmitted ? 'none' : 'translateY(-1px)',
+                    },
+                    '&:active': {
+                      transform: 'translateY(0)',
+                    },
+                    '&:disabled': {
+                      opacity: 0.6,
+                      cursor: 'not-allowed',
+                    },
+                  }}
+                  disabled={success || isSubmitting || fieldsSubmitted}
+                >
+                  {isSubmitting ? (
+                    <>
+                      <CircularProgress size={16} sx={{ color: '#fff' }} />
+                      Submitting...
+                    </>
+                  ) : fieldsSubmitted ? (
+                    'Confirmed ✓'
+                  ) : (
+                    'Confirm'
+                  )}
+                </Box>
               </Box>
             ) : null}
 

@@ -162,5 +162,7 @@ export type Field = {
   name: string
   text: string
   type: string
+  value?: string
+  required?: boolean
 }
 
