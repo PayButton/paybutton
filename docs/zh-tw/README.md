@@ -1122,6 +1122,77 @@ donationRate = 10
 ```
 <!-- tabs:end -->
 
+## fields
+
+> **「fields」參數用於指定自訂輸入欄位，以便在付款前收集用戶的額外資訊。**
+
+?> 此參數是可選的。預設值為空。可接受的值是欄位物件陣列或 JSON 字串。每個欄位物件可以包含以下屬性：`name`（必填，唯一識別碼）、`text`（必填，顯示給用戶的標籤）、`type`（輸入類型，如 'text'、'email'、'number'）、`value`（預設值）和 `required`（布林值）。
+
+**Example:**
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+fields='[{"name": "email", "text": "電子郵件地址", "type": "email", "required": true}, {"name": "note", "text": "備註", "type": "text"}]'
+```
+
+#### ** JavaScript **
+
+```javascript
+fields: [
+  { name: 'email', text: '電子郵件地址', type: 'email', required: true },
+  { name: 'note', text: '備註', type: 'text' }
+]
+```
+
+#### ** React **
+
+```react
+fields = {[
+  { name: 'email', text: '電子郵件地址', type: 'email', required: true },
+  { name: 'note', text: '備註', type: 'text' }
+]}
+```
+<!-- tabs:end -->
+
+## on-fields-submit
+
+> **「on-fields-submit」參數用於指定當用戶提交自訂欄位時執行的回呼函數。**
+
+?> 此參數是可選的。預設值為空。可接受的值是任何已定義的函數。
+
+#### *callback* 參數
+
+- **fieldValues** (`object`): 包含以欄位名稱為鍵的欄位值物件
+
+**Example:**
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+on-fields-submit="fieldsSubmitCallback"
+```
+
+#### ** JavaScript **
+
+```javascript
+onFieldsSubmit: (fieldValues) => {
+  console.log('Fields submitted:', fieldValues);
+  // fieldValues 示例: { email: 'user@example.com', note: '我的付款備註' }
+}
+```
+
+#### ** React **
+
+```react
+onFieldsSubmit = {(fieldValues) => {
+  console.log('Fields submitted:', fieldValues);
+}}
+```
+<!-- tabs:end -->
+
 
 # 貢獻
 

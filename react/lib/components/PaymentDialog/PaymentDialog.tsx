@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Theme, ThemeName, ThemeProvider, useTheme } from '../../themes';
 import Button, { ButtonProps } from '../Button/Button';
 import { WidgetContainer } from '../Widget/WidgetContainer';
-import { Currency, CurrencyObject, Transaction, isPropsTrue, isValidCashAddress, isValidXecAddress, getAutoCloseDelay } from '../../util';
+import { Currency, CurrencyObject, Transaction, isPropsTrue, isValidCashAddress, isValidXecAddress, getAutoCloseDelay, Field } from '../../util';
 import { Socket } from 'socket.io-client';
 import { AltpaymentCoin, AltpaymentPair, AltpaymentShift, AltpaymentError } from '../../altpayment';
 export interface PaymentDialogProps extends ButtonProps {
@@ -67,6 +67,7 @@ export interface PaymentDialogProps extends ButtonProps {
   transactionText?: string
   convertedCurrencyObj?: CurrencyObject;
   setConvertedCurrencyObj?: Function;
+  fields?: Field[];
 }
 
 export const PaymentDialog = ({
@@ -129,7 +130,8 @@ export const PaymentDialog = ({
   setConvertedCurrencyObj,
   theme: themeProp,
   donationAddress,
-  donationRate
+  donationRate,
+  fields
 }: PaymentDialogProps): React.ReactElement => {
   const [success, setSuccess] = useState(false);
   const [internalDisabled, setInternalDisabled] = useState(false);
@@ -259,6 +261,7 @@ export const PaymentDialog = ({
           donationRate={donationRate}
           convertedCurrencyObj={convertedCurrencyObj}
           setConvertedCurrencyObj={setConvertedCurrencyObj}
+          fields={fields}
           foot={success && (
             <ButtonComponent
               onClick={handleWidgetClose}

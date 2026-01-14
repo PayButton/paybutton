@@ -20,7 +20,8 @@ import {
   CryptoCurrency,
   ButtonSize,
   DEFAULT_DONATION_RATE,
-  createPayment
+  createPayment,
+  Field
 } from '../../util';
 import { PaymentDialog } from '../PaymentDialog';
 import { AltpaymentCoin, AltpaymentError, AltpaymentPair, AltpaymentShift } from '../../altpayment';
@@ -59,6 +60,7 @@ export interface PayButtonProps extends ButtonProps {
   sizeScaleAlreadyApplied?: boolean;
   donationAddress?: string;
   donationRate?: number;
+  fields?: Field[];
 }
 
 export const PayButton = ({
@@ -86,6 +88,7 @@ export const PayButton = ({
   apiBaseUrl,
   transactionText,
   disableSound,
+  fields,
   autoClose = false,
   disableAltpayment,
   contributionOffset,
@@ -464,6 +467,7 @@ export const PayButton = ({
         donationRate={donationRate}
         convertedCurrencyObj={convertedCurrencyObj}
         setConvertedCurrencyObj={setConvertedCurrencyObj}
+        fields={fields}
       />
       {errorMsg && (
         <p

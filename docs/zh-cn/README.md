@@ -1126,6 +1126,40 @@ donationRate = 10
 ```
 <!-- tabs:end -->
 
+## fields
+
+> **「fields」参数用于指定自定义输入字段，以便在付款前收集用户的额外信息。**
+
+?> 此参数是可选的。默认值为空。可接受的值是字段对象数组或 JSON 字符串。每个字段对象可以包含以下属性：`name`（必填，唯一标识符）、`text`（必填，显示给用户的标签）、`type`（输入类型，如 'text'、'email'、'number'）、`value`（默认值）和 `required`（布尔值）。
+
+**Example:**
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+fields='[{"name": "email", "text": "电子邮件地址", "type": "email", "required": true}, {"name": "note", "text": "备注", "type": "text"}]'
+```
+
+#### ** JavaScript **
+
+```javascript
+fields: [
+  { name: 'email', text: '电子邮件地址', type: 'email', required: true },
+  { name: 'note', text: '备注', type: 'text' }
+]
+```
+
+#### ** React **
+
+```react
+fields = {[
+  { name: 'email', text: '电子邮件地址', type: 'email', required: true },
+  { name: 'note', text: '备注', type: 'text' }
+]}
+```
+<!-- tabs:end -->
+
 
 # 贡献
 

@@ -106,6 +106,7 @@ const allowedProps = [
   'transactionText',
   'size',
   'donationRate',
+  'fields'
 ];
 
 const requiredProps = [
