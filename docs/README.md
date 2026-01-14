@@ -1127,6 +1127,40 @@ donationRate = 10
 ```
 <!-- tabs:end -->
 
+## fields
+
+> **The 'fields' parameter specifies custom input fields to collect additional information from users before payment.**
+
+?> This parameter is optional. Default value is empty. Possible values are an array of field objects or a JSON string. Each field object can have the following properties: `name` (required, unique identifier), `text` (required, label displayed to user), `type` (input type like 'text', 'email', 'number'), `value` (default value), and `required` (boolean).
+
+**Example:**
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+fields='[{"name": "email", "text": "Email Address", "type": "email", "required": true}, {"name": "note", "text": "Note", "type": "text"}]'
+```
+
+#### ** JavaScript **
+
+```javascript
+fields: [
+  { name: 'email', text: 'Email Address', type: 'email', required: true },
+  { name: 'note', text: 'Note', type: 'text' }
+]
+```
+
+#### ** React **
+
+```react
+fields = {[
+  { name: 'email', text: 'Email Address', type: 'email', required: true },
+  { name: 'note', text: 'Note', type: 'text' }
+]}
+```
+<!-- tabs:end -->
+
 # Contribute
 
 PayButton is a community-driven open-source initiative. Contributions from the community are _crucial_ to the success of the project.

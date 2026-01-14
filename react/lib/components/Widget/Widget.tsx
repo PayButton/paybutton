@@ -1015,7 +1015,6 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       if (!disablePaymentId && to) {
         const effectiveAmount = convertedCryptoAmount ?? thisCurrencyObject?.float;
         const newPaymentId = await createPayment(effectiveAmount, to, apiBaseUrl, fieldsWithValues);
-        console.log({ newPaymentId, setPaymentId });
         if (setPaymentId && newPaymentId) {
           setOpReturn(
             encodeOpReturnProps({
