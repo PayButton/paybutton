@@ -870,9 +870,6 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
 
   useEffect(() => {
     try {
-      console.log({
-        opReturn: props.opReturn,
-      })
       setOpReturn(
         encodeOpReturnProps({
           opReturn: props.opReturn,
@@ -1020,6 +1017,13 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         const newPaymentId = await createPayment(effectiveAmount, to, apiBaseUrl, fieldsWithValues);
         console.log({ newPaymentId, setPaymentId });
         if (setPaymentId && newPaymentId) {
+          setOpReturn(
+            encodeOpReturnProps({
+              opReturn: props.opReturn,
+              paymentId: newPaymentId,
+              disablePaymentId: disablePaymentId ?? false,
+            }),
+          )
           setPaymentId(newPaymentId);
         }
       }
@@ -1036,7 +1040,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     } finally {
       setIsSubmitting(false);
     }
-  }, [fields, fieldValues, success, isSubmitting, onFieldsSubmit, disablePaymentId, to, convertedCryptoAmount, thisCurrencyObject, apiBaseUrl, setPaymentId])
+  }, [fields, fieldValues, success, isSubmitting, onFieldsSubmit, disablePaymentId, to, convertedCryptoAmount, thisCurrencyObject, apiBaseUrl, setPaymentId, paymentId, props.opReturn]);
 
   const resolveUrl = useCallback((currency: string, amount?: number) => {
     if (disabled || !to) return;
@@ -1348,102 +1352,9 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
               </Box>
             ) : null}
 
-            {fields && Array.isArray(fields) && fields.length > 0 ? (
-              <Box sx={{ width: '100%', mt: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
-                {fields.map((field, index) => (
-                  <TextField
-                    key={index}
-                    label={field.text}
-                    name={field.name}
-                    type={field.type}
-                    size="small"
-                    fullWidth
-                    disabled={success}
-                    value={fieldValues[field.name] || ''}
-                    onChange={(e) => {
-                      setFieldValues(prev => ({
-                        ...prev,
-                        [field.name]: e.target.value
-                      }));
-                    }}
-                    sx={{
-                      '& .MuiOutlinedInput-root': {
-                        backgroundColor: isDarkMode ? '#1a1a1a' : '#fff',
-                        '& fieldset': {
-                          borderColor: isDarkMode ? '#333' : '#ddd',
-                        },
-                        '&:hover fieldset': {
-                          borderColor: theme.palette.primary,
-                        },
-                        '&.Mui-focused fieldset': {
-                          borderColor: theme.palette.primary,
-                        },
-                      },
-                      '& .MuiInputLabel-root': {
-                        color: isDarkMode ? '#b0b0b0' : '#666',
-                      },
-                      '& .MuiInputBase-input': {
-                        color: isDarkMode ? '#e0e0e0' : '#333',
-                      },
-                    }}
-                  />
-                ))}
-                <Box
-                  component="button"
-                  data-testid="fields-submit-button"
-                  onClick={handleFieldsSubmit}
-                  sx={{
-                    mt: 1,
-                    padding: '10px 20px',
-                    fontSize: '0.875rem',
-                    fontWeight: 600,
-                    color: '#fff',
-                    backgroundColor: fieldsSubmitted 
-                      ? (theme.palette.logo ?? theme.palette.primary) 
-                      : theme.palette.primary,
-                    border: 'none',
-                    borderRadius: '6px',
-                    cursor: isSubmitting || success || fieldsSubmitted ? 'not-allowed' : 'pointer',
-                    transition: 'background-color 0.2s ease, transform 0.1s ease',
-                    width: '100%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '8px',
-                    '&:hover': {
-                      backgroundColor: fieldsSubmitted 
-                        ? (theme.palette.logo ?? theme.palette.primary)
-                        : (theme.palette.logo ?? theme.palette.primary),
-                      transform: isSubmitting || success || fieldsSubmitted ? 'none' : 'translateY(-1px)',
-                    },
-                    '&:active': {
-                      transform: 'translateY(0)',
-                    },
-                    '&:disabled': {
-                      opacity: 0.6,
-                      cursor: 'not-allowed',
-                    },
-                  }}
-                  disabled={success || isSubmitting || fieldsSubmitted}
-                >
-                  {isSubmitting ? (
-                    <>
-                      <CircularProgress size={16} sx={{ color: '#fff' }} />
-                      Submitting...
-                    </>
-                  ) : fieldsSubmitted ? (
-                    'Confirmed ✓'
-                  ) : (
-                    'Confirm'
-                  )}
-                </Box>
-              </Box>
-            ) : null}
-
             {success ? null : (
               <Box pt={2} flex={1} sx={classes.button_container}>
                 {
-                  // Use createElement to avoid JSX element-type incompatibility from duplicate React types
                   React.createElement(ButtonEl, {
                     text: widgetButtonText,
                     hoverText,
@@ -1485,6 +1396,98 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
           {foot ? (
             <Box pt={2} flex={1 as any}>
               {foot as any}
+            </Box>
+          ) : null}
+
+          {fields && Array.isArray(fields) && fields.length > 0 ? (
+            <Box sx={{ width: '100%', mt: 2, mb: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
+              {fields.map((field, index) => (
+                <TextField
+                  key={index}
+                  label={field.text}
+                  name={field.name}
+                  type={field.type}
+                  size="small"
+                  fullWidth
+                  disabled={success}
+                  value={fieldValues[field.name] || ''}
+                  onChange={(e) => {
+                    setFieldValues(prev => ({
+                      ...prev,
+                      [field.name]: e.target.value
+                    }));
+                  }}
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      backgroundColor: isDarkMode ? '#1a1a1a' : '#fff',
+                      '& fieldset': {
+                        borderColor: isDarkMode ? '#333' : '#ddd',
+                      },
+                      '&:hover fieldset': {
+                        borderColor: theme.palette.primary,
+                      },
+                      '&.Mui-focused fieldset': {
+                        borderColor: theme.palette.primary,
+                      },
+                    },
+                    '& .MuiInputLabel-root': {
+                      color: isDarkMode ? '#b0b0b0' : '#666',
+                    },
+                    '& .MuiInputBase-input': {
+                      color: isDarkMode ? '#e0e0e0' : '#333',
+                    },
+                  }}
+                />
+              ))}
+              <Box
+                component="button"
+                data-testid="fields-submit-button"
+                onClick={handleFieldsSubmit}
+                sx={{
+                  mt: 1,
+                  padding: '10px 20px',
+                  fontSize: '0.875rem',
+                  fontWeight: 600,
+                  color: '#fff',
+                  backgroundColor: fieldsSubmitted 
+                    ? (theme.palette.logo ?? theme.palette.primary) 
+                    : theme.palette.primary,
+                  border: 'none',
+                  borderRadius: '6px',
+                  cursor: isSubmitting || success || fieldsSubmitted ? 'not-allowed' : 'pointer',
+                  transition: 'background-color 0.2s ease, transform 0.1s ease',
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
+                  '&:hover': {
+                    backgroundColor: fieldsSubmitted 
+                      ? (theme.palette.logo ?? theme.palette.primary)
+                      : (theme.palette.logo ?? theme.palette.primary),
+                    transform: isSubmitting || success || fieldsSubmitted ? 'none' : 'translateY(-1px)',
+                  },
+                  '&:active': {
+                    transform: 'translateY(0)',
+                  },
+                  '&:disabled': {
+                    opacity: 0.6,
+                    cursor: 'not-allowed',
+                  },
+                }}
+                disabled={success || isSubmitting || fieldsSubmitted}
+              >
+                {isSubmitting ? (
+                  <>
+                    <CircularProgress size={16} sx={{ color: '#fff' }} />
+                    Submitting...
+                  </>
+                ) : fieldsSubmitted ? (
+                  'Confirmed ✓'
+                ) : (
+                  'Confirm'
+                )}
+              </Box>
             </Box>
           ) : null}
 
