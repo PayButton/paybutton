@@ -67,6 +67,7 @@ export interface PaymentDialogProps extends ButtonProps {
   transactionText?: string
   convertedCurrencyObj?: CurrencyObject;
   setConvertedCurrencyObj?: Function;
+  sendAnotherText?: string;
 }
 
 export const PaymentDialog = ({
@@ -129,10 +130,12 @@ export const PaymentDialog = ({
   setConvertedCurrencyObj,
   theme: themeProp,
   donationAddress,
-  donationRate
+  donationRate,
+  sendAnotherText = 'Send Another Payment'
 }: PaymentDialogProps): React.ReactElement => {
   const [success, setSuccess] = useState(false);
   const [internalDisabled, setInternalDisabled] = useState(false);
+  const [resetKey, setResetKey] = useState(0);
 
   // Compute auto-close delay (ms) using shared util
 
@@ -150,6 +153,12 @@ export const PaymentDialog = ({
     clearAutoCloseTimer();
     if (onClose) onClose(success, paymentId);
     setSuccess(false);
+  };
+
+  const handleSendAnother = (): void => {
+    clearAutoCloseTimer();
+    setSuccess(false);
+    setResetKey(prev => prev + 1);
   };
 
   const handleSuccess = (transaction: Transaction): void => {
@@ -259,11 +268,12 @@ export const PaymentDialog = ({
           donationRate={donationRate}
           convertedCurrencyObj={convertedCurrencyObj}
           setConvertedCurrencyObj={setConvertedCurrencyObj}
+          resetKey={resetKey}
           foot={success && (
             <ButtonComponent
-              onClick={handleWidgetClose}
-              text="Close"
-              hoverText="Close"
+              onClick={handleSendAnother}
+              text={sendAnotherText}
+              hoverText={sendAnotherText}
               disabled={internalDisabled} />
           )}        />
       </Dialog>
