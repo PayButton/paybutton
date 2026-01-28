@@ -417,6 +417,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         animationDelay: '0.7s',
         opacity: 0,
         lineHeight: 2.5,
+        paddingTop: '14px',
       },
       footerSeparator: {
         marginLeft: '7px',
