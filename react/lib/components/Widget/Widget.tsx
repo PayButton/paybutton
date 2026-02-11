@@ -965,7 +965,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     params.set('b', '1')
     
     // Return absolute URL for the deeplink
-    return `https://paybutton.org/app?${params.toString()}`
+    return `${apiBaseUrl}/app?${params.toString()}`
   }
 
   const handleButtonClick = async () => {
