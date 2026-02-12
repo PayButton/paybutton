@@ -126,6 +126,32 @@ interface StyleProps {
   copied: boolean
 }
 
+function convertBip21ToDeeplink(bip21Url: string, apiBaseUrl?: string): string | undefined {
+  if (!apiBaseUrl) {
+    return undefined
+  }
+
+  // Parse BIP21 URL: ecash:address?amount=100&opreturnraw=xxx
+  const [addressPart, queryPart] = bip21Url.split('?')
+  const params = new URLSearchParams()
+  params.set('address', addressPart)
+  
+  if (queryPart) {
+    const queryParams = new URLSearchParams(queryPart)
+    // Add all query parameters from the BIP21 string
+    queryParams.forEach((value, key) => {
+      params.set(key, value)
+    })
+  }
+  
+  // Add b=1 to the deeplink URL to indicate that the payment app should move
+  // back to the browser after the payment is complete.
+  params.set('b', '1')
+  
+  // Return absolute URL for the deeplink
+  return `${apiBaseUrl}/app?${params.toString()}`
+}
+
 export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const {
     to,
@@ -946,31 +972,9 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     }
   }, [totalReceived, currency, goalAmount, price, hasPrice, contributionOffset])
 
-  const convertBip21ToDeeplink = (bip21Url: string): string => {
-    // Parse BIP21 URL: ecash:address?amount=100&opreturnraw=xxx
-    const [addressPart, queryPart] = bip21Url.split('?')
-    const params = new URLSearchParams()
-    params.set('address', addressPart)
-    
-    if (queryPart) {
-      const queryParams = new URLSearchParams(queryPart)
-      // Add all query parameters from the BIP21 string
-      queryParams.forEach((value, key) => {
-        params.set(key, value)
-      })
-    }
-    
-    // Add b=1 to the deeplink URL to indicate that the payment app should move
-    // back to the browser after the payment is complete.
-    params.set('b', '1')
-    
-    // Return absolute URL for the deeplink
-    return `https://paybutton.org/app?${params.toString()}`
-  }
-
   const handleButtonClick = async () => {
     if (thisAddressType === 'XEC') {
-      const deeplinkUrl = convertBip21ToDeeplink(url)
+      const deeplinkUrl = convertBip21ToDeeplink(url, apiBaseUrl)
       await openCashtabPayment(url, deeplinkUrl)
     } else {
       window.location.href = url
