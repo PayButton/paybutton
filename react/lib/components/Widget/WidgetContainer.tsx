@@ -2,7 +2,7 @@ import { OptionsObject, SnackbarProvider, useSnackbar } from 'notistack';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { getAltpaymentClient } from '../../altpayment';
 import { GlobalStyles } from '@mui/material'
-
+import config from '../../paybutton-config.json'
 
 import successSound from '../../assets/success.mp3.json';
 
@@ -121,7 +121,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
       disabled,
       editable,
       wsBaseUrl,
-      apiBaseUrl,
+      apiBaseUrl = config.apiBaseUrl,
       successText,
       hoverText,
       disableAltpayment,
