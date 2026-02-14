@@ -42,7 +42,8 @@ import {
   DEFAULT_DONATION_RATE,
   DEFAULT_MINIMUM_DONATION_AMOUNT,
   createPayment,
-  darkMode
+  darkMode,
+  Field
 } from '../../util';
 import AltpaymentWidget from './AltpaymentWidget'
 import {
@@ -116,6 +117,8 @@ export interface WidgetProps {
   convertedCurrencyObj?: CurrencyObject;
   setConvertedCurrencyObj?: Function;
   setPaymentId?: Function;
+  fields?: Field[] | string;
+  onFieldsSubmit?: (fieldValues: Record<string, string>) => void;
 }
 
 interface StyleProps {
@@ -202,7 +205,30 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     donationRate = DEFAULT_DONATION_RATE,
     setConvertedCurrencyObj = () => {},
     setPaymentId,
+    fields: fieldsProp,
+    onFieldsSubmit
   } = props;
+
+  // State to track field values
+  const [fieldValues, setFieldValues] = useState<Record<string, string>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [fieldsSubmitted, setFieldsSubmitted] = useState(false);
+
+  // Parse fields if it's a JSON string
+  const fields = useMemo(() => {
+    if (!fieldsProp) return undefined;
+    if (Array.isArray(fieldsProp)) return fieldsProp;
+    if (typeof fieldsProp === 'string') {
+      try {
+        const parsed = JSON.parse(fieldsProp);
+        return Array.isArray(parsed) ? parsed : undefined;
+      } catch {
+        return undefined;
+      }
+    }
+    return undefined;
+  }, [fieldsProp]);
+
   const [loading, setLoading] = useState(true);
   const [draftAmount, setDraftAmount] = useState<string>("")
   const inputRef = React.useRef<HTMLInputElement>(null)
@@ -665,6 +691,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
           to,
           apiBaseUrl,
         );
+        console.log("entrou aqui carai")
         setPaymentId(responsePaymentId);
       } catch (error) {
         console.error('Error creating payment ID:', error);
@@ -866,7 +893,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       }
       setUrl(nextUrl ?? '')
     }
-  }, [to, thisCurrencyObject, price, thisAmount, opReturn, hasPrice, isCashtabAvailable, userDonationRate, donationEnabled, disabled, donationAddress, currency, randomSatoshis, thisAddressType, shouldApplyDonation])
+  }, [to, thisCurrencyObject, price, thisAmount, opReturn, hasPrice, isCashtabAvailable, userDonationRate, donationEnabled, disabled, donationAddress, currency, randomSatoshis, thisAddressType, shouldApplyDonation, paymentId])
 
   useEffect(() => {
     try {
@@ -985,9 +1012,62 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const handleQrCodeClick = useCallback((): void => {
     if (disabled || to === undefined || qrLoading) return
     if (!url || !copyToClipboard(url)) return
+    console.log({
+      url,
+      paymentId
+    })
     setCopied(true)
     setRecentlyCopied(true)
-  }, [disabled, to, url, setCopied, setRecentlyCopied, qrLoading])
+  }, [disabled, to, url, setCopied, setRecentlyCopied, qrLoading, paymentId])
+
+  const handleFieldsSubmit = useCallback(async (): Promise<void> => {
+    if (!fields || success || isSubmitting) return;
+
+    const missingFields = fields.filter(
+      (field) => field.required && !fieldValues[field.name]?.trim()
+    );
+
+    if (missingFields.length > 0) {
+      console.warn('Missing required fields:', missingFields.map(f => f.name));
+      return;
+    }
+
+    const fieldsWithValues = fields.map((field) => ({
+      ...field,
+      value: fieldValues[field.name] || ''
+    }));
+
+    setIsSubmitting(true);
+
+    try {
+      if (!disablePaymentId && to) {
+        const effectiveAmount = convertedCryptoAmount ?? thisCurrencyObject?.float;
+        const newPaymentId = await createPayment(effectiveAmount, to, apiBaseUrl, fieldsWithValues);
+        if (setPaymentId && newPaymentId) {
+          setOpReturn(
+            encodeOpReturnProps({
+              opReturn: props.opReturn,
+              paymentId: newPaymentId,
+              disablePaymentId: disablePaymentId ?? false,
+            }),
+          )
+          setPaymentId(newPaymentId);
+        }
+      }
+
+      if (onFieldsSubmit) {
+        onFieldsSubmit(fieldValues);
+      }
+      setFieldsSubmitted(true);
+      setTimeout(() => {
+        setFieldsSubmitted(false);
+      }, 2000);
+    } catch (error) {
+      console.error('Error submitting fields:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, [fields, fieldValues, success, isSubmitting, onFieldsSubmit, disablePaymentId, to, convertedCryptoAmount, thisCurrencyObject, apiBaseUrl, setPaymentId, paymentId, props.opReturn]);
 
   const resolveUrl = useCallback((currency: string, amount?: number) => {
     if (disabled || !to) return;
@@ -1302,7 +1382,6 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
             {success ? null : (
               <Box pt={2} flex={1} sx={classes.button_container}>
                 {
-                  // Use createElement to avoid JSX element-type incompatibility from duplicate React types
                   React.createElement(ButtonEl, {
                     text: widgetButtonText,
                     hoverText,
@@ -1344,6 +1423,98 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
           {foot ? (
             <Box pt={2} flex={1 as any}>
               {foot as any}
+            </Box>
+          ) : null}
+
+          {fields && Array.isArray(fields) && fields.length > 0 ? (
+            <Box sx={{ width: '100%', mt: 2, mb: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
+              {fields.map((field, index) => (
+                <TextField
+                  key={index}
+                  label={field.text}
+                  name={field.name}
+                  type={field.type}
+                  size="small"
+                  fullWidth
+                  disabled={success}
+                  value={fieldValues[field.name] || ''}
+                  onChange={(e) => {
+                    setFieldValues(prev => ({
+                      ...prev,
+                      [field.name]: e.target.value
+                    }));
+                  }}
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      backgroundColor: isDarkMode ? '#1a1a1a' : '#fff',
+                      '& fieldset': {
+                        borderColor: isDarkMode ? '#333' : '#ddd',
+                      },
+                      '&:hover fieldset': {
+                        borderColor: theme.palette.primary,
+                      },
+                      '&.Mui-focused fieldset': {
+                        borderColor: theme.palette.primary,
+                      },
+                    },
+                    '& .MuiInputLabel-root': {
+                      color: isDarkMode ? '#b0b0b0' : '#666',
+                    },
+                    '& .MuiInputBase-input': {
+                      color: isDarkMode ? '#e0e0e0' : '#333',
+                    },
+                  }}
+                />
+              ))}
+              <Box
+                component="button"
+                data-testid="fields-submit-button"
+                onClick={handleFieldsSubmit}
+                sx={{
+                  mt: 1,
+                  padding: '10px 20px',
+                  fontSize: '0.875rem',
+                  fontWeight: 600,
+                  color: '#fff',
+                  backgroundColor: fieldsSubmitted 
+                    ? (theme.palette.logo ?? theme.palette.primary) 
+                    : theme.palette.primary,
+                  border: 'none',
+                  borderRadius: '6px',
+                  cursor: isSubmitting || success || fieldsSubmitted ? 'not-allowed' : 'pointer',
+                  transition: 'background-color 0.2s ease, transform 0.1s ease',
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
+                  '&:hover': {
+                    backgroundColor: fieldsSubmitted 
+                      ? (theme.palette.logo ?? theme.palette.primary)
+                      : (theme.palette.logo ?? theme.palette.primary),
+                    transform: isSubmitting || success || fieldsSubmitted ? 'none' : 'translateY(-1px)',
+                  },
+                  '&:active': {
+                    transform: 'translateY(0)',
+                  },
+                  '&:disabled': {
+                    opacity: 0.6,
+                    cursor: 'not-allowed',
+                  },
+                }}
+                disabled={success || isSubmitting || fieldsSubmitted}
+              >
+                {isSubmitting ? (
+                  <>
+                    <CircularProgress size={16} sx={{ color: '#fff' }} />
+                    Submitting...
+                  </>
+                ) : fieldsSubmitted ? (
+                  'Confirmed ✓'
+                ) : (
+                  'Confirm'
+                )}
+              </Box>
             </Box>
           ) : null}
 
