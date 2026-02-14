@@ -54,6 +54,7 @@ import {
   MINIMUM_ALTPAYMENT_CAD_AMOUNT,
 } from '../../altpayment'
 
+import { getTokenInfo } from '../../util/chronik'
 
 export interface WidgetProps {
   to: string
@@ -116,6 +117,7 @@ export interface WidgetProps {
   convertedCurrencyObj?: CurrencyObject;
   setConvertedCurrencyObj?: Function;
   setPaymentId?: Function;
+  tokenId?: string;
 }
 
 interface StyleProps {
@@ -202,6 +204,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     donationRate = DEFAULT_DONATION_RATE,
     setConvertedCurrencyObj = () => {},
     setPaymentId,
+    tokenId,
   } = props;
   const [loading, setLoading] = useState(true);
   const [draftAmount, setDraftAmount] = useState<string>("")
@@ -357,6 +360,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
 
   const [thisAmount, setThisAmount] = useState(props.amount)
   const [thisCurrencyObject, setThisCurrencyObject] = useState(props.currencyObject)
+  const [tokenName, setTokenName] = useState<string | null>(null)
 
   const blurCSS = isPropsTrue(disabled) ? { filter: 'blur(5px)' } : {}
   // inject keyframes once (replacement for @global in makeStyles)
@@ -527,6 +531,10 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     )}' stroke='%23fff' stroke-width='.6'/%3E%3Cpath d='m7.2979 14.697-2.6964-2.6966 0.89292-0.8934c0.49111-0.49137 0.90364-0.88958 0.91675-0.88491 0.013104 0.0047 0.71923 0.69866 1.5692 1.5422 0.84994 0.84354 1.6548 1.6397 1.7886 1.7692l0.24322 0.23547 7.5834-7.5832 1.8033 1.8033-9.4045 9.4045z' fill='%23fff' stroke-width='.033708'/%3E%3C/svg%3E%0A`
   }, [theme])
 
+  const getTokenIconUrl = useCallback((tokenId: string): string => {
+    return `https://icons.etokens.cash/128/${tokenId}.png`
+  }, [])
+
   useEffect(() => {
     if (thisCurrencyObject?.string !== undefined) {
       const raw = stripFormatting(thisCurrencyObject.string);
@@ -568,6 +576,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
           wsBaseUrl,
           setTxsSocket: setThisTxsSocket,
           setNewTxs: setThisNewTxs,
+          tokenId,
         })
         if (thisUseAltpayment) {
           await setupAltpaymentSocket({
@@ -615,6 +624,26 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       setLoading(false)
     })()
   }, [thisNewTxs, to, apiBaseUrl])
+
+  useEffect(() => {
+    ;(async (): Promise<void> => {
+      if (tokenId && tokenId !== '') {
+        try {
+          const tokenInfo = await getTokenInfo(tokenId, to)
+          const name = tokenInfo.genesisInfo.tokenTicker ?? null
+          setTokenName(name)
+        } catch (err) {
+          console.error('Failed to fetch token info:', err)
+          setTokenName(null)
+          setErrorMsg('Unable to load token information')
+        } finally {
+          setLoading(false)
+        }
+        return
+      }
+      setLoading(false)
+    })()
+  }, [tokenId, to])
 
   useEffect(() => {
     if (
@@ -832,7 +861,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         setText(
           `Send ${amountToDisplay} ${thisCurrencyObject.currency} = ${convertedAmountToDisplay} ${thisAddressType}`,
         )
-        const url = resolveUrl(thisAddressType, convertedObj.float)
+        const url = resolveUrl(thisAddressType, convertedObj.float, tokenId)
         setUrl(url ?? "")
       }
     } else {
@@ -857,16 +886,16 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
           amountToDisplay = amountWithDonationObj.string
         }
 
-        setText(`Send ${amountToDisplay} ${cur}`)
+        setText(`Send ${amountToDisplay} ${tokenId ? tokenName : cur}`)
         // Pass base amount (without donation) to resolveUrl
-        nextUrl = resolveUrl(cur, baseAmount)
+        nextUrl = resolveUrl(cur, baseAmount, tokenId)
       } else {
-        setText(`Send any amount of ${thisAddressType}`)
-        nextUrl = resolveUrl(thisAddressType)
+        setText(`Send any amount of ${tokenId ? tokenName : thisAddressType}`)
+        nextUrl = resolveUrl(thisAddressType, undefined, tokenId) 
       }
       setUrl(nextUrl ?? '')
     }
-  }, [to, thisCurrencyObject, price, thisAmount, opReturn, hasPrice, isCashtabAvailable, userDonationRate, donationEnabled, disabled, donationAddress, currency, randomSatoshis, thisAddressType, shouldApplyDonation])
+  }, [to, thisCurrencyObject, price, thisAmount, opReturn, hasPrice, isCashtabAvailable, userDonationRate, donationEnabled, disabled, donationAddress, currency, randomSatoshis, thisAddressType, shouldApplyDonation, tokenName, tokenId])
 
   useEffect(() => {
     try {
@@ -989,7 +1018,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     setRecentlyCopied(true)
   }, [disabled, to, url, setCopied, setRecentlyCopied, qrLoading])
 
-  const resolveUrl = useCallback((currency: string, amount?: number) => {
+  const resolveUrl = useCallback((currency: string, amount?: number, tokenId?: string) => {
     if (disabled || !to) return;
 
     const prefix = CURRENCY_PREFIXES_MAP[currency.toLowerCase() as typeof CRYPTO_CURRENCIES[number]];
@@ -1006,11 +1035,18 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         const donationPercent = userDonationRate / 100
         // Calculate donation amount from base amount
         const thisDonationAmount = amount * donationPercent
-
-        thisUrl += `?amount=${amount}`
-        thisUrl += `&addr=${donationAddress}&amount=${thisDonationAmount.toFixed(decimals)}`;
+        if (tokenId) {
+          thisUrl += `?token_decimalized_qty=${amount}`
+        } else {
+          thisUrl += `?amount=${amount}`
+          thisUrl += `&addr=${donationAddress}&amount=${thisDonationAmount.toFixed(decimals)}`;
+        }
       } else {
-        thisUrl += `?amount=${amount}`
+        if (tokenId) {
+          thisUrl += `?token_decimalized_qty=${amount}`
+        } else {
+          thisUrl += `?amount=${amount}`
+        }
       }
     }
 
@@ -1019,9 +1055,14 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       thisUrl += `${separator}op_return_raw=${opReturn}`;
     }
 
+    if (tokenId) {
+      const separator = thisUrl.includes('?') ? '&' : '?';
+      thisUrl += `${separator}token_id=${tokenId}`;
+    }
+    
     return thisUrl;
     },
-    [disabled, to, opReturn, userDonationRate, donationAddress, donationEnabled, shouldApplyDonation]
+    [disabled, to, opReturn, userDonationRate, donationAddress, donationEnabled, shouldApplyDonation, tokenId]
   )
   const stripFormatting = (s: string) => {
     return s.replace(/,/g, '').replace(/(\.\d*?[1-9])0+$/, '$1').replace(/\.0+$/, '');
@@ -1061,6 +1102,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     }
   }
 
+
   const qrCode = (
     <Box sx={classes.qrAnimations}>
       <QRCodeSVG
@@ -1071,7 +1113,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         bgColor={isDarkMode ? '#1a1a1a' : '#ffffff'}
         fgColor={theme.palette.tertiary as unknown as string}
         imageSettings={{
-          src: success ? checkSvg : isValidCashAddress(to) ? bchSvg : xecSvg,
+          src: success ? checkSvg : tokenId ? getTokenIconUrl(tokenId) : isValidCashAddress(to) ? bchSvg : xecSvg,
           excavate: false,
           height: 112,
           width: 112,

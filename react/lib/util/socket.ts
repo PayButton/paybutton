@@ -122,6 +122,7 @@ interface SetupTxsSocketParams {
   setNewTxs: Function
   setDialogOpen?: Function
   checkSuccessInfo?: CheckSuccessInfo
+  tokenId?: string
 }
 
 export const setupTxsSocket = async (params: SetupTxsSocketParams): Promise<void> => {
@@ -145,9 +146,13 @@ export const setupChronikWebSocket = async (params: SetupTxsSocketParams): Promi
     params.setTxsSocket(undefined);
   }
   
-  const newChronikSocket = await initializeChronikWebsocket(params.address, (transactions: Transaction[]) => { 
-    params.setNewTxs(transactions);
-  }); 
+  const newChronikSocket = await initializeChronikWebsocket(
+    params.address, 
+    (transactions: Transaction[]) => { 
+      params.setNewTxs(transactions);
+    },
+    params.tokenId
+  ); 
   
   params.setTxsSocket(newChronikSocket);
 }

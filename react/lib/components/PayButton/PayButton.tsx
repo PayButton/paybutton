@@ -59,6 +59,7 @@ export interface PayButtonProps extends ButtonProps {
   sizeScaleAlreadyApplied?: boolean;
   donationAddress?: string;
   donationRate?: number;
+  tokenId?: string;
 }
 
 export const PayButton = ({
@@ -92,7 +93,8 @@ export const PayButton = ({
   size = 'md',
   sizeScaleAlreadyApplied = false,
   donationRate = DEFAULT_DONATION_RATE,
-  donationAddress = config.donationAddress
+  donationAddress = config.donationAddress,
+  tokenId,
 }: PayButtonProps): React.ReactElement => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [disabled, setDisabled] = useState(false);
@@ -310,7 +312,8 @@ export const PayButton = ({
           expectedPaymentId: paymentId,
           currencyObj,
           donationRate
-        }
+        },
+        tokenId,
       })
     }
     if (altpaymentSocket === undefined && useAltpayment) {
@@ -464,6 +467,7 @@ export const PayButton = ({
         donationRate={donationRate}
         convertedCurrencyObj={convertedCurrencyObj}
         setConvertedCurrencyObj={setConvertedCurrencyObj}
+        tokenId={tokenId}
       />
       {errorMsg && (
         <p
