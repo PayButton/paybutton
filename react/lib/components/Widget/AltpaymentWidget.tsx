@@ -201,7 +201,7 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
 
   const SideshiftCtn = styled('div')({
     alignItems: 'center', display: 'flex', flexDirection: 'column',
-    height: 'calc(100% - 20px)', width: '100%', position: 'absolute',
+    height: 'calc(100% - 45px)', width: '100%', position: 'absolute',
     zIndex: 9, top: '0', left: '0', background: '#f5f5f7', paddingTop: '20px'
   })
 
