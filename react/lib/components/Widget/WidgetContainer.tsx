@@ -19,7 +19,9 @@ import {
   shouldTriggerOnSuccess,
   isPropsTrue,
   DEFAULT_DONATION_RATE,
+  parseOpReturnData,
 } from '../../util';
+import { getAddressDetails } from '../../util/api-client';
 
 import Widget, { WidgetProps } from './Widget';
 
@@ -157,6 +159,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
     const [thisPrice, setThisPrice] = useState(0);
     const [usdPrice, setUsdPrice] = useState(0);
     const [success, setSuccess] = useState(false);
+    const [retryCount, setRetryCount] = useState(0);
     const { enqueueSnackbar } = useSnackbar();
 
     const [shiftCompleted, setShiftCompleted] = useState(false);
@@ -280,11 +283,129 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
       [handlePayment],
     );
 
+    const checkForTransactions = useCallback(async (): Promise<boolean> => {
+      if (success) {
+        // Payment already succeeded, stop checking
+        return true;
+      }
+
+      try {
+        const history = await getAddressDetails(to, apiBaseUrl);
+        // Save time by only checking the last few transactions
+        const recentTxs = history.slice(0, 5);
+
+        for (const apiTx of recentTxs) {
+          // FIXME: the getAddressDetails API returns an object that is NOT
+          // the same as the Transaction[] type, so we need to convert it
+          const parsedOpReturn = apiTx.opReturn
+            ? parseOpReturnData(apiTx.opReturn)
+            : {};
+
+          const tx: Transaction = {
+            hash: apiTx.hash,
+            amount: apiTx.amount,
+            paymentId: parsedOpReturn.paymentId ?? '',
+            confirmed: apiTx.confirmed,
+            message: parsedOpReturn.message ?? '',
+            timestamp: apiTx.timestamp,
+            address: (apiTx.address as unknown as { address: string }).address,
+            rawMessage: parsedOpReturn.rawMessage,
+            opReturn: apiTx.opReturn,
+          };
+          handleNewTransaction(tx);
+        }
+        return true;
+      } catch (error) {
+        // Failed to fetch history, there is no point in retrying
+        return false;
+      }
+    }, [success, to, apiBaseUrl, handleNewTransaction]);
+
     useEffect(() => {
       thisNewTxs?.map(tx => {
         handleNewTransaction(tx);
       });
     }, [thisNewTxs, handleNewTransaction]);
+
+    useEffect(() => {
+      if (typeof document === 'undefined') {
+        return;
+      }
+
+      let wasHidden = document.hidden;
+      let hiddenTimestamp = 0;
+
+      const handleVisibilityChange = async () => {
+        if (document.hidden) {
+          wasHidden = true;
+          hiddenTimestamp = Date.now();
+          return;
+        }
+
+        // Debounce the event to avoid querying the history for spurious events.
+        // This happens specifically when the user clicks on the paybutton,
+        // before the app handles the deeplink.
+        if (!wasHidden || Date.now() - hiddenTimestamp < 200) {
+          wasHidden = false;
+          return;
+        }
+
+        wasHidden = false;
+        
+        if (!to || success) {
+          // No destination or payment already succeeded, skip checking
+          return;
+        }
+        
+        if (!disablePaymentId && !thisPaymentId) {
+          // Skip if paymentId is required but not yet set. This avoids matching
+          // transactions against undefined payment IDs.
+          return;
+        }
+
+        // Run immediately (attempt 1)
+        const checkCompleted = await checkForTransactions();
+        
+        // If check completed successfully but payment hasn't succeeded yet,
+        // trigger retries. We might be missing the payment transaction.
+        if (checkCompleted && !success) {
+          // Start retries
+          setRetryCount(1);
+        }
+      };
+
+      document.addEventListener('visibilitychange', handleVisibilityChange);
+
+      return () => {
+        document.removeEventListener('visibilitychange', handleVisibilityChange);
+      };
+    }, [to, thisPaymentId, success, disablePaymentId]);
+
+    // Retry mechanism: check every second if payment hasn't succeeded yet
+    useEffect(() => {
+      if (retryCount === 0 || success || retryCount >= 5) {
+        // Retry up to 5 times or until the payment succeeds. If the payment tx
+        // is not found within this time period, something has gone wrong.
+        return;
+      }
+
+      const intervalId = setInterval(async () => {
+        if (success) {
+          // Stop retries upon success
+          setRetryCount(0);
+          return;
+        }
+
+        await checkForTransactions();
+        
+        // Increment retry count for next attempt (regardless of success/error)
+        setRetryCount(prev => prev + 1);
+      }, 1000);
+
+      return () => {
+        clearInterval(intervalId);
+      };
+    }, [retryCount, success]);
 
     return (
       <React.Fragment>
