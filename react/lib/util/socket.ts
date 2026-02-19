@@ -2,47 +2,9 @@ import { io, Socket } from 'socket.io-client';
 import { AltpaymentCoin, AltpaymentError, AltpaymentPair, AltpaymentShift } from '../altpayment';
 import config from '../paybutton-config.json';
 
-import { BroadcastTxData, CheckSuccessInfo, Transaction } from './types';
-import { getAddressDetails } from './api-client';
-import { getAddressPrefixed } from './address';
+import { CheckSuccessInfo, Transaction } from './types';
 import { shouldTriggerOnSuccess } from './validate';
 import { initializeChronikWebsocket } from './chronik';
-
-const txsListener = (txsSocket: Socket, setNewTxs: Function, setDialogOpen?: Function, checkSuccessInfo?: CheckSuccessInfo): void => {
-  txsSocket.on('incoming-txs', (broadcastedTxData: BroadcastTxData) => {
-    const unconfirmedTxs = broadcastedTxData.txs.filter(
-      tx => tx.confirmed === false,
-    );
-    if (
-      broadcastedTxData.messageType === 'NewTx' &&
-      unconfirmedTxs.length !== 0
-    ) {
-      if (setDialogOpen !== undefined && checkSuccessInfo !== undefined) {
-        for (const tx of unconfirmedTxs) {
-          if (shouldTriggerOnSuccess(
-            tx,
-            checkSuccessInfo.currency,
-            checkSuccessInfo.price,
-            checkSuccessInfo.randomSatoshis,
-            checkSuccessInfo.disablePaymentId,
-            checkSuccessInfo.expectedPaymentId,
-            checkSuccessInfo.expectedAmount,
-            checkSuccessInfo.expectedOpReturn,
-            checkSuccessInfo.currencyObj
-          )) {
-            setDialogOpen(true)
-            setTimeout(() => {
-              setNewTxs(unconfirmedTxs);
-            }, 700);
-            break
-          }
-        }
-      } else {
-        setNewTxs(unconfirmedTxs);
-      }
-    }
-  });
-};
 
 interface AltpaymentListenerParams {
   addressType: string
@@ -122,20 +84,6 @@ interface SetupTxsSocketParams {
   setNewTxs: Function
   setDialogOpen?: Function
   checkSuccessInfo?: CheckSuccessInfo
-}
-
-export const setupTxsSocket = async (params: SetupTxsSocketParams): Promise<void> => {
-  void getAddressDetails(params.address, params.apiBaseUrl);
-  if (params.txsSocket !== undefined) {
-    params.txsSocket.disconnect();
-    params.setTxsSocket(undefined);
-  }
-  const newSocket = io(`${params.wsBaseUrl ?? config.wsBaseUrl}/addresses`, {
-    forceNew: true,
-    query: { addresses: [getAddressPrefixed(params.address)] },
-  });
-  params.setTxsSocket(newSocket);
-  txsListener(newSocket, params.setNewTxs, params.setDialogOpen, params.checkSuccessInfo);
 }
 
 export const setupChronikWebSocket = async (params: SetupTxsSocketParams): Promise<void> => {
