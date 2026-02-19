@@ -29,8 +29,8 @@ describe('Validate Util Tests', () => {
           transaction,
           currency,
           price,
-          false,
-          false,
+          /*randomSatoshis=*/ false,
+          /*disablePaymentId=*/ false,
           expectedPaymentId,
           expectedAmount,
           expectedOpReturn
@@ -39,7 +39,7 @@ describe('Validate Util Tests', () => {
         expect(result).toBe(true);
       });
 
-      it('true when paymentId is undefined and received paymentId is empty', async () => {
+      it('true if disablePaymentId is set even if both paymentId and received paymentId are empty or undefined', async () => {
         const transaction: Transaction = {
           amount: '101.00',
           paymentId: '',
@@ -49,27 +49,42 @@ describe('Validate Util Tests', () => {
           timestamp: 0,
           address: 'ecash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7quss2vxek',
         };
-        const expectedPaymentId = undefined;
+        let expectedPaymentId: string | undefined = undefined;
         const expectedAmount = resolveNumber('101.00');
         const expectedOpReturn = 'test opReturn message';
         const price = 1;
         const currency = 'XEC';
 
-        const result = shouldTriggerOnSuccess(
+        const result1 = shouldTriggerOnSuccess(
           transaction,
           currency,
           price,
-          false,
-          true,
+          /*randomSatoshis=*/ false,
+          /*disablePaymentId=*/ true,
           expectedPaymentId,
           expectedAmount,
           expectedOpReturn
         );
 
-        expect(result).toBe(true);
+        expect(result1).toBe(true);
+
+        expectedPaymentId = '';
+
+        const result2 = shouldTriggerOnSuccess(
+          transaction,
+          currency,
+          price,
+          /*randomSatoshis=*/ false,
+          /*disablePaymentId=*/ true,
+          expectedPaymentId,
+          expectedAmount,
+          expectedOpReturn
+        );
+
+        expect(result2).toBe(true);
       });
 
-      it('true when both expected and received paymentId are empty', async () => {
+      it('false if disablePaymentId is unset when both expected and received paymentId are empty', async () => {
         const transaction: Transaction = {
           amount: '101.00',
           paymentId: '',
@@ -89,14 +104,17 @@ describe('Validate Util Tests', () => {
           transaction,
           currency,
           price,
-          false,
-          false,
+          /*randomSatoshis=*/ false,
+          /*disablePaymentId=*/ false,
           expectedPaymentId,
           expectedAmount,
           expectedOpReturn
         );
 
-        expect(result).toBe(true);
+        // It shouldn't match an empty payment ID unless explicitly instructed
+        // to do so. Payment IDs are not set when the button is built so any
+        // tx with the same address and amount (even not PayButton) could match.
+        expect(result).toBe(false);
       });
 
       it('false when paymentId does not match received paymentId', async () => {
@@ -119,8 +137,8 @@ describe('Validate Util Tests', () => {
           transaction,
           currency,
           price,
-          false,
-          false,
+          /*randomSatoshis=*/ false,
+          /*disablePaymentId=*/ false,
           expectedPaymentId,
           expectedAmount,
           expectedOpReturn
@@ -149,8 +167,8 @@ describe('Validate Util Tests', () => {
           transaction,
           currency,
           price,
-          false,
-          false,
+          /*randomSatoshis=*/ false,
+          /*disablePaymentId=*/ false,
           expectedPaymentId,
           expectedAmount,
           expectedOpReturn
@@ -179,8 +197,8 @@ describe('Validate Util Tests', () => {
           transaction,
           currency,
           price,
-          false,
-          false,
+          /*randomSatoshis=*/   false,
+          /*disablePaymentId=*/ false,
           expectedPaymentId,
           expectedAmount,
           expectedOpReturn
@@ -209,8 +227,8 @@ describe('Validate Util Tests', () => {
           transaction,
           currency,
           price,
-          false,
-          false,
+          /*randomSatoshis=*/ false,
+          /*disablePaymentId=*/ false,
           expectedPaymentId,
           expectedAmount,
           expectedOpReturn
@@ -219,37 +237,7 @@ describe('Validate Util Tests', () => {
         expect(result).toBe(true);
       });
 
-      it('should ignore paymentId validation when disablePaymentId is true', async () => {
-        const transaction: Transaction = {
-          amount: '101.00',
-          paymentId: '123',
-          message: 'test opReturn',
-          rawMessage: 'test opReturn',
-          hash: '',
-          timestamp: 0,
-          address: 'ecash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7quss2vxek',
-        };
-        const expectedPaymentId = undefined;
-        const expectedAmount = resolveNumber('101.00');
-        const expectedOpReturn = 'test opReturn';
-        const price = 1;
-        const currency = 'XEC';
-
-        const result = shouldTriggerOnSuccess(
-          transaction,
-          currency,
-          price,
-          false,
-          true,
-          expectedPaymentId,
-          expectedAmount,
-          expectedOpReturn
-        );
-
-        expect(result).toBe(true);
-      });
-
-      it('false when opReturn is undefined and received opReturn message is not empty or undefined', async () => {
+      it('false when opReturn is undefined and received opReturn message is not empty', async () => {
         const transaction: Transaction = {
           amount: '101.00',
           paymentId: '123',
@@ -269,8 +257,8 @@ describe('Validate Util Tests', () => {
           transaction,
           currency,
           price,
-          false,
-          false,
+          /*randomSatoshis=*/ false,
+          /*disablePaymentId=*/ false,
           expectedPaymentId,
           expectedAmount,
           expectedOpReturn
@@ -279,6 +267,8 @@ describe('Validate Util Tests', () => {
         expect(result).toBe(false);
       });
 
+      // FIXME: I have no idea what is the use case for this, so assuming it's
+      // useful. Fabien 2026-02-19
       it('true when opReturn is in a different format than received opReturn message but rawMessage matches expected opReturn', async () => {
         const transaction: Transaction = {
           amount: '101.00',
@@ -302,8 +292,8 @@ describe('Validate Util Tests', () => {
           transaction,
           currency,
           price,
-          false,
-          false,
+          /*randomSatoshis=*/ false,
+          /*disablePaymentId=*/ false,
           expectedPaymentId,
           expectedAmount,
           expectedOpReturn
@@ -332,8 +322,8 @@ describe('Validate Util Tests', () => {
           transaction,
           currency,
           price,
-          false,
-          false,
+          /*randomSatoshis=*/ false,
+          /*disablePaymentId=*/ false,
           expectedPaymentId,
           expectedAmount,
           expectedOpReturn
@@ -353,6 +343,10 @@ describe('Validate Util Tests', () => {
           address: 'ecash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7quss2vxek',
         };
         const expectedPaymentId = '123';
+        // FIXME: This value is unused in shouldTriggerOnSuccess (the amount is
+        // compared to currencyObject.float divided by price) but it has to be
+        // set nontheless otherwise the price is not even checked. It has to be
+        // set to any value that don't convert to false. Fabien 2026-02-19
         const expectedAmount = resolveNumber('101.00');
         const expectedOpReturn = 'test opReturn';
         const price = 0.00003172;
@@ -367,8 +361,8 @@ describe('Validate Util Tests', () => {
           transaction,
           currency,
           price,
-          false,
-          false,
+          /*randomSatoshis=*/ false,
+          /*disablePaymentId=*/ false,
           expectedPaymentId,
           expectedAmount,
           expectedOpReturn,
@@ -378,6 +372,14 @@ describe('Validate Util Tests', () => {
         expect(result).toBe(true);
       });
 
+      // FIXME: this is another test for an actual bug. Here the
+      // expectedPaymentId is defined and disablePaymentId is false so it's
+      // explicitely asking for a payment ID match. However because the random
+      // satoshis are another (vert bad) way to add entropy the
+      // shouldTriggerOnSuccess assumes you don't need the payment ID and skips
+      // the check. Random satoshis should be removed completely as it's a
+      // terrible idea for a payment system to randomly change the price.
+      // Fabien 2026-02-19
       it('true when randomSatoshis is true and paymentId does not match', async () => {
         const transaction: Transaction = {
           amount: '3152585.12',
@@ -403,8 +405,8 @@ describe('Validate Util Tests', () => {
           transaction,
           currency,
           price,
-          true,
-          false,
+          /*randomSatoshis=*/ true,
+          /*disablePaymentId=*/ false,
           expectedPaymentId,
           expectedAmount,
           expectedOpReturn,
