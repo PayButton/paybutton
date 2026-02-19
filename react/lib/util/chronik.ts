@@ -1,4 +1,4 @@
-import { ChronikClient, WsEndpoint, Tx, ConnectionStrategy} from 'chronik-client-cashtokens';
+import { ChronikClient, WsEndpoint, Tx, ConnectionStrategy} from 'chronik-client';
 import { encodeCashAddress, decodeCashAddress } from 'ecashaddrjs'
 import { AddressType } from 'ecashaddrjs/dist/types'
 import xecaddr from 'xecaddrjs'
