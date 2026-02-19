@@ -627,7 +627,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       } else {
         // Page came to foreground - resume WebSocket
         try {
-          thisTxsSocket.resume();
+          await thisTxsSocket.resume();
         } catch (error) {
           console.error('Error resuming WebSocket:', error);
         }
