@@ -7,6 +7,7 @@ import { TEST_ADDRESSES } from '../util/constants'
 import copyToClipboard from 'copy-to-clipboard'
 import type { Currency } from '../../util'
 import { isFiat } from '../../util';
+import config from '../../paybutton-config.json'
 
 jest.mock('copy-to-clipboard', () => jest.fn())
 
@@ -62,7 +63,7 @@ describe('Widget – standalone paymentId (crypto)', () => {
       )
 
       await waitFor(() => {
-        expect(createPayment).toHaveBeenCalledWith(5, to, undefined)
+        expect(createPayment).toHaveBeenCalledWith(5, to, config.apiBaseUrl)
       })
     }
   )
@@ -195,7 +196,7 @@ describe('Widget – standalone paymentId (crypto)', () => {
       await waitFor(() => {
         expect(createPayment).toHaveBeenCalledTimes(1)
       })
-      expect(createPayment).toHaveBeenCalledWith(undefined, to, undefined)
+      expect(createPayment).toHaveBeenCalledWith(undefined, to, config.apiBaseUrl)
     }
   )
 })
@@ -222,7 +223,7 @@ describe('Widget – standalone paymentId (fiat)', () => {
       const expectedCrypto = amount / price
 
       await waitFor(() => {
-        expect(createPayment).toHaveBeenCalledWith(expectedCrypto, to, undefined)
+        expect(createPayment).toHaveBeenCalledWith(expectedCrypto, to, config.apiBaseUrl)
       })
     }
   )
