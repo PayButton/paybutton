@@ -19,6 +19,9 @@ import {
   shouldTriggerOnSuccess,
   isPropsTrue,
   DEFAULT_DONATION_RATE,
+  POLL_TX_HISTORY_LOOKBACK,
+  POLL_REQUEST_DELAY,
+  POLL_MAX_RETRY,
 } from '../../util';
 import { getAddressDetails } from '../../util/api-client';
 
@@ -291,7 +294,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
       try {
         const history = await getAddressDetails(to, apiBaseUrl);
         // Save time by only checking the last few transactions
-        const recentTxs = history.slice(0, 5);
+        const recentTxs = history.slice(0, POLL_TX_HISTORY_LOOKBACK);
 
         recentTxs.forEach(tx => {
           handleNewTransaction(tx);
@@ -365,7 +368,8 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
 
     // Retry mechanism: check every second if payment hasn't succeeded yet
     useEffect(() => {
-      if (retryCount === 0 || success || retryCount >= 5) {
+
+      if (retryCount === 0 || success || retryCount >= POLL_MAX_RETRY) {
         // Retry up to 5 times or until the payment succeeds. If the payment tx
         // is not found within this time period, something has gone wrong.
         return;
@@ -382,7 +386,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
         
         // Increment retry count for next attempt (regardless of success/error)
         setRetryCount(prev => prev + 1);
-      }, 1000);
+      }, POLL_REQUEST_DELAY);
 
       return () => {
         clearInterval(intervalId);

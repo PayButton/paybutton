@@ -38,3 +38,7 @@ export const DEFAULT_MINIMUM_DONATION_AMOUNT: { [key: string]: number } = {
     BCH: 0.00001000,
     XEC: 10,
 };
+
+export const POLL_TX_HISTORY_LOOKBACK = 5 // request last 5 txs
+export const POLL_REQUEST_DELAY = 1000 // 1s
+export const POLL_MAX_RETRY = 5
