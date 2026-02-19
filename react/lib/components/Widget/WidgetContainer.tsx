@@ -19,7 +19,6 @@ import {
   shouldTriggerOnSuccess,
   isPropsTrue,
   DEFAULT_DONATION_RATE,
-  parseOpReturnData,
 } from '../../util';
 import { getAddressDetails } from '../../util/api-client';
 
@@ -294,26 +293,9 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
         // Save time by only checking the last few transactions
         const recentTxs = history.slice(0, 5);
 
-        for (const apiTx of recentTxs) {
-          // FIXME: the getAddressDetails API returns an object that is NOT
-          // the same as the Transaction[] type, so we need to convert it
-          const parsedOpReturn = apiTx.opReturn
-            ? parseOpReturnData(apiTx.opReturn)
-            : {};
-
-          const tx: Transaction = {
-            hash: apiTx.hash,
-            amount: apiTx.amount,
-            paymentId: parsedOpReturn.paymentId ?? '',
-            confirmed: apiTx.confirmed,
-            message: parsedOpReturn.message ?? '',
-            timestamp: apiTx.timestamp,
-            address: (apiTx.address as unknown as { address: string }).address,
-            rawMessage: parsedOpReturn.rawMessage,
-            opReturn: apiTx.opReturn,
-          };
+        recentTxs.forEach(tx => {
           handleNewTransaction(tx);
-        }
+        });
         return true;
       } catch (error) {
         // Failed to fetch history, there is no point in retrying
