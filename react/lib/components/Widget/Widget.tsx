@@ -593,6 +593,51 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     }
   }, [to, thisUseAltpayment])
 
+  // Suspend/resume Chronik WebSocket based on page visibility
+  useEffect(() => {
+    if (typeof document === 'undefined' || isChild === true) {
+      return;
+    }
+
+    const handleVisibilityChange = async () => {
+      if (!thisTxsSocket) {
+        // Not initialized yet
+        return;
+      }
+
+      // Check if this is a Chronik WsEndpoint (has pause/resume methods)
+      // vs a socket.io Socket (doesn't have these methods)
+      const isChronikWs = typeof (thisTxsSocket as any).pause === 'function' &&
+                          typeof (thisTxsSocket as any).resume === 'function';
+
+      if (!isChronikWs) {
+        return;
+      }
+
+      if (document.hidden) {
+        // Page went to background - suspend WebSocket
+        try {
+          (thisTxsSocket as any).pause();
+        } catch (error) {
+          console.error('Error pausing WebSocket:', error);
+        }
+      } else {
+        // Page came to foreground - resume WebSocket
+        try {
+          await (thisTxsSocket as any).resume();
+        } catch (error) {
+          console.error('Error resuming WebSocket:', error);
+        }
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [isChild, thisTxsSocket])
+
   const tradeWithAltpayment = () => {
     setThisUseAltpayment(true)
   }
