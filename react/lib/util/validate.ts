@@ -48,7 +48,7 @@ export const shouldTriggerOnSuccess = (
     if(!randomSatoshis || randomSatoshis === 0){
       if(!isBCH){
         const paymentIdsMatch = expectedPaymentId === paymentId;
-        isPaymentIdValid = disablePaymentId ? true : paymentIdsMatch;  
+        isPaymentIdValid = disablePaymentId ? true : paymentIdsMatch && paymentId !== undefined;
       }
     }
     if(!isBCH){
