@@ -5,6 +5,7 @@ import config from '../paybutton-config.json';
 import { CheckSuccessInfo, Transaction } from './types';
 import { shouldTriggerOnSuccess } from './validate';
 import { initializeChronikWebsocket } from './chronik';
+import { WsEndpoint } from 'chronik-client';
 
 interface AltpaymentListenerParams {
   addressType: string
@@ -77,7 +78,7 @@ export const setupAltpaymentSocket = async (params: SetupAltpaymentSocketParams)
 
 interface SetupTxsSocketParams {
   address: string
-  txsSocket?: Socket
+  txsSocket?: Socket | WsEndpoint
   apiBaseUrl?: string
   wsBaseUrl?: string
   setTxsSocket: Function
