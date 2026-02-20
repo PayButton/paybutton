@@ -115,6 +115,7 @@ export interface WidgetProps {
   newTxText?: string;
   transactionText?: string;
   convertedCurrencyObj?: CurrencyObject;
+  hideSendButton?: boolean;
   setConvertedCurrencyObj?: Function;
   setPaymentId?: Function;
 }
@@ -203,6 +204,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     donationRate = DEFAULT_DONATION_RATE,
     setConvertedCurrencyObj = () => {},
     setPaymentId,
+    hideSendButton,
   } = props;
   const [loading, setLoading] = useState(true);
   const [draftAmount, setDraftAmount] = useState<string>("")
@@ -1347,7 +1349,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
               </Box>
             ) : null}
 
-            {success ? null : (
+            {success || hideSendButton ? null : (
               <Box pt={2} flex={1} sx={classes.button_container}>
                 {
                   // Use createElement to avoid JSX element-type incompatibility from duplicate React types

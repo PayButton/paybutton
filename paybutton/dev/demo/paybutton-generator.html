@@ -175,6 +175,11 @@
                 false-value="false">
               <label for="disable-altpayment">Disable Altpayment</label>
             </div>
+            <div class="form-input toggle">
+              <input type="checkbox" id="hide-send-button" v-model="paybuttonProps.hideSendButton" true-value="true"
+                false-value="false">
+              <label for="hide-send-button">Hide Send Button</label>
+            </div>
           </div>
           <div>
             <div class="form-input toggle">
@@ -228,6 +233,7 @@
             :on-success="mySuccessFuction"
             :on-transaction="myTransactionFuction"
             :disable-altpayment="paybuttonProps.disableAltpayment"
+            :hide-send-button="paybuttonProps.hideSendButton"
             :transaction-text="paybuttonProps.transactionText"
             :auto-close="paybuttonProps.autoClose"
             :op-return="paybuttonProps.opReturn">
@@ -260,6 +266,7 @@
             hideToasts: false,
             disableEnforceFocus: false,
             disableAltpayment: false,
+            hideSendButton: false,
             contributionOffset: undefined,
             opReturn:undefined,
             transactiontext: '',

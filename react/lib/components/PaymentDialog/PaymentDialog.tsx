@@ -38,6 +38,7 @@ export interface PaymentDialogProps extends ButtonProps {
   apiBaseUrl?: string;
   disableAltpayment?: boolean;
   contributionOffset?: number;
+  hideSendButton?: boolean;
   useAltpayment: boolean
   setUseAltpayment: Function;
   txsSocket?: Socket;
@@ -99,6 +100,7 @@ export const PaymentDialog = ({
   hoverText,
   disableAltpayment,
   contributionOffset,
+  hideSendButton,
   autoClose = true,
   useAltpayment,
   setUseAltpayment,
@@ -231,6 +233,7 @@ export const PaymentDialog = ({
           hoverText={hoverText}
           disableAltpayment={disableAltpayment}
           contributionOffset={contributionOffset}
+          hideSendButton={hideSendButton}
           useAltpayment={useAltpayment}
           setUseAltpayment={setUseAltpayment}
           setTxsSocket={setTxsSocket}

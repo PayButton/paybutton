@@ -55,6 +55,7 @@ export interface PayButtonProps extends ButtonProps {
   autoClose?: boolean | number | string;
   disableAltpayment?:boolean
   contributionOffset?:number
+  hideSendButton?: boolean;
   size?: ButtonSize;
   sizeScaleAlreadyApplied?: boolean;
   donationAddress?: string;
@@ -89,6 +90,7 @@ export const PayButton = ({
   autoClose = false,
   disableAltpayment,
   contributionOffset,
+  hideSendButton,
   size = 'md',
   sizeScaleAlreadyApplied = false,
   donationRate = DEFAULT_DONATION_RATE,
@@ -435,6 +437,7 @@ export const PayButton = ({
         hoverText={hoverText}
         disableAltpayment={disableAltpayment}
         contributionOffset={contributionOffset}
+        hideSendButton={hideSendButton}
         autoClose={autoClose}
         useAltpayment={useAltpayment}
         setUseAltpayment={setUseAltpayment}

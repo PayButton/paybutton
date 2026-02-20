@@ -449,3 +449,78 @@ describe('Widget – loading behaviour (WIP)', () => {
   })
 })
 
+describe('Widget – hideSendButton', () => {
+  test.each(CRYPTO_CASES)(
+    '%s – send button is hidden when hideSendButton=true',
+    async ({ currency, to }) => {
+      const { createPayment } = require('../../util');
+      (createPayment as jest.Mock).mockResolvedValue('pid-hide-test')
+
+      render(
+        <Widget
+          to={to}
+          amount={5}
+          currency={currency}
+          hideSendButton={true}
+        />
+      )
+
+      await waitFor(() => {
+        expect(screen.queryByText(/loading/i)).toBeNull()
+      })
+
+      // The send button should not be present
+      const sendButton = screen.queryByRole('button', { name: /send with.*wallet/i })
+      expect(sendButton).toBeNull()
+    }
+  )
+
+  test.each(CRYPTO_CASES)(
+    '%s – send button is visible when hideSendButton=false',
+    async ({ currency, to }) => {
+      const { createPayment } = require('../../util');
+      (createPayment as jest.Mock).mockResolvedValue('pid-show-test')
+
+      render(
+        <Widget
+          to={to}
+          amount={5}
+          currency={currency}
+          hideSendButton={false}
+        />
+      )
+
+      await waitFor(() => {
+        expect(screen.queryByText(/loading/i)).toBeNull()
+      })
+
+      // The send button should be present
+      const sendButton = await screen.findByRole('button', { name: /send with.*wallet/i })
+      expect(sendButton).toBeTruthy()
+    }
+  )
+
+  test.each(CRYPTO_CASES)(
+    '%s – send button is visible by default (hideSendButton undefined)',
+    async ({ currency, to }) => {
+      const { createPayment } = require('../../util');
+      (createPayment as jest.Mock).mockResolvedValue('pid-default-test')
+
+      render(
+        <Widget
+          to={to}
+          amount={5}
+          currency={currency}
+        />
+      )
+
+      await waitFor(() => {
+        expect(screen.queryByText(/loading/i)).toBeNull()
+      })
+
+      // The send button should be present by default
+      const sendButton = await screen.findByRole('button', { name: /send with.*wallet/i })
+      expect(sendButton).toBeTruthy()
+    }
+  )
+})
