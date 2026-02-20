@@ -57,6 +57,7 @@ export interface WidgetContainerProps
   donationAddress?: string
   donationRate?: number
   convertedCurrencyObj?: CurrencyObject;
+  resetKey?: number;
 }
 
 const snackbarOptionsSuccess: OptionsObject = {
@@ -141,6 +142,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
       donationRate,
       convertedCurrencyObj,
       setConvertedCurrencyObj,
+      resetKey,
       ...widgetProps
     } = props;
     const [internalCurrencyObj, setInternalCurrencyObj] = useState<CurrencyObject>();
@@ -163,6 +165,13 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
     const { enqueueSnackbar } = useSnackbar();
 
     const [shiftCompleted, setShiftCompleted] = useState(false);
+
+    useEffect(() => {
+      if (resetKey !== undefined && resetKey > 0) {
+        setSuccess(false);
+        setShiftCompleted(false);
+      }
+    }, [resetKey]);
 
     const paymentClient = getAltpaymentClient()
 
