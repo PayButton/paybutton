@@ -842,6 +842,35 @@ disabled = true
 
 <!-- tabs:end -->
 
+## hide-send-button
+
+> **The ‘hide-send-button’ parameter specifies whether or not the 'Send with XEC/BCH' button should be hidden.
+
+?> This parameter is optional. Default value is false. Possible values are true or false.
+
+**Example:**
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+hide-send-button="true"
+```
+
+#### ** JavaScript **
+
+```javascript
+hideSendButton: true
+```
+
+#### ** React **
+
+```react
+hideSendButton = true
+```
+
+<!-- tabs:end -->
+
 ## disable-enforce-focus
 
 > **The ‘disable-enforce-focus’ parameter is passed to the Dialog material UI component. Setting it to false can help with accessibility with technology such as screen readers but may throw errors on sites running Material UI.**

@@ -809,6 +809,35 @@ disabled = true
 
 <!-- tabs:end -->
 
+## hide-send-button
+
+> **參數'hide-send-button'指定是否隱藏'使用 XEC/BCH 發送'按鈕。**
+
+?> 此參數是可選的。默認值為false。可能的值為true或false。
+
+**範例:**
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+hide-send-button="true"
+```
+
+#### ** JavaScript **
+
+```javascript
+hideSendButton: true
+```
+
+#### ** React **
+
+```react
+hideSendButton = true
+```
+
+<!-- tabs:end -->
+
 ## disable-enforce-focus
 
 > **參數'disable-enforce-focus'被傳遞給 Dialog material UI 組件。將其設定為 false 可以幫助提高如螢幕閱讀器等技術的可訪問性，但可能會在運行 Material UI 的網站上引發錯誤。**
