@@ -115,7 +115,6 @@ export async function satoshisToUnit(satoshis: bigint, networkFormat: string): P
 
 const getTransactionAmountAndData = async  (transaction: Tx, addressString: string): Promise<{amount: string, opReturn: string}> => {
     let totalOutput = BigInt(0);
-    let totalInput = BigInt(0);
     const addressFormat = xecaddr.detectAddressFormat(addressString)
     const script = toHash160(addressString).hash160
     let opReturn = ''
@@ -133,14 +132,8 @@ const getTransactionAmountAndData = async  (transaction: Tx, addressString: stri
         }
       }
     }
-    for (const input of transaction.inputs) {
-      if (input?.outputScript?.includes(script) === true) {
-        totalInput += input.sats
-      }
-    }
-    const satoshis = totalOutput - totalInput
     return {
-      amount: await satoshisToUnit(satoshis, addressFormat),
+      amount: await satoshisToUnit(totalOutput, addressFormat),
       opReturn
     }
 }

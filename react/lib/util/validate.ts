@@ -34,12 +34,12 @@ export const shouldTriggerOnSuccess = (
       if (transactionCurrency !== currency) {
         if (currencyObject){
           const value = (currencyObject.float / price).toFixed(DECIMALS[transactionCurrency])
-          isAmountValid = resolveNumber(value).isEqualTo(amount)
+          isAmountValid = resolveNumber(value).isLessThanOrEqualTo(amount)
         }else {
           isAmountValid = false
         }
       } else {
-        isAmountValid = expectedAmount.isEqualTo(amount);
+        isAmountValid = expectedAmount.isLessThanOrEqualTo(amount);
       }
     }
     let isPaymentIdValid = true
