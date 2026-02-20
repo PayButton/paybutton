@@ -825,19 +825,19 @@ randomSatoshis = true
 #### ** HTML **
 
 ```html
-disabled="true"
+hide-toasts="true"
 ```
 
 #### ** JavaScript **
 
 ```javascript
-disabled: true
+hideToasts: true
 ```
 
 #### ** React **
 
 ```react
-disabled = true
+hideToasts = true
 ```
 
 <!-- tabs:end -->
