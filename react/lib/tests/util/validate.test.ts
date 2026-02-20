@@ -147,7 +147,7 @@ describe('Validate Util Tests', () => {
         expect(result).toBe(false);
       });
 
-      it('false when amount does not match received amount', async () => {
+      it('true when received amount is equal or greater than expected', async () => {
         const transaction: Transaction = {
           amount: '101.00',
           paymentId: '123',
@@ -158,7 +158,52 @@ describe('Validate Util Tests', () => {
           address: 'ecash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7quss2vxek',
         };
         const expectedPaymentId = '123';
-        const expectedAmount = resolveNumber('100.00');
+        let expectedAmount = resolveNumber('100.00');
+        const expectedOpReturn = 'test opReturn message';
+        const price = 1;
+        const currency = 'XEC';
+
+        let result1 = shouldTriggerOnSuccess(
+          transaction,
+          currency,
+          price,
+          false,
+          false,
+          expectedPaymentId,
+          expectedAmount,
+          expectedOpReturn
+        );
+
+        expect(result1).toBe(true);
+
+        expectedAmount = resolveNumber('101.00');
+
+        let result2 = shouldTriggerOnSuccess(
+          transaction,
+          currency,
+          price,
+          false,
+          false,
+          expectedPaymentId,
+          expectedAmount,
+          expectedOpReturn
+        );
+
+        expect(result2).toBe(true);
+      });
+
+      it('false when received amount is less than expected', async () => {
+        const transaction: Transaction = {
+          amount: '100.00',
+          paymentId: '123',
+          message: 'test opReturn message',
+          rawMessage: 'test opReturn message',
+          hash: '',
+          timestamp: 0,
+          address: 'ecash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7quss2vxek',
+        };
+        const expectedPaymentId = '123';
+        const expectedAmount = resolveNumber('100.01');
         const expectedOpReturn = 'test opReturn message';
         const price = 1;
         const currency = 'XEC';
