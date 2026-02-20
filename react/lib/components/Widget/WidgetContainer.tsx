@@ -347,12 +347,6 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
           return;
         }
         
-        if (!disablePaymentId && !thisPaymentId) {
-          // Skip if paymentId is required but not yet set. This avoids matching
-          // transactions against undefined payment IDs.
-          return;
-        }
-
         // Run immediately (attempt 1)
         const checkCompleted = await checkForTransactions();
         

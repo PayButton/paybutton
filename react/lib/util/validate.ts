@@ -45,13 +45,12 @@ export const shouldTriggerOnSuccess = (
     let isPaymentIdValid = true
     let isOpReturnValid = true
 
-    if(!randomSatoshis || randomSatoshis === 0){
-      if(!isBCH){
-        const paymentIdsMatch = expectedPaymentId === paymentId;
+    if(!isBCH){
+      if(!randomSatoshis || randomSatoshis === 0){
+        const paymentIdsMatch = !!expectedPaymentId && expectedPaymentId === paymentId;
         isPaymentIdValid = disablePaymentId ? true : paymentIdsMatch;  
       }
-    }
-    if(!isBCH){
+
       const rawOpReturnIsEmptyOrUndefined = rawOpReturn === '' || rawOpReturn === undefined;
       const opReturn = rawOpReturnIsEmptyOrUndefined ? message : rawOpReturn
       const opReturnIsEmptyOrUndefined = opReturn === '' || opReturn === undefined;
