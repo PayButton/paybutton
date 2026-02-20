@@ -418,3 +418,53 @@ describe('Validate Util Tests', () => {
     });
   });
 
+describe('paymentId x expectedPaymentId empty matrix (disablePaymentId=false)', () => {
+  const currency = 'XEC';
+  const price = 1;
+  const expectedAmount = resolveNumber('101.00');
+  const expectedOpReturn = 'test opReturn';
+
+  const baseTx: Omit<Transaction, 'paymentId'> = {
+    amount: '101.00',
+    message: 'test opReturn',
+    rawMessage: 'test opReturn',
+    hash: '',
+    timestamp: 0,
+    address: 'ecash:qrmm7edwuj4jf7tnvygjyztyy0a0qxvl7quss2vxek',
+  };
+
+  const emptyVals = [
+    { label: 'undefined', value: undefined },
+    { label: 'empty', value: '' },
+  ] as const;
+
+  const cases = emptyVals.flatMap((exp) =>
+    emptyVals.map((tx) => ({
+      expLabel: exp.label,
+      txLabel: tx.label,
+      expectedPaymentId: exp.value as string | undefined,
+      txPaymentId: tx.value as unknown as string,
+      expected: false
+    })),
+  );
+
+  test.each(cases)(
+    'expectedPaymentId=%s tx.paymentId=%s -> %s',
+    (row) => {
+      const tx = { ...baseTx, paymentId: row.txPaymentId as unknown as string } as Transaction;
+
+      const result = shouldTriggerOnSuccess(
+        tx,
+        currency,
+        price,
+        false, // randomSatoshis
+        false, // disablePaymentId
+        row.expectedPaymentId,
+        expectedAmount,
+        expectedOpReturn,
+      );
+
+      expect(result).toBe(row.expected);
+    },
+  );
+});
