@@ -21,7 +21,6 @@ import {
   DEFAULT_DONATION_RATE,
   POLL_TX_HISTORY_LOOKBACK,
   POLL_REQUEST_DELAY,
-  POLL_MAX_RETRY,
 } from '../../util';
 import { getAddressDetails } from '../../util/api-client';
 
@@ -161,7 +160,6 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
     const [thisPrice, setThisPrice] = useState(0);
     const [usdPrice, setUsdPrice] = useState(0);
     const [success, setSuccess] = useState(false);
-    const [retryCount, setRetryCount] = useState(0);
     const { enqueueSnackbar } = useSnackbar();
 
     const [shiftCompleted, setShiftCompleted] = useState(false);
@@ -319,8 +317,15 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
 
       let wasHidden = document.hidden;
       let hiddenTimestamp = 0;
+      let retryTimeoutId: NodeJS.Timeout | null = null;
 
       const handleVisibilityChange = async () => {
+        // Clear any pending retry timeout
+        if (retryTimeoutId) {
+          clearTimeout(retryTimeoutId);
+          retryTimeoutId = null;
+        }
+
         if (document.hidden) {
           wasHidden = true;
           hiddenTimestamp = Date.now();
@@ -352,10 +357,20 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
         const checkCompleted = await checkForTransactions();
         
         // If check completed successfully but payment hasn't succeeded yet,
-        // trigger retries. We might be missing the payment transaction.
+        // Schedule a single retry after 2 seconds. This is only there to handle
+        // the case where the transaction is discovered after the app has been
+        // foregrounded, but before the chronik websocket is resumed. 2 seconds
+        // should be plenty for this case which is not expected to happen under
+        // normal circumstances.
+        // Note that we can't check success at this stage because it is captured
+        // and we would use a stale value. So we run the timeout unconditionally
+        // and let the useEffect cancel it if success turns true. Worst case it
+        // does an API call and then it's a no-op.
         if (checkCompleted && !success) {
-          // Start retries
-          setRetryCount(1);
+          retryTimeoutId = setTimeout(async () => {
+            await checkForTransactions();
+            retryTimeoutId = null;
+          }, POLL_REQUEST_DELAY);
         }
       };
 
@@ -363,35 +378,12 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
 
       return () => {
         document.removeEventListener('visibilitychange', handleVisibilityChange);
-      };
-    }, [to, thisPaymentId, success, disablePaymentId]);
-
-    // Retry mechanism: check every second if payment hasn't succeeded yet
-    useEffect(() => {
-
-      if (retryCount === 0 || success || retryCount >= POLL_MAX_RETRY) {
-        // Retry up to 5 times or until the payment succeeds. If the payment tx
-        // is not found within this time period, something has gone wrong.
-        return;
-      }
-
-      const intervalId = setInterval(async () => {
-        if (success) {
-          // Stop retries upon success
-          setRetryCount(0);
-          return;
+        if (retryTimeoutId) {
+          clearTimeout(retryTimeoutId);
+          retryTimeoutId = null;
         }
-
-        await checkForTransactions();
-        
-        // Increment retry count for next attempt (regardless of success/error)
-        setRetryCount(prev => prev + 1);
-      }, POLL_REQUEST_DELAY);
-
-      return () => {
-        clearInterval(intervalId);
       };
-    }, [retryCount, success]);
+    }, [to, thisPaymentId, success, disablePaymentId, checkForTransactions]);
 
     return (
       <React.Fragment>

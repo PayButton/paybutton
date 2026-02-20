@@ -53,6 +53,7 @@ import {
   MINIMUM_ALTPAYMENT_DOLLAR_AMOUNT,
   MINIMUM_ALTPAYMENT_CAD_AMOUNT,
 } from '../../altpayment'
+import { WsEndpoint } from 'chronik-client'
 
 
 export interface WidgetProps {
@@ -221,10 +222,15 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
 
 
   // websockets if standalone
-  const [internalTxsSocket, setInternalTxsSocket] = useState<Socket | undefined>(undefined)
+  const [internalTxsSocket, setInternalTxsSocket] = useState<Socket | WsEndpoint | undefined>(undefined)
   const thisTxsSocket = txsSocket ?? internalTxsSocket
   const setThisTxsSocket =
-    (setTxsSocket as ((s: Socket | undefined) => void) | undefined) ?? setInternalTxsSocket
+    (setTxsSocket as ((s: Socket | WsEndpoint | undefined) => void) | undefined) ?? setInternalTxsSocket
+  
+  // Type guard to check if socket is a Chronik WsEndpoint
+  const isChronikWsEndpoint = (socket: Socket | WsEndpoint | undefined): socket is WsEndpoint => {
+    return socket instanceof WsEndpoint;
+  };
 
   const [internalNewTxs, setInternalNewTxs] = useState<Transaction[] | undefined>()
   const thisNewTxs = newTxs ?? internalNewTxs
@@ -592,6 +598,48 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
       }
     }
   }, [to, thisUseAltpayment])
+
+  // Suspend/resume Chronik WebSocket based on page visibility
+  useEffect(() => {
+    if (typeof document === 'undefined' || isChild === true) {
+      return;
+    }
+
+    const handleVisibilityChange = async () => {
+      if (!thisTxsSocket) {
+        // Not initialized yet
+        return;
+      }
+
+      // Check if this is a Chronik WsEndpoint (has pause/resume methods)
+      // vs a socket.io Socket (doesn't have these methods)
+      if (!isChronikWsEndpoint(thisTxsSocket)) {
+        return;
+      }
+
+      if (document.hidden) {
+        // Page went to background - suspend WebSocket
+        try {
+          thisTxsSocket.pause();
+        } catch (error) {
+          console.error('Error pausing WebSocket:', error);
+        }
+      } else {
+        // Page came to foreground - resume WebSocket
+        try {
+          await thisTxsSocket.resume();
+        } catch (error) {
+          console.error('Error resuming WebSocket:', error);
+        }
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [isChild, thisTxsSocket])
 
   const tradeWithAltpayment = () => {
     setThisUseAltpayment(true)
