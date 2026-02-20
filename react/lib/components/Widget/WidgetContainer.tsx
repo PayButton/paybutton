@@ -218,7 +218,16 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
             setSuccess(true);
             onSuccess?.(transaction);
           } else {
-            onTransaction?.(transaction);
+            // FIXME: Since the confirmed transactions are supported this could
+            // be called twice for the same transaction. In order to maintain
+            // the same behavior as before the confirmed transactions are
+            // supported we should only call onTransaction if the transaction is
+            // not confirmed. The proper fix would be to add a status so the
+            // callback know why it's called (added to mempool, finalized,
+            // confirmed, etc.). Fabien 2026-02-20
+            if (transaction.confirmed === false) {
+              onTransaction?.(transaction);
+            }
             if (transactionText){
               enqueueSnackbar(
                 `${
@@ -273,14 +282,15 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
 
     const handleNewTransaction = useCallback(
       (tx: Transaction) => {
-        if (
-          tx.confirmed === false &&
-          isGreaterThanZero(resolveNumber(tx.amount))
-        ) {
+        if (success) {
+          return;
+        }
+
+        if (isGreaterThanZero(resolveNumber(tx.amount))) {
           handlePayment(tx);
         }
       },
-      [handlePayment],
+      [handlePayment, success],
     );
 
     const checkForTransactions = useCallback(async (): Promise<boolean> => {

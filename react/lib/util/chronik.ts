@@ -249,7 +249,8 @@ export const parseWebsocketMessage = async (
     }
     const { msgType } = wsMsg;
     switch (msgType) {
-      case 'TX_ADDED_TO_MEMPOOL': {
+      case 'TX_ADDED_TO_MEMPOOL':
+      case 'TX_CONFIRMED': {
         const rawTransaction = await chronik.tx(wsMsg.txid);
 
         const transaction = await getTransactionFromChronikTransaction(rawTransaction, address ?? '')
