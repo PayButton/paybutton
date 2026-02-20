@@ -825,19 +825,48 @@ randomSatoshis = true
 #### ** HTML **
 
 ```html
-disabled="true"
+hide-toasts="true"
 ```
 
 #### ** JavaScript **
 
 ```javascript
-disabled: true
+hideToasts: true
 ```
 
 #### ** React **
 
 ```react
-disabled = true
+hideToasts = true
+```
+
+<!-- tabs:end -->
+
+## hide-send-button
+
+> **The ‘hide-send-button’ parameter specifies whether or not the 'Send with XEC/BCH' button should be hidden.
+
+?> This parameter is optional. Default value is false. Possible values are true or false.
+
+**Example:**
+<!-- tabs:start -->
+
+#### ** HTML **
+
+```html
+hide-send-button="true"
+```
+
+#### ** JavaScript **
+
+```javascript
+hideSendButton: true
+```
+
+#### ** React **
+
+```react
+hideSendButton = true
 ```
 
 <!-- tabs:end -->

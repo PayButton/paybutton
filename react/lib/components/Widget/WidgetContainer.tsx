@@ -57,6 +57,7 @@ export interface WidgetContainerProps
   donationAddress?: string
   donationRate?: number
   convertedCurrencyObj?: CurrencyObject;
+  hideSendButton?: boolean;
 }
 
 const snackbarOptionsSuccess: OptionsObject = {
@@ -141,6 +142,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
       donationRate,
       convertedCurrencyObj,
       setConvertedCurrencyObj,
+      hideSendButton,
       ...widgetProps
     } = props;
     const [internalCurrencyObj, setInternalCurrencyObj] = useState<CurrencyObject>();
@@ -430,6 +432,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
           convertedCurrencyObj={convertedCurrencyObj}
           setConvertedCurrencyObj={setConvertedCurrencyObj}
           setPaymentId={setThisPaymentId}
+          hideSendButton={hideSendButton}
         />
       </React.Fragment>
     );

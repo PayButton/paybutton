@@ -82,6 +82,7 @@ const allowedProps = [
   'currency',
   'displayCurrency',
   'hideToasts',
+  'hideSendButton',
   'hoverText',
   'onSuccess',
   'onTransaction',

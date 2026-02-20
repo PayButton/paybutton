@@ -469,3 +469,102 @@ describe('PayButton – UI shows updated amount + QR after reopen', () => {
   )
 })
 
+describe('PayButton – hideSendButton in dialog', () => {
+  test.each(CRYPTO_CASES)(
+    'send button is hidden in dialog when hideSendButton=true (%s)',
+    async ({ currency, address }) => {
+      const user = userEvent.setup()
+
+      render(
+        <PayButton
+          to={address}
+          amount={5}
+          currency={currency as any}
+          hideSendButton={true}
+        />
+      )
+
+      // Open the dialog
+      await user.click(screen.getByRole('button', { name: /donate/i }))
+      
+      await waitFor(() => {
+        const { createPayment } = require('../../util');
+        expect(createPayment).toHaveBeenCalledTimes(1)
+      })
+
+      // Wait for dialog to fully render
+      await waitFor(() => {
+        expect(screen.queryByText(/loading/i)).toBeNull()
+      })
+
+      // The send button should not be present in the dialog
+      const sendButton = screen.queryByRole('button', { name: /send with.*wallet/i })
+      expect(sendButton).toBeNull()
+    }
+  )
+
+  test.each(CRYPTO_CASES)(
+    'send button is visible in dialog when hideSendButton=false (%s)',
+    async ({ currency, address }) => {
+      const user = userEvent.setup()
+
+      render(
+        <PayButton
+          to={address}
+          amount={5}
+          currency={currency as any}
+          hideSendButton={false}
+        />
+      )
+
+      // Open the dialog
+      await user.click(screen.getByRole('button', { name: /donate/i }))
+      
+      await waitFor(() => {
+        const { createPayment } = require('../../util');
+        expect(createPayment).toHaveBeenCalledTimes(1)
+      })
+
+      // Wait for dialog to fully render
+      await waitFor(() => {
+        expect(screen.queryByText(/loading/i)).toBeNull()
+      })
+
+      // The send button should be present in the dialog
+      const sendButton = await screen.findByRole('button', { name: /send with.*wallet/i })
+      expect(sendButton).toBeTruthy()
+    }
+  )
+
+  test.each(CRYPTO_CASES)(
+    'send button is visible by default (hideSendButton undefined) (%s)',
+    async ({ currency, address }) => {
+      const user = userEvent.setup()
+
+      render(
+        <PayButton
+          to={address}
+          amount={5}
+          currency={currency as any}
+        />
+      )
+
+      // Open the dialog
+      await user.click(screen.getByRole('button', { name: /donate/i }))
+      
+      await waitFor(() => {
+        const { createPayment } = require('../../util');
+        expect(createPayment).toHaveBeenCalledTimes(1)
+      })
+
+      // Wait for dialog to fully render
+      await waitFor(() => {
+        expect(screen.queryByText(/loading/i)).toBeNull()
+      })
+
+      // The send button should be present in the dialog
+      const sendButton = await screen.findByRole('button', { name: /send with.*wallet/i })
+      expect(sendButton).toBeTruthy()
+    }
+  )
+})
