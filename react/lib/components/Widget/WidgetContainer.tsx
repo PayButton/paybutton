@@ -162,6 +162,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
     const [thisPrice, setThisPrice] = useState(0);
     const [usdPrice, setUsdPrice] = useState(0);
     const [success, setSuccess] = useState(false);
+    const [pendingFinalization, setPendingFinalization] = useState(false);
     const { enqueueSnackbar } = useSnackbar();
 
     const [shiftCompleted, setShiftCompleted] = useState(false);
@@ -194,6 +195,8 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
           const expectedAmount = currencyObj ? currencyObj?.float : undefined
           const receivedAmount = resolveNumber(transaction.amount);
           const currencyTicker = getCurrencyTypeFromAddress(to);
+          const isXec = currencyTicker === 'XEC';
+          const isFinalized = transaction.txStatus === 'finalized';
 
           if (shouldTriggerOnSuccess(
             transaction,
@@ -206,6 +209,18 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
             opReturn,
             currencyObj
           )) {
+            if (isXec && !isFinalized) {
+              if (!pendingFinalization && !hideToasts) {
+                enqueueSnackbar('Payment detected. Waiting for finalization...', snackbarOptionsInfo);
+              }
+              setPendingFinalization(true);
+              if (transaction.txStatus === 'mempool') {
+                onTransaction?.(transaction);
+              }
+              thisSetNewTxs([]);
+              return;
+            }
+
             if (sound && !isPropsTrue(disableSound)) {
               txSound.play().catch(() => {});
             }
@@ -217,6 +232,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
                 }Received ${receivedAmount} ${currencyTicker}`,
                 snackbarOptionsSuccess,
               );
+            setPendingFinalization(false);
             setSuccess(true);
             onSuccess?.(transaction);
           } else {
@@ -258,7 +274,8 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
         thisPrice,
         currencyObj,
         randomSatoshis,
-        donationRate
+        donationRate,
+        pendingFinalization
       ],
     );
 
@@ -411,6 +428,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
           price={thisPrice}
           usdPrice={usdPrice}
           success={success}
+          pendingFinalization={pendingFinalization}
           disabled={disabled}
           editable={editable}
           newTxs={thisNewTxs}
