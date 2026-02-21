@@ -1159,7 +1159,6 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
               if (errorMsg) return errorMsg
               if (disabled) return 'Not yet ready for payment'
               if (qrLoading) return 'Loading...'
-              if (showPaymentPendingSpinner) return 'Payment detected. Waiting for finalization...'
               if (success) return successText
               return text
             })()}

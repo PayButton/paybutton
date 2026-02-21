@@ -210,9 +210,6 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
             currencyObj
           )) {
             if (isXec && !isFinalized) {
-              if (!pendingFinalization && !hideToasts) {
-                enqueueSnackbar('Payment detected. Waiting for finalization...', snackbarOptionsInfo);
-              }
               setPendingFinalization(true);
               if (transaction.txStatus === 'mempool') {
                 onTransaction?.(transaction);

@@ -580,10 +580,10 @@ describe('Widget – payment finalization states', () => {
     )
 
     await waitFor(() => {
-      expect(screen.getAllByText(/waiting for finalization/i).length).toBeGreaterThan(0)
+      expect(onTransaction).toHaveBeenCalled()
     })
     expect(onSuccess).not.toHaveBeenCalled()
-    expect(onTransaction).toHaveBeenCalled()
+    expect(screen.queryByText(/waiting for finalization/i)).toBeNull()
 
     rerender(
       <Widget
