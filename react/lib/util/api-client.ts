@@ -11,6 +11,32 @@ import {
 } from './types';
 import { isFiat } from './currency';
 import { CURRENCY_TYPES_MAP, DECIMALS } from './constants';
+import Decimal from 'decimal.js';
+
+interface SimplifiedTransaction {
+  hash: string
+  amount: Decimal
+  paymentId: string
+  confirmed?: boolean
+  message: string
+  timestamp: number
+  address: string
+  rawMessage: string
+  inputAddresses: Array<{
+    address: string
+    amount: Decimal
+  }>
+  outputAddresses: Array<{
+    address: string
+    amount: Decimal
+  }>
+  prices: Array<{
+    price: {
+      value: Decimal
+      quoteId: number
+    }
+  }>
+}
 
 export const getAddressDetails = async (
   address: string,
@@ -37,8 +63,7 @@ export const getAddressDetails = async (
   }
 
   const transactions: Transaction[] = [];
-  // apiTransaction type is SimplifiedTransaction from paybutton-server/ws-service/types.ts
-  apiTransactions.forEach((apiTransaction: any) => {
+  apiTransactions.forEach((apiTransaction: SimplifiedTransaction) => {
     const opReturn = {
       rawMessage: apiTransaction.rawMessage,
       message: apiTransaction.message,
@@ -46,7 +71,7 @@ export const getAddressDetails = async (
     };
     const transaction: Transaction = {
       hash: apiTransaction.hash,
-      amount: apiTransaction.amount,
+      amount: apiTransaction.amount.toString(),
       paymentId: apiTransaction.paymentId,
       confirmed: apiTransaction.confirmed,
       message: apiTransaction.message,
