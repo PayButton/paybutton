@@ -12,12 +12,79 @@ import {
 import { isFiat } from './currency';
 import { CURRENCY_TYPES_MAP, DECIMALS } from './constants';
 
+interface SimplifiedTransaction {
+  hash: string
+  amount: string
+  paymentId: string
+  confirmed?: boolean
+  message: string
+  timestamp: number
+  address: string
+  rawMessage: string
+  inputAddresses: Array<{
+    address: string
+    amount: string
+  }>
+  outputAddresses: Array<{
+    address: string
+    amount: string
+  }>
+  prices: Array<{
+    price: {
+      value: string
+      quoteId: number
+    }
+  }>
+}
+
 export const getAddressDetails = async (
   address: string,
   rootUrl = config.apiBaseUrl,
 ): Promise<Transaction[]> => {
   const res = await fetch(`${rootUrl}/address/transactions/${address}`);
-  return res.json();
+
+  if (!res.ok) {
+    console.warn(`Received invalid response from ${rootUrl}/address/transactions/${address}`);
+    return [];
+  }
+
+  let apiTransactions;
+  try {
+    apiTransactions = await res.json();
+  } catch (error) {
+    console.warn(`Failed to fetch address transactions from ${rootUrl}/address/transactions/${address}`, error);
+    return [];
+  }
+
+  if (!Array.isArray(apiTransactions)) {
+    console.warn(`Received invalid data from ${rootUrl}/address/transactions/${address}`, apiTransactions);
+    return [];
+  }
+
+  const transactions: Transaction[] = [];
+  apiTransactions.forEach((apiTransaction: SimplifiedTransaction) => {
+    const opReturn = {
+      rawMessage: apiTransaction.rawMessage,
+      message: apiTransaction.message,
+      paymentId: apiTransaction.paymentId,
+    };
+    const transaction: Transaction = {
+      hash: apiTransaction.hash,
+      amount: apiTransaction.amount,
+      paymentId: apiTransaction.paymentId,
+      confirmed: apiTransaction.confirmed,
+      message: apiTransaction.message,
+      timestamp: apiTransaction.timestamp,
+      address: apiTransaction.address,
+      rawMessage: apiTransaction.rawMessage,
+      // Only keep the address string, drop the amount
+      inputAddresses: Array.isArray(apiTransaction.inputAddresses) ? apiTransaction.inputAddresses.map((input: { address: string, amount: string }) => input.address) : [],
+      opReturn: JSON.stringify(opReturn),
+    };
+    transactions.push(transaction);
+  });
+
+  return transactions;
 };
 
 export const getAddressBalance = async (
