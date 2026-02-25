@@ -157,6 +157,17 @@ const getTransactionFromChronikTransaction = async (transaction: Tx, address: st
     }
 }
 
+const resolveTxStatusFromMsgType = (msgType: string): Transaction['txStatus'] | undefined => {
+  switch (msgType) {
+    case 'TX_ADDED_TO_MEMPOOL':
+      return 'mempool'
+    case 'TX_FINALIZED':
+      return 'finalized'
+    default:
+      return undefined
+  }
+}
+
 export const fromHash160  = (networkSlug: string, type: AddressType, hash160: string): string => {
     const buffer = Buffer.from(hash160, 'hex')
 
@@ -243,10 +254,11 @@ export const parseWebsocketMessage = async (
     const { msgType } = wsMsg;
     switch (msgType) {
       case 'TX_ADDED_TO_MEMPOOL':
-      case 'TX_CONFIRMED': {
+      case 'TX_FINALIZED': {
         const rawTransaction = await chronik.tx(wsMsg.txid);
 
         const transaction = await getTransactionFromChronikTransaction(rawTransaction, address ?? '')
+        transaction.txStatus = resolveTxStatusFromMsgType(msgType)
 
         setNewTx([transaction]);
         break;

@@ -67,6 +67,7 @@ export interface WidgetProps {
   text?: string
   ButtonComponent?: React.ComponentType
   success?: boolean
+  pendingFinalization?: boolean
   successText?: string
   theme?: ThemeName | Theme
   foot?: React.ReactNode
@@ -159,6 +160,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     to,
     foot,
     success = false,
+    pendingFinalization = false,
     paymentId,
     successText = 'Thank you!',
     disablePaymentId,
@@ -221,6 +223,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
 
 
   const qrLoading = loading || isWaitingForPaymentId
+  const showPaymentPendingSpinner = pendingFinalization && !success
 
 
   // websockets if standalone
@@ -1254,7 +1257,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                 </Box>
               </Fade>
 
-              {qrLoading ? (
+              {qrLoading || showPaymentPendingSpinner ? (
                 <Box
                   position="absolute"
                   top={0}
@@ -1283,7 +1286,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                   onKeyDown={(e: React.KeyboardEvent) => {
                     if (e.key === 'Enter' && isDraftValid && !isSameAmount) {
                       applyDraftAmount();
-                  }
+                    }
                   }}
                   thousandSeparator
                   allowLeadingZeros={false}
@@ -1349,7 +1352,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
               </Box>
             ) : null}
 
-            {success || hideSendButton ? null : (
+            {success || showPaymentPendingSpinner || hideSendButton ? null : (
               <Box pt={2} flex={1} sx={classes.button_container}>
                 {
                   // Use createElement to avoid JSX element-type incompatibility from duplicate React types

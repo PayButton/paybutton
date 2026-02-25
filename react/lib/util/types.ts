@@ -12,6 +12,7 @@ export interface Transaction {
     amount: string
     paymentId: string
     confirmed?: boolean
+    txStatus?: 'mempool' | 'finalized'
     message: string
     timestamp: number
     address: string

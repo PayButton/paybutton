@@ -5,7 +5,7 @@ import userEvent from '@testing-library/user-event'
 import { WidgetContainer as Widget } from '../../components/Widget/WidgetContainer'
 import { TEST_ADDRESSES } from '../util/constants'
 import copyToClipboard from 'copy-to-clipboard'
-import type { Currency } from '../../util'
+import type { Currency, Transaction } from '../../util'
 import { isFiat } from '../../util';
 import config from '../../paybutton-config.json'
 
@@ -523,4 +523,135 @@ describe('Widget – hideSendButton', () => {
       expect(sendButton).toBeTruthy()
     }
   )
+})
+
+describe('Widget – payment finalization states', () => {
+  test('XEC shows pending spinner on detection and runs success on finalization', async () => {
+    const onSuccess = jest.fn()
+    const onTransaction = jest.fn()
+    const setNewTxs = jest.fn()
+
+    const xecMempoolTx: Transaction = {
+      hash: 'xec-mempool-hash',
+      amount: '1',
+      paymentId: '',
+      message: '',
+      rawMessage: '',
+      timestamp: 1,
+      address: TEST_ADDRESSES.ecash,
+      confirmed: false,
+      txStatus: 'mempool',
+    }
+
+    const xecFinalizedTx: Transaction = {
+      ...xecMempoolTx,
+      hash: 'xec-finalized-hash',
+      confirmed: true,
+      txStatus: 'finalized',
+    }
+
+    const { rerender } = render(
+      <Widget
+        to={TEST_ADDRESSES.ecash}
+        currency={'XEC'}
+        disablePaymentId={true}
+        sound={false}
+        onSuccess={onSuccess}
+        onTransaction={onTransaction}
+        setNewTxs={setNewTxs}
+      />
+    )
+
+    await waitFor(() => {
+      expect(screen.queryByText(/loading/i)).toBeNull()
+    })
+
+    rerender(
+      <Widget
+        to={TEST_ADDRESSES.ecash}
+        currency={'XEC'}
+        disablePaymentId={true}
+        sound={false}
+        onSuccess={onSuccess}
+        onTransaction={onTransaction}
+        setNewTxs={setNewTxs}
+        newTxs={[xecMempoolTx]}
+      />
+    )
+
+    await waitFor(() => {
+      expect(onTransaction).toHaveBeenCalled()
+    })
+    expect(onSuccess).not.toHaveBeenCalled()
+    expect(screen.queryByText(/waiting for finalization/i)).toBeNull()
+
+    rerender(
+      <Widget
+        to={TEST_ADDRESSES.ecash}
+        currency={'XEC'}
+        disablePaymentId={true}
+        sound={false}
+        onSuccess={onSuccess}
+        onTransaction={onTransaction}
+        setNewTxs={setNewTxs}
+        newTxs={[xecFinalizedTx]}
+      />
+    )
+
+    await waitFor(() => {
+      expect(onSuccess).toHaveBeenCalledTimes(1)
+    })
+    await waitFor(() => {
+      expect(screen.getByText(/thank you!/i)).toBeTruthy()
+    })
+  })
+
+  test('BCH keeps immediate success on first detected transaction', async () => {
+    const onSuccess = jest.fn()
+    const setNewTxs = jest.fn()
+
+    const bchDetectedTx: Transaction = {
+      hash: 'bch-detected-hash',
+      amount: '1',
+      paymentId: '',
+      message: '',
+      rawMessage: '',
+      timestamp: 1,
+      address: TEST_ADDRESSES.bitcoincash,
+      confirmed: false,
+      txStatus: 'mempool',
+    }
+
+    const { rerender } = render(
+      <Widget
+        to={TEST_ADDRESSES.bitcoincash}
+        currency={'BCH'}
+        disablePaymentId={true}
+        sound={false}
+        onSuccess={onSuccess}
+        setNewTxs={setNewTxs}
+      />
+    )
+
+    await waitFor(() => {
+      expect(screen.queryByText(/loading/i)).toBeNull()
+    })
+
+    rerender(
+      <Widget
+        to={TEST_ADDRESSES.bitcoincash}
+        currency={'BCH'}
+        disablePaymentId={true}
+        sound={false}
+        onSuccess={onSuccess}
+        setNewTxs={setNewTxs}
+        newTxs={[bchDetectedTx]}
+      />
+    )
+
+    await waitFor(() => {
+      expect(onSuccess).toHaveBeenCalledTimes(1)
+    })
+    expect(screen.queryByText(/waiting for finalization/i)).toBeNull()
+  })
 })
