@@ -11,11 +11,10 @@ import {
 } from './types';
 import { isFiat } from './currency';
 import { CURRENCY_TYPES_MAP, DECIMALS } from './constants';
-import Decimal from 'decimal.js';
 
 interface SimplifiedTransaction {
   hash: string
-  amount: Decimal
+  amount: string
   paymentId: string
   confirmed?: boolean
   message: string
@@ -24,15 +23,15 @@ interface SimplifiedTransaction {
   rawMessage: string
   inputAddresses: Array<{
     address: string
-    amount: Decimal
+    amount: string
   }>
   outputAddresses: Array<{
     address: string
-    amount: Decimal
+    amount: string
   }>
   prices: Array<{
     price: {
-      value: Decimal
+      value: string
       quoteId: number
     }
   }>
@@ -71,7 +70,7 @@ export const getAddressDetails = async (
     };
     const transaction: Transaction = {
       hash: apiTransaction.hash,
-      amount: apiTransaction.amount.toString(),
+      amount: apiTransaction.amount,
       paymentId: apiTransaction.paymentId,
       confirmed: apiTransaction.confirmed,
       message: apiTransaction.message,
