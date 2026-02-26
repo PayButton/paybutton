@@ -101,7 +101,7 @@
     "decimal.js": "^10.6.0",
     "ecashaddrjs": "^2.0.0",
     "jest": "^29.7.0",
-    "lodash": "4.17.21",
+    "lodash": "4.17.23",
     "notistack": "3.0.0",
     "qrcode.react": "3",
     "react-number-format": "^5.4.4",
