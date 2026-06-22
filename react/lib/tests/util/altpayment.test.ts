@@ -39,5 +39,6 @@ describe('parseAltpayment', () => {
   it('returns default for unrecognized tickers', () => {
     expect(parseAltpayment('ETH')).toEqual(defaultConfig)
     expect(parseAltpayment('DOGE')).toEqual(defaultConfig)
+    expect(parseAltpayment('blahInvalidTicker')).toEqual(defaultConfig)
   })
 })
