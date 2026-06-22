@@ -101,7 +101,7 @@
     disabled: false,
     wsBaseUrl: 'http://localhost:5000',
     apiBaseUrl: 'http://localhost:3000'
-    disableAltpayment: true,
+    altpayment: 'XEC',
     contributionOffset: 10
   };
 
@@ -982,11 +982,11 @@ apiBaseUrl: 'https://paybutton.org'
 apiBaseUrl = "https://paybutton.org"
 ```
 <!-- tabs:end -->
-## disable-altpayment
+## altpayment
 
-> **“disableAltpayment” 参数用于禁用备用支付逻辑。**
+> **“altpayment” 参数用于控制 SideShift 备用支付行为。**
 
-?> 该参数为可选项，默认值为 false。可选值为 true 或 false。
+?> 该参数为可选项。省略或设为 `true` 时，用户会看到“没有 XEC/BCH？”的 SideShift 兑换入口。设为 `XEC` 或 `BCH` 可隐藏该入口。设为 `BTC` 将自动打开 SideShift 流程并预选 BTC。无法识别的币种代码与 `true` 行为相同。
 
 **Example:**
 <!-- tabs:start -->
@@ -994,19 +994,19 @@ apiBaseUrl = "https://paybutton.org"
 #### ** HTML **
 
 ```html
-disable-altpayment="true"
+altpayment="BTC"
 ```
 
 #### ** JavaScript **
 
 ```javascript
-disableAltpayment: 'true'
+altpayment: 'BTC'
 ```
 
 #### ** React **
 
 ```react
-disableAltpayment = "true"
+altpayment = "BTC"
 ```
 <!-- tabs:end -->
 

@@ -27,7 +27,7 @@
   - [disabled](/zh-cn/?id=disabled)
   - [ws-base-url](/zh-cn/?id=ws-base-url)
   - [api-base-url](/zh-cn/?id=api-base-url)
-  - [disable-altpayment](/zh-cn/?id=disable-altpayment)
+  - [altpayment](/zh-cn/?id=altpayment)
   - [contribution-offset](/zh-cn/?id=contribution-offset)
   - [auto-close](/zh-cn/?id=auto-close)
   - [disable-sound](/zh-cn/?id=disable-sound)

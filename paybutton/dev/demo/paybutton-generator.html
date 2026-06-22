@@ -170,10 +170,14 @@
                 false-value="false">
               <label for="random-satoshis">Random Satoshis</label>
             </div>
-            <div class="form-input toggle">
-              <input type="checkbox" id="disable-altpayment" v-model="paybuttonProps.disableAltpayment" true-value="true"
-                false-value="false">
-              <label for="disable-altpayment">Disable Altpayment</label>
+            <div class="form-input">
+              <label for="altpayment">Altpayment</label>
+              <select id="altpayment" v-model="paybuttonProps.altpayment">
+                <option value="true">true (show link)</option>
+                <option value="XEC">XEC (hide link)</option>
+                <option value="BCH">BCH (hide link)</option>
+                <option value="BTC">BTC (auto-start)</option>
+              </select>
             </div>
             <div class="form-input toggle">
               <input type="checkbox" id="hide-send-button" v-model="paybuttonProps.hideSendButton" true-value="true"
@@ -232,7 +236,7 @@
             :disabled="paybuttonProps.disabled"
             :on-success="mySuccessFuction"
             :on-transaction="myTransactionFuction"
-            :disable-altpayment="paybuttonProps.disableAltpayment"
+            :altpayment="paybuttonProps.altpayment"
             :hide-send-button="paybuttonProps.hideSendButton"
             :transaction-text="paybuttonProps.transactionText"
             :auto-close="paybuttonProps.autoClose"
@@ -265,7 +269,7 @@
             randomSatoshis: false,
             hideToasts: false,
             disableEnforceFocus: false,
-            disableAltpayment: false,
+            altpayment: 'true',
             hideSendButton: false,
             contributionOffset: undefined,
             opReturn:undefined,

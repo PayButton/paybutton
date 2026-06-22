@@ -101,7 +101,7 @@ Example using JavaScript to generate a PayButton:
     disabled: false,
     wsBaseUrl: 'http://localhost:5000',
     apiBaseUrl: 'http://localhost:3000'
-    disableAltpayment: true,
+    altpayment: 'XEC',
     contributionOffset: 10,
     autoClose: true
   };
@@ -988,11 +988,11 @@ apiBaseUrl = "https://paybutton.org"
 
 <!-- tabs:end -->
 
-## disable-altpayment
+## altpayment
 
-> **The ‘disableAltpayment’ parameter disables altpayment logic.**
+> **The `altpayment` parameter controls SideShift altpayment behavior.**
 
-?> This parameter is optional. Default value is false. Possible values are true or false.
+?> This parameter is optional. When omitted or set to `true`, users see an opt-in "Don't have any XEC/BCH?" link to swap other coins via SideShift. Set to `XEC` or `BCH` to hide that link. Set to `BTC` to automatically open the SideShift flow with BTC pre-selected. Unrecognized coin tickers behave the same as `true`.
 
 **Example:**
 <!-- tabs:start -->
@@ -1000,19 +1000,19 @@ apiBaseUrl = "https://paybutton.org"
 #### ** HTML **
 
 ```html
-disable-altpayment="true"
+altpayment="BTC"
 ```
 
 #### ** JavaScript **
 
 ```javascript
-disableAltpayment: 'true'
+altpayment: 'BTC'
 ```
 
 #### ** React **
 
 ```react
-disableAltpayment = "true"
+altpayment = "BTC"
 ```
 
 <!-- tabs:end -->

@@ -1,5 +1,5 @@
-import React, { Fragment, useEffect, useState } from 'react'
-import { TextField, Select, MenuItem, InputLabel, FormControl  } from '@mui/material'
+import React, { Fragment, useEffect, useRef, useState } from 'react'
+import { TextField, Select, MenuItem, InputLabel, FormControl, Box, CircularProgress } from '@mui/material'
 import { styled } from '@mui/material/styles'
 
 import { resolveNumber, CryptoCurrency, DECIMALS } from '../../util'
@@ -25,6 +25,7 @@ interface AltpaymentProps {
   coinPair?: AltpaymentPair;
   setCoinPair: Function;
   altpaymentEditable: boolean;
+  preselectedCoin?: string;
   animation?: animation;
   addressType: CryptoCurrency;
   to: string;
@@ -49,6 +50,7 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     coinPair,
     setCoinPair,
     altpaymentEditable,
+    preselectedCoin,
     animation,
     addressType,
     thisAmount,
@@ -65,6 +67,65 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
   const [selectedCoinNetwork, setSelectedCoinNetwork] = useState<string | undefined>(undefined);
   const [pairAmountFixedDecimals, setPairAmountFixedDecimals] = useState<string | undefined>(undefined);
   const [pairAmount, setPairAmount] = useState<string | undefined>(undefined);
+  const autoRateRequestedRef = useRef(false);
+  const autoQuoteRequestedRef = useRef(false);
+  const prevAltpaymentSocketRef = useRef<Socket | undefined>(undefined);
+
+  const getDepositDecimals = (
+    coin: AltpaymentCoin,
+    network: string,
+    pair: AltpaymentPair,
+  ): number => {
+    const networkTokenDetails = coin.tokenDetails?.[network]
+    if (networkTokenDetails?.decimals !== undefined) {
+      return networkTokenDetails.decimals
+    }
+    const minFraction = pair.min.split('.')[1]
+    if (minFraction !== undefined) {
+      return minFraction.length
+    }
+    return DECIMALS[coin.coin] ?? 8
+  }
+
+  const computeDepositAmountFromSettle = (): string | undefined => {
+    if (!coinPair || !selectedCoin || !selectedCoinNetwork || thisAmount == null || thisAmount === '') {
+      return undefined
+    }
+    const settleAmount = +thisAmount
+    if (Number.isNaN(settleAmount) || settleAmount <= 0) {
+      return undefined
+    }
+    const decimals = getDepositDecimals(selectedCoin, selectedCoinNetwork, coinPair)
+    return resolveNumber(settleAmount / +coinPair.rate).toFixed(decimals)
+  }
+
+  useEffect(() => {
+    if (altpaymentSocket === undefined) {
+      autoRateRequestedRef.current = false
+      autoQuoteRequestedRef.current = false
+      prevAltpaymentSocketRef.current = undefined
+      return
+    }
+    if (altpaymentSocket !== prevAltpaymentSocketRef.current) {
+      autoRateRequestedRef.current = false
+      autoQuoteRequestedRef.current = false
+      setSelectedCoin(undefined)
+      setSelectedCoinNetwork(undefined)
+      setPairAmount(undefined)
+      setPairAmountFixedDecimals(undefined)
+      prevAltpaymentSocketRef.current = altpaymentSocket
+    }
+  }, [altpaymentSocket])
+
+  useEffect(() => {
+    if (preselectedCoin && coins.length > 0 && selectedCoin === undefined) {
+      const coin = coins.find(c => c.coin === preselectedCoin)
+      if (coin) {
+        setSelectedCoin(coin)
+        setSelectedCoinNetwork(coin.networks[0])
+      }
+    }
+  }, [coins, preselectedCoin, selectedCoin])
 
   useEffect(() => {
     if (pairAmount && coinPair) {
@@ -83,36 +144,61 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
   }, [selectedCoin])
 
   useEffect(() => {
-    if (coinPair && thisAmount && selectedCoin && selectedCoinNetwork) {
-      const bigNumber = resolveNumber(+thisAmount / +coinPair.rate)
-      const tokenDetails = selectedCoin.tokenDetails
-      let decimals: number
-      if (tokenDetails !== undefined) {
-        decimals = tokenDetails[selectedCoinNetwork].decimals
-      } else {
-        decimals = coinPair.min.split('.')[1].length
+    if (coinPair && thisAmount != null && thisAmount !== '' && selectedCoin && selectedCoinNetwork) {
+      const depositAmount = computeDepositAmountFromSettle()
+      if (depositAmount === undefined) {
+        return
+      }
+      const decimals = getDepositDecimals(selectedCoin, selectedCoinNetwork, coinPair)
+      setPairAmountFixedDecimals(depositAmount)
+      if (!altpaymentEditable) {
+        setPairAmount(depositAmount)
       }
 
-      const amountString = bigNumber.toFixed(decimals)
-      setPairAmountFixedDecimals(amountString)
-
-      // Besides decimals, account for the non-decimal part of the bigNumber
-      // plus the '.' character.
-      const floorAmount = pairAmount ? Math.floor(+pairAmount) : 1
+      const floorAmount = Math.floor(+depositAmount) || 1
       const nonDecimalCharCount = 1 + Math.ceil(Math.log10(floorAmount + 1))
       setPairAmountMaxLength(nonDecimalCharCount + decimals)
     }
-  }, [coinPair, selectedCoin, thisAmount, pairAmount, selectedCoinNetwork])
+  }, [coinPair, selectedCoin, thisAmount, selectedCoinNetwork, altpaymentEditable])
 
   const requestPairRate = (): void => {
-    if (selectedCoin !== undefined) {
-      const from = `${selectedCoin.coin}-${selectedCoin?.networks[0]}`
+    if (selectedCoin !== undefined && selectedCoinNetwork !== undefined) {
+      const from = `${selectedCoin.coin}-${selectedCoinNetwork}`
       const to = addressType === 'XEC' ? `ecash-mainnet` : `bitcoincash-mainnet`
       if (altpaymentSocket !== undefined) {
         altpaymentSocket.emit('get-altpayment-rate', {from, to})
       }
     }
   }
+
+  useEffect(() => {
+    if (
+      preselectedCoin &&
+      !altpaymentEditable &&
+      selectedCoin !== undefined &&
+      selectedCoinNetwork !== undefined &&
+      coinPair === undefined &&
+      !loadingPair &&
+      !autoRateRequestedRef.current &&
+      altpaymentSocket !== undefined
+    ) {
+      autoRateRequestedRef.current = true
+      setLoadingPair(true)
+      const from = `${selectedCoin.coin}-${selectedCoinNetwork}`
+      const to = addressType === 'XEC' ? `ecash-mainnet` : `bitcoincash-mainnet`
+      altpaymentSocket.emit('get-altpayment-rate', {from, to})
+    }
+  }, [
+    preselectedCoin,
+    altpaymentEditable,
+    selectedCoin,
+    selectedCoinNetwork,
+    coinPair,
+    loadingPair,
+    altpaymentSocket,
+    addressType,
+    setLoadingPair,
+  ])
 
   const handleCoinChange = async (e: React.ChangeEvent<{ name?: string; value: unknown }>) => {
     const coinName = e.target.value as string
@@ -147,24 +233,81 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     }
   };
 
-  const handleCreateQuoteButtonClick = () => {
-    if (altpaymentSocket !== undefined && selectedCoin !== undefined) {
-      setLoadingShift(true)
-      altpaymentSocket.emit('create-altpayment-quote', {
-        depositAmount: pairAmountFixedDecimals,
-        settleCoin:  addressType,
-        depositCoin: selectedCoin?.coin,
-        depositNetwork: selectedCoinNetwork,
-        settleAddress: to
-      });
+  const createQuote = (): boolean => {
+    if (altpaymentSocket === undefined || selectedCoin === undefined || selectedCoinNetwork === undefined) {
+      return false
     }
+
+    const depositAmount = altpaymentEditable
+      ? pairAmountFixedDecimals
+      : (pairAmountFixedDecimals ?? computeDepositAmountFromSettle())
+
+    const quotePayload: Record<string, string> = {
+      settleCoin: addressType,
+      depositCoin: selectedCoin.coin,
+      depositNetwork: selectedCoinNetwork,
+      settleAddress: to,
+    }
+
+    if (depositAmount) {
+      quotePayload.depositAmount = depositAmount
+    } else if (thisAmount != null && thisAmount !== '' && !altpaymentEditable) {
+      const settleDecimals = DECIMALS[addressType] ?? 2
+      quotePayload.settleAmount = resolveNumber(+thisAmount).toFixed(settleDecimals)
+    } else {
+      return false
+    }
+
+    setLoadingShift(true)
+    altpaymentSocket.emit('create-altpayment-quote', quotePayload)
+    return true
+  }
+
+  useEffect(() => {
+    if (
+      !preselectedCoin ||
+      altpaymentEditable ||
+      altpaymentSocket === undefined ||
+      selectedCoin === undefined ||
+      selectedCoinNetwork === undefined ||
+      coinPair === undefined ||
+      altpaymentShift !== undefined ||
+      loadingShift ||
+      autoQuoteRequestedRef.current ||
+      altpaymentError
+    ) {
+      return
+    }
+
+    autoQuoteRequestedRef.current = createQuote()
+  }, [
+    preselectedCoin,
+    altpaymentEditable,
+    altpaymentSocket,
+    selectedCoin,
+    selectedCoinNetwork,
+    coinPair,
+    altpaymentShift,
+    loadingShift,
+    altpaymentError,
+    thisAmount,
+    pairAmountFixedDecimals,
+  ])
+
+  const handleCreateQuoteButtonClick = () => {
+    createQuote()
   }
 
   const resetTrade = () => {
+    autoRateRequestedRef.current = false
+    autoQuoteRequestedRef.current = false
+    setSelectedCoin(undefined)
+    setSelectedCoinNetwork(undefined)
     setCoinPair(undefined)
     setAltpaymentError(undefined)
     setAltpaymentShift(undefined)
     setPairAmount(undefined)
+    setPairAmountFixedDecimals(undefined)
     setShiftCompleted(false)
   }
 
@@ -200,9 +343,34 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
   };
 
   const SideshiftCtn = styled('div')({
-    alignItems: 'center', display: 'flex', flexDirection: 'column',
-    height: 'calc(100% - 45px)', width: '100%', position: 'absolute',
-    zIndex: 9, top: '0', left: '0', background: '#f5f5f7', paddingTop: '20px'
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    display: 'flex',
+    flexDirection: 'column',
+    boxSizing: 'border-box',
+    position: 'absolute',
+    zIndex: 9,
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    background: '#f5f5f7',
+    overflowY: 'auto',
+    padding: '24px',
+  })
+
+  const LoadingCenter = styled('div')({
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: '16px',
+    textAlign: 'center',
+    width: 'max-content',
+    maxWidth: '100%',
   })
 
   const Header = styled('div')({
@@ -295,6 +463,26 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     return coinString;
   }
 
+  const isAutoStart = Boolean(preselectedCoin)
+  const isAutoStartLoading = isAutoStart && !altpaymentShift && !altpaymentError
+
+  const renderLoading = (message: string) => (
+    <LoadingCenter>
+      <CircularProgress size={48} thickness={4} sx={{ display: 'block' }} />
+      <Box
+        component="span"
+        sx={{
+          fontSize: '0.9rem',
+          color: 'rgb(35, 31, 32)',
+          fontFamily: 'inherit',
+          textAlign: 'center',
+        }}
+      >
+        {message}
+      </Box>
+    </LoadingCenter>
+  )
+
   return (
     <SideshiftCtn>
       {altpaymentError ? (
@@ -302,6 +490,8 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
           <ErrorMsg>Error: {altpaymentError.errorMessage}</ErrorMsg>
           <BackLink onClick={resetTrade}>Back</BackLink>
         </Fragment>
+      ) : isAutoStartLoading ? (
+        renderLoading('Loading SideShift...')
       ) : (
         <Fragment>
           {
@@ -352,13 +542,13 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                 </ShiftReady>
               )
             ) : loadingShift ? (
-              <p>Loading Shift...</p>
-            ) : coinPair ? (
+              renderLoading('Loading Shift...')
+            ) : coinPair && selectedCoin ? (
               <Fragment>
                 <p>
                   {' '}
-                  1 {selectedCoin?.name} ~={' '}
-                  {resolveNumber(coinPair.rate).toFixed(DECIMALS[coinPair.settleCoin])} {coinPair.settleCoin}{' '}
+                  1 {selectedCoin.name} ~={' '}
+                  {resolveNumber(coinPair.rate).toFixed(DECIMALS[coinPair.settleCoin] ?? 8)} {coinPair.settleCoin}{' '}
                 </p>
                 {altpaymentEditable ? (
                   <div style={{ display: 'flex', justifyContent: 'center', margin: '6px auto', width: '100%' }}>
@@ -383,29 +573,30 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                     !isAboveMinimumAltpaymentAmount ||
                     !isBelowMaximumAltpaymentAmount ? {opacity: '0.5', cursor: 'not-allowed'} : {}}>
                 <Button
-                  text={`Send ${selectedCoin?.name}`}
-                  hoverText={`Send ${selectedCoin?.name}`}
+                  text={`Send ${selectedCoin.name}`}
+                  hoverText={`Send ${selectedCoin.name}`}
                   onClick={handleCreateQuoteButtonClick}
                   disabled={
                     loadingPair ||
                     selectedCoinNetwork === undefined ||
                     (altpaymentEditable && !pairAmount) ||
+                    (!altpaymentEditable && !pairAmountFixedDecimals && !computeDepositAmountFromSettle()) ||
                     !isAboveMinimumAltpaymentAmount ||
                     !isBelowMaximumAltpaymentAmount
                   }
                   animation={animation}
                 />
                 </div>
-                {!isAboveMinimumAltpaymentAmount && (
+                {pairAmount && !isAboveMinimumAltpaymentAmount && (
                   <AmountError>Amount is below minimum.</AmountError>
                 )}
-                {!isBelowMaximumAltpaymentAmount && (
+                {pairAmount && !isBelowMaximumAltpaymentAmount && (
                   <AmountError>Amount is above maximum.</AmountError>
                 )}
               </Fragment>
             ) : (
               <Fragment>
-                {coins.length === 0 && <div>Loading...</div>}
+                {coins.length === 0 && renderLoading('Loading SideShift...')}
                 {coins.length > 0 && (
                   <Fragment>
                     <Header>
@@ -414,6 +605,7 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                         <img src={sideShiftLogo} alt='SideShift' />
                       </a>
                     </Header>
+                    {!preselectedCoin ? (
                     <FormControl>
                       <InputLabel id="select-coin-label">Select a coin</InputLabel>
                       <SelectBox
@@ -438,6 +630,7 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                         ))}
                       </SelectBox>
                     </FormControl>
+                    ) : null}
 
                     <Spacer />
                     {selectedCoin && selectedCoin.networks.length > 1 && (
@@ -490,9 +683,6 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
             )
             // END: Altpayment region
           }
-           {coinPair && !loadingShift && (
-              <BackLink onClick={resetTrade}>Back</BackLink>
-            )}
         </Fragment>
       )}
     </SideshiftCtn>
