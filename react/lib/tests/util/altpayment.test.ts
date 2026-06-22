@@ -2,13 +2,17 @@ import { parseAltpayment } from '../../util/altpayment'
 
 describe('parseAltpayment', () => {
   const defaultConfig = { showAltpaymentLink: true, autoStart: false }
+  const disabledConfig = { showAltpaymentLink: false, autoStart: false }
 
-  it('returns default for undefined, null, empty, and false', () => {
+  it('returns default for undefined, null, and empty', () => {
     expect(parseAltpayment(undefined)).toEqual(defaultConfig)
     expect(parseAltpayment(null)).toEqual(defaultConfig)
     expect(parseAltpayment('')).toEqual(defaultConfig)
-    expect(parseAltpayment(false)).toEqual(defaultConfig)
-    expect(parseAltpayment('false')).toEqual(defaultConfig)
+  })
+
+  it('disables altpayment for false', () => {
+    expect(parseAltpayment(false)).toEqual(disabledConfig)
+    expect(parseAltpayment('false')).toEqual(disabledConfig)
   })
 
   it('returns default for true', () => {
@@ -17,10 +21,10 @@ describe('parseAltpayment', () => {
   })
 
   it('disables altpayment link for XEC and BCH', () => {
-    expect(parseAltpayment('XEC')).toEqual({ showAltpaymentLink: false, autoStart: false })
-    expect(parseAltpayment('xec')).toEqual({ showAltpaymentLink: false, autoStart: false })
-    expect(parseAltpayment('BCH')).toEqual({ showAltpaymentLink: false, autoStart: false })
-    expect(parseAltpayment('bch')).toEqual({ showAltpaymentLink: false, autoStart: false })
+    expect(parseAltpayment('XEC')).toEqual(disabledConfig)
+    expect(parseAltpayment('xec')).toEqual(disabledConfig)
+    expect(parseAltpayment('BCH')).toEqual(disabledConfig)
+    expect(parseAltpayment('bch')).toEqual(disabledConfig)
   })
 
   it('auto-starts with BTC preselected for BTC ticker', () => {
