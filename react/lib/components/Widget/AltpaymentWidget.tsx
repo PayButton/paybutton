@@ -6,6 +6,7 @@ import { resolveNumber, CryptoCurrency, DECIMALS } from '../../util'
 import { Button, animation } from '../Button/Button'
 import { Socket } from 'socket.io-client'
 import { AltpaymentCoin, AltpaymentError, AltpaymentPair, AltpaymentShift } from '../../altpayment'
+import { SIDESHIFT_BASE_URL } from '../../altpayment/sideshift'
 import { sideShiftLogo, copyIcon } from './SideShiftLogo'
 
 interface AltpaymentProps {
@@ -426,7 +427,7 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                           <MenuItem key={coin.coin} value={coin.coin}>
                             <OptionOuterCtn>
                               <ListIcon
-                                src={`https://sideshift.ai/coin-icons/${checkCoin(coin.coin)}.svg`}
+                                src={`${SIDESHIFT_BASE_URL}coins/icon/${checkCoin(coin.coin)}`}
                                 alt={coin.coin}
                               />
                               <OptionCtn>
