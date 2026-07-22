@@ -40,6 +40,10 @@
     <div class="paybutton" to="ecash:qp2v7kemclu7mv5y3h9qprwp0mrevkqt9gprvmm7yl" goal-amount="2500.05" currency="USD"
       text="Donate (other dev)" on-success="mySuccessFunction" on-transaction="myTransactionFunction" altpayment="true"></div>
 
+    <div class="paybutton" to="ecash:qp2v7kemclu7mv5y3h9qprwp0mrevkqt9gprvmm7yl" amount="15" currency="USD"
+      text="Pay with BTC" on-success="mySuccessFunction" on-transaction="myTransactionFunction" altpayment="BTC"
+      theme='{ "palette": { "primary": "#F18F01", "secondary": "#ffffff", "tertiary": "#333333"} }'></div>
+
     <div class="paybutton" to="ecash:qp2v7kemclu7mv5y3h9qprwp0mrevkqt9gprvmm7yl" goal-amount="2500000.05"
       on-close="myClose" on-open="myOpen" amount="50" currency="USD" text="Random Sats" random-satoshis="true"
       theme='{ "palette": { "tertiary": "#333333"} }'></div>

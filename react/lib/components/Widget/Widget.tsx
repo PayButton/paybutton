@@ -1188,7 +1188,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
           {thisUseAltpayment ? (
             <AltpaymentWidget
               altpaymentSocket={thisAltpaymentSocket}
-              thisAmount={thisAmount}
+              thisAmount={isFiat(currency) && convertedCryptoAmount !== undefined ? convertedCryptoAmount : thisAmount}
               updateAmount={updateAmount}
               setUseAltpayment={setThisUseAltpayment}
               altpaymentShift={thisAltpaymentShift}
