@@ -1146,9 +1146,9 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
         sx={{
           ...classes.root,
           ...(thisUseAltpayment ? {
-            minWidth: 340,
-            width: 340,
-            minHeight: 520,
+            minWidth: 320,
+            width: thisAltpaymentShift ? 'min(94vw, 600px)' : 'min(92vw, 420px)',
+            minHeight: thisAltpaymentShift ? 640 : 520,
           } : {}),
         }}
         pt={0}
