@@ -13,4 +13,5 @@ export * from './number';
 export * from './currency';
 export * from './validate';
 export * from './autoClose';
+export * from './altpayment';
 

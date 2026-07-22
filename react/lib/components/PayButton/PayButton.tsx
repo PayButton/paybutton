@@ -20,7 +20,8 @@ import {
   CryptoCurrency,
   ButtonSize,
   DEFAULT_DONATION_RATE,
-  createPayment
+  createPayment,
+  parseAltpayment,
 } from '../../util';
 import { PaymentDialog } from '../PaymentDialog';
 import { AltpaymentCoin, AltpaymentError, AltpaymentPair, AltpaymentShift } from '../../altpayment';
@@ -53,7 +54,7 @@ export interface PayButtonProps extends ButtonProps {
   transactionText?: string;
   disableSound?: boolean;
   autoClose?: boolean | number | string;
-  disableAltpayment?:boolean
+  altpayment?: string | boolean
   contributionOffset?:number
   hideSendButton?: boolean;
   size?: ButtonSize;
@@ -88,7 +89,7 @@ export const PayButton = ({
   transactionText,
   disableSound,
   autoClose = false,
-  disableAltpayment,
+  altpayment,
   contributionOffset,
   hideSendButton,
   size = 'md',
@@ -102,7 +103,7 @@ export const PayButton = ({
   const [amount, setAmount] = useState(initialAmount);
   const [txsSocket, setTxsSocket] = useState<Socket | undefined>(undefined);
   const [altpaymentSocket, setAltpaymentSocket] = useState<Socket | undefined>(undefined);
-  const [useAltpayment, setUseAltpayment] = useState(false);
+  const [useAltpayment, setUseAltpayment] = useState(() => parseAltpayment(altpayment).autoStart);
   const [coins, setCoins] = useState<AltpaymentCoin[]>([]);
   const [loadingPair, setLoadingPair] = useState<boolean>(false);
   const [coinPair, setCoinPair] = useState<AltpaymentPair | undefined>();
@@ -124,8 +125,19 @@ export const PayButton = ({
     getCurrencyTypeFromAddress(to),
   );
 
+  const altpaymentSocketRef = useRef<Socket | undefined>(undefined);
 
+  useEffect(() => {
+    altpaymentSocketRef.current = altpaymentSocket;
+  }, [altpaymentSocket]);
 
+  const disconnectAltpaymentSocket = useCallback(() => {
+    if (altpaymentSocketRef.current !== undefined) {
+      altpaymentSocketRef.current.disconnect();
+      altpaymentSocketRef.current = undefined;
+    }
+    setAltpaymentSocket(undefined);
+  }, []);
   useEffect(() => {
     priceRef.current = price;
   }, [price]);
@@ -251,10 +263,27 @@ export const PayButton = ({
   }, []);
 
 
+  const resetAltpaymentState = useCallback(() => {
+    setUseAltpayment(parseAltpayment(altpayment).autoStart);
+    setCoins([]);
+    setCoinPair(undefined);
+    setLoadingPair(false);
+    setLoadingShift(false);
+    setAltpaymentShift(undefined);
+    setAltpaymentError(undefined);
+    disconnectAltpaymentSocket();
+  }, [altpayment, disconnectAltpaymentSocket]);
+
   const handleCloseDialog = (success?: boolean, paymentId?: string): void => {
     if (onClose !== undefined) onClose(success, paymentId);
     setDialogOpen(false);
   };
+
+  useEffect(() => {
+    if (!dialogOpen) {
+      resetAltpaymentState();
+    }
+  }, [dialogOpen, resetAltpaymentState]);
 
   useEffect(() => {
     setAmount(initialAmount);
@@ -288,56 +317,66 @@ export const PayButton = ({
   }, [to]);
 
   useEffect(() => {
-    if (dialogOpen === false) {
-      return
+    if (!dialogOpen) {
+      return;
     }
+
+    let cancelled = false;
+
     (async () => {
-    if (txsSocket === undefined) {
-      const expectedAmount = currencyObj ? currencyObj?.float : undefined
-      await setupChronikWebSocket({
-        address: to,
-        txsSocket,
-        apiBaseUrl,
-        wsBaseUrl,
-        setTxsSocket,
-        setNewTxs,
-        setDialogOpen,
-        checkSuccessInfo: {
-          currency,
-          price,
-          randomSatoshis: randomSatoshis ?? false,
-          disablePaymentId,
-          expectedAmount,
-          expectedOpReturn: opReturn,
-          expectedPaymentId: paymentId,
-          currencyObj,
-          donationRate
+      if (txsSocket === undefined) {
+        const expectedAmount = currencyObj ? currencyObj?.float : undefined
+        await setupChronikWebSocket({
+          address: to,
+          txsSocket,
+          apiBaseUrl,
+          wsBaseUrl,
+          setTxsSocket,
+          setNewTxs,
+          setDialogOpen,
+          checkSuccessInfo: {
+            currency,
+            price,
+            randomSatoshis: randomSatoshis ?? false,
+            disablePaymentId,
+            expectedAmount,
+            expectedOpReturn: opReturn,
+            expectedPaymentId: paymentId,
+            currencyObj,
+            donationRate
+          }
+        })
+      }
+      if (cancelled || !useAltpayment) {
+        return
+      }
+      if (altpaymentSocketRef.current === undefined) {
+        await setupAltpaymentSocket({
+          addressType,
+          altpaymentSocket: altpaymentSocketRef.current,
+          wsBaseUrl,
+          setAltpaymentSocket: (socket: Socket | undefined) => {
+            altpaymentSocketRef.current = socket
+            setAltpaymentSocket(socket)
+          },
+          setCoins,
+          setCoinPair,
+          setLoadingPair,
+          setAltpaymentShift,
+          setLoadingShift,
+          setAltpaymentError,
+        })
+        if (cancelled) {
+          disconnectAltpaymentSocket()
         }
-      })
-    }
-    if (altpaymentSocket === undefined && useAltpayment) {
-      await setupAltpaymentSocket({
-        addressType,
-        altpaymentSocket,
-        wsBaseUrl,
-        setAltpaymentSocket,
-        setCoins,
-        setCoinPair,
-        setLoadingPair,
-        setAltpaymentShift,
-        setLoadingShift,
-        setAltpaymentError,
-      })
-    }
+      }
     })()
 
     return () => {
-      if (altpaymentSocket !== undefined) {
-        altpaymentSocket.disconnect();
-        setAltpaymentSocket(undefined);
-      }
+      cancelled = true
+      disconnectAltpaymentSocket()
     }
-  }, [dialogOpen, useAltpayment]);
+  }, [dialogOpen, useAltpayment, disconnectAltpaymentSocket]);
 
   useEffect(() => {
     if (initialAmount != null && currency) {
@@ -435,7 +474,7 @@ export const PayButton = ({
         wsBaseUrl={wsBaseUrl}
         apiBaseUrl={apiBaseUrl}
         hoverText={hoverText}
-        disableAltpayment={disableAltpayment}
+        altpayment={altpayment}
         contributionOffset={contributionOffset}
         hideSendButton={hideSendButton}
         autoClose={autoClose}

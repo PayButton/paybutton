@@ -49,7 +49,7 @@ export interface WidgetContainerProps
   wsBaseUrl?: string;
   apiBaseUrl?: string;
   successText?: string;
-  disableAltpayment?: boolean
+  altpayment?: string | boolean
   contributionOffset?: number
   setNewTxs?: Function
   disableSound?: boolean
@@ -128,7 +128,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
       apiBaseUrl = config.apiBaseUrl,
       successText,
       hoverText,
-      disableAltpayment,
+      altpayment,
       contributionOffset,
       altpaymentShift,
       setAltpaymentShift,
@@ -424,7 +424,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
           setAltpaymentShift={setAltpaymentShift}
           shiftCompleted={shiftCompleted}
           setShiftCompleted={setShiftCompleted}
-          disableAltpayment={disableAltpayment}
+          altpayment={altpayment}
           contributionOffset={contributionOffset}
           transactionText={transactionText}
           donationAddress={donationAddress}

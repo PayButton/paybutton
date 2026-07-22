@@ -38,6 +38,7 @@ import {
   isPropsTrue,
   setupChronikWebSocket,
   setupAltpaymentSocket,
+  parseAltpayment,
   CryptoCurrency,
   DEFAULT_DONATION_RATE,
   DEFAULT_MINIMUM_DONATION_AMOUNT,
@@ -86,7 +87,7 @@ export interface WidgetProps {
   apiBaseUrl?: string
   loading?: boolean
   hoverText?: string
-  disableAltpayment?: boolean
+  altpayment?: string | boolean
   contributionOffset?: number
   setAltpaymentShift?: Function
   altpaymentShift?: AltpaymentShift | undefined
@@ -178,7 +179,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     altpaymentShift,
     shiftCompleted,
     setShiftCompleted,
-    disableAltpayment,
+    altpayment,
     contributionOffset,
     useAltpayment,
     setUseAltpayment,
@@ -251,7 +252,9 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     (setAltpaymentShift as ((s: AltpaymentShift | undefined) => void) | undefined) ??
     setInternalAltpaymentShift
 
-  const [internalUseAltpayment, setInternalUseAltpayment] = useState<boolean>(false)
+  const [internalUseAltpayment, setInternalUseAltpayment] = useState<boolean>(
+    () => parseAltpayment(altpayment).autoStart
+  )
   const thisUseAltpayment = useAltpayment ?? internalUseAltpayment
   const setThisUseAltpayment =
     (setUseAltpayment as ((b: boolean) => void) | undefined) ?? setInternalUseAltpayment
@@ -305,6 +308,8 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   const [goalText, setGoalText] = useState('')
   const [goalPercent, setGoalPercent] = useState(0)
   const [altpaymentEditable, setAltpaymentEditable] = useState<boolean>(false)
+
+  const altpaymentConfig = useMemo(() => parseAltpayment(altpayment), [altpayment])
 
   const price = props.price ?? 0
   const [hasPrice, setHasPrice] = useState(props.price !== undefined && props.price > 0)
@@ -1138,12 +1143,20 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
   return (
     <ThemeProvider value={theme}>
       <Box
-        sx={classes.root}
+        sx={{
+          ...classes.root,
+          ...(thisUseAltpayment ? {
+            minWidth: 340,
+            width: 340,
+            minHeight: 520,
+          } : {}),
+        }}
         pt={0}
         display="flex"
         flexDirection="column"
         alignItems="center"
       >
+        {!thisUseAltpayment ? (
         <Box
           flex="shrink"
           alignSelf="stretch"
@@ -1161,19 +1174,21 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
             })()}
           </Typography>
         </Box>
+        ) : null}
 
         <Box
           display="flex"
           flexDirection="column"
           alignItems="center"
-          px={3}
-          pt={2}
+          px={thisUseAltpayment ? 0 : 3}
+          pt={thisUseAltpayment ? 0 : 2}
           position="relative"
+          sx={thisUseAltpayment ? { minHeight: 480, flex: 1, alignSelf: 'stretch', width: '100%' } : undefined}
         >
           {thisUseAltpayment ? (
             <AltpaymentWidget
               altpaymentSocket={thisAltpaymentSocket}
-              thisAmount={thisAmount}
+              thisAmount={isFiat(currency) && convertedCryptoAmount !== undefined ? convertedCryptoAmount : thisAmount}
               updateAmount={updateAmount}
               setUseAltpayment={setThisUseAltpayment}
               altpaymentShift={thisAltpaymentShift}
@@ -1190,12 +1205,14 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
               coinPair={thisCoinPair}
               setCoinPair={setThisCoinPair}
               altpaymentEditable={altpaymentEditable}
+              preselectedCoin={altpaymentConfig.preselectedCoin}
               animation={animation}
               addressType={thisAddressType}
               to={to}
             />
           ) : null}
 
+          {!thisUseAltpayment ? (
           <Fragment>
             {loading && shouldDisplayGoal ? (
               <Typography
@@ -1365,7 +1382,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
               </Box>
             )}
 
-            {!isPropsTrue(disableAltpayment) ? (
+            {altpaymentConfig.showAltpaymentLink && !thisUseAltpayment ? (
               <Typography
                 component="div"
                 sx={mergeSx(
@@ -1390,18 +1407,23 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
               </Typography>
             ) : null}
           </Fragment>
+          ) : null}
 
           {foot ? (
             <Box pt={2} flex={1 as any}>
               {foot as any}
             </Box>
           ) : null}
+        </Box>
 
-          <Box py={0.8}>
-            <Typography component="div" sx={classes.footer}>
+        <Box py={0.8} alignSelf="stretch" width="100%">
+          <Typography component="div" sx={classes.footer}>
               <Box>Powered by PayButton.org</Box>
 
               {(() => {
+                if (thisUseAltpayment) {
+                  return false
+                }
                 // For fiat conversions, check the converted crypto amount
                 // For crypto-only, check the currency object amount
                 const amountToCheck = hasPrice && convertedCryptoAmount !== undefined
@@ -1497,7 +1519,6 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
                 </>
               ) : null}
             </Typography>
-          </Box>
         </Box>
       </Box>
     </ThemeProvider>

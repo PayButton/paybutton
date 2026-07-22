@@ -100,7 +100,7 @@ const allowedProps = [
   'editable',
   'wsBaseUrl',
   'apiBaseUrl',
-  'disableAltpayment',
+  'altpayment',
   'contributionOffset',
   'autoClose',
   'disableSound',

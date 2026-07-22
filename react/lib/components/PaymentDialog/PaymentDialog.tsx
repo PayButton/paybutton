@@ -36,7 +36,7 @@ export interface PaymentDialogProps extends ButtonProps {
   onTransaction?: (transaction: Transaction) => void;
   wsBaseUrl?: string;
   apiBaseUrl?: string;
-  disableAltpayment?: boolean;
+  altpayment?: string | boolean;
   contributionOffset?: number;
   hideSendButton?: boolean;
   useAltpayment: boolean
@@ -98,7 +98,7 @@ export const PaymentDialog = ({
   wsBaseUrl,
   apiBaseUrl,
   hoverText,
-  disableAltpayment,
+  altpayment,
   contributionOffset,
   hideSendButton,
   autoClose = true,
@@ -231,7 +231,7 @@ export const PaymentDialog = ({
           wsBaseUrl={wsBaseUrl}
           apiBaseUrl={apiBaseUrl}
           hoverText={hoverText}
-          disableAltpayment={disableAltpayment}
+          altpayment={altpayment}
           contributionOffset={contributionOffset}
           hideSendButton={hideSendButton}
           useAltpayment={useAltpayment}
