@@ -1,6 +1,7 @@
 import React, { Fragment, useEffect, useRef, useState } from 'react'
 import { TextField, Select, MenuItem, InputLabel, FormControl, Box, CircularProgress } from '@mui/material'
 import { styled } from '@mui/material/styles'
+import { QRCodeSVG } from 'qrcode.react'
 
 import { resolveNumber, CryptoCurrency, DECIMALS } from '../../util'
 import { Button, animation } from '../Button/Button'
@@ -8,6 +9,10 @@ import { Socket } from 'socket.io-client'
 import { AltpaymentCoin, AltpaymentError, AltpaymentPair, AltpaymentShift } from '../../altpayment'
 import { SIDESHIFT_BASE_URL } from '../../altpayment/sideshift'
 import { sideShiftLogo, copyIcon } from './SideShiftLogo'
+
+const XEC_ICON_DATA_URI = `data:image/svg+xml,${encodeURIComponent(
+  `<svg version="1.1" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg"><path fill="#fff" d="M145.1,99.82l-31.71,18.26a2.61,2.61,0,0,0-1.31,2.29v15.32a2.48,2.48,0,0,0,1.31,2.21l13.28,7.66a2.36,2.36,0,0,0,2.53,0L184,114c9.3-5.38,9.3-20.88,0-26.26L134.75,59.38a13.17,13.17,0,0,0-13.62,0L71.88,87.75A13.46,13.46,0,0,0,65,99.58c0,19,.08,37.91,0,56.82a13.46,13.46,0,0,0,6.84,11.83l49.25,28.45a13.54,13.54,0,0,0,13.62,0L184,168.23a13.31,13.31,0,0,0,6.77-11.83V131.7l-58.62,33.92a8.31,8.31,0,0,1-8.48,0L97.49,150.45a8.3,8.3,0,0,1-4.24-7.34V112.87a8.36,8.36,0,0,1,4.15-7.26c8.73-5.06,17.53-10.11,26.26-15.17a8.36,8.36,0,0,1,8.48,0l13,7.42A1.15,1.15,0,0,1,145.1,99.82Z"/><path fill="#0074c2" d="M128,0A128,128,0,1,0,256,128,128,128,0,0,0,128,0Zm17.1,97.86-13-7.42a8.36,8.36,0,0,0-8.48,0c-8.73,5.06-17.53,10.11-26.26,15.17a8.36,8.36,0,0,0-4.15,7.26v30.24a8.3,8.3,0,0,0,4.24,7.34l26.17,15.17a8.31,8.31,0,0,0,8.48,0l58.62-33.92v24.7A13.31,13.31,0,0,1,184,168.23l-49.24,28.45a13.54,13.54,0,0,1-13.62,0L71.88,168.23A13.46,13.46,0,0,1,65,156.4c.08-18.91,0-37.83,0-56.82a13.46,13.46,0,0,1,6.84-11.83l49.25-28.37a13.17,13.17,0,0,1,13.62,0L184,87.75c9.3,5.38,9.3,20.88,0,26.26L129.2,145.56a2.36,2.36,0,0,1-2.53,0l-13.28-7.66a2.48,2.48,0,0,1-1.31-2.21V120.37a2.61,2.61,0,0,1,1.31-2.29L145.1,99.82A1.15,1.15,0,0,0,145.1,97.86Z"/></svg>`,
+)}`
 
 interface AltpaymentProps {
   altpaymentSocket?: Socket;
@@ -68,6 +73,7 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
   const [selectedCoinNetwork, setSelectedCoinNetwork] = useState<string | undefined>(undefined);
   const [pairAmountFixedDecimals, setPairAmountFixedDecimals] = useState<string | undefined>(undefined);
   const [pairAmount, setPairAmount] = useState<string | undefined>(undefined);
+  const [activeShiftStep, setActiveShiftStep] = useState<1 | 2 | 3>(1)
   const autoRateRequestedRef = useRef(false);
   const autoQuoteRequestedRef = useRef(false);
   const prevAltpaymentSocketRef = useRef<Socket | undefined>(undefined);
@@ -312,36 +318,57 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     setShiftCompleted(false)
   }
 
-  const copyToClipboard = (elementId: string) => {
-    const contentElement = document.getElementById(elementId);
-    const copiedMessage = document.createElement("div");
-          copiedMessage.textContent = "Copied!";
-          copiedMessage.style.position = "absolute";
-          copiedMessage.style.width = "calc(100% - 10px)";
-          copiedMessage.style.height = "calc(100% - 20px)";
-          copiedMessage.style.alignItems = "center";
-          copiedMessage.style.top = "0";
-          copiedMessage.style.left = "0";
-          copiedMessage.style.backgroundColor = "#fff";
-          copiedMessage.style.borderRadius = "5px";
-          copiedMessage.style.padding = "10px 0 10px 10px";
-          copiedMessage.style.zIndex = "10";
-          copiedMessage.style.display = "none";
+  const showCopyToast = (message: string): void => {
+    const existingToast = document.getElementById('paybutton-copy-toast')
+    if (existingToast) {
+      existingToast.remove()
+    }
 
-    if (contentElement) {
-      const content = contentElement.textContent || "";
-      navigator.clipboard.writeText(content);
-        contentElement.appendChild(copiedMessage);
-        copiedMessage.style.display = "flex";
+    const toast = document.createElement('div')
+    toast.id = 'paybutton-copy-toast'
+    toast.textContent = message
+    toast.style.position = 'fixed'
+    toast.style.left = '50%'
+    toast.style.bottom = '16px'
+    toast.style.transform = 'translateX(-50%)'
+    toast.style.background = 'rgba(35, 31, 32, 0.9)'
+    toast.style.color = '#fff'
+    toast.style.padding = '8px 12px'
+    toast.style.borderRadius = '6px'
+    toast.style.fontSize = '12px'
+    toast.style.lineHeight = '1'
+    toast.style.zIndex = '2147483647'
+    toast.style.pointerEvents = 'none'
+    document.body.appendChild(toast)
 
-        setTimeout(() => {
-          copiedMessage.style.display = "none";
-          if (copiedMessage.parentElement === contentElement) {
-            contentElement.removeChild(copiedMessage);
-          }
-        }, 2000);
+    setTimeout(() => {
+      if (toast.parentElement) {
+        toast.remove()
       }
-  };
+    }, 1500)
+  }
+
+  const copyToClipboard = async (value: string, nextStep?: 1 | 2 | 3): Promise<void> => {
+    if (!value) {
+      return
+    }
+
+    try {
+      await navigator.clipboard.writeText(value)
+      showCopyToast('Copied')
+      if (nextStep !== undefined) {
+        setActiveShiftStep(nextStep)
+      }
+    } catch {
+      showCopyToast('Copy failed')
+    }
+  }
+
+  useEffect(() => {
+    if (altpaymentShift?.id) {
+      setActiveShiftStep(1)
+    }
+  }, [altpaymentShift?.id])
 
   const SideshiftCtn = styled('div')({
     alignItems: 'center',
@@ -357,7 +384,11 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     bottom: 0,
     background: '#f5f5f7',
     overflowY: 'auto',
-    padding: '24px',
+    overflowX: 'hidden',
+    padding: '16px',
+    '@media (min-width: 760px)': {
+      padding: '24px',
+    },
   })
 
   const LoadingCenter = styled('div')({
@@ -388,11 +419,56 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
 
   const ShiftReady = styled('div')({
     width: '100%', display: 'flex', flexDirection: 'column',
-    '& h4': { margin: '0', fontSize: '20px', borderBottom: '1px solid #000', paddingBottom: '10px', textAlign: 'center' },
+    minWidth: 0,
+  })
+
+  const ShiftReadyTitle = styled('h4')({
+    margin: 0,
+    fontSize: '22px',
+    borderBottom: '1px solid #000',
+    paddingBottom: '12px',
+    textAlign: 'center',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: '8px',
+    lineHeight: 1.3,
+  })
+
+  const ShiftReadyBody = styled('div')({
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '20px',
+    marginTop: '14px',
+  })
+
+  const ShiftReadyMain = styled('div')({
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '10px',
+    flex: 1,
+    minWidth: 0,
+  })
+
+  const ShiftLabelRow = styled('div')({
+    display: 'flex',
+    alignItems: 'baseline',
+    justifyContent: 'space-between',
+    gap: '8px',
+    marginTop: '8px',
+    marginBottom: '4px',
+    minWidth: 0,
   })
 
   const CopyCtn = styled('div')({
-    display: 'flex', alignItems: 'center', '& > div': { position: 'relative' }
+    display: 'flex',
+    alignItems: 'center',
+    width: '100%',
+    minWidth: 0,
+    overflow: 'hidden',
+    gap: '6px',
+    '& > div': { position: 'relative' },
   })
 
   const AmountError = styled('p')({
@@ -406,17 +482,98 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
   })
 
   const ShiftLabel = styled('span')({
-    fontSize: '14px', marginLeft: '5px', marginTop: '20px', marginBottom: '2px', fontWeight: 600
+    fontSize: '14px', marginLeft: '5px', fontWeight: 600
+  })
+
+  const ShiftStepLabel = styled('span', {
+    shouldForwardProp: (prop) => prop !== 'active',
+  })<{ active?: boolean }>(({ active }) => ({
+    fontSize: '14px',
+    marginLeft: '5px',
+    fontWeight: 700,
+    padding: '4px 8px',
+    borderRadius: '999px',
+    display: 'inline-flex',
+    alignItems: 'center',
+    lineHeight: 1.2,
+    transition: 'all 140ms ease',
+    border: active ? '1px solid #0074c2' : '1px solid #d6d6d6',
+    background: active ? '#e9f3fb' : 'transparent',
+    color: active ? '#005e9d' : '#2f2f2f',
+  }))
+
+  const ShiftSubLabel = styled('span')({
+    fontSize: '11px',
+    color: '#8e8e8e',
+    marginRight: '5px',
+    lineHeight: 1.2,
+    whiteSpace: 'nowrap',
   })
 
   const ShiftInput = styled('div')({
     background: '#ffffff', padding: '10px', borderRadius: '5px', fontSize: '14px',
-    border: '1px solid #b3b3b3', wordBreak: 'break-all', flexGrow: 1, position: 'relative',
+    border: '1px solid #b3b3b3', wordBreak: 'break-word', overflowWrap: 'anywhere', flex: '1 1 auto', position: 'relative', minWidth: 0,
+  })
+
+  const ShiftValueRow = styled('div')({
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    minWidth: 0,
+  })
+
+  const ShiftCurrencyIcon = styled('img')({
+    width: '20px',
+    height: '20px',
+    flexShrink: 0,
+  })
+
+  const ShiftAddress = styled('div')({
+    fontSize: '14px',
+    lineHeight: 1.25,
+    overflowWrap: 'anywhere',
+  })
+
+  const QrCard = styled('div')({
+    width: '100%',
+    maxWidth: '236px',
+    boxSizing: 'border-box',
+    background: '#fff',
+    border: '1px solid #d7d7d7',
+    borderRadius: '8px',
+    padding: '12px',
+    margin: '8px auto 4px',
+    alignSelf: 'center',
+    textAlign: 'center',
+    cursor: 'pointer',
+    transition: 'box-shadow 160ms ease, transform 160ms ease',
+    '&:hover': {
+      boxShadow: '0 4px 14px rgba(0, 0, 0, 0.12)',
+      transform: 'translateY(-1px)',
+    },
+  })
+
+  const QrTitle = styled('div')({
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: '6px',
+    fontSize: '13px',
+    fontWeight: 600,
+    marginBottom: '8px',
+  })
+
+  const InlineCoin = styled('span')({
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '6px',
+    fontWeight: 700,
   })
 
   const CopyBtn = styled('div')({
     background: '#ffffff', padding: '10px', borderRadius: '5px', border: '1px solid #b3b3b3',
-    marginLeft: '5px', display: 'flex', alignItems: 'center', cursor: 'pointer',
+    display: 'flex', alignItems: 'center', cursor: 'pointer',
+    flex: '0 0 auto',
     alignSelf: 'stretch', transition: 'all ease-in-out 200ms',
     '&:hover': { background: '#f1f1f1' }, '& img': { width: '15px' },
   })
@@ -464,6 +621,60 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     return coinString;
   }
 
+  const formatNetworkName = (network?: string): string => {
+    if (!network) {
+      return ''
+    }
+    return network.charAt(0).toUpperCase() + network.slice(1)
+  }
+
+  const getCoinName = (coinCode?: string): string => {
+    if (!coinCode) {
+      return ''
+    }
+
+    const match = coins.find(c => c.coin.toLowerCase() === coinCode.toLowerCase())
+    if (match) {
+      return match.name
+    }
+
+    const fallbackNames: Record<string, string> = {
+      BTC: 'Bitcoin',
+      BCH: 'Bitcoin Cash',
+      XEC: 'eCash',
+      ETH: 'Ethereum',
+      LTC: 'Litecoin',
+      XMR: 'Monero',
+    }
+
+    return fallbackNames[coinCode.toUpperCase()] ?? coinCode
+  }
+
+  const getCoinIconSrc = (coinCode?: string): string => {
+    const normalizedCode = coinCode?.toUpperCase()
+    if (normalizedCode === 'XEC' || coinCode?.toLowerCase() === 'ecash') {
+      return XEC_ICON_DATA_URI
+    }
+    return `${SIDESHIFT_BASE_URL}coins/icon/${checkCoin(coinCode ?? '')}`
+  }
+
+  const getQrUriScheme = (network?: string, coin?: string): string => {
+    if (network && network.length > 0) {
+      return network.toLowerCase()
+    }
+    if (coin && coin.length > 0) {
+      return coin.toLowerCase()
+    }
+    return 'bitcoin'
+  }
+
+  const getShiftQrValue = (shift: AltpaymentShift): string => {
+    const scheme = getQrUriScheme(selectedCoinNetwork, shift.depositCoin)
+    return `${scheme}:${shift.depositAddress}?amount=${shift.depositAmount}`
+  }
+
+  const shiftQrValue = altpaymentShift ? getShiftQrValue(altpaymentShift) : ''
+
   const isAutoStart = Boolean(preselectedCoin)
   const isAutoStartLoading = isAutoStart && !altpaymentShift && !altpaymentError
 
@@ -501,45 +712,90 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                 <ShiftComplete>Shift Completed!</ShiftComplete>
               ) : (
                 <ShiftReady>
-                  <h4>Shift Ready!</h4>
-                  <ShiftLabel>Send</ShiftLabel>
-                  <CopyCtn>
-                    <ShiftInput>
-                      <span id="shift_amount">{altpaymentShift.depositAmount}</span>{' '}{altpaymentShift.depositCoin}
-                    </ShiftInput>
-                    <CopyBtn onClick={() => copyToClipboard('shift_amount')}>
-                      <img
-                        src={copyIcon}
-                        alt="Copy"
+                  <ShiftReadyTitle>
+                    <span>Send</span>
+                    <InlineCoin>
+                      <ShiftCurrencyIcon
+                        src={getCoinIconSrc(altpaymentShift.depositCoin)}
+                        alt={altpaymentShift.depositCoin}
                       />
-                    </CopyBtn>
-                  </CopyCtn>
-                  <ShiftLabel>To</ShiftLabel>
-                  <CopyCtn>
-                    <ShiftInput id="to_address">
-                      {altpaymentShift.depositAddress}
-                    </ShiftInput>
-                    <CopyBtn onClick={() => copyToClipboard('to_address')}>
-                      <img
-                        src={copyIcon}
-                        alt="Copy"
+                      <span>{getCoinName(altpaymentShift.depositCoin)}</span>
+                    </InlineCoin>
+                    <span>for</span>
+                    <InlineCoin>
+                      <ShiftCurrencyIcon
+                        src={getCoinIconSrc(altpaymentShift.settleCoin)}
+                        alt={altpaymentShift.settleCoin}
                       />
-                    </CopyBtn>
-                  </CopyCtn>
-                  <ShiftLabel>Network</ShiftLabel>
-                  <ShiftInput>{selectedCoinNetwork}</ShiftInput>
-                  <ShiftLabel>SideShift ID</ShiftLabel>
-                  <CopyCtn>
-                    <ShiftInput id="sideshift_id">
-                      {altpaymentShift.id}
-                    </ShiftInput>
-                    <CopyBtn onClick={() => copyToClipboard('sideshift_id')}>
-                      <img
-                        src={copyIcon}
-                        alt="Copy"
-                      />
-                    </CopyBtn>
-                  </CopyCtn>
+                      <span>{getCoinName(altpaymentShift.settleCoin)}</span>
+                    </InlineCoin>
+                  </ShiftReadyTitle>
+                  <ShiftReadyBody>
+                    <ShiftReadyMain>
+                      <ShiftStepLabel active={activeShiftStep === 1}>Step 1: Send</ShiftStepLabel>
+                      <CopyCtn>
+                        <ShiftInput>
+                          <ShiftValueRow>
+                            <ShiftCurrencyIcon
+                              src={getCoinIconSrc(altpaymentShift.depositCoin)}
+                              alt={altpaymentShift.depositCoin}
+                            />
+                            <span>{altpaymentShift.depositAmount}{' '}{altpaymentShift.depositCoin}</span>
+                          </ShiftValueRow>
+                        </ShiftInput>
+                        <CopyBtn onClick={() => { void copyToClipboard(altpaymentShift.depositAmount, 2) }}>
+                          <img
+                            src={copyIcon}
+                            alt="Copy"
+                          />
+                        </CopyBtn>
+                      </CopyCtn>
+                      <ShiftLabelRow>
+                        <ShiftStepLabel active={activeShiftStep === 2}>Step 2: To</ShiftStepLabel>
+                        <ShiftSubLabel>Network: {formatNetworkName(selectedCoinNetwork)}</ShiftSubLabel>
+                      </ShiftLabelRow>
+                      <CopyCtn>
+                        <ShiftInput>
+                          <ShiftAddress>
+                            {altpaymentShift.depositAddress}
+                          </ShiftAddress>
+                        </ShiftInput>
+                        <CopyBtn onClick={() => { void copyToClipboard(altpaymentShift.depositAddress, 3) }}>
+                          <img
+                            src={copyIcon}
+                            alt="Copy"
+                          />
+                        </CopyBtn>
+                      </CopyCtn>
+                      <QrCard onClick={() => { void copyToClipboard(shiftQrValue, 3) }}>
+                        <QrTitle>
+                          <ShiftCurrencyIcon
+                            src={getCoinIconSrc(altpaymentShift.depositCoin)}
+                            alt={altpaymentShift.depositCoin}
+                          />
+                          <span>Scan to Pay</span>
+                        </QrTitle>
+                        <QRCodeSVG
+                          value={shiftQrValue}
+                          size={176}
+                          level="M"
+                          includeMargin
+                        />
+                      </QrCard>
+                      <ShiftStepLabel active={activeShiftStep === 3}>Step 3: SideShift ID</ShiftStepLabel>
+                      <CopyCtn>
+                        <ShiftInput>
+                          {altpaymentShift.id}
+                        </ShiftInput>
+                        <CopyBtn onClick={() => { void copyToClipboard(altpaymentShift.id, 3) }}>
+                          <img
+                            src={copyIcon}
+                            alt="Copy"
+                          />
+                        </CopyBtn>
+                      </CopyCtn>
+                    </ShiftReadyMain>
+                  </ShiftReadyBody>
                 </ShiftReady>
               )
             ) : loadingShift ? (
@@ -619,7 +875,7 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                           <MenuItem key={coin.coin} value={coin.coin}>
                             <OptionOuterCtn>
                               <ListIcon
-                                src={`${SIDESHIFT_BASE_URL}coins/icon/${checkCoin(coin.coin)}`}
+                                src={getCoinIconSrc(coin.coin)}
                                 alt={coin.coin}
                               />
                               <OptionCtn>
