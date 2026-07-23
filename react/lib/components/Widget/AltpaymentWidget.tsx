@@ -73,7 +73,6 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
   const [selectedCoinNetwork, setSelectedCoinNetwork] = useState<string | undefined>(undefined);
   const [pairAmountFixedDecimals, setPairAmountFixedDecimals] = useState<string | undefined>(undefined);
   const [pairAmount, setPairAmount] = useState<string | undefined>(undefined);
-  const [activeShiftStep, setActiveShiftStep] = useState<1 | 2 | 3>(1)
   const autoRateRequestedRef = useRef(false);
   const autoQuoteRequestedRef = useRef(false);
   const prevAltpaymentSocketRef = useRef<Socket | undefined>(undefined);
@@ -348,7 +347,7 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     }, 1500)
   }
 
-  const copyToClipboard = async (value: string, nextStep?: 1 | 2 | 3): Promise<void> => {
+  const copyToClipboard = async (value: string): Promise<void> => {
     if (!value) {
       return
     }
@@ -356,19 +355,10 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     try {
       await navigator.clipboard.writeText(value)
       showCopyToast('Copied')
-      if (nextStep !== undefined) {
-        setActiveShiftStep(nextStep)
-      }
     } catch {
       showCopyToast('Copy failed')
     }
   }
-
-  useEffect(() => {
-    if (altpaymentShift?.id) {
-      setActiveShiftStep(1)
-    }
-  }, [altpaymentShift?.id])
 
   const SideshiftCtn = styled('div')({
     alignItems: 'center',
@@ -481,22 +471,9 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     padding: '10px', borderRadius: '5px', color: 'red'
   })
 
-  const ShiftStepLabel = styled('span', {
-    shouldForwardProp: (prop) => prop !== 'active',
-  })<{ active?: boolean }>(({ active }) => ({
-    fontSize: '14px',
-    marginLeft: '5px',
-    fontWeight: 700,
-    padding: '4px 8px',
-    borderRadius: '999px',
-    display: 'inline-flex',
-    alignItems: 'center',
-    lineHeight: 1.2,
-    transition: 'all 140ms ease',
-    border: active ? '1px solid #0074c2' : '1px solid #d6d6d6',
-    background: active ? '#e9f3fb' : 'transparent',
-    color: active ? '#005e9d' : '#2f2f2f',
-  }))
+  const ShiftLabel = styled('span')({
+    fontSize: '14px', marginLeft: '5px', fontWeight: 600
+  })
 
   const ShiftSubLabel = styled('span')({
     fontSize: '11px',
@@ -728,7 +705,7 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                   </ShiftReadyTitle>
                   <ShiftReadyBody>
                     <ShiftReadyMain>
-                      <ShiftStepLabel active={activeShiftStep === 1}>Step 1: Send</ShiftStepLabel>
+                      <ShiftLabel>Send</ShiftLabel>
                       <CopyCtn>
                         <ShiftInput>
                           <ShiftValueRow>
@@ -739,7 +716,7 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                             <span>{altpaymentShift.depositAmount}{' '}{altpaymentShift.depositCoin}</span>
                           </ShiftValueRow>
                         </ShiftInput>
-                        <CopyBtn onClick={() => { void copyToClipboard(altpaymentShift.depositAmount, 2) }}>
+                        <CopyBtn onClick={() => { void copyToClipboard(altpaymentShift.depositAmount) }}>
                           <img
                             src={copyIcon}
                             alt="Copy"
@@ -747,7 +724,7 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                         </CopyBtn>
                       </CopyCtn>
                       <ShiftLabelRow>
-                        <ShiftStepLabel active={activeShiftStep === 2}>Step 2: To</ShiftStepLabel>
+                        <ShiftLabel>To</ShiftLabel>
                         <ShiftSubLabel>Network: {formatNetworkName(selectedCoinNetwork)}</ShiftSubLabel>
                       </ShiftLabelRow>
                       <CopyCtn>
@@ -756,14 +733,14 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                             {altpaymentShift.depositAddress}
                           </ShiftAddress>
                         </ShiftInput>
-                        <CopyBtn onClick={() => { void copyToClipboard(altpaymentShift.depositAddress, 3) }}>
+                        <CopyBtn onClick={() => { void copyToClipboard(altpaymentShift.depositAddress) }}>
                           <img
                             src={copyIcon}
                             alt="Copy"
                           />
                         </CopyBtn>
                       </CopyCtn>
-                      <QrCard onClick={() => { void copyToClipboard(shiftQrValue, 3) }}>
+                      <QrCard onClick={() => { void copyToClipboard(shiftQrValue) }}>
                         <QrTitle>
                           <ShiftCurrencyIcon
                             src={getCoinIconSrc(altpaymentShift.depositCoin)}
@@ -778,12 +755,12 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                           includeMargin
                         />
                       </QrCard>
-                      <ShiftStepLabel active={activeShiftStep === 3}>Step 3: SideShift ID</ShiftStepLabel>
+                      <ShiftLabel>SideShift ID</ShiftLabel>
                       <CopyCtn>
                         <ShiftInput>
                           {altpaymentShift.id}
                         </ShiftInput>
-                        <CopyBtn onClick={() => { void copyToClipboard(altpaymentShift.id, 3) }}>
+                        <CopyBtn onClick={() => { void copyToClipboard(altpaymentShift.id) }}>
                           <img
                             src={copyIcon}
                             alt="Copy"
