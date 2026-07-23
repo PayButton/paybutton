@@ -481,10 +481,6 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     padding: '10px', borderRadius: '5px', color: 'red'
   })
 
-  const ShiftLabel = styled('span')({
-    fontSize: '14px', marginLeft: '5px', fontWeight: 600
-  })
-
   const ShiftStepLabel = styled('span', {
     shouldForwardProp: (prop) => prop !== 'active',
   })<{ active?: boolean }>(({ active }) => ({
