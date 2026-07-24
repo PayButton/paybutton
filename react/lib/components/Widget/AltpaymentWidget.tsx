@@ -39,6 +39,8 @@ interface AltpaymentProps {
   updateAmount: Function;
 }
 
+type ShiftCopyField = 'amount' | 'address' | 'id'
+
 export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props => {
 
   const {
@@ -73,9 +75,13 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
   const [selectedCoinNetwork, setSelectedCoinNetwork] = useState<string | undefined>(undefined);
   const [pairAmountFixedDecimals, setPairAmountFixedDecimals] = useState<string | undefined>(undefined);
   const [pairAmount, setPairAmount] = useState<string | undefined>(undefined);
+  const [copiedField, setCopiedField] = useState<ShiftCopyField | undefined>(undefined);
+  const [qrCopied, setQrCopied] = useState(false);
   const autoRateRequestedRef = useRef(false);
   const autoQuoteRequestedRef = useRef(false);
   const prevAltpaymentSocketRef = useRef<Socket | undefined>(undefined);
+  const copiedFieldTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const qrCopiedTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const getDepositDecimals = (
     coin: AltpaymentCoin,
@@ -206,6 +212,17 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     setLoadingPair,
   ])
 
+  useEffect(() => {
+    return () => {
+      if (copiedFieldTimeoutRef.current) {
+        clearTimeout(copiedFieldTimeoutRef.current)
+      }
+      if (qrCopiedTimeoutRef.current) {
+        clearTimeout(qrCopiedTimeoutRef.current)
+      }
+    }
+  }, [])
+
   const handleCoinChange = async (e: React.ChangeEvent<{ name?: string; value: unknown }>) => {
     const coinName = e.target.value as string
     const selectedCoin = coins.find(c => c.coin === coinName)
@@ -317,46 +334,46 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     setShiftCompleted(false)
   }
 
-  const showCopyToast = (message: string): void => {
-    const existingToast = document.getElementById('paybutton-copy-toast')
-    if (existingToast) {
-      existingToast.remove()
+  const showCopiedField = (field: ShiftCopyField): void => {
+    setCopiedField(field)
+    if (copiedFieldTimeoutRef.current) {
+      clearTimeout(copiedFieldTimeoutRef.current)
     }
-
-    const toast = document.createElement('div')
-    toast.id = 'paybutton-copy-toast'
-    toast.textContent = message
-    toast.style.position = 'fixed'
-    toast.style.left = '50%'
-    toast.style.bottom = '16px'
-    toast.style.transform = 'translateX(-50%)'
-    toast.style.background = 'rgba(35, 31, 32, 0.9)'
-    toast.style.color = '#fff'
-    toast.style.padding = '8px 12px'
-    toast.style.borderRadius = '6px'
-    toast.style.fontSize = '12px'
-    toast.style.lineHeight = '1'
-    toast.style.zIndex = '2147483647'
-    toast.style.pointerEvents = 'none'
-    document.body.appendChild(toast)
-
-    setTimeout(() => {
-      if (toast.parentElement) {
-        toast.remove()
-      }
-    }, 1500)
+    copiedFieldTimeoutRef.current = setTimeout(() => {
+      setCopiedField(undefined)
+      copiedFieldTimeoutRef.current = null
+    }, 1000)
   }
 
-  const copyToClipboard = async (value: string): Promise<void> => {
+  const showQrCopied = (): void => {
+    setQrCopied(true)
+    if (qrCopiedTimeoutRef.current) {
+      clearTimeout(qrCopiedTimeoutRef.current)
+    }
+    qrCopiedTimeoutRef.current = setTimeout(() => {
+      setQrCopied(false)
+      qrCopiedTimeoutRef.current = null
+    }, 1000)
+  }
+
+  const copyToClipboard = async (
+    value: string,
+    options?: { copiedField?: ShiftCopyField; qr?: boolean },
+  ): Promise<void> => {
     if (!value) {
       return
     }
 
     try {
       await navigator.clipboard.writeText(value)
-      showCopyToast('Copied')
+      if (options?.copiedField) {
+        showCopiedField(options.copiedField)
+      }
+      if (options?.qr) {
+        showQrCopied()
+      }
     } catch {
-      showCopyToast('Copy failed')
+      // Intentionally no failure UI for altpayment copy actions.
     }
   }
 
@@ -488,6 +505,26 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     border: '1px solid #b3b3b3', wordBreak: 'break-word', overflowWrap: 'anywhere', flex: '1 1 auto', position: 'relative', minWidth: 0,
   })
 
+  const ShiftCopiedText = styled('div')({
+    position: 'absolute',
+    inset: 0,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '10px',
+    boxSizing: 'border-box',
+    fontSize: '14px',
+    lineHeight: 1.25,
+    fontWeight: 400,
+    color: 'rgb(35, 31, 32)',
+    textAlign: 'center',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    background: '#ffffff',
+    pointerEvents: 'none',
+  })
+
   const ShiftValueRow = styled('div')({
     display: 'flex',
     alignItems: 'center',
@@ -518,12 +555,25 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     margin: '8px auto 4px',
     alignSelf: 'center',
     textAlign: 'center',
+    position: 'relative',
     cursor: 'pointer',
     transition: 'box-shadow 160ms ease, transform 160ms ease',
     '&:hover': {
       boxShadow: '0 4px 14px rgba(0, 0, 0, 0.12)',
       transform: 'translateY(-1px)',
     },
+  })
+
+  const QrCopyText = styled('div')({
+    position: 'absolute',
+    right: '12px',
+    bottom: '10px',
+    background: 'rgba(255, 255, 255, 0.8)',
+    padding: '0 2px 2px 0',
+    fontSize: '11px',
+    lineHeight: 1.2,
+    color: 'rgb(35, 31, 32)',
+    pointerEvents: 'none',
   })
 
   const QrTitle = styled('div')({
@@ -533,7 +583,6 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     gap: '6px',
     fontSize: '13px',
     fontWeight: 600,
-    marginBottom: '8px',
   })
 
   const InlineCoin = styled('span')({
@@ -715,8 +764,9 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                             />
                             <span>{altpaymentShift.depositAmount}{' '}{altpaymentShift.depositCoin}</span>
                           </ShiftValueRow>
+                          {copiedField === 'amount' ? <ShiftCopiedText>Copied Amount!</ShiftCopiedText> : null}
                         </ShiftInput>
-                        <CopyBtn onClick={() => { void copyToClipboard(altpaymentShift.depositAmount) }}>
+                        <CopyBtn data-testid="altpayment-copy-amount" onClick={() => { void copyToClipboard(altpaymentShift.depositAmount, { copiedField: 'amount' }) }}>
                           <img
                             src={copyIcon}
                             alt="Copy"
@@ -732,15 +782,16 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                           <ShiftAddress>
                             {altpaymentShift.depositAddress}
                           </ShiftAddress>
+                          {copiedField === 'address' ? <ShiftCopiedText>Copied Address!</ShiftCopiedText> : null}
                         </ShiftInput>
-                        <CopyBtn onClick={() => { void copyToClipboard(altpaymentShift.depositAddress) }}>
+                        <CopyBtn data-testid="altpayment-copy-address" onClick={() => { void copyToClipboard(altpaymentShift.depositAddress, { copiedField: 'address' }) }}>
                           <img
                             src={copyIcon}
                             alt="Copy"
                           />
                         </CopyBtn>
                       </CopyCtn>
-                      <QrCard onClick={() => { void copyToClipboard(shiftQrValue) }}>
+                      <QrCard data-testid="altpayment-qr-click-area" onClick={() => { void copyToClipboard(shiftQrValue, { qr: true }) }}>
                         <QrTitle>
                           <ShiftCurrencyIcon
                             src={getCoinIconSrc(altpaymentShift.depositCoin)}
@@ -754,13 +805,15 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                           level="M"
                           includeMargin
                         />
+                        <QrCopyText>{qrCopied ? 'Payment copied!' : 'Click to copy'}</QrCopyText>
                       </QrCard>
                       <ShiftLabel>SideShift ID</ShiftLabel>
                       <CopyCtn>
                         <ShiftInput>
-                          {altpaymentShift.id}
+                          <ShiftAddress>{altpaymentShift.id}</ShiftAddress>
+                          {copiedField === 'id' ? <ShiftCopiedText>Copied SideShift ID!</ShiftCopiedText> : null}
                         </ShiftInput>
-                        <CopyBtn onClick={() => { void copyToClipboard(altpaymentShift.id) }}>
+                        <CopyBtn data-testid="altpayment-copy-id" onClick={() => { void copyToClipboard(altpaymentShift.id, { copiedField: 'id' }) }}>
                           <img
                             src={copyIcon}
                             alt="Copy"
