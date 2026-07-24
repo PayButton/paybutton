@@ -12,7 +12,7 @@
     "prebuild": "[ -f ./react/lib/paybutton-config.json ] || cp ./react/lib/example-config.json ./react/lib/paybutton-config.json",
     "pretest": "[ -f ./react/lib/paybutton-config.json ] || cp ./react/lib/example-config.json ./react/lib/paybutton-config.json",
     "build:dev": "yarn build:react && yarn dev",
-    "watch": "(cd paybutton && yarn dev) & (cd react && yarn dev)",
+    "watch": "concurrently \"cd paybutton && yarn dev\" \"cd react && yarn dev\"",
     "test": "cd react && yarn test",
     "test:coverage": "cd react && yarn test:coverage",
     "build:react": "cd react && yarn && yarn build",
@@ -26,5 +26,8 @@
     "clean:app": "yarn clean:react && yarn clean:paybutton",
     "clean:build": "yarn clean:app && yarn build",
     "clean:watch": "yarn clean:build && yarn watch"
+  },
+  "devDependencies": {
+    "concurrently": "^7.0.0"
   }
 }
