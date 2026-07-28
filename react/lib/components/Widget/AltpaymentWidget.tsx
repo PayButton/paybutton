@@ -329,6 +329,8 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     setCoinPair(undefined)
     setAltpaymentError(undefined)
     setAltpaymentShift(undefined)
+    setLoadingPair(false)
+    setLoadingShift(false)
     setPairAmount(undefined)
     setPairAmountFixedDecimals(undefined)
     setShiftCompleted(false)
@@ -410,8 +412,9 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     '& img': { width: '150px', marginTop: '10px' },
   })
 
-  const BackLink = styled('div')({
+  const BackLink = styled('button')({
     fontSize: '14px', cursor: 'pointer',
+    fontFamily: 'inherit', background: 'transparent', color: 'inherit',
     border: '1px solid #000', opacity: '0.7', padding: '2px 20px',
     borderRadius: '3px', '&:hover': { opacity: '1' },
   })
@@ -708,9 +711,9 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
   const isAutoStartLoading = isAutoStart && !altpaymentShift && !altpaymentError
   const showManualAmountBackButton = altpaymentEditable
   const amountValidationMessage =
-    pairAmount && !isAboveMinimumAltpaymentAmount
+    pairAmount && isAboveMinimumAltpaymentAmount === false
       ? 'Amount is below minimum.'
-      : pairAmount && !isBelowMaximumAltpaymentAmount
+      : pairAmount && isBelowMaximumAltpaymentAmount === false
       ? 'Amount is above maximum.'
       : ''
 
@@ -732,6 +735,7 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
   )
 
   const backToWidget = () => {
+    resetTrade()
     setUseAltpayment(false)
   }
 
@@ -750,9 +754,13 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
           <ErrorMsg>Error: {altpaymentError.errorMessage}</ErrorMsg>
           {showManualAmountBackButton ? (
             <BackRow>
-              <BackLink onClick={resetTrade}>Back</BackLink>
+              <BackLink type="button" onClick={resetTrade}>Back</BackLink>
             </BackRow>
-          ) : null}
+          ) : (
+            <BackRow>
+              <BackLink type="button" onClick={backToWidget}>Back</BackLink>
+            </BackRow>
+          )}
         </Fragment>
       ) : isAutoStartLoading ? (
         renderLoading('Loading SideShift...')
@@ -854,7 +862,7 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                   </ShiftReadyBody>
                   {showManualAmountBackButton ? (
                     <BackRow>
-                      <BackLink onClick={resetTrade}>Back</BackLink>
+                      <BackLink type="button" onClick={resetTrade}>Back</BackLink>
                     </BackRow>
                   ) : null}
                 </ShiftReady>
@@ -913,7 +921,7 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                 </AmountError>
                 {showManualAmountBackButton ? (
                   <BackRow>
-                    <BackLink onClick={backToRateSelection}>Back</BackLink>
+                    <BackLink type="button" onClick={backToRateSelection}>Back</BackLink>
                   </BackRow>
                 ) : null}
               </Fragment>
@@ -1002,7 +1010,7 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                   />
                 )}
                 <BackRow>
-                  <BackLink onClick={backToWidget}>Back</BackLink>
+                  <BackLink type="button" onClick={backToWidget}>Back</BackLink>
                 </BackRow>
               </Fragment>
             )

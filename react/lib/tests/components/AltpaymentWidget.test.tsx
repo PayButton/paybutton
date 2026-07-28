@@ -16,6 +16,10 @@ const coins = [
     coin: 'BTC',
     name: 'Bitcoin',
     networks: ['bitcoin'],
+    hasMemo: false,
+    fixedOnly: false,
+    variableOnly: false,
+    tokenDetails: {},
   },
 ]
 
@@ -115,5 +119,47 @@ describe('AltpaymentWidget copy feedback', () => {
     await waitFor(() => {
       expect(screen.getByText('Click to copy')).toBeTruthy()
     })
+  })
+
+  test('non-editable errors provide a button that resets state before exiting altpayment', () => {
+    render(
+      <AltpaymentWidget
+        {...baseProps}
+        altpaymentError={{ errorMessage: 'Quote failed' } as any}
+      />,
+    )
+
+    const backButton = screen.getByRole('button', { name: 'Back' })
+    expect(backButton.getAttribute('type')).toBe('button')
+
+    fireEvent.click(backButton)
+
+    expect(baseProps.setCoinPair).toHaveBeenCalledWith(undefined)
+    expect(baseProps.setAltpaymentError).toHaveBeenCalledWith(undefined)
+    expect(baseProps.setAltpaymentShift).toHaveBeenCalledWith(undefined)
+    expect(baseProps.setLoadingPair).toHaveBeenCalledWith(false)
+    expect(baseProps.setLoadingShift).toHaveBeenCalledWith(false)
+    expect(baseProps.setShiftCompleted).toHaveBeenCalledWith(false)
+    expect(baseProps.setUseAltpayment).toHaveBeenCalledWith(false)
+    expect(baseProps.setAltpaymentShift.mock.invocationCallOrder[0]).toBeLessThan(
+      baseProps.setUseAltpayment.mock.invocationCallOrder[0],
+    )
+  })
+
+  test('editable errors reset the trade without exiting altpayment', () => {
+    render(
+      <AltpaymentWidget
+        {...baseProps}
+        altpaymentEditable
+        altpaymentError={{ errorMessage: 'Quote failed' } as any}
+      />,
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: 'Back' }))
+
+    expect(baseProps.setAltpaymentError).toHaveBeenCalledWith(undefined)
+    expect(baseProps.setLoadingPair).toHaveBeenCalledWith(false)
+    expect(baseProps.setLoadingShift).toHaveBeenCalledWith(false)
+    expect(baseProps.setUseAltpayment).not.toHaveBeenCalled()
   })
 })
