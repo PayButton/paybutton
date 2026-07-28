@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useRef, useState } from 'react'
+import React, { Fragment, useEffect, useMemo, useRef, useState } from 'react'
 import { TextField, Select, MenuItem, InputLabel, FormControl, Box, CircularProgress } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { QRCodeSVG } from 'qrcode.react'
@@ -329,6 +329,8 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     setCoinPair(undefined)
     setAltpaymentError(undefined)
     setAltpaymentShift(undefined)
+    setLoadingPair(false)
+    setLoadingShift(false)
     setPairAmount(undefined)
     setPairAmountFixedDecimals(undefined)
     setShiftCompleted(false)
@@ -377,38 +379,30 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     }
   }
 
-  const SideshiftCtn = styled('div')({
+  const SideshiftCtn = useMemo(() => styled('div')({
     alignItems: 'center',
     justifyContent: 'flex-start',
     display: 'flex',
     flexDirection: 'column',
     boxSizing: 'border-box',
-    position: 'absolute',
-    zIndex: 9,
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
+    position: 'relative',
     background: '#f5f5f7',
-    overflowY: 'auto',
-    overflowX: 'hidden',
+    width: '100%',
     padding: '16px',
     '@media (min-width: 760px)': {
       padding: '24px',
     },
-  })
+  }), [])
 
   const LoadingCenter = styled('div')({
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    justifyContent: 'center',
     gap: '16px',
     textAlign: 'center',
-    width: 'max-content',
+    width: '100%',
+    minHeight: '300px',
     maxWidth: '100%',
   })
 
@@ -418,10 +412,18 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     '& img': { width: '150px', marginTop: '10px' },
   })
 
-  const BackLink = styled('div')({
-    fontSize: '14px', marginTop: '20px', cursor: 'pointer',
+  const BackLink = styled('button')({
+    fontSize: '14px', cursor: 'pointer',
+    fontFamily: 'inherit', background: 'transparent', color: 'inherit',
     border: '1px solid #000', opacity: '0.7', padding: '2px 20px',
     borderRadius: '3px', '&:hover': { opacity: '1' },
+  })
+
+  const BackRow = styled('div')({
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+    marginTop: '30px',
   })
 
   const ShiftReady = styled('div')({
@@ -479,8 +481,16 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
   })
 
   const AmountError = styled('p')({
-    position: 'absolute', bottom: '10px', textAlign: 'center',
-    background: '#00000014', padding: '10px', borderRadius: '5px'
+    margin: '12px auto 0',
+    textAlign: 'center',
+    background: '#00000014',
+    padding: '10px',
+    borderRadius: '5px',
+    minHeight: '28px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    transition: 'opacity 120ms ease',
   })
 
   const ErrorMsg = styled('p')({
@@ -699,6 +709,13 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
 
   const isAutoStart = Boolean(preselectedCoin)
   const isAutoStartLoading = isAutoStart && !altpaymentShift && !altpaymentError
+  const showManualAmountBackButton = altpaymentEditable
+  const amountValidationMessage =
+    pairAmount && isAboveMinimumAltpaymentAmount === false
+      ? 'Amount is below minimum.'
+      : pairAmount && isBelowMaximumAltpaymentAmount === false
+      ? 'Amount is above maximum.'
+      : ''
 
   const renderLoading = (message: string) => (
     <LoadingCenter>
@@ -717,12 +734,33 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     </LoadingCenter>
   )
 
+  const backToWidget = () => {
+    resetTrade()
+    setUseAltpayment(false)
+  }
+
+  const backToRateSelection = () => {
+    autoQuoteRequestedRef.current = false
+    setAltpaymentError(undefined)
+    setAltpaymentShift(undefined)
+    setLoadingShift(false)
+    setCoinPair(undefined)
+  }
+
   return (
     <SideshiftCtn>
       {altpaymentError ? (
         <Fragment>
           <ErrorMsg>Error: {altpaymentError.errorMessage}</ErrorMsg>
-          <BackLink onClick={resetTrade}>Back</BackLink>
+          {showManualAmountBackButton ? (
+            <BackRow>
+              <BackLink type="button" onClick={resetTrade}>Back</BackLink>
+            </BackRow>
+          ) : (
+            <BackRow>
+              <BackLink type="button" onClick={backToWidget}>Back</BackLink>
+            </BackRow>
+          )}
         </Fragment>
       ) : isAutoStartLoading ? (
         renderLoading('Loading SideShift...')
@@ -822,6 +860,11 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                       </CopyCtn>
                     </ShiftReadyMain>
                   </ShiftReadyBody>
+                  {showManualAmountBackButton ? (
+                    <BackRow>
+                      <BackLink type="button" onClick={resetTrade}>Back</BackLink>
+                    </BackRow>
+                  ) : null}
                 </ShiftReady>
               )
             ) : loadingShift ? (
@@ -870,12 +913,17 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                   animation={animation}
                 />
                 </div>
-                {pairAmount && !isAboveMinimumAltpaymentAmount && (
-                  <AmountError>Amount is below minimum.</AmountError>
-                )}
-                {pairAmount && !isBelowMaximumAltpaymentAmount && (
-                  <AmountError>Amount is above maximum.</AmountError>
-                )}
+                <AmountError
+                  aria-live="polite"
+                  style={amountValidationMessage ? { opacity: 1, visibility: 'visible' } : { opacity: 0, visibility: 'hidden' }}
+                >
+                  {amountValidationMessage || '\u00A0'}
+                </AmountError>
+                {showManualAmountBackButton ? (
+                  <BackRow>
+                    <BackLink type="button" onClick={backToRateSelection}>Back</BackLink>
+                  </BackRow>
+                ) : null}
               </Fragment>
             ) : (
               <Fragment>
@@ -961,7 +1009,9 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                     animation={animation}
                   />
                 )}
-                <BackLink onClick={() => {setUseAltpayment(false)}}>Back</BackLink>
+                <BackRow>
+                  <BackLink type="button" onClick={backToWidget}>Back</BackLink>
+                </BackRow>
               </Fragment>
             )
             // END: Altpayment region

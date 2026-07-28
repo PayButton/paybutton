@@ -1148,7 +1148,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
           ...(thisUseAltpayment ? {
             minWidth: 320,
             width: thisAltpaymentShift ? 'min(94vw, 600px)' : 'min(92vw, 420px)',
-            minHeight: thisAltpaymentShift ? 640 : 520,
+            minHeight: 420,
           } : {}),
         }}
         pt={0}
@@ -1183,7 +1183,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
           px={thisUseAltpayment ? 0 : 3}
           pt={thisUseAltpayment ? 0 : 2}
           position="relative"
-          sx={thisUseAltpayment ? { minHeight: 480, flex: 1, alignSelf: 'stretch', width: '100%' } : undefined}
+          sx={thisUseAltpayment ? { flex: 1, alignSelf: 'stretch', width: '100%' } : undefined}
         >
           {thisUseAltpayment ? (
             <AltpaymentWidget
