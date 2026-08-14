@@ -263,3 +263,54 @@ describe('AltpaymentWidget preselected coin flow', () => {
     expect(baseProps.setAltpaymentError).not.toHaveBeenCalled()
   })
 })
+
+describe('AltpaymentWidget editable amount', () => {
+  const socket = { emit: jest.fn() }
+  const editableProps = {
+    ...baseProps,
+    altpaymentEditable: true,
+    coinPair: coinPair as any,
+    altpaymentSocket: socket as any,
+  }
+
+  afterEach(() => {
+    jest.clearAllMocks()
+    cleanup()
+  })
+
+  test('quotes the amount the user typed, not the one derived from the button', () => {
+    render(<AltpaymentWidget {...editableProps} thisAmount={950000} />)
+
+    const input = screen.getByLabelText('Amount (BTC)') as HTMLInputElement
+    fireEvent.change(input, { target: { value: '0.0001' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Send Bitcoin' }))
+
+    expect(socket.emit).toHaveBeenCalledWith(
+      'create-altpayment-quote',
+      expect.objectContaining({ depositAmount: '0.0001' }),
+    )
+  })
+
+  test('reports the typed amount back in the settle coin', () => {
+    render(<AltpaymentWidget {...editableProps} />)
+
+    fireEvent.change(screen.getByLabelText('Amount (BTC)'), { target: { value: '0.0001' } })
+
+    // 0.0001 BTC at a rate of 9_500_000_000 XEC per BTC
+    expect(baseProps.updateAmount).toHaveBeenCalledWith('950000.00')
+  })
+
+  test('does not offer a coin step to go back to when the coin is preselected', () => {
+    render(<AltpaymentWidget {...editableProps} />)
+
+    expect(screen.queryByRole('button', { name: 'Back' })).toBeNull()
+  })
+
+  test('keeps the back button when the user picked the coin manually', () => {
+    render(
+      <AltpaymentWidget {...editableProps} preselectedCoin={undefined} />,
+    )
+
+    expect(screen.getByRole('button', { name: 'Back' })).toBeTruthy()
+  })
+})

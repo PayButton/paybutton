@@ -299,13 +299,33 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     }
   };
 
+  // When the amount is editable, what the user typed is the source of truth:
+  // deriving it back from the button amount can drift through the conversions in
+  // between and end up asking SideShift for a completely different amount.
+  const getTypedDepositAmount = (): string | undefined => {
+    if (
+      coinPair === undefined ||
+      selectedCoin === undefined ||
+      selectedCoinNetwork === undefined ||
+      pairAmount === undefined ||
+      pairAmount === '' ||
+      Number.isNaN(+pairAmount) ||
+      +pairAmount <= 0
+    ) {
+      return undefined
+    }
+    return resolveNumber(+pairAmount).toFixed(
+      getDepositDecimals(selectedCoin, selectedCoinNetwork, coinPair),
+    )
+  }
+
   const createQuote = (): boolean => {
     if (altpaymentSocket === undefined || selectedCoin === undefined || selectedCoinNetwork === undefined) {
       return false
     }
 
     const depositAmount = altpaymentEditable
-      ? pairAmountFixedDecimals
+      ? getTypedDepositAmount()
       : (pairAmountFixedDecimals ?? computeDepositAmountFromSettle())
 
     const quotePayload: Record<string, string> = {
@@ -758,11 +778,17 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     (coins.length === 0 || coins.some(c => c.coin === preselectedCoin))
 
   const isAutoStart = isPreselectedCoinAvailable
-  // Editable buttons still need the amount input, so they are never fully
-  // automatic: only non-editable ones go straight from opening to a shift.
+  // Editable buttons still need the amount input, so they stay on the loading
+  // screen only until the rate is in; non-editable ones go straight from
+  // opening to a ready shift. Either way the coin and network pickers never
+  // flash by, since nothing there is up to the user.
   const isAutoStartLoading =
-    isAutoStart && !altpaymentEditable && !altpaymentShift && !altpaymentError
+    isAutoStart &&
+    !altpaymentError &&
+    (altpaymentEditable ? coinPair === undefined : altpaymentShift === undefined)
   const showManualAmountBackButton = altpaymentEditable
+  // With a preselected coin there is no coin/network step to go back to.
+  const showRateBackButton = altpaymentEditable && !isPreselectedCoinAvailable
   const amountValidationMessage =
     pairAmount && isAboveMinimumAltpaymentAmount === false
       ? 'Amount is below minimum.'
@@ -978,7 +1004,7 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                 >
                   {amountValidationMessage || '\u00A0'}
                 </AmountError>
-                {showManualAmountBackButton ? (
+                {showRateBackButton ? (
                   <BackRow>
                     <BackLink type="button" onClick={backToRateSelection}>Back</BackLink>
                   </BackRow>

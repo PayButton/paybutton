@@ -1121,6 +1121,22 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     }
   }
 
+  // The altpayment widget reasons in the settle coin (XEC/BCH), while the
+  // button amount is expressed in `currency`, which may be fiat. Converting
+  // here keeps both in sync; feeding a crypto amount into a fiat field made the
+  // amount grow on every round trip.
+  const updateAmountFromAltpayment = (settleAmount: string) => {
+    const settleFloat = +settleAmount
+    if (settleAmount === '' || Number.isNaN(settleFloat)) {
+      return
+    }
+    if (isFiat(currency) && price) {
+      updateAmount((settleFloat * price).toFixed(DECIMALS.FIAT))
+    } else {
+      updateAmount(settleAmount)
+    }
+  }
+
   const qrCode = (
     <Box sx={classes.qrAnimations}>
       <QRCodeSVG
@@ -1194,7 +1210,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
             <AltpaymentWidget
               altpaymentSocket={thisAltpaymentSocket}
               thisAmount={isFiat(currency) && convertedCryptoAmount !== undefined ? convertedCryptoAmount : thisAmount}
-              updateAmount={updateAmount}
+              updateAmount={updateAmountFromAltpayment}
               setUseAltpayment={setThisUseAltpayment}
               altpaymentShift={thisAltpaymentShift}
               setAltpaymentShift={setThisAltpaymentShift}
