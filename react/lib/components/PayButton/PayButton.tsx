@@ -9,7 +9,7 @@ import {
   Currency,
   isFiat,
   getFiatPrice,
-  getCurrencyTypeFromAddress,
+  getCurrencyTypeFromAddressOrDefault,
   isValidCashAddress,
   isValidXecAddress,
   CurrencyObject,
@@ -122,7 +122,7 @@ export const PayButton = ({
 
   const [paymentId, setPaymentId] = useState<string | undefined>(undefined);
   const [addressType, setAddressType] = useState<CryptoCurrency>(
-    getCurrencyTypeFromAddress(to),
+    getCurrencyTypeFromAddressOrDefault(to),
   );
 
   const altpaymentSocketRef = useRef<Socket | undefined>(undefined);
@@ -412,7 +412,7 @@ export const PayButton = ({
 
   useEffect(() => {
     if (currencyObj && isFiat(currency) && price) {
-      const addressType: Currency = getCurrencyTypeFromAddress(to);
+      const addressType: Currency = getCurrencyTypeFromAddressOrDefault(to);
       const convertedObj = getCurrencyObject(
         currencyObj.float / price,
         addressType,

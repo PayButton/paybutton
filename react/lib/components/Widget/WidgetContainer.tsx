@@ -11,7 +11,7 @@ import {
   Currency,
   CurrencyObject,
   Transaction,
-  getCurrencyTypeFromAddress,
+  getCurrencyTypeFromAddressOrDefault,
   isCrypto,
   isGreaterThanZero,
   isValidCurrency,
@@ -168,7 +168,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
 
     const paymentClient = getAltpaymentClient()
 
-    const addrType = getCurrencyTypeFromAddress(to);
+    const addrType = getCurrencyTypeFromAddressOrDefault(to);
     if (
       !isValidCurrency(currency) ||
       (isCrypto(currency) && addrType !== currency)
@@ -193,7 +193,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
         } else {
           const expectedAmount = currencyObj ? currencyObj?.float : undefined
           const receivedAmount = resolveNumber(transaction.amount);
-          const currencyTicker = getCurrencyTypeFromAddress(to);
+          const currencyTicker = getCurrencyTypeFromAddressOrDefault(to);
 
           if (shouldTriggerOnSuccess(
             transaction,

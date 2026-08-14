@@ -32,7 +32,7 @@ import {
   encodeOpReturnProps,
   isValidCashAddress,
   isValidXecAddress,
-  getCurrencyTypeFromAddress,
+  getCurrencyTypeFromAddressOrDefault,
   CURRENCY_PREFIXES_MAP,
   CRYPTO_CURRENCIES,
   isPropsTrue,
@@ -165,7 +165,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     disablePaymentId,
     goalAmount,
     ButtonComponent = Button,
-    currency = getCurrencyTypeFromAddress(to),
+    currency = getCurrencyTypeFromAddressOrDefault(to),
     animation,
     randomSatoshis = false,
     editable = false,
@@ -295,7 +295,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     (setAltpaymentError as ((e: AltpaymentError | undefined) => void) | undefined) ??
     setInternalAltpaymentError
 
-  const [internalAddressType, setInternalAddressType] = useState<CryptoCurrency>(getCurrencyTypeFromAddress(to))
+  const [internalAddressType, setInternalAddressType] = useState<CryptoCurrency>(getCurrencyTypeFromAddressOrDefault(to))
   const thisAddressType = addressType ?? internalAddressType
   const setThisAddressType =
     (setAddressType as ((c: CryptoCurrency) => void) | undefined) ?? setInternalAddressType
