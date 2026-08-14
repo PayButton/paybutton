@@ -573,7 +573,10 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
 
   useEffect(() => {
     (async () => {
-      if (isChild !== true) {
+      if (isChild === true) {
+        return
+      }
+      try {
         await setupChronikWebSocket({
           address: to,
           txsSocket: thisTxsSocket,
@@ -582,20 +585,22 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
           setTxsSocket: setThisTxsSocket,
           setNewTxs: setThisNewTxs,
         })
-        if (thisUseAltpayment) {
-          await setupAltpaymentSocket({
-            addressType: thisAddressType,
-            wsBaseUrl,
-            altpaymentSocket: thisAltpaymentSocket,
-            setAltpaymentSocket: setThisAltpaymentSocket,
-            setCoins: setThisCoins,
-            setCoinPair: setThisCoinPair,
-            setLoadingPair: setThisLoadingPair,
-            setAltpaymentShift: setThisAltpaymentShift,
-            setLoadingShift: setThisLoadingShift,
-            setAltpaymentError: setThisAltpaymentError,
-          })
-        }
+      } catch (err) {
+        console.error('Error connecting to the blockchain websocket:', err)
+      }
+      if (thisUseAltpayment) {
+        await setupAltpaymentSocket({
+          addressType: thisAddressType,
+          wsBaseUrl,
+          altpaymentSocket: thisAltpaymentSocket,
+          setAltpaymentSocket: setThisAltpaymentSocket,
+          setCoins: setThisCoins,
+          setCoinPair: setThisCoinPair,
+          setLoadingPair: setThisLoadingPair,
+          setAltpaymentShift: setThisAltpaymentShift,
+          setLoadingShift: setThisLoadingShift,
+          setAltpaymentError: setThisAltpaymentError,
+        })
       }
     })()
     return () => {
