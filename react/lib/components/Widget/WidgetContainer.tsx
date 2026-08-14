@@ -289,7 +289,11 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
         }
 
         if (isGreaterThanZero(resolveNumber(tx.amount))) {
-          handlePayment(tx);
+          // Never let a malformed transaction reject unhandled; it would show
+          // up as an uncaught error on the host page.
+          handlePayment(tx).catch(err => {
+            console.error('Error handling transaction:', err);
+          });
         }
       },
       [handlePayment, success],
