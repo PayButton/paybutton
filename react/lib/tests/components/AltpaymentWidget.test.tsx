@@ -1,7 +1,7 @@
 import { act } from 'react'
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
-import { AltpaymentWidget } from '../../components/Widget/AltpaymentWidget'
+import { ALTPAYMENT_TIMEOUT_MS, AltpaymentWidget } from '../../components/Widget/AltpaymentWidget'
 
 const altpaymentShift = {
   depositAmount: '0.01',
@@ -161,5 +161,105 @@ describe('AltpaymentWidget copy feedback', () => {
     expect(baseProps.setLoadingPair).toHaveBeenCalledWith(false)
     expect(baseProps.setLoadingShift).toHaveBeenCalledWith(false)
     expect(baseProps.setUseAltpayment).not.toHaveBeenCalled()
+  })
+})
+
+const coinPair = {
+  min: '0.0001',
+  max: '10',
+  rate: '9500000000',
+  depositCoin: 'BTC',
+  settleCoin: 'XEC',
+  depositNetwork: 'bitcoin',
+  settleNetwork: 'mainnet',
+}
+
+describe('AltpaymentWidget preselected coin flow', () => {
+  beforeEach(() => {
+    jest.useFakeTimers()
+  })
+
+  afterEach(() => {
+    jest.clearAllTimers()
+    jest.useRealTimers()
+    jest.clearAllMocks()
+    cleanup()
+  })
+
+  test('non-editable buttons wait on the loading screen until the shift is ready', () => {
+    render(<AltpaymentWidget {...baseProps} coinPair={coinPair as any} />)
+
+    expect(screen.getByText('Loading SideShift...')).toBeTruthy()
+  })
+
+  test('editable buttons show the amount form instead of an endless loading screen', () => {
+    render(
+      <AltpaymentWidget
+        {...baseProps}
+        altpaymentEditable
+        coinPair={coinPair as any}
+      />,
+    )
+
+    expect(screen.queryByText('Loading SideShift...')).toBeNull()
+    expect(screen.getByLabelText('Amount (BTC)')).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'Send Bitcoin' })).toBeTruthy()
+  })
+
+  test('editable buttons prefill the amount converted from the button amount', () => {
+    render(
+      <AltpaymentWidget
+        {...baseProps}
+        altpaymentEditable
+        coinPair={coinPair as any}
+        thisAmount={950000}
+      />,
+    )
+
+    expect((screen.getByLabelText('Amount (BTC)') as HTMLInputElement).value).toBe('0.0001')
+  })
+
+  test('an unknown preselected coin falls back to the coin selector', () => {
+    render(
+      <AltpaymentWidget
+        {...baseProps}
+        preselectedCoin="DOGE"
+      />,
+    )
+
+    expect(screen.queryByText('Loading SideShift...')).toBeNull()
+    expect(screen.getAllByText('Select a coin').length).toBeGreaterThan(0)
+  })
+
+  test('gives up with an error when SideShift never sends the coin list', () => {
+    render(<AltpaymentWidget {...baseProps} coins={[]} />)
+
+    expect(screen.getByText('Loading SideShift...')).toBeTruthy()
+    expect(baseProps.setAltpaymentError).not.toHaveBeenCalled()
+
+    act(() => {
+      jest.advanceTimersByTime(ALTPAYMENT_TIMEOUT_MS)
+    })
+
+    expect(baseProps.setAltpaymentError).toHaveBeenCalledWith({
+      errorType: 'connection-error',
+      errorMessage: 'Could not reach SideShift. Please try again.',
+    })
+  })
+
+  test('does not time out once the shift is ready', () => {
+    render(
+      <AltpaymentWidget
+        {...baseProps}
+        coinPair={coinPair as any}
+        altpaymentShift={altpaymentShift as any}
+      />,
+    )
+
+    act(() => {
+      jest.advanceTimersByTime(ALTPAYMENT_TIMEOUT_MS * 2)
+    })
+
+    expect(baseProps.setAltpaymentError).not.toHaveBeenCalled()
   })
 })

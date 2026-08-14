@@ -68,7 +68,7 @@ export interface SideshiftShift {
     type: string;
 }
 
-type ErrorType = 'quote-error' | 'shift-error'
+type ErrorType = 'quote-error' | 'shift-error' | 'connection-error'
 export interface SideshiftError {
   errorType: ErrorType
   errorMessage: string
