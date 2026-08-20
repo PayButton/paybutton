@@ -41,6 +41,18 @@ interface AltpaymentProps {
 
 type ShiftCopyField = 'amount' | 'address' | 'id'
 
+// How long we wait for SideShift data before giving up and showing an error,
+// instead of leaving the user in front of a spinner forever.
+export const ALTPAYMENT_TIMEOUT_MS = 25000
+
+type PendingStage = 'coins' | 'pair' | 'shift'
+
+const PENDING_STAGE_TIMEOUT_MESSAGE: Record<PendingStage, string> = {
+  coins: 'Could not reach SideShift. Please try again.',
+  pair: 'Could not get a SideShift rate. Please try again.',
+  shift: 'Could not create the SideShift order. Please try again.',
+}
+
 export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props => {
 
   const {
@@ -163,7 +175,9 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
       }
       const decimals = getDepositDecimals(selectedCoin, selectedCoinNetwork, coinPair)
       setPairAmountFixedDecimals(depositAmount)
-      if (!altpaymentEditable) {
+      // On editable buttons the input is prefilled with the converted amount,
+      // but never overwritten once the user starts editing it.
+      if (!altpaymentEditable || pairAmount === undefined) {
         setPairAmount(depositAmount)
       }
 
@@ -183,15 +197,18 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     }
   }
 
+  // The rate does not depend on the amount, so it can always be fetched as soon
+  // as a coin is preselected — including on editable buttons, where the user
+  // needs the rate to type an amount.
   useEffect(() => {
     if (
       preselectedCoin &&
-      !altpaymentEditable &&
       selectedCoin !== undefined &&
       selectedCoinNetwork !== undefined &&
       coinPair === undefined &&
       !loadingPair &&
       !autoRateRequestedRef.current &&
+      altpaymentError === undefined &&
       altpaymentSocket !== undefined
     ) {
       autoRateRequestedRef.current = true
@@ -202,15 +219,41 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     }
   }, [
     preselectedCoin,
-    altpaymentEditable,
     selectedCoin,
     selectedCoinNetwork,
     coinPair,
     loadingPair,
+    altpaymentError,
     altpaymentSocket,
     addressType,
     setLoadingPair,
   ])
+
+  const pendingStage: PendingStage | undefined =
+    altpaymentError !== undefined || altpaymentShift !== undefined
+      ? undefined
+      : coins.length === 0
+      ? 'coins'
+      : loadingShift
+      ? 'shift'
+      : loadingPair
+      ? 'pair'
+      : undefined
+
+  useEffect(() => {
+    if (pendingStage === undefined) {
+      return
+    }
+    const timeout = setTimeout(() => {
+      setLoadingPair(false)
+      setLoadingShift(false)
+      setAltpaymentError({
+        errorType: 'connection-error',
+        errorMessage: PENDING_STAGE_TIMEOUT_MESSAGE[pendingStage],
+      })
+    }, ALTPAYMENT_TIMEOUT_MS)
+    return () => clearTimeout(timeout)
+  }, [pendingStage, setAltpaymentError, setLoadingPair, setLoadingShift])
 
   useEffect(() => {
     return () => {
@@ -256,13 +299,33 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     }
   };
 
+  // When the amount is editable, what the user typed is the source of truth:
+  // deriving it back from the button amount can drift through the conversions in
+  // between and end up asking SideShift for a completely different amount.
+  const getTypedDepositAmount = (): string | undefined => {
+    if (
+      coinPair === undefined ||
+      selectedCoin === undefined ||
+      selectedCoinNetwork === undefined ||
+      pairAmount === undefined ||
+      pairAmount === '' ||
+      Number.isNaN(+pairAmount) ||
+      +pairAmount <= 0
+    ) {
+      return undefined
+    }
+    return resolveNumber(+pairAmount).toFixed(
+      getDepositDecimals(selectedCoin, selectedCoinNetwork, coinPair),
+    )
+  }
+
   const createQuote = (): boolean => {
     if (altpaymentSocket === undefined || selectedCoin === undefined || selectedCoinNetwork === undefined) {
       return false
     }
 
     const depositAmount = altpaymentEditable
-      ? pairAmountFixedDecimals
+      ? getTypedDepositAmount()
       : (pairAmountFixedDecimals ?? computeDepositAmountFromSettle())
 
     const quotePayload: Record<string, string> = {
@@ -707,9 +770,25 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
 
   const shiftQrValue = altpaymentShift ? getShiftQrValue(altpaymentShift) : ''
 
-  const isAutoStart = Boolean(preselectedCoin)
-  const isAutoStartLoading = isAutoStart && !altpaymentShift && !altpaymentError
+  // While the coin list is still loading we cannot know whether the preselected
+  // coin exists, so assume it does; once loaded, an unknown ticker falls back to
+  // the regular coin selector instead of leaving the user with an empty screen.
+  const isPreselectedCoinAvailable =
+    Boolean(preselectedCoin) &&
+    (coins.length === 0 || coins.some(c => c.coin === preselectedCoin))
+
+  const isAutoStart = isPreselectedCoinAvailable
+  // Editable buttons still need the amount input, so they stay on the loading
+  // screen only until the rate is in; non-editable ones go straight from
+  // opening to a ready shift. Either way the coin and network pickers never
+  // flash by, since nothing there is up to the user.
+  const isAutoStartLoading =
+    isAutoStart &&
+    !altpaymentError &&
+    (altpaymentEditable ? coinPair === undefined : altpaymentShift === undefined)
   const showManualAmountBackButton = altpaymentEditable
+  // With a preselected coin there is no coin/network step to go back to.
+  const showRateBackButton = altpaymentEditable && !isPreselectedCoinAvailable
   const amountValidationMessage =
     pairAmount && isAboveMinimumAltpaymentAmount === false
       ? 'Amount is below minimum.'
@@ -871,6 +950,12 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
               renderLoading('Loading Shift...')
             ) : coinPair && selectedCoin ? (
               <Fragment>
+                <Header>
+                  Swap coins with
+                  <a href="https://sideshift.ai" target="_blank">
+                    <img src={sideShiftLogo} alt='SideShift' />
+                  </a>
+                </Header>
                 <p>
                   {' '}
                   1 {selectedCoin.name} ~={' '}
@@ -879,7 +964,7 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                 {altpaymentEditable ? (
                   <div style={{ display: 'flex', justifyContent: 'center', margin: '6px auto', width: '100%' }}>
                     <TextField
-                      label="Amount"
+                      label={`Amount (${selectedCoin.coin})`}
                       value={pairAmount ?? 0}
                       onChange={handlePairAmountChange}
                       inputProps={{
@@ -919,7 +1004,7 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                 >
                   {amountValidationMessage || '\u00A0'}
                 </AmountError>
-                {showManualAmountBackButton ? (
+                {showRateBackButton ? (
                   <BackRow>
                     <BackLink type="button" onClick={backToRateSelection}>Back</BackLink>
                   </BackRow>
@@ -936,7 +1021,7 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                         <img src={sideShiftLogo} alt='SideShift' />
                       </a>
                     </Header>
-                    {!preselectedCoin ? (
+                    {!isPreselectedCoinAvailable ? (
                     <FormControl>
                       <InputLabel id="select-coin-label">Select a coin</InputLabel>
                       <SelectBox

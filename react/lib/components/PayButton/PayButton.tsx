@@ -9,7 +9,7 @@ import {
   Currency,
   isFiat,
   getFiatPrice,
-  getCurrencyTypeFromAddress,
+  getCurrencyTypeFromAddressOrDefault,
   isValidCashAddress,
   isValidXecAddress,
   CurrencyObject,
@@ -122,7 +122,7 @@ export const PayButton = ({
 
   const [paymentId, setPaymentId] = useState<string | undefined>(undefined);
   const [addressType, setAddressType] = useState<CryptoCurrency>(
-    getCurrencyTypeFromAddress(to),
+    getCurrencyTypeFromAddressOrDefault(to),
   );
 
   const altpaymentSocketRef = useRef<Socket | undefined>(undefined);
@@ -326,26 +326,30 @@ export const PayButton = ({
     (async () => {
       if (txsSocket === undefined) {
         const expectedAmount = currencyObj ? currencyObj?.float : undefined
-        await setupChronikWebSocket({
-          address: to,
-          txsSocket,
-          apiBaseUrl,
-          wsBaseUrl,
-          setTxsSocket,
-          setNewTxs,
-          setDialogOpen,
-          checkSuccessInfo: {
-            currency,
-            price,
-            randomSatoshis: randomSatoshis ?? false,
-            disablePaymentId,
-            expectedAmount,
-            expectedOpReturn: opReturn,
-            expectedPaymentId: paymentId,
-            currencyObj,
-            donationRate
-          }
-        })
+        try {
+          await setupChronikWebSocket({
+            address: to,
+            txsSocket,
+            apiBaseUrl,
+            wsBaseUrl,
+            setTxsSocket,
+            setNewTxs,
+            setDialogOpen,
+            checkSuccessInfo: {
+              currency,
+              price,
+              randomSatoshis: randomSatoshis ?? false,
+              disablePaymentId,
+              expectedAmount,
+              expectedOpReturn: opReturn,
+              expectedPaymentId: paymentId,
+              currencyObj,
+              donationRate
+            }
+          })
+        } catch (err) {
+          console.error('Error connecting to the blockchain websocket:', err)
+        }
       }
       if (cancelled || !useAltpayment) {
         return
@@ -408,7 +412,7 @@ export const PayButton = ({
 
   useEffect(() => {
     if (currencyObj && isFiat(currency) && price) {
-      const addressType: Currency = getCurrencyTypeFromAddress(to);
+      const addressType: Currency = getCurrencyTypeFromAddressOrDefault(to);
       const convertedObj = getCurrencyObject(
         currencyObj.float / price,
         addressType,

@@ -11,7 +11,7 @@ import {
   Currency,
   CurrencyObject,
   Transaction,
-  getCurrencyTypeFromAddress,
+  getCurrencyTypeFromAddressOrDefault,
   isCrypto,
   isGreaterThanZero,
   isValidCurrency,
@@ -168,7 +168,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
 
     const paymentClient = getAltpaymentClient()
 
-    const addrType = getCurrencyTypeFromAddress(to);
+    const addrType = getCurrencyTypeFromAddressOrDefault(to);
     if (
       !isValidCurrency(currency) ||
       (isCrypto(currency) && addrType !== currency)
@@ -193,7 +193,7 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
         } else {
           const expectedAmount = currencyObj ? currencyObj?.float : undefined
           const receivedAmount = resolveNumber(transaction.amount);
-          const currencyTicker = getCurrencyTypeFromAddress(to);
+          const currencyTicker = getCurrencyTypeFromAddressOrDefault(to);
 
           if (shouldTriggerOnSuccess(
             transaction,
@@ -289,7 +289,11 @@ export const WidgetContainer: React.FunctionComponent<WidgetContainerProps> =
         }
 
         if (isGreaterThanZero(resolveNumber(tx.amount))) {
-          handlePayment(tx);
+          // Never let a malformed transaction reject unhandled; it would show
+          // up as an uncaught error on the host page.
+          handlePayment(tx).catch(err => {
+            console.error('Error handling transaction:', err);
+          });
         }
       },
       [handlePayment, success],

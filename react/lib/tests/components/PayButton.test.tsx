@@ -568,3 +568,19 @@ describe('PayButton – hideSendButton in dialog', () => {
     }
   )
 })
+
+// ─────────────────────────────────────────────────────────────
+// INVALID RECIPIENT
+// ─────────────────────────────────────────────────────────────
+describe('PayButton – invalid recipient', () => {
+  test('renders the button with an error instead of crashing', async () => {
+    // A Bitcoin address is not a valid recipient: the button used to throw
+    // "Invalid currency" while rendering and disappear from the page.
+    render(<PayButton to="15Etyxpus9UeLSvpkmdBDqp7tVz7F6EcBe" text="Donate" />)
+
+    expect(screen.getByRole('button', { name: /donate/i })).toBeTruthy()
+    await waitFor(() => {
+      expect(screen.getByText('Invalid Recipient')).toBeTruthy()
+    })
+  })
+})

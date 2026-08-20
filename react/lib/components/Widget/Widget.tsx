@@ -32,7 +32,7 @@ import {
   encodeOpReturnProps,
   isValidCashAddress,
   isValidXecAddress,
-  getCurrencyTypeFromAddress,
+  getCurrencyTypeFromAddressOrDefault,
   CURRENCY_PREFIXES_MAP,
   CRYPTO_CURRENCIES,
   isPropsTrue,
@@ -165,7 +165,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     disablePaymentId,
     goalAmount,
     ButtonComponent = Button,
-    currency = getCurrencyTypeFromAddress(to),
+    currency = getCurrencyTypeFromAddressOrDefault(to),
     animation,
     randomSatoshis = false,
     editable = false,
@@ -295,7 +295,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     (setAltpaymentError as ((e: AltpaymentError | undefined) => void) | undefined) ??
     setInternalAltpaymentError
 
-  const [internalAddressType, setInternalAddressType] = useState<CryptoCurrency>(getCurrencyTypeFromAddress(to))
+  const [internalAddressType, setInternalAddressType] = useState<CryptoCurrency>(getCurrencyTypeFromAddressOrDefault(to))
   const thisAddressType = addressType ?? internalAddressType
   const setThisAddressType =
     (setAddressType as ((c: CryptoCurrency) => void) | undefined) ?? setInternalAddressType
@@ -573,7 +573,10 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
 
   useEffect(() => {
     (async () => {
-      if (isChild !== true) {
+      if (isChild === true) {
+        return
+      }
+      try {
         await setupChronikWebSocket({
           address: to,
           txsSocket: thisTxsSocket,
@@ -582,20 +585,22 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
           setTxsSocket: setThisTxsSocket,
           setNewTxs: setThisNewTxs,
         })
-        if (thisUseAltpayment) {
-          await setupAltpaymentSocket({
-            addressType: thisAddressType,
-            wsBaseUrl,
-            altpaymentSocket: thisAltpaymentSocket,
-            setAltpaymentSocket: setThisAltpaymentSocket,
-            setCoins: setThisCoins,
-            setCoinPair: setThisCoinPair,
-            setLoadingPair: setThisLoadingPair,
-            setAltpaymentShift: setThisAltpaymentShift,
-            setLoadingShift: setThisLoadingShift,
-            setAltpaymentError: setThisAltpaymentError,
-          })
-        }
+      } catch (err) {
+        console.error('Error connecting to the blockchain websocket:', err)
+      }
+      if (thisUseAltpayment) {
+        await setupAltpaymentSocket({
+          addressType: thisAddressType,
+          wsBaseUrl,
+          altpaymentSocket: thisAltpaymentSocket,
+          setAltpaymentSocket: setThisAltpaymentSocket,
+          setCoins: setThisCoins,
+          setCoinPair: setThisCoinPair,
+          setLoadingPair: setThisLoadingPair,
+          setAltpaymentShift: setThisAltpaymentShift,
+          setLoadingShift: setThisLoadingShift,
+          setAltpaymentError: setThisAltpaymentError,
+        })
       }
     })()
     return () => {
@@ -1116,6 +1121,22 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
     }
   }
 
+  // The altpayment widget reasons in the settle coin (XEC/BCH), while the
+  // button amount is expressed in `currency`, which may be fiat. Converting
+  // here keeps both in sync; feeding a crypto amount into a fiat field made the
+  // amount grow on every round trip.
+  const updateAmountFromAltpayment = (settleAmount: string) => {
+    const settleFloat = +settleAmount
+    if (settleAmount === '' || Number.isNaN(settleFloat)) {
+      return
+    }
+    if (isFiat(currency) && price) {
+      updateAmount((settleFloat * price).toFixed(DECIMALS.FIAT))
+    } else {
+      updateAmount(settleAmount)
+    }
+  }
+
   const qrCode = (
     <Box sx={classes.qrAnimations}>
       <QRCodeSVG
@@ -1189,7 +1210,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = props => {
             <AltpaymentWidget
               altpaymentSocket={thisAltpaymentSocket}
               thisAmount={isFiat(currency) && convertedCryptoAmount !== undefined ? convertedCryptoAmount : thisAmount}
-              updateAmount={updateAmount}
+              updateAmount={updateAmountFromAltpayment}
               setUseAltpayment={setThisUseAltpayment}
               altpaymentShift={thisAltpaymentShift}
               setAltpaymentShift={setThisAltpaymentShift}

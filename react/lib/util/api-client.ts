@@ -12,6 +12,8 @@ import {
 import { isFiat } from './currency';
 import { CURRENCY_TYPES_MAP, DECIMALS } from './constants';
 
+type ApiAddress = string | { address?: string } | null | undefined
+
 interface SimplifiedTransaction {
   hash: string
   amount: string
@@ -19,14 +21,14 @@ interface SimplifiedTransaction {
   confirmed?: boolean
   message: string
   timestamp: number
-  address: string
+  address: ApiAddress
   rawMessage: string
   inputAddresses: Array<{
-    address: string
+    address: ApiAddress
     amount: string
   }>
   outputAddresses: Array<{
-    address: string
+    address: ApiAddress
     amount: string
   }>
   prices: Array<{
@@ -35,6 +37,19 @@ interface SimplifiedTransaction {
       quoteId: number
     }
   }>
+}
+
+// Some API versions return the address as a nested object instead of a plain
+// string. Everything downstream expects a string, and feeding it an object
+// makes address parsing throw, so normalize it as soon as it comes in.
+export const resolveApiAddress = (address: ApiAddress): string => {
+  if (typeof address === 'string') {
+    return address
+  }
+  if (address !== null && typeof address === 'object' && typeof address.address === 'string') {
+    return address.address
+  }
+  return ''
 }
 
 export const getAddressDetails = async (
@@ -75,10 +90,12 @@ export const getAddressDetails = async (
       confirmed: apiTransaction.confirmed,
       message: apiTransaction.message,
       timestamp: apiTransaction.timestamp,
-      address: apiTransaction.address,
+      // These transactions belong to the queried address, so use it as fallback
+      // whenever the API does not send a usable address back.
+      address: resolveApiAddress(apiTransaction.address) || address,
       rawMessage: apiTransaction.rawMessage,
       // Only keep the address string, drop the amount
-      inputAddresses: Array.isArray(apiTransaction.inputAddresses) ? apiTransaction.inputAddresses.map((input: { address: string, amount: string }) => input.address) : [],
+      inputAddresses: Array.isArray(apiTransaction.inputAddresses) ? apiTransaction.inputAddresses.map(input => resolveApiAddress(input?.address)) : [],
       opReturn: JSON.stringify(opReturn),
     };
     transactions.push(transaction);

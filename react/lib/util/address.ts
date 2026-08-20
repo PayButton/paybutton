@@ -33,10 +33,24 @@ export const getCurrencyTypeFromAddress = (address: string): CryptoCurrency => {
   }
 };
 
+// Rendering must not blow up on a mistyped address: components use this to keep
+// showing their "Invalid Recipient" message instead of crashing.
+export const getCurrencyTypeFromAddressOrDefault = (
+  address: string,
+  fallback: CryptoCurrency = 'XEC',
+): CryptoCurrency => {
+  try {
+    return getCurrencyTypeFromAddress(address);
+  } catch {
+    return fallback;
+  }
+};
+
 export default {
   isValidCashAddress,
   isValidXecAddress,
   getCurrencyTypeFromAddress,
+  getCurrencyTypeFromAddressOrDefault,
 };
 
 
