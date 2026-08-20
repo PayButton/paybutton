@@ -41,6 +41,12 @@ interface AltpaymentProps {
 
 type ShiftCopyField = 'amount' | 'address' | 'id'
 
+const NARROW_VIEWPORT = '@media (max-width: 480px) and (max-height: 720px)'
+const SHORT_VIEWPORT = '@media (max-height: 560px)'
+const SHORT_WIDE_VIEWPORT = '@media (max-height: 560px) and (min-width: 440px)'
+const QR_COLUMN = 'min(160px, 36%)'
+const QR_COLUMN_GAP = '14px'
+
 // How long we wait for SideShift data before giving up and showing an error,
 // instead of leaving the user in front of a spinner forever.
 export const ALTPAYMENT_TIMEOUT_MS = 25000
@@ -455,6 +461,12 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     '@media (min-width: 760px)': {
       padding: '24px',
     },
+    [NARROW_VIEWPORT]: {
+      padding: '14px',
+    },
+    [SHORT_VIEWPORT]: {
+      padding: '12px 14px',
+    },
   }), [])
 
   const LoadingCenter = styled('div')({
@@ -467,12 +479,21 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     width: '100%',
     minHeight: '300px',
     maxWidth: '100%',
+    [SHORT_VIEWPORT]: {
+      minHeight: '150px',
+      gap: '10px',
+    },
   })
 
   const Header = styled('div')({
     marginBottom: '30px', display: 'flex', alignItems: 'center',
     flexDirection: 'column', color: 'rgb(35, 31, 32)', fontSize: '0.9rem',
     '& img': { width: '150px', marginTop: '10px' },
+    [SHORT_VIEWPORT]: {
+      marginBottom: '10px',
+      fontSize: '0.8rem',
+      '& img': { width: '110px', marginTop: '4px' },
+    },
   })
 
   const BackLink = styled('button')({
@@ -487,6 +508,9 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     display: 'flex',
     justifyContent: 'center',
     marginTop: '30px',
+    [SHORT_VIEWPORT]: {
+      marginTop: '12px',
+    },
   })
 
   const ShiftReady = styled('div')({
@@ -506,6 +530,15 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     flexWrap: 'wrap',
     gap: '8px',
     lineHeight: 1.3,
+    [NARROW_VIEWPORT]: {
+      fontSize: '18px',
+      paddingBottom: '8px',
+    },
+    [SHORT_VIEWPORT]: {
+      fontSize: '16px',
+      paddingBottom: '8px',
+      gap: '6px',
+    },
   })
 
   const ShiftReadyBody = styled('div')({
@@ -513,6 +546,14 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     flexDirection: 'column',
     gap: '20px',
     marginTop: '14px',
+    [NARROW_VIEWPORT]: {
+      gap: '12px',
+      marginTop: '10px',
+    },
+    [SHORT_VIEWPORT]: {
+      gap: '10px',
+      marginTop: '10px',
+    },
   })
 
   const ShiftReadyMain = styled('div')({
@@ -521,6 +562,14 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     gap: '10px',
     flex: 1,
     minWidth: 0,
+    [NARROW_VIEWPORT]: { gap: '8px' },
+    [SHORT_WIDE_VIEWPORT]: {
+      position: 'relative',
+      justifyContent: 'center',
+      gap: '6px',
+      paddingRight: `calc(${QR_COLUMN} + ${QR_COLUMN_GAP})`,
+      minHeight: '170px',
+    },
   })
 
   const ShiftLabelRow = styled('div')({
@@ -531,6 +580,10 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     marginTop: '8px',
     marginBottom: '4px',
     minWidth: 0,
+    [SHORT_VIEWPORT]: {
+      marginTop: '2px',
+      marginBottom: 0,
+    },
   })
 
   const CopyCtn = styled('div')({
@@ -554,6 +607,12 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     alignItems: 'center',
     justifyContent: 'center',
     transition: 'opacity 120ms ease',
+    [SHORT_VIEWPORT]: {
+      margin: '8px auto 0',
+      padding: '6px 10px',
+      fontSize: '13px',
+      minHeight: '20px',
+    },
   })
 
   const ErrorMsg = styled('p')({
@@ -562,7 +621,8 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
   })
 
   const ShiftLabel = styled('span')({
-    fontSize: '14px', marginLeft: '5px', fontWeight: 600
+    fontSize: '14px', marginLeft: '5px', fontWeight: 600,
+    [SHORT_VIEWPORT]: { fontSize: '12px' },
   })
 
   const ShiftSubLabel = styled('span')({
@@ -571,11 +631,13 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     marginRight: '5px',
     lineHeight: 1.2,
     whiteSpace: 'nowrap',
+    [SHORT_VIEWPORT]: { fontSize: '10px' },
   })
 
   const ShiftInput = styled('div')({
     background: '#ffffff', padding: '10px', borderRadius: '5px', fontSize: '14px',
     border: '1px solid #b3b3b3', wordBreak: 'break-word', overflowWrap: 'anywhere', flex: '1 1 auto', position: 'relative', minWidth: 0,
+    [SHORT_VIEWPORT]: { padding: '7px 8px', fontSize: '13px' },
   })
 
   const ShiftCopiedText = styled('div')({
@@ -596,6 +658,7 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     textOverflow: 'ellipsis',
     background: '#ffffff',
     pointerEvents: 'none',
+    [SHORT_VIEWPORT]: { fontSize: '13px', padding: '7px 8px' },
   })
 
   const ShiftValueRow = styled('div')({
@@ -615,6 +678,7 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     fontSize: '14px',
     lineHeight: 1.25,
     overflowWrap: 'anywhere',
+    [SHORT_VIEWPORT]: { fontSize: '13px' },
   })
 
   const QrCard = styled('div')({
@@ -635,6 +699,31 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
       boxShadow: '0 4px 14px rgba(0, 0, 0, 0.12)',
       transform: 'translateY(-1px)',
     },
+    [NARROW_VIEWPORT]: {
+      maxWidth: '190px',
+      padding: '10px',
+      margin: '4px auto',
+      '& svg': { width: '100%', height: 'auto', display: 'block' },
+    },
+    [SHORT_VIEWPORT]: {
+      maxWidth: '160px',
+      padding: '8px',
+      margin: '0 auto',
+      '& svg': { width: '100%', height: 'auto', display: 'block' },
+    },
+    [SHORT_WIDE_VIEWPORT]: {
+      position: 'absolute',
+      right: 0,
+      top: '50%',
+      transform: 'translateY(-50%)',
+      width: QR_COLUMN,
+      maxWidth: 'none',
+      margin: 0,
+      '&:hover': {
+        boxShadow: '0 4px 14px rgba(0, 0, 0, 0.12)',
+        transform: 'translateY(-50%)',
+      },
+    },
   })
 
   const QrCopyText = styled('div')({
@@ -647,6 +736,14 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     lineHeight: 1.2,
     color: 'rgb(35, 31, 32)',
     pointerEvents: 'none',
+    [SHORT_VIEWPORT]: {
+      position: 'static',
+      background: 'none',
+      padding: 0,
+      marginTop: '2px',
+      textAlign: 'right',
+      fontSize: '10px',
+    },
   })
 
   const QrTitle = styled('div')({
@@ -656,6 +753,7 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     gap: '6px',
     fontSize: '13px',
     fontWeight: 600,
+    [SHORT_VIEWPORT]: { fontSize: '11px', gap: '4px' },
   })
 
   const InlineCoin = styled('span')({
@@ -671,6 +769,7 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     flex: '0 0 auto',
     alignSelf: 'stretch', transition: 'all ease-in-out 200ms',
     '&:hover': { background: '#f1f1f1' }, '& img': { width: '15px' },
+    [SHORT_VIEWPORT]: { padding: '7px 8px', '& img': { width: '13px' } },
   })
 
   const ShiftComplete = styled('div')({
@@ -702,7 +801,8 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
   })
 
   const Spacer = styled('div')({
-    height: '20px'
+    height: '20px',
+    [SHORT_VIEWPORT]: { height: '8px' },
   })
 
   const checkCoin = (coin:string) => {

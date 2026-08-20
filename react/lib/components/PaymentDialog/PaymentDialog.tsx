@@ -203,6 +203,15 @@ export const PaymentDialog = ({
         disableScrollLock
         TransitionComponent={Zoom}
         transitionDuration={{ enter: 300, exit: 300 }}
+        PaperProps={{
+          sx: {
+            '@media (max-width: 600px), (max-height: 560px)': {
+              margin: '12px',
+              maxWidth: 'calc(100% - 24px)',
+              maxHeight: 'calc(100% - 24px)',
+            },
+          },
+        }}
       >
         <WidgetContainer
           isChild={true}
