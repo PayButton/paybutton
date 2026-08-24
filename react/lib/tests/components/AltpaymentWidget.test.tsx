@@ -93,6 +93,21 @@ describe('AltpaymentWidget copy feedback', () => {
     })
   })
 
+  test('shift id is accompanied by a link to the order page on sideshift', () => {
+    render(
+      <AltpaymentWidget
+        {...baseProps}
+        altpaymentShift={altpaymentShift as any}
+      />,
+    )
+
+    const link = screen.getByTestId('altpayment-track-shift') as HTMLAnchorElement
+
+    expect(link.getAttribute('href')).toBe('https://sideshift.ai/orders/shift-123')
+    expect(link.getAttribute('target')).toBe('_blank')
+    expect(link.getAttribute('rel')).toBe('noopener noreferrer')
+  })
+
   test('qr click shows payment copied feedback in the card corner', async () => {
     render(
       <AltpaymentWidget

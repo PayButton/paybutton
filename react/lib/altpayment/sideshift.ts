@@ -2,6 +2,12 @@ import { AltpaymentClient } from ".";
 
 export const SIDESHIFT_BASE_URL = 'https://sideshift.ai/api/v2/'
 
+export const SIDESHIFT_ORDER_BASE_URL = 'https://sideshift.ai/orders/'
+
+export function getSideshiftOrderUrl (shiftId: string): string {
+  return `${SIDESHIFT_ORDER_BASE_URL}${shiftId}`
+}
+
 interface SideshiftTokenDetails {
   [network: string]: {
     contractAddress: string;

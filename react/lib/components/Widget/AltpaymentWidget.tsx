@@ -7,7 +7,7 @@ import { resolveNumber, CryptoCurrency, DECIMALS } from '../../util'
 import { Button, animation } from '../Button/Button'
 import { Socket } from 'socket.io-client'
 import { AltpaymentCoin, AltpaymentError, AltpaymentPair, AltpaymentShift } from '../../altpayment'
-import { SIDESHIFT_BASE_URL } from '../../altpayment/sideshift'
+import { SIDESHIFT_BASE_URL, getSideshiftOrderUrl } from '../../altpayment/sideshift'
 import { sideShiftLogo, copyIcon } from './SideShiftLogo'
 
 const XEC_ICON_DATA_URI = `data:image/svg+xml,${encodeURIComponent(
@@ -634,6 +634,17 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
     [SHORT_VIEWPORT]: { fontSize: '10px' },
   })
 
+  const ShiftTrackLink = styled('a')({
+    fontSize: '11px',
+    color: '#0074c2',
+    marginRight: '5px',
+    lineHeight: 1.2,
+    whiteSpace: 'nowrap',
+    textDecoration: 'none',
+    '&:hover': { textDecoration: 'underline' },
+    [SHORT_VIEWPORT]: { fontSize: '10px' },
+  })
+
   const ShiftInput = styled('div')({
     background: '#ffffff', padding: '10px', borderRadius: '5px', fontSize: '14px',
     border: '1px solid #b3b3b3', wordBreak: 'break-word', overflowWrap: 'anywhere', flex: '1 1 auto', position: 'relative', minWidth: 0,
@@ -1024,7 +1035,17 @@ export const AltpaymentWidget: React.FunctionComponent<AltpaymentProps> = props 
                         />
                         <QrCopyText>{qrCopied ? 'Payment copied!' : 'Click to copy'}</QrCopyText>
                       </QrCard>
-                      <ShiftLabel>SideShift ID</ShiftLabel>
+                      <ShiftLabelRow>
+                        <ShiftLabel>SideShift ID</ShiftLabel>
+                        <ShiftTrackLink
+                          data-testid="altpayment-track-shift"
+                          href={getSideshiftOrderUrl(altpaymentShift.id)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          See it on SideShift ↗
+                        </ShiftTrackLink>
+                      </ShiftLabelRow>
                       <CopyCtn>
                         <ShiftInput>
                           <ShiftAddress>{altpaymentShift.id}</ShiftAddress>
